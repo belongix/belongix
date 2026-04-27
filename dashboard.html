@@ -548,8 +548,8 @@ let profileData=null;
 // ── INIT ──
 // ── REAL JOBS FROM JSEARCH API ──
 async function loadJobs(reset){
-  var query=document.getElementById("job-search")?.value||"software developer";
-  var location=document.getElementById("job-location")?.value||"india";
+  var query=(document.getElementById("job-search")?.value||"").trim()||"software developer jobs";
+  var location=document.getElementById("job-location")?.value||"India";
   var listEl=document.getElementById("jobs-list");
   var loadEl=document.getElementById("jobs-loading");
   var errEl=document.getElementById("jobs-error");
@@ -560,7 +560,8 @@ async function loadJobs(reset){
   emptyEl.style.display="none";
   listEl.innerHTML="";
   try{
-    var url="https://jsearch.p.rapidapi.com/search?query="+encodeURIComponent(query+" in "+location)+"&page=1&num_pages=1&country=in&date_posted=all";
+    var searchQ=query+" "+location;
+    var url="https://jsearch.p.rapidapi.com/search?query="+encodeURIComponent(searchQ)+"&page=1&num_pages=2&country=in";
     var res=await fetch(url,{
       method:"GET",
       headers:{
@@ -773,7 +774,11 @@ function toast(msg,type=''){
 // ── PAGE NAV ──
 const pageTitles={overview:'Dashboard Overview',score:'Career Score',jobs:'Jobs & Internships',skills:'Upskilling',salary:'Salary Intelligence',mentors:'Expert Mentors',network:'My Network',profile:'My Profile',settings:'Settings'};
 function go(id,el){
-  if(id==="jobs")setTimeout(function(){loadJobs(false);},100);
+  if(id==="jobs"){
+    if(!document.getElementById("jobs-list").innerHTML){
+      setTimeout(function(){loadJobs(false);},200);
+    }
+  }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('pg-'+id).classList.add('active');
   document.getElementById('page-title').textContent=pageTitles[id]||'Dashboard';
