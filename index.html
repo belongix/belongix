@@ -1172,7 +1172,7 @@ async function miniSend(){
   chat.innerHTML+='<div id="'+tid+'" style="display:flex;gap:0.45rem;"><div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;">🤖</div><div class="td-wrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:4px 12px 12px 12px;padding:0.6rem 0.8rem;font-size:0.78rem;color:rgba(255,255,255,0.4);font-family:\'DM Sans\',sans-serif;">...</div></div>';
   chat.scrollTop=chat.scrollHeight;
   try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:'You are Belong AI, a friendly career assistant for Indian professionals on Belongix. Keep responses to 2-3 sentences for quick chat. Be helpful and direct. Suggest opening the full AI agent for detailed help.',messages:[{role:'user',content:text}]})});
+    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-calls':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:'You are Belong AI, a friendly career assistant for Indian professionals on Belongix. Keep responses to 2-3 sentences for quick chat. Be helpful and direct. Suggest opening the full AI agent for detailed help.',messages:[{role:'user',content:text}]})});
     var data=await res.json();
     var reply=data.content&&data.content.length?data.content.map(function(b){return b.text||'';}).join(''):'Open the full AI agent for detailed career help!';
     document.getElementById(tid).querySelector('.td-wrap').innerHTML=reply.replace(/</g,'&lt;').replace(/>/g,'&gt;');
@@ -1303,7 +1303,7 @@ async function bmChat(userText){
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-calls':'true'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
