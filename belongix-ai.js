@@ -465,7 +465,8 @@
   // ── UI ───────────────────────────────────────────────────────────
 
   var CSS = [
-    "#bx-bubble{position:fixed;bottom:24px;right:24px;z-index:99999;font-family:'DM Sans',system-ui,sans-serif}",
+    "#bx-bubble{position:fixed;bottom:24px;right:24px;z-index:99999;font-family:'DM Sans',system-ui,sans-serif;all:initial;display:block}",
+    "#bx-bubble *{box-sizing:border-box;font-family:'DM Sans',system-ui,sans-serif;line-height:normal;letter-spacing:normal;text-transform:none}",
     "#bx-btn{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2563EB,#0EA5E9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,99,235,.4);transition:.3s;position:relative}",
     "#bx-btn:hover{transform:scale(1.08)}",
     "#bx-btn svg{width:26px;height:26px;color:white}",
@@ -549,34 +550,45 @@
     });
     document.getElementById("bx-send").addEventListener("click", bxSend);
 
-    // Welcome message
-    setTimeout(function () {
-      bxAppendBot("Hi! I'm <strong>Bexi</strong> — Belongix's career guide 👋<br><br>Ask me anything about salaries, interview prep, skills to learn, or career paths in India!", ["Check my salary", "Interview tips", "Best skills 2026", "I am a fresher"]);
-    }, 500);
   }
 
   var isOpen = false;
+  var welcomed = false;
   window.bxToggle = function () {
     isOpen = !isOpen;
     var w = document.getElementById("bx-window");
-    if (isOpen) { w.classList.add("open"); document.getElementById("bx-input").focus(); }
-    else w.classList.remove("open");
+    if (isOpen) {
+      w.classList.add("open");
+      setTimeout(function(){ document.getElementById("bx-input").focus(); }, 100);
+      if (!welcomed) {
+        welcomed = true;
+        setTimeout(function () {
+          bxAppendBot("Hi! I'm <strong>Bexi</strong> — Belongix's career guide 👋<br><br>Ask me anything about salaries, interview prep, skills to learn, or career paths in India!", ["Check my salary", "Interview tips", "Best skills 2026", "I am a fresher"]);
+        }, 300);
+      }
+    } else {
+      w.classList.remove("open");
+    }
   };
 
   function bxAppendBot(text, chips) {
     var msgs = document.getElementById("bx-msgs");
+    if (!msgs) return;
     var div = document.createElement("div");
     div.className = "bx-msg bx-bot";
+    div.style.cssText = "max-width:86%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6;background:#F1F5F9;color:#0F172A;border-bottom-left-radius:4px;align-self:flex-start;display:block;margin:0;word-wrap:break-word";
     div.innerHTML = text;
     msgs.appendChild(div);
     if (chips && chips.length) {
       var chipWrap = document.createElement("div");
-      chipWrap.className = "bx-chips";
+      chipWrap.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-top:6px";
       chips.forEach(function (chip) {
         var btn = document.createElement("button");
-        btn.className = "bx-chip";
+        btn.style.cssText = "background:white;border:1.5px solid #DBEAFE;color:#2563EB;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s";
         btn.textContent = chip;
         btn.onclick = function () { bxHandleChip(chip); };
+        btn.onmouseover = function(){ this.style.background="#EFF6FF"; };
+        btn.onmouseout = function(){ this.style.background="white"; };
         chipWrap.appendChild(btn);
       });
       msgs.appendChild(chipWrap);
@@ -598,7 +610,7 @@
 
     var msgs = document.getElementById("bx-msgs");
     var userDiv = document.createElement("div");
-    userDiv.className = "bx-msg bx-user";
+    userDiv.style.cssText = "max-width:86%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6;background:linear-gradient(135deg,#2563EB,#0EA5E9);color:white;border-bottom-right-radius:4px;align-self:flex-end;display:block;margin:0;word-wrap:break-word";
     userDiv.textContent = msg;
     msgs.appendChild(userDiv);
 
