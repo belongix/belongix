@@ -1134,5 +1134,215 @@ document.getElementById('le-pass').addEventListener('keypress',e=>{if(e.key==='E
 document.getElementById('su-pass').addEventListener('keypress',e=>{if(e.key==='Enter')doSignup();});
 document.getElementById('hEmail').addEventListener('keypress',e=>{if(e.key==='Enter')heroSignup();});
 </script>
+
+<!-- BELONG AI BUBBLE -->
+<div id="ai-bubble" style="position:fixed;bottom:2rem;right:2rem;z-index:1000;">
+  <div id="ai-btn" onclick="toggleAIChat()" style="width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 28px rgba(29,111,164,0.5);transition:all 0.3s;font-size:1.4rem;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">🤖</div>
+  <div style="position:absolute;top:-6px;right:-3px;width:16px;height:16px;border-radius:50%;background:#22c55e;border:2px solid white;"></div>
+  <div id="ai-mini" style="display:none;position:absolute;bottom:70px;right:0;width:320px;background:#0a1628;border:1px solid rgba(29,111,164,0.3);border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,0.4);overflow:hidden;">
+    <div style="background:#0f2040;padding:0.9rem 1.1rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.06);">
+      <div style="display:flex;align-items:center;gap:0.55rem;">
+        <div style="width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);display:flex;align-items:center;justify-content:center;font-size:0.9rem;">🤖</div>
+        <div><div style="font-size:0.82rem;font-weight:700;color:#fff;font-family:'DM Sans',sans-serif;">Belong AI</div><div style="font-size:0.62rem;color:rgba(255,255,255,0.35);font-family:'DM Sans',sans-serif;">Career Intelligence Agent</div></div>
+      </div>
+      <div style="display:flex;gap:0.35rem;">
+        <button onclick="window.open('belong-ai.html','_blank')" style="background:rgba(29,111,164,0.2);border:1px solid rgba(29,111,164,0.3);color:#a8d4ee;font-size:0.65rem;font-weight:600;padding:0.25rem 0.55rem;border-radius:6px;cursor:pointer;font-family:'DM Sans',sans-serif;">Full Agent</button>
+        <button onclick="toggleAIChat()" style="background:rgba(255,255,255,0.07);border:none;color:rgba(255,255,255,0.4);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:0.75rem;">x</button>
+      </div>
+    </div>
+    <div id="mini-chat" style="height:220px;overflow-y:auto;padding:0.85rem;display:flex;flex-direction:column;gap:0.55rem;">
+      <div style="display:flex;gap:0.45rem;"><div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;">🤖</div><div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:4px 12px 12px 12px;padding:0.6rem 0.8rem;font-size:0.78rem;color:rgba(255,255,255,0.8);line-height:1.5;font-family:'DM Sans',sans-serif;">Hi! I am Belong AI. Ask me about careers, salary, resumes, jobs, or interview prep!</div></div>
+    </div>
+    <div style="padding:0.65rem;border-top:1px solid rgba(255,255,255,0.06);">
+      <div style="display:flex;gap:0.45rem;">
+        <input id="mini-input" type="text" placeholder="Ask me anything..." style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:9px;padding:0.5rem 0.7rem;font-size:0.78rem;color:#fff;font-family:'DM Sans',sans-serif;outline:none;"/>
+        <button onclick="miniSend()" style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#1d6fa4,#2485c1);border:none;cursor:pointer;font-size:0.95rem;color:#fff;">&#10148;</button>
+      </div>
+      <div style="text-align:center;margin-top:0.35rem;"><a href="belong-ai.html" target="_blank" style="font-size:0.62rem;color:rgba(255,255,255,0.22);font-family:'DM Sans',sans-serif;text-decoration:none;">Open full AI agent for detailed help &#8594;</a></div>
+    </div>
+  </div>
+</div>
+<script>
+function toggleAIChat(){var m=document.getElementById('ai-mini');m.style.display=m.style.display==='none'?'block':'none';if(m.style.display==='block')document.getElementById('mini-input').focus();}
+async function miniSend(){
+  var inp=document.getElementById('mini-input');var text=inp.value.trim();if(!text)return;inp.value='';
+  var chat=document.getElementById('mini-chat');
+  chat.innerHTML+='<div style="display:flex;justify-content:flex-end;"><div style="background:linear-gradient(135deg,#1d6fa4,#1a5f8e);border-radius:12px 4px 12px 12px;padding:0.5rem 0.75rem;font-size:0.78rem;color:#fff;font-family:\'DM Sans\',sans-serif;max-width:80%;">'+text+'</div></div>';
+  var tid='t'+Date.now();
+  chat.innerHTML+='<div id="'+tid+'" style="display:flex;gap:0.45rem;"><div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0;">🤖</div><div class="td-wrap" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.07);border-radius:4px 12px 12px 12px;padding:0.6rem 0.8rem;font-size:0.78rem;color:rgba(255,255,255,0.4);font-family:\'DM Sans\',sans-serif;">...</div></div>';
+  chat.scrollTop=chat.scrollHeight;
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:'You are Belong AI, a friendly career assistant for Indian professionals on Belongix. Keep responses to 2-3 sentences for quick chat. Be helpful and direct. Suggest opening the full AI agent for detailed help.',messages:[{role:'user',content:text}]})});
+    var data=await res.json();
+    var reply=data.content&&data.content.length?data.content.map(function(b){return b.text||'';}).join(''):'Open the full AI agent for detailed career help!';
+    document.getElementById(tid).querySelector('.td-wrap').innerHTML=reply.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }catch(e){document.getElementById(tid).querySelector('.td-wrap').textContent='Open the full AI agent for career help!';}
+  chat.scrollTop=chat.scrollHeight;
+}
+document.addEventListener('keypress',function(e){if(e.key==='Enter'&&document.getElementById('mini-input')===document.activeElement)miniSend();});
+</script>
+
 </body>
 </html>
+
+<!-- ══ BEXI AI CHAT BUBBLE ══ -->
+<style>
+.bexi-bubble{position:fixed;bottom:1.8rem;right:1.8rem;z-index:9998;}
+.bexi-btn{width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(29,111,164,0.5);transition:all 0.3s;font-size:1.5rem;animation:bubblePop 0.5s cubic-bezier(.34,1.56,.64,1);}
+.bexi-btn:hover{transform:scale(1.1);box-shadow:0 8px 32px rgba(29,111,164,0.6);}
+.bexi-badge{position:absolute;top:-2px;right:-2px;width:18px;height:18px;border-radius:50%;background:#10b981;border:2.5px solid #fff;display:flex;align-items:center;justify-content:center;font-size:0.52rem;font-weight:800;color:#fff;animation:badgePop 0.5s 0.3s both cubic-bezier(.34,1.56,.64,1);}
+.bexi-tooltip{position:absolute;bottom:70px;right:0;background:#0a1628;border:1px solid rgba(29,111,164,0.3);border-radius:12px;padding:0.65rem 1rem;white-space:nowrap;font-family:'DM Sans',sans-serif;font-size:0.8rem;color:#fff;box-shadow:0 8px 24px rgba(0,0,0,0.3);opacity:0;transform:translateY(6px);transition:all 0.25s;pointer-events:none;}
+.bexi-tooltip.show{opacity:1;transform:translateY(0);}
+.bexi-tooltip strong{color:#7cc8e8;display:block;font-size:0.75rem;margin-bottom:0.15rem;}
+.bexi-mini{position:fixed;bottom:5.5rem;right:1.8rem;width:320px;background:#0d1f38;border:1px solid rgba(29,111,164,0.3);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,0.5);z-index:9997;display:none;flex-direction:column;overflow:hidden;max-height:420px;animation:slideUp 0.3s cubic-bezier(.34,1.46,.64,1);}
+.bexi-mini.open{display:flex;}
+.bm-header{background:linear-gradient(135deg,#0a1628,#0f2040);padding:1rem 1.1rem;display:flex;align-items:center;gap:0.65rem;border-bottom:1px solid rgba(29,111,164,0.2);}
+.bm-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.bm-title{font-family:'DM Sans',sans-serif;font-size:0.875rem;font-weight:700;color:#fff;}
+.bm-sub{font-family:'DM Sans',sans-serif;font-size:0.68rem;color:rgba(255,255,255,0.4);}
+.bm-close{margin-left:auto;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.07);border:none;cursor:pointer;color:rgba(255,255,255,0.5);font-size:0.8rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.bm-close:hover{background:rgba(255,255,255,0.15);color:#fff;}
+.bm-msgs{flex:1;overflow-y:auto;padding:0.85rem;display:flex;flex-direction:column;gap:0.65rem;}
+.bm-msgs::-webkit-scrollbar{width:3px;}.bm-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);}
+.bm-msg{font-family:'DM Sans',sans-serif;font-size:0.8rem;line-height:1.55;padding:0.6rem 0.8rem;border-radius:10px;max-width:88%;}
+.bm-msg.ai{background:rgba(255,255,255,0.06);border:1px solid rgba(29,111,164,0.2);color:rgba(255,255,255,0.85);align-self:flex-start;border-radius:4px 10px 10px 10px;}
+.bm-msg.user{background:linear-gradient(135deg,#1d6fa4,#2485c1);color:#fff;align-self:flex-end;border-radius:10px 4px 10px 10px;}
+.bm-typing{display:flex;gap:4px;padding:0.6rem 0.8rem;background:rgba(255,255,255,0.06);border:1px solid rgba(29,111,164,0.2);border-radius:4px 10px 10px 10px;align-self:flex-start;width:fit-content;}
+.bm-typing span{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.3);animation:dot 1.4s infinite;}
+.bm-typing span:nth-child(2){animation-delay:0.2s;}
+.bm-typing span:nth-child(3){animation-delay:0.4s;}
+.bm-chips{display:flex;gap:0.4rem;padding:0 0.85rem 0.5rem;flex-wrap:wrap;}
+.bm-chip{background:rgba(29,111,164,0.15);border:1px solid rgba(29,111,164,0.3);border-radius:100px;padding:0.25rem 0.65rem;font-family:'DM Sans',sans-serif;font-size:0.7rem;color:#7cc8e8;cursor:pointer;transition:all 0.2s;}
+.bm-chip:hover{background:rgba(29,111,164,0.3);}
+.bm-input-row{padding:0.65rem;border-top:1px solid rgba(29,111,164,0.15);display:flex;gap:0.4rem;}
+.bm-input{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(29,111,164,0.2);border-radius:8px;padding:0.5rem 0.75rem;color:#fff;font-size:0.8rem;font-family:'DM Sans',sans-serif;outline:none;}
+.bm-input::placeholder{color:rgba(255,255,255,0.3);}
+.bm-input:focus{border-color:rgba(29,111,164,0.5);}
+.bm-send{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#1d6fa4,#2485c1);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.bm-full-btn{padding:0.5rem 0.85rem;border-radius:8px;background:transparent;border:1px solid rgba(29,111,164,0.3);color:#7cc8e8;font-size:0.72rem;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.bm-full-btn:hover{background:rgba(29,111,164,0.2);}
+@keyframes bubblePop{from{opacity:0;transform:scale(0.5);}to{opacity:1;transform:scale(1);}}
+@keyframes badgePop{from{opacity:0;transform:scale(0);}to{opacity:1;transform:scale(1);}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px) scale(0.97);}to{opacity:1;transform:translateY(0) scale(1);}}
+@keyframes dot{0%,60%,100%{transform:translateY(0);opacity:0.3;}30%{transform:translateY(-5px);opacity:1;}}
+</style>
+
+<!-- BUBBLE UI -->
+<div class="bexi-bubble">
+  <div class="bexi-tooltip" id="bexiTooltip"><strong>👋 Hi! I'm Bexi</strong>Your AI Career Agent — ask me anything!</div>
+  <button class="bexi-btn" onclick="toggleMini()" id="bexiBtn">🤖
+    <div class="bexi-badge">AI</div>
+  </button>
+</div>
+
+<!-- MINI CHAT -->
+<div class="bexi-mini" id="bexiMini">
+  <div class="bm-header">
+    <div class="bm-av">🤖</div>
+    <div>
+      <div class="bm-title">Bexi — Career AI</div>
+      <div class="bm-sub">Powered by Claude · Always online</div>
+    </div>
+    <button class="bm-close" onclick="toggleMini()">✕</button>
+  </div>
+  <div class="bm-msgs" id="bmMsgs">
+    <div class="bm-msg ai">Hi! I'm Bexi 👋 I'm your personal AI career agent. I can help with career advice, resume building, job matching, salary negotiation, and interview prep. What can I help you with today?</div>
+  </div>
+  <div class="bm-chips">
+    <span class="bm-chip" onclick="bmQuick('Help me with my career path')">🧭 Career</span>
+    <span class="bm-chip" onclick="bmQuick('Build my resume')">📝 Resume</span>
+    <span class="bm-chip" onclick="bmQuick('Find matching jobs for me')">💼 Jobs</span>
+    <span class="bm-chip" onclick="bmQuick('What salary should I earn?')">💰 Salary</span>
+  </div>
+  <div class="bm-input-row">
+    <input class="bm-input" id="bmInput" placeholder="Ask Bexi..." onkeydown="if(event.key==='Enter')bmSend()"/>
+    <button class="bm-full-btn" onclick="window.location.href='ai-agent.html'">Full AI →</button>
+    <button class="bm-send" onclick="bmSend()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+// ── BEXI BUBBLE ──
+let bmMsgs=[];
+let bmLoading=false;
+let tooltipShown=false;
+
+// Show tooltip after 3 seconds
+setTimeout(()=>{
+  const tt=document.getElementById('bexiTooltip');
+  if(tt){tt.classList.add('show');tooltipShown=true;setTimeout(()=>tt.classList.remove('show'),4000);}
+},3000);
+
+function toggleMini(){
+  const mini=document.getElementById('bexiMini');
+  mini.classList.toggle('open');
+  if(mini.classList.contains('open')){
+    document.getElementById('bexiTooltip').classList.remove('show');
+    document.getElementById('bmInput').focus();
+  }
+}
+
+async function bmSend(){
+  const inp=document.getElementById('bmInput');
+  const text=inp.value.trim();
+  if(!text||bmLoading)return;
+  inp.value='';
+  await bmChat(text);
+}
+
+async function bmQuick(text){await bmChat(text);}
+
+async function bmChat(userText){
+  if(bmLoading)return;
+  bmLoading=true;
+  bmMsgs.push({role:'user',content:userText});
+  bmAppend('user',userText);
+  const typingEl=bmTyping();
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'You are Bexi, a friendly AI career agent for Belongix — India\'s professional career platform. You help with career advice, resume building, job matching, salary intelligence, and interview preparation. Keep responses concise (2-4 sentences max in the chat bubble) and always offer to help further. Be warm, practical, and India-specific. If the question needs a detailed response, suggest opening the full AI page.',
+        messages:bmMsgs.map(m=>({role:m.role,content:m.content}))
+      })
+    });
+    const data=await res.json();
+    typingEl.remove();
+    if(data.content&&data.content[0]){
+      const aiText=data.content[0].text;
+      bmMsgs.push({role:'assistant',content:aiText});
+      bmAppend('ai',aiText);
+    } else {
+      bmAppend('ai','Something went wrong. Please try again!');
+    }
+  }catch(e){
+    typingEl.remove();
+    bmAppend('ai','Connection error. Try again or open the full AI page!');
+  }
+  bmLoading=false;
+}
+
+function bmAppend(role,text){
+  const container=document.getElementById('bmMsgs');
+  const div=document.createElement('div');
+  div.className='bm-msg '+role;
+  div.textContent=text;
+  container.appendChild(div);
+  container.scrollTop=container.scrollHeight;
+}
+
+function bmTyping(){
+  const container=document.getElementById('bmMsgs');
+  const div=document.createElement('div');
+  div.className='bm-typing';
+  div.innerHTML='<span></span><span></span><span></span>';
+  container.appendChild(div);
+  container.scrollTop=container.scrollHeight;
+  return div;
+}
+</script>
