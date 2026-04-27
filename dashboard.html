@@ -236,6 +236,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);fo
     <div class="sb-item" onclick="go('salary',this)"><span class="sb-icon">💰</span>Salary Intel</div>
     <div class="sb-item" onclick="go('mentors',this)"><span class="sb-icon">🚀</span>Mentors</div>
     <div class="sb-item" onclick="go('network',this)"><span class="sb-icon">👥</span>Network</div>
+    <div class="sb-item" onclick="window.location.href='ai-agent.html'" style="background:linear-gradient(135deg,rgba(29,111,164,0.25),rgba(36,133,193,0.15));border:1px solid rgba(29,111,164,0.3);border-radius:10px;color:#7cc8e8;"><span class="sb-icon">🤖</span>Bexi AI Agent<span class="sb-new" style="background:linear-gradient(135deg,#1d6fa4,#2485c1);color:#fff;">NEW</span></div>
   </div>
   <div class="sb-section">
     <div class="sb-label">Account</div>
@@ -728,5 +729,15 @@ function go(id,el){
   window.scrollTo(0,0);
 }
 </script>
+
+<!-- BELONG AI BUBBLE -->
+<div id="ai-bubble" style="position:fixed;bottom:2rem;right:2rem;z-index:1000;">
+  <div onclick="window.open('belong-ai.html','_blank')" style="width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 28px rgba(29,111,164,0.5);transition:all 0.3s;font-size:1.3rem;position:relative;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+    🤖
+    <div style="position:absolute;top:-4px;right:-2px;width:14px;height:14px;border-radius:50%;background:#22c55e;border:2px solid white;"></div>
+  </div>
+  <div style="position:absolute;bottom:-20px;right:0;font-size:0.6rem;color:rgba(0,0,0,0.4);white-space:nowrap;font-family:'DM Sans',sans-serif;">Belong AI</div>
+</div>
+
 </body>
 </html>
