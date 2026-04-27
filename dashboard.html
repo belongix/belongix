@@ -385,29 +385,30 @@ body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);fo
       </div>
     </div>
 
-    <!-- ══ JOBS ══ -->
+        <!-- ══ JOBS ══ -->
     <div class="page" id="pg-jobs">
-      <div class="cs-card"><h3>💼 Full Job & Internship Matching Coming Soon</h3><p>AI-powered job and internship matching is launching with the full platform. Complete your profile now to get accurate matches when it goes live.</p><button class="cs-btn" onclick="toast('You\'ll get priority access when jobs launch! ✓')">Get Priority Access</button></div>
-      <div class="card">
-        <div class="card-hdr"><div class="card-title">Preview — Sample Matches</div><div class="card-link">Based on your profile</div></div>
-        <div class="job-card"><div class="jc-top"><div class="jc-title">Software Developer Intern</div><div class="jc-sal">₹15K–25K/mo</div></div><div class="jc-co">Tech Startup · Bangalore · Remote · Fresher OK</div><div class="jc-tags"><span class="jc-tag">Python</span><span class="jc-tag">JavaScript</span><span class="jc-tag">React</span><span class="match-tag" style="background:var(--green-l);color:var(--green);">92% Match</span></div></div>
-        <div class="job-card"><div class="jc-top"><div class="jc-title">Data Analyst</div><div class="jc-sal">₹5–8 LPA</div></div><div class="jc-co">MNC · Hyderabad · Hybrid · 0–1 YOE</div><div class="jc-tags"><span class="jc-tag">Excel</span><span class="jc-tag">SQL</span><span class="jc-tag">Python</span><span class="match-tag" style="background:var(--sky);color:var(--blue2);">87% Match</span></div></div>
-        <div class="job-card"><div class="jc-top"><div class="jc-title">Marketing Intern</div><div class="jc-sal">₹8K–15K/mo</div></div><div class="jc-co">D2C Brand · Mumbai · Onsite · Fresher OK</div><div class="jc-tags"><span class="jc-tag">Social Media</span><span class="jc-tag">Content</span><span class="match-tag" style="background:var(--sky);color:var(--blue2);">81% Match</span></div></div>
-        <div class="job-card"><div class="jc-top"><div class="jc-title">UI/UX Design Intern</div><div class="jc-sal">₹10K–18K/mo</div></div><div class="jc-co">Product Company · Pune · Remote · 0 YOE</div><div class="jc-tags"><span class="jc-tag">Figma</span><span class="jc-tag">UI Design</span><span class="match-tag" style="background:var(--sky);color:var(--blue2);">76% Match</span></div></div>
-        <div class="job-card"><div class="jc-top"><div class="jc-title">Business Development Executive</div><div class="jc-sal">₹3–6 LPA</div></div><div class="jc-co">SaaS Startup · Chennai · Hybrid · 0–2 YOE</div><div class="jc-tags"><span class="jc-tag">Sales</span><span class="jc-tag">B2B</span><span class="jc-tag">CRM</span><span class="match-tag" style="background:var(--sky);color:var(--blue2);">73% Match</span></div></div>
-      </div>
-    </div>
-
-    <!-- ══ SKILLS ══ -->
-    <div class="page" id="pg-skills">
-      <div class="cs-card"><h3>📚 AI Upskilling Hub Launching Soon</h3><p>Personalised learning paths for every career stage — from college students to senior professionals. Courses, certifications, and hands-on projects across all domains.</p><button class="cs-btn" onclick="toast('Upskilling early access secured! ✓')">Get Early Access</button></div>
-      <div class="card">
-        <div class="card-hdr"><div class="card-title">Learning Tracks Preview</div></div>
-        <div class="skill-row"><div class="sk-icon">💻</div><div class="sk-info"><div class="sk-name">Full Stack Web Development</div><div class="sk-sub">HTML, CSS, JS, React, Node.js — 0 to job-ready</div><div class="sk-bar"><div class="sk-fill" style="width:0%"></div></div></div><div class="sk-pct">Coming soon</div></div>
-        <div class="skill-row"><div class="sk-icon">📊</div><div class="sk-info"><div class="sk-name">Data Analytics & Visualisation</div><div class="sk-sub">Excel, SQL, Python, Power BI, Tableau</div><div class="sk-bar"><div class="sk-fill" style="width:0%"></div></div></div><div class="sk-pct">Coming soon</div></div>
-        <div class="skill-row"><div class="sk-icon">🤖</div><div class="sk-info"><div class="sk-name">AI & Machine Learning Basics</div><div class="sk-sub">Python, ML fundamentals, GenAI applications</div><div class="sk-bar"><div class="sk-fill" style="width:0%"></div></div></div><div class="sk-pct">Coming soon</div></div>
-        <div class="skill-row"><div class="sk-icon">📢</div><div class="sk-info"><div class="sk-name">Digital Marketing & Growth</div><div class="sk-sub">SEO, Social Media, Paid Ads, Analytics</div><div class="sk-bar"><div class="sk-fill" style="width:0%"></div></div></div><div class="sk-pct">Coming soon</div></div>
-        <div class="skill-row"><div class="sk-icon">🎨</div><div class="sk-info"><div class="sk-name">UX Design & Figma</div><div class="sk-sub">User research, wireframing, prototyping, portfolio</div><div class="sk-bar"><div class="sk-fill" style="width:0%"></div></div></div><div class="sk-pct">Coming soon</div></div>
+      <div class="card" style="margin-bottom:1.5rem;">
+        <div class="card-hdr">
+          <div class="card-title">&#128188; Live Job & Internship Listings</div>
+          <div class="card-link" onclick="loadJobs(true)">&#8635; Refresh</div>
+        </div>
+        <div style="display:flex;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
+          <input id="job-search" placeholder="Job title, skill..." style="flex:1;min-width:140px;padding:0.5rem 0.75rem;background:var(--off2);border:1.5px solid var(--border2);border-radius:9px;font-size:0.82rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;"/>
+          <select id="job-location" style="padding:0.5rem 0.75rem;background:var(--off2);border:1.5px solid var(--border2);border-radius:9px;font-size:0.82rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;-webkit-appearance:none;">
+            <option value="india">India</option>
+            <option value="bangalore">Bangalore</option>
+            <option value="hyderabad">Hyderabad</option>
+            <option value="mumbai">Mumbai</option>
+            <option value="pune">Pune</option>
+            <option value="chennai">Chennai</option>
+            <option value="delhi">Delhi NCR</option>
+          </select>
+          <button onclick="loadJobs(true)" style="padding:0.5rem 1rem;background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Search Jobs</button>
+        </div>
+        <div id="jobs-loading" style="text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;display:none;">&#8987; Loading real jobs from LinkedIn, Indeed & Glassdoor...</div>
+        <div id="jobs-error" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:0.75rem;font-size:0.82rem;color:#dc2626;margin-bottom:1rem;"></div>
+        <div id="jobs-list"></div>
+        <div id="jobs-empty" style="text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;display:none;">No jobs found. Try a different search!</div>
       </div>
     </div>
 
@@ -545,6 +546,57 @@ let currentUser=null;
 let profileData=null;
 
 // ── INIT ──
+// ── REAL JOBS FROM JSEARCH API ──
+async function loadJobs(reset){
+  var query=document.getElementById("job-search")?.value||"software developer";
+  var location=document.getElementById("job-location")?.value||"india";
+  var listEl=document.getElementById("jobs-list");
+  var loadEl=document.getElementById("jobs-loading");
+  var errEl=document.getElementById("jobs-error");
+  var emptyEl=document.getElementById("jobs-empty");
+  if(!listEl)return;
+  loadEl.style.display="block";
+  errEl.style.display="none";
+  emptyEl.style.display="none";
+  listEl.innerHTML="";
+  try{
+    var url="https://jsearch.p.rapidapi.com/search?query="+encodeURIComponent(query+" in "+location)+"&page=1&num_pages=1&country=in&date_posted=all";
+    var res=await fetch(url,{
+      method:"GET",
+      headers:{
+        "X-RapidAPI-Key":"2ad5ce55ddmshd78f379095d2b3fp1d274djsn2ea31eca4506",
+        "X-RapidAPI-Host":"jsearch.p.rapidapi.com"
+      }
+    });
+    var data=await res.json();
+    loadEl.style.display="none";
+    if(!data.data||data.data.length===0){
+      emptyEl.style.display="block";
+      return;
+    }
+    data.data.slice(0,8).forEach(function(job){
+      var el=document.createElement("div");
+      el.className="job-card";
+      var sal=job.job_min_salary&&job.job_max_salary?"₹"+Math.round(job.job_min_salary/100000*100)/100+"L–"+Math.round(job.job_max_salary/100000*100)/100+"L PA":"Salary not disclosed";
+      var posted=job.job_posted_at_datetime_utc?new Date(job.job_posted_at_datetime_utc).toLocaleDateString("en-IN",{day:"numeric",month:"short"}):"Recently";
+      var emptype=job.job_employment_type||"Full Time";
+      var remote=job.job_is_remote?"Remote":"On-site";
+      el.innerHTML="<div class='jc-top'><div class='jc-title'>"+job.job_title+"</div><div class='jc-sal'>"+sal+"</div></div>"+
+        "<div class='jc-co'>"+job.employer_name+" &middot; "+remote+" &middot; "+emptype+" &middot; Posted "+posted+"</div>"+
+        "<div class='jc-tags'>"+
+        (job.job_city?"<span class='jc-tag'>"+job.job_city+"</span>":"")+
+        (job.job_required_experience&&job.job_required_experience.required_experience_in_months?"<span class='jc-tag'>"+Math.round(job.job_required_experience.required_experience_in_months/12)+"+ yrs</span>":"")+
+        "<a href='"+job.job_apply_link+"' target='_blank' style='margin-left:auto;padding:0.2rem 0.65rem;background:var(--blue);color:#fff;border-radius:100px;font-size:0.68rem;font-weight:700;text-decoration:none;'>Apply ↗</a>"+
+        "</div>";
+      listEl.appendChild(el);
+    });
+  }catch(err){
+    loadEl.style.display="none";
+    errEl.textContent="Error loading jobs: "+err.message;
+    errEl.style.display="block";
+  }
+}
+
 async function init(){
   const{data:{session}}=await sb.auth.getSession();
   if(!session){window.location.href='index.html';return;}
@@ -721,6 +773,7 @@ function toast(msg,type=''){
 // ── PAGE NAV ──
 const pageTitles={overview:'Dashboard Overview',score:'Career Score',jobs:'Jobs & Internships',skills:'Upskilling',salary:'Salary Intelligence',mentors:'Expert Mentors',network:'My Network',profile:'My Profile',settings:'Settings'};
 function go(id,el){
+  if(id==="jobs")setTimeout(function(){loadJobs(false);},100);
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('pg-'+id).classList.add('active');
   document.getElementById('page-title').textContent=pageTitles[id]||'Dashboard';
