@@ -1,1030 +1,871 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Dashboard — Belongix</title>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Belongix — Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --navy:#0a1628;--navy2:#0f2040;
-  --blue:#1d6fa4;--blue2:#1a5f8e;--blue3:#2485c1;
-  --sky:#e6f3fb;--sky2:#cce5f6;
-  --white:#fff;--off:#f5faff;--off2:#eef6fc;
-  --text:#1e3a52;--muted:#4a7a9b;--muted2:#7aafc8;
-  --border:#c2dff0;--border2:#deeef9;
-  --green:#0f7b4e;--green-l:#e6f7f0;--green-m:#86efac;
-  --orange:#d4590a;--orange-l:#fff7ed;
-  --red:#c0392b;--sidebar:248px;
-}
-body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--text);font-weight:400;display:flex;min-height:100vh;}
+  :root {
+    --blue:#2563EB; --blue-light:#EFF6FF; --blue-mid:#DBEAFE;
+    --navy:#1E3A5F; --teal:#0EA5E9; --green:#10B981;
+    --white:#FFFFFF; --gray-50:#F8FAFC; --gray-100:#F1F5F9;
+    --gray-200:#E2E8F0; --gray-300:#CBD5E1; --gray-400:#94A3B8;
+    --gray-500:#64748B; --gray-700:#334155; --gray-900:#0F172A;
+    --sidebar:240px; --radius:12px; --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray-900);min-height:100vh;display:flex}
 
-/* LOADING */
-.loading{position:fixed;inset:0;background:var(--white);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:1rem;}
-.loading-logo{font-family:'Bricolage Grotesque',sans-serif;font-size:1.8rem;font-weight:800;color:var(--navy);letter-spacing:-0.04em;}
-.loading-logo span{color:var(--blue);}
-.loading-bar{width:160px;height:3px;background:var(--sky2);border-radius:100px;overflow:hidden;}
-.loading-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--blue3));border-radius:100px;animation:loadAnim 1.4s ease-in-out infinite;}
-@keyframes loadAnim{0%{width:0%;}60%{width:80%;}100%{width:100%;}}
+  /* ── SIDEBAR ── */
+  .sidebar{width:var(--sidebar);background:var(--white);border-right:1px solid var(--gray-200);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;overflow-y:auto}
+  .sb-logo{padding:24px 20px;border-bottom:1px solid var(--gray-100)}
+  .sb-logo a{text-decoration:none;display:flex;align-items:center;gap:8px}
+  .sb-logo-text{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:700;color:var(--navy)}
+  .sb-logo-text span{color:var(--blue)}
+  .sb-logo-badge{font-size:10px;background:var(--blue-light);color:var(--blue);padding:2px 7px;border-radius:20px;font-weight:600}
+  .sb-nav{padding:16px 12px;flex:1}
+  .sb-section{margin-bottom:8px}
+  .sb-label{font-size:10px;font-weight:600;color:var(--gray-400);letter-spacing:.08em;text-transform:uppercase;padding:0 8px;margin-bottom:4px}
+  .sb-link{display:flex;align-items:center;gap:10px;padding:10px 10px;border-radius:8px;color:var(--gray-600, #475569);font-size:14px;font-weight:500;cursor:pointer;transition:.2s;text-decoration:none;border:none;background:none;width:100%}
+  .sb-link svg{width:18px;height:18px;flex-shrink:0;color:var(--gray-400)}
+  .sb-link:hover,.sb-link.active{background:var(--blue-light);color:var(--blue)}
+  .sb-link:hover svg,.sb-link.active svg{color:var(--blue)}
+  .sb-user{padding:16px 12px;border-top:1px solid var(--gray-100)}
+  .sb-user-card{display:flex;align-items:center;gap:10px}
+  .sb-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700;flex-shrink:0}
+  .sb-user-name{font-size:13px;font-weight:600;color:var(--gray-900)}
+  .sb-user-role{font-size:11px;color:var(--gray-400)}
+  .sb-signout{margin-top:8px;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;color:var(--gray-500);font-size:13px;cursor:pointer;border:none;background:none;width:100%;transition:.2s}
+  .sb-signout:hover{background:var(--gray-100);color:var(--gray-900)}
 
-/* SIDEBAR */
-.sidebar{width:var(--sidebar);flex-shrink:0;background:var(--navy);height:100vh;position:fixed;top:0;left:0;display:flex;flex-direction:column;z-index:100;overflow-y:auto;}
-.sb-header{padding:1.4rem 1.4rem 0;}
-.sb-logo{font-family:'Bricolage Grotesque',sans-serif;font-size:1.3rem;font-weight:800;color:#fff;text-decoration:none;letter-spacing:-0.04em;display:block;margin-bottom:1.5rem;}
-.sb-logo span{color:var(--sky2);}
+  /* ── MAIN ── */
+  .main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh}
+  .topbar{background:var(--white);border-bottom:1px solid var(--gray-200);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+  .topbar-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:700;color:var(--gray-900)}
+  .topbar-right{display:flex;align-items:center;gap:12px}
+  .topbar-chip{background:var(--blue-light);color:var(--blue);font-size:12px;font-weight:600;padding:5px 12px;border-radius:20px}
+  .content{padding:32px;flex:1}
 
-/* CAREER SCORE WIDGET IN SIDEBAR */
-.sb-score{background:rgba(29,111,164,0.12);border:1px solid rgba(29,111,164,0.25);border-radius:14px;padding:1rem;margin:0 1.4rem 1.5rem;text-align:center;}
-.sb-score-num{font-family:'Bricolage Grotesque',sans-serif;font-size:2rem;font-weight:800;color:#fff;letter-spacing:-0.04em;line-height:1;}
-.sb-score-label{font-size:0.68rem;color:rgba(255,255,255,0.4);margin-top:0.15rem;font-weight:500;text-transform:uppercase;letter-spacing:0.06em;}
-.sb-score-bar{height:4px;border-radius:100px;background:rgba(255,255,255,0.08);margin-top:0.6rem;overflow:hidden;}
-.sb-score-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--blue),var(--blue3));transition:width 0.8s ease;}
-.sb-score-tip{font-size:0.68rem;color:rgba(255,255,255,0.3);margin-top:0.4rem;}
+  /* ── PAGE SECTIONS ── */
+  .page-section{display:none}
+  .page-section.active{display:block}
 
-.sb-section{padding:0 0.75rem;margin-bottom:1rem;}
-.sb-label{font-size:0.62rem;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:0.14em;text-transform:uppercase;padding:0 0.75rem;margin-bottom:0.4rem;}
-.sb-item{display:flex;align-items:center;gap:0.65rem;padding:0.6rem 0.75rem;cursor:pointer;transition:all 0.2s;font-size:0.85rem;font-weight:500;color:rgba(255,255,255,0.5);border-radius:10px;margin-bottom:2px;}
-.sb-item:hover{background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.85);}
-.sb-item.active{background:rgba(29,111,164,0.2);color:#7cc8e8;border-left:none;}
-.sb-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
-.sb-badge{margin-left:auto;background:var(--blue);color:#fff;font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:100px;}
-.sb-new{margin-left:auto;background:rgba(15,123,78,0.3);color:#86efac;font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:100px;}
+  /* ── CARDS ── */
+  .card{background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);padding:24px;box-shadow:var(--shadow)}
+  .card-sm{padding:16px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 
-.sb-footer{margin-top:auto;padding:1rem 1.4rem;border-top:1px solid rgba(255,255,255,0.06);}
-.sb-user{display:flex;align-items:center;gap:0.7rem;}
-.sb-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue3));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.82rem;color:#fff;flex-shrink:0;}
-.sb-uname{font-size:0.8rem;font-weight:600;color:rgba(255,255,255,0.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;}
-.sb-plan{font-size:0.65rem;color:rgba(255,255,255,0.35);margin-top:0.1rem;}
+  /* ── OVERVIEW ── */
+  .score-ring-wrap{display:flex;align-items:center;gap:32px;flex-wrap:wrap}
+  .score-ring{position:relative;width:140px;height:140px;flex-shrink:0}
+  .score-ring svg{transform:rotate(-90deg)}
+  .score-ring-label{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .score-num{font-size:36px;font-weight:700;color:var(--blue);font-family:'Plus Jakarta Sans',sans-serif}
+  .score-txt{font-size:11px;color:var(--gray-500);font-weight:500}
+  .score-info h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px}
+  .score-info p{color:var(--gray-500);font-size:14px;margin-bottom:16px}
+  .score-steps{display:flex;flex-direction:column;gap:10px}
+  .score-step{display:flex;align-items:center;gap:10px;font-size:13px}
+  .step-dot{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+  .step-dot.done{background:var(--green);color:white}
+  .step-dot.pending{background:var(--gray-200);color:var(--gray-400)}
+  .step-pts{margin-left:auto;font-size:12px;color:var(--blue);font-weight:600}
 
-/* MAIN */
-.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;}
-.topbar{background:var(--white);border-bottom:1px solid var(--border2);padding:0.85rem 1.8rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:0 1px 8px rgba(29,111,164,0.05);}
-.topbar-title{font-family:'Bricolage Grotesque',sans-serif;font-size:1.05rem;font-weight:700;color:var(--navy);letter-spacing:-0.02em;}
-.topbar-right{display:flex;align-items:center;gap:0.6rem;}
-.tb-btn{padding:0.4rem 0.85rem;border-radius:8px;border:1.5px solid var(--border2);background:transparent;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;color:var(--muted);}
-.tb-btn:hover{border-color:var(--red);color:var(--red);}
-.tb-btn-fill{background:var(--blue);color:#fff;border-color:var(--blue);}
-.tb-btn-fill:hover{background:var(--blue2);color:#fff;border-color:var(--blue2);}
+  .stat-card{background:var(--white);border-radius:var(--radius);border:1px solid var(--gray-200);padding:20px;box-shadow:var(--shadow)}
+  .stat-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+  .stat-val{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:700;color:var(--gray-900)}
+  .stat-lbl{font-size:13px;color:var(--gray-500);margin-top:4px}
 
-.content{padding:1.8rem;flex:1;}
+  /* ── JOBS SECTION ── */
+  .jobs-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:gap}
+  .jobs-header h2{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:700}
+  .jobs-search-bar{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+  .search-input-wrap{flex:1;min-width:200px;position:relative}
+  .search-input-wrap input{width:100%;padding:11px 16px 11px 42px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--white);transition:.2s;color:var(--gray-900)}
+  .search-input-wrap input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+  .search-input-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--gray-400);width:16px;height:16px}
+  .filter-select{padding:11px 14px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--white);color:var(--gray-700);cursor:pointer;min-width:140px}
+  .filter-select:focus{outline:none;border-color:var(--blue)}
+  .btn-search{background:var(--blue);color:white;border:none;border-radius:10px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.2s;font-family:'DM Sans',sans-serif}
+  .btn-search:hover{background:#1d4ed8}
 
-/* PAGE */
-.page{display:none;}
-.page.active{display:block;}
+  .jobs-filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .filter-chip{padding:6px 14px;border-radius:20px;border:1.5px solid var(--gray-200);font-size:13px;font-weight:500;cursor:pointer;transition:.2s;background:var(--white);color:var(--gray-600, #475569)}
+  .filter-chip.active,.filter-chip:hover{border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
 
-/* CARDS */
-.card{background:var(--white);border:1px solid var(--border2);border-radius:16px;padding:1.5rem;}
-.card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;}
-.card-title{font-family:'Bricolage Grotesque',sans-serif;font-size:0.9rem;font-weight:700;color:var(--navy);}
-.card-link{font-size:0.75rem;color:var(--blue);cursor:pointer;font-weight:600;}
-.card-link:hover{text-decoration:underline;}
+  .jobs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px}
+  .job-card{background:var(--white);border:1.5px solid var(--gray-200);border-radius:14px;padding:20px;transition:.25s;position:relative;overflow:hidden}
+  .job-card:hover{border-color:var(--blue);box-shadow:0 4px 20px rgba(37,99,235,.12);transform:translateY(-2px)}
+  .job-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+  .job-logo{width:48px;height:48px;border-radius:12px;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid var(--gray-200)}
+  .job-save{width:32px;height:32px;border-radius:8px;border:1.5px solid var(--gray-200);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}
+  .job-save:hover,.job-save.saved{border-color:var(--blue);background:var(--blue-light)}
+  .job-save.saved svg{color:var(--blue)}
+  .job-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;color:var(--gray-900);margin-bottom:4px;line-height:1.3}
+  .job-company{font-size:13px;color:var(--gray-500);margin-bottom:12px}
+  .job-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .job-tag{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:500}
+  .job-tag.type{background:#EFF6FF;color:#2563EB}
+  .job-tag.loc{background:#F0FDF4;color:#15803D}
+  .job-tag.exp{background:#FEF9C3;color:#A16207}
+  .job-tag.remote{background:#F5F3FF;color:#7C3AED}
+  .job-salary{font-size:13px;color:var(--gray-700);font-weight:600;margin-bottom:14px}
+  .job-salary span{color:var(--green)}
+  .job-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--gray-100)}
+  .job-date{font-size:11px;color:var(--gray-400)}
+  .job-match{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600}
+  .match-dot{width:8px;height:8px;border-radius:50%}
+  .btn-apply{background:var(--blue);color:white;border:none;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif;text-decoration:none;display:inline-block}
+  .btn-apply:hover{background:#1d4ed8}
+  .job-match-bar{height:3px;border-radius:3px;background:var(--gray-100);margin-top:10px;overflow:hidden}
+  .job-match-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--green),var(--teal))}
+  .jobs-loading{text-align:center;padding:48px;color:var(--gray-500)}
+  .jobs-loading svg{width:40px;height:40px;margin-bottom:12px;animation:spin 1s linear infinite;color:var(--blue)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .jobs-empty{text-align:center;padding:48px;color:var(--gray-500)}
+  .jobs-empty svg{width:48px;height:48px;margin-bottom:12px;color:var(--gray-300)}
+  .jobs-count{font-size:13px;color:var(--gray-500);margin-bottom:16px}
+  .jobs-count strong{color:var(--gray-900)}
 
-.grid2{display:grid;grid-template-columns:1.5fr 1fr;gap:1.5rem;margin-bottom:1.5rem;}
-.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1.2rem;margin-bottom:1.5rem;}
+  /* ── UPSKILLING ── */
+  .skill-track{border:1.5px solid var(--gray-200);border-radius:12px;padding:20px;margin-bottom:16px;transition:.2s}
+  .skill-track:hover{border-color:var(--blue);background:var(--blue-light)}
+  .skill-track-top{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .skill-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px}
+  .skill-track h4{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700}
+  .skill-track p{font-size:13px;color:var(--gray-500);margin-top:2px}
+  .skill-bar{height:6px;background:var(--gray-200);border-radius:6px;overflow:hidden;margin-bottom:10px}
+  .skill-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--teal))}
+  .skill-meta{display:flex;justify-content:space-between;font-size:12px;color:var(--gray-500)}
+  .btn-start{background:var(--white);color:var(--blue);border:1.5px solid var(--blue);border-radius:8px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
+  .btn-start:hover{background:var(--blue);color:white}
 
-/* STAT CARDS */
-.sc{background:var(--white);border:1.5px solid var(--border2);border-radius:14px;padding:1.3rem 1.5rem;transition:all 0.2s;}
-.sc:hover{border-color:var(--sky2);box-shadow:0 4px 16px rgba(29,111,164,0.08);}
-.sc-lbl{font-size:0.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.4rem;}
-.sc-val{font-family:'Bricolage Grotesque',sans-serif;font-size:1.9rem;font-weight:800;color:var(--navy);letter-spacing:-0.04em;line-height:1;}
-.sc-sub{font-size:0.72rem;color:var(--muted);margin-top:0.3rem;}
-.badge{display:inline-block;font-size:0.65rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:100px;margin-top:0.5rem;}
-.b-blue{background:var(--sky);color:var(--blue2);}
-.b-green{background:var(--green-l);color:var(--green);}
-.b-orange{background:var(--orange-l);color:var(--orange);}
+  /* ── SALARY ── */
+  .salary-role{background:var(--white);border:1.5px solid var(--gray-200);border-radius:12px;padding:20px;margin-bottom:16px}
+  .salary-role h4{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px}
+  .salary-role .city{font-size:12px;color:var(--gray-500);margin-bottom:14px}
+  .salary-range{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .sal-bar{flex:1;height:8px;background:var(--gray-100);border-radius:8px;position:relative}
+  .sal-fill{position:absolute;height:100%;border-radius:8px;background:linear-gradient(90deg,var(--blue),var(--teal))}
+  .sal-marker{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--blue);top:50%;transform:translate(-50%,-50%);border:2px solid white;box-shadow:0 0 0 2px var(--blue)}
+  .sal-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--gray-500)}
+  .sal-avg{text-align:center;font-size:14px;font-weight:700;color:var(--blue);margin-top:8px}
 
-/* CAREER SCORE MAIN */
-.score-main{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:18px;padding:2rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
-.score-main::before{content:'';position:absolute;top:-40%;right:-5%;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(29,111,164,0.15),transparent 70%);}
-.sm-left h2{font-family:'Bricolage Grotesque',sans-serif;font-size:1.3rem;font-weight:800;color:#fff;letter-spacing:-0.03em;margin-bottom:0.3rem;}
-.sm-left p{font-size:0.82rem;color:rgba(255,255,255,0.5);max-width:320px;line-height:1.55;}
-.sm-inner{display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;position:relative;z-index:1;}
-.sm-factors{margin-top:1.2rem;display:flex;flex-direction:column;gap:0.6rem;}
-.smf{display:flex;align-items:center;gap:0.75rem;}
-.smf-label{font-size:0.72rem;color:rgba(255,255,255,0.4);width:90px;flex-shrink:0;}
-.smf-bar{flex:1;height:4px;border-radius:100px;background:rgba(255,255,255,0.07);overflow:hidden;}
-.smf-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--blue),var(--blue3));transition:width 0.8s ease;}
-.smf-val{font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.7);white-space:nowrap;width:28px;text-align:right;}
-.sm-ring{text-align:center;flex-shrink:0;}
-.sm-ring svg{width:130px;height:130px;}
-.ring-val{font-family:'Bricolage Grotesque',sans-serif;font-size:2.1rem;font-weight:800;fill:#fff;}
-.ring-lbl{font-size:0.62rem;fill:rgba(255,255,255,0.35);}
-.sm-cta{margin-top:1rem;display:flex;gap:0.6rem;flex-wrap:wrap;}
-.sm-btn{padding:0.55rem 1.1rem;border-radius:8px;background:rgba(29,111,164,0.2);border:1px solid rgba(29,111,164,0.35);color:var(--sky2);font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
-.sm-btn:hover{background:rgba(29,111,164,0.35);}
-.sm-btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;}
-.sm-btn.primary:hover{background:var(--blue2);}
+  /* ── PROFILE ── */
+  .profile-pic-area{display:flex;align-items:center;gap:20px;margin-bottom:28px}
+  .profile-avatar{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;color:white;font-size:30px;font-weight:700}
+  .profile-avatar-info h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:700}
+  .profile-avatar-info p{font-size:13px;color:var(--gray-500);margin-top:4px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+  .form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+  .form-group label{font-size:13px;font-weight:600;color:var(--gray-700)}
+  .form-group input,.form-group select,.form-group textarea{padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--gray-900);transition:.2s}
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+  .form-group textarea{resize:vertical;min-height:80px}
+  .btn-save{background:var(--blue);color:white;border:none;border-radius:10px;padding:11px 28px;font-size:14px;font-weight:600;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif}
+  .btn-save:hover{background:#1d4ed8}
+  .save-msg{font-size:13px;color:var(--green);margin-top:8px;display:none}
 
-/* PROGRESS STEPS */
-.progress-steps{display:flex;flex-direction:column;gap:0.6rem;}
-.ps{display:flex;align-items:center;gap:0.85rem;padding:0.8rem 1rem;background:var(--off);border:1.5px solid var(--border2);border-radius:12px;transition:all 0.2s;cursor:pointer;}
-.ps:hover{border-color:var(--sky2);background:var(--sky);}
-.ps.done{border-color:var(--green-m);background:var(--green-l);}
-.ps-check{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:0.75rem;color:var(--muted);flex-shrink:0;transition:all 0.2s;}
-.ps.done .ps-check{background:var(--green);border-color:var(--green);color:#fff;}
-.ps-title{font-size:0.85rem;font-weight:600;color:var(--navy);}
-.ps-sub{font-size:0.72rem;color:var(--muted);margin-top:0.1rem;}
-.ps-pts{margin-left:auto;font-size:0.72rem;font-weight:700;color:var(--blue);white-space:nowrap;flex-shrink:0;}
-.ps.done .ps-pts{color:var(--green);}
+  /* ── NETWORK ── */
+  .network-card{border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;transition:.2s}
+  .network-card:hover{border-color:var(--blue);background:var(--blue-light)}
+  .net-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--teal));display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:16px;flex-shrink:0}
+  .net-info h4{font-size:14px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif}
+  .net-info p{font-size:12px;color:var(--gray-500);margin-top:2px}
+  .btn-connect{margin-left:auto;background:var(--white);color:var(--blue);border:1.5px solid var(--blue);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;font-family:'DM Sans',sans-serif;flex-shrink:0}
+  .btn-connect:hover{background:var(--blue);color:white}
 
-/* PROFILE FORM */
-.prof-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.2rem;}
-.pf-label{font-size:0.72rem;font-weight:600;color:var(--text);display:block;margin-bottom:0.3rem;}
-.pf-input,.pf-sel{width:100%;padding:0.65rem 0.9rem;background:var(--off);border:1.5px solid var(--border2);border-radius:10px;font-size:0.875rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:all 0.2s;-webkit-appearance:none;}
-.pf-input:focus,.pf-sel:focus{border-color:var(--blue);background:var(--white);}
-.save-btn{padding:0.72rem 1.8rem;border-radius:10px;background:var(--blue);color:#fff;border:none;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
-.save-btn:hover{background:var(--blue2);box-shadow:0 4px 14px rgba(29,111,164,0.3);}
+  /* ── SETTINGS ── */
+  .settings-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--gray-100)}
+  .settings-row:last-child{border-bottom:none}
+  .settings-row h4{font-size:14px;font-weight:600}
+  .settings-row p{font-size:12px;color:var(--gray-500);margin-top:2px}
+  .toggle{width:44px;height:24px;background:var(--gray-200);border-radius:24px;position:relative;cursor:pointer;transition:.3s;flex-shrink:0}
+  .toggle.on{background:var(--blue)}
+  .toggle-knob{width:18px;height:18px;background:white;border-radius:50%;position:absolute;top:3px;left:3px;transition:.3s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .toggle.on .toggle-knob{left:23px}
 
-/* AVATAR BIG */
-.prof-top{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.8rem;padding-bottom:1.8rem;border-bottom:1px solid var(--border2);}
-.av-big{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue3));display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-size:1.5rem;font-weight:800;color:#fff;flex-shrink:0;}
-.prof-name{font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem;font-weight:800;color:var(--navy);}
-.prof-email{font-size:0.85rem;color:var(--muted);margin-top:0.15rem;}
-.plan-pill{display:inline-block;background:var(--sky);border:1px solid var(--sky2);border-radius:100px;padding:0.22rem 0.75rem;font-size:0.7rem;font-weight:700;color:var(--blue2);margin-top:0.4rem;}
+  /* ── PAGE TITLES ── */
+  .page-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:700;margin-bottom:6px}
+  .page-subtitle{font-size:14px;color:var(--gray-500);margin-bottom:28px}
 
-/* SKILL ROW */
-.skill-row{display:flex;align-items:center;gap:0.8rem;padding:0.75rem 0;border-bottom:1px solid var(--border2);}
-.skill-row:last-child{border-bottom:none;}
-.sk-icon{width:34px;height:34px;border-radius:8px;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:0.95rem;flex-shrink:0;}
-.sk-info{flex:1;}
-.sk-name{font-size:0.84rem;font-weight:600;color:var(--navy);}
-.sk-sub{font-size:0.7rem;color:var(--muted);margin-top:0.1rem;}
-.sk-bar{height:4px;border-radius:100px;background:var(--sky2);margin-top:0.35rem;overflow:hidden;}
-.sk-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--blue),var(--blue3));}
-.sk-pct{font-size:0.75rem;font-weight:700;color:var(--blue);white-space:nowrap;}
+  /* ── LOADING SCREEN ── */
+  #loading-screen{position:fixed;inset:0;background:white;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999}
+  .loader-logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;color:var(--navy);margin-bottom:20px}
+  .loader-logo span{color:var(--blue)}
+  .loader-bar{width:200px;height:3px;background:var(--gray-200);border-radius:3px;overflow:hidden}
+  .loader-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--teal));border-radius:3px;animation:load 1.5s ease forwards}
+  @keyframes load{from{width:0}to{width:100%}}
 
-/* JOB CARD */
-.job-card{background:var(--off2);border:1.5px solid var(--border2);border-radius:12px;padding:1rem 1.2rem;margin-bottom:0.75rem;transition:all 0.2s;cursor:pointer;}
-.job-card:hover{border-color:var(--sky2);background:var(--sky);transform:translateX(3px);}
-.jc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:0.5rem;}
-.jc-title{font-size:0.88rem;font-weight:700;color:var(--navy);}
-.jc-sal{font-size:0.8rem;font-weight:700;color:var(--blue);white-space:nowrap;}
-.jc-co{font-size:0.72rem;color:var(--muted);margin-top:0.15rem;}
-.jc-tags{display:flex;gap:0.35rem;margin-top:0.5rem;flex-wrap:wrap;}
-.jc-tag{background:var(--white);border:1px solid var(--border);border-radius:100px;padding:0.1rem 0.5rem;font-size:0.65rem;color:var(--muted);font-weight:500;}
-.match-tag{border-radius:100px;padding:0.1rem 0.5rem;font-size:0.65rem;font-weight:700;}
+  /* ── TOAST ── */
+  .toast{position:fixed;bottom:24px;right:24px;background:var(--gray-900);color:white;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:500;z-index:9999;opacity:0;transform:translateY(10px);transition:.3s;pointer-events:none}
+  .toast.show{opacity:1;transform:translateY(0)}
 
-/* NET ITEM */
-.net-item{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0;border-bottom:1px solid var(--border2);}
-.net-item:last-child{border-bottom:none;}
-.net-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.78rem;color:#fff;flex-shrink:0;}
-.net-name{font-size:0.84rem;font-weight:600;color:var(--navy);}
-.net-role{font-size:0.7rem;color:var(--muted);}
-.net-btn{margin-left:auto;padding:0.3rem 0.7rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-size:0.72rem;font-weight:600;color:var(--blue);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
-.net-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);}
-
-/* COMING SOON CARD */
-.cs-card{background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:16px;padding:2rem;text-align:center;margin-bottom:1.5rem;}
-.cs-card h3{font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem;font-weight:800;color:#fff;margin-bottom:0.4rem;}
-.cs-card p{font-size:0.85rem;color:rgba(255,255,255,0.7);line-height:1.6;margin-bottom:1rem;max-width:480px;margin-left:auto;margin-right:auto;}
-.cs-btn{padding:0.62rem 1.4rem;border-radius:8px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);color:#fff;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;}
-.cs-btn:hover{background:rgba(255,255,255,0.25);}
-
-/* SETTINGS */
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid var(--border2);}
-.setting-row:last-child{border-bottom:none;}
-.sr-left{flex:1;}
-.sr-title{font-size:0.88rem;font-weight:600;color:var(--navy);}
-.sr-desc{font-size:0.75rem;color:var(--muted);margin-top:0.15rem;}
-.sr-btn{padding:0.38rem 0.85rem;border-radius:8px;font-size:0.78rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;white-space:nowrap;border:1.5px solid var(--border);}
-.sr-fill{background:var(--blue);color:#fff;border-color:var(--blue);}
-.sr-fill:hover{background:var(--blue2);}
-.sr-ghost{background:transparent;color:var(--muted);}
-.sr-ghost:hover{border-color:var(--blue);color:var(--blue);}
-.sr-danger{border-color:#fca5a5;background:#fff5f5;color:var(--red);}
-
-/* TOAST */
-#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);background:var(--navy);color:#fff;padding:0.72rem 1.5rem;border-radius:12px;font-size:0.875rem;font-weight:500;z-index:9999;transition:transform 0.35s cubic-bezier(.34,1.56,.64,1),opacity 0.3s;opacity:0;box-shadow:0 8px 32px rgba(0,0,0,0.2);}
-
-@media(max-width:1024px){.grid2{grid-template-columns:1fr;}.sm-inner{grid-template-columns:1fr;}.sm-ring{display:none;}}
-@media(max-width:768px){.sidebar{display:none;}.main{margin-left:0;}.prof-grid{grid-template-columns:1fr;}.grid3{grid-template-columns:1fr 1fr;}}
-@media(max-width:480px){.grid3{grid-template-columns:1fr;}}
+  /* ── RESPONSIVE ── */
+  @media(max-width:768px){
+    .sidebar{width:60px;overflow:visible}
+    .sb-logo-text,.sb-label,.sb-link span,.sb-user-name,.sb-user-role,.sb-signout span{display:none}
+    .sb-logo{padding:16px;justify-content:center;display:flex}
+    .sb-link{padding:12px;justify-content:center}
+    .sb-link svg{width:20px;height:20px}
+    .main{margin-left:60px}
+    .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+    .jobs-grid{grid-template-columns:1fr}
+    .form-row{grid-template-columns:1fr}
+    .content{padding:16px}
+  }
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
-<div class="loading" id="loadScreen">
-  <div class="loading-logo">Belong<span>ix</span></div>
-  <div class="loading-bar"><div class="loading-fill"></div></div>
-  <div style="font-size:0.78rem;color:var(--muted);">Loading your dashboard...</div>
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loader-logo">Be<span>longix</span></div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
 </div>
 
-<div id="toast"></div>
-
-<!-- SIDEBAR -->
+<!-- Sidebar -->
 <aside class="sidebar">
-  <div class="sb-header">
-    <a href="index.html" class="sb-logo">Belong<span>ix</span></a>
-    <!-- REAL CAREER SCORE -->
-    <div class="sb-score">
-      <div class="sb-score-num" id="sb-score-num">--</div>
-      <div class="sb-score-label">Career Score</div>
-      <div class="sb-score-bar"><div class="sb-score-fill" id="sb-score-fill" style="width:0%"></div></div>
-      <div class="sb-score-tip" id="sb-score-tip">Calculating...</div>
+  <div class="sb-logo">
+    <a href="index.html">
+      <div style="width:32px;height:32px;background:linear-gradient(135deg,#2563EB,#0EA5E9);border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif">B</div>
+      <span class="sb-logo-text">Be<span>longix</span></span>
+    </a>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">
+      <div class="sb-label">Main</div>
+      <button class="sb-link active" onclick="showPage('overview',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Overview</span>
+      </button>
+      <button class="sb-link" onclick="showPage('jobs',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        <span>Jobs & Internships</span>
+      </button>
+      <button class="sb-link" onclick="showPage('upskill',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span>Upskilling</span>
+      </button>
+      <button class="sb-link" onclick="showPage('salary',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <span>Salary Insights</span>
+      </button>
+      <button class="sb-link" onclick="showPage('network',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="17" cy="8" r="4"/><circle cx="7" cy="16" r="4"/><path d="M11 8H7M17 16h-4"/></svg>
+        <span>Network</span>
+      </button>
     </div>
-  </div>
-
-  <div class="sb-section">
-    <div class="sb-label">Main</div>
-    <div class="sb-item active" onclick="go('overview',this)"><span class="sb-icon">🏠</span>Overview</div>
-    <div class="sb-item" onclick="go('score',this)"><span class="sb-icon">📊</span>Career Score</div>
-    <div class="sb-item" onclick="go('jobs',this)"><span class="sb-icon">💼</span>Jobs & Internships<span class="sb-badge">12</span></div>
-    <div class="sb-item" onclick="go('skills',this)"><span class="sb-icon">📚</span>Upskilling<span class="sb-new">NEW</span></div>
-    <div class="sb-item" onclick="go('salary',this)"><span class="sb-icon">💰</span>Salary Intel</div>
-    <div class="sb-item" onclick="go('mentors',this)"><span class="sb-icon">🚀</span>Mentors</div>
-    <div class="sb-item" onclick="go('network',this)"><span class="sb-icon">👥</span>Network</div>
-
-  </div>
-  <div class="sb-section">
-    <div class="sb-label">Account</div>
-    <div class="sb-item" onclick="go('profile',this)"><span class="sb-icon">👤</span>My Profile</div>
-    <div class="sb-item" onclick="go('settings',this)"><span class="sb-icon">⚙️</span>Settings</div>
-    <div class="sb-item" onclick="doLogout()"><span class="sb-icon">🔓</span>Sign Out</div>
-  </div>
-
-  <div class="sb-footer">
-    <div class="sb-user">
-      <div class="sb-av" id="sb-av">?</div>
+    <div class="sb-section">
+      <div class="sb-label">Account</div>
+      <button class="sb-link" onclick="showPage('profile',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>My Profile</span>
+      </button>
+      <button class="sb-link" onclick="showPage('settings',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+      </button>
+    </div>
+  </nav>
+  <div class="sb-user">
+    <div class="sb-user-card">
+      <div class="sb-avatar" id="sb-avatar">?</div>
       <div>
-        <div class="sb-uname" id="sb-name">Loading...</div>
-        <div class="sb-plan" id="sb-plan">Free Plan</div>
+        <div class="sb-user-name" id="sb-name">Loading...</div>
+        <div class="sb-user-role" id="sb-role">Member</div>
       </div>
     </div>
+    <button class="sb-signout" onclick="signOut()">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span>Sign Out</span>
+    </button>
   </div>
 </aside>
 
-<!-- MAIN -->
-<div class="main">
+<!-- Main Content -->
+<main class="main">
   <div class="topbar">
-    <div class="topbar-title" id="page-title">Dashboard Overview</div>
+    <div class="topbar-title" id="topbar-title">Overview</div>
     <div class="topbar-right">
-      <button class="tb-btn tb-btn-fill" onclick="go('score',null)">📊 Improve Score</button>
-      <button class="tb-btn" onclick="doLogout()">Sign Out</button>
+      <div class="topbar-chip" id="score-chip">Score: —</div>
+      <a href="index.html" style="font-size:13px;color:var(--gray-500);text-decoration:none;">← Home</a>
     </div>
   </div>
 
   <div class="content">
 
-    <!-- ══ OVERVIEW ══ -->
-    <div class="page active" id="pg-overview">
-      <!-- Career Score Banner -->
-      <div class="score-main">
-        <div class="sm-inner">
-          <div class="sm-left">
-            <h2 id="welcome-msg">Welcome to Belongix! 👋</h2>
-            <p>Your career score starts at 30. Complete the steps below to raise it and unlock better opportunities, matches, and visibility.</p>
-            <div class="sm-factors" id="sm-factors">
-              <div class="smf"><div class="smf-label">Profile</div><div class="smf-bar"><div class="smf-fill" id="f-profile" style="width:0%"></div></div><div class="smf-val" id="fv-profile">0%</div></div>
-              <div class="smf"><div class="smf-label">Skills</div><div class="smf-bar"><div class="smf-fill" id="f-skills" style="width:0%"></div></div><div class="smf-val" id="fv-skills">0%</div></div>
-              <div class="smf"><div class="smf-label">Network</div><div class="smf-bar"><div class="smf-fill" id="f-network" style="width:0%"></div></div><div class="smf-val" id="fv-network">0%</div></div>
-              <div class="smf"><div class="smf-label">Learning</div><div class="smf-bar"><div class="smf-fill" id="f-learning" style="width:0%"></div></div><div class="smf-val" id="fv-learning">0%</div></div>
-              <div class="smf"><div class="smf-label">Mentorship</div><div class="smf-bar"><div class="smf-fill" id="f-mentorship" style="width:0%"></div></div><div class="smf-val" id="fv-mentorship">0%</div></div>
-            </div>
-            <div class="sm-cta">
-              <button class="sm-btn primary" onclick="go('profile',null)">Complete Profile</button>
-              <button class="sm-btn" onclick="go('score',null)">View Full Score Details</button>
-            </div>
-          </div>
-          <div class="sm-ring">
-            <svg viewBox="0 0 130 130">
-              <circle cx="65" cy="65" r="52" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="10"/>
-              <circle cx="65" cy="65" r="52" fill="none" stroke="url(#rg)" stroke-width="10" stroke-dasharray="326.73" id="ring-circle" stroke-dashoffset="326.73" stroke-linecap="round" transform="rotate(-90 65 65)"/>
-              <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#1d6fa4"/><stop offset="100%" stop-color="#2485c1"/></linearGradient></defs>
-              <text x="65" y="58" text-anchor="middle" class="ring-val" id="ring-num">30</text>
-              <text x="65" y="70" text-anchor="middle" class="ring-lbl">/100</text>
-              <text x="65" y="83" text-anchor="middle" class="ring-lbl" id="ring-lbl">Just Started</text>
+    <!-- ── OVERVIEW ── -->
+    <div class="page-section active" id="page-overview">
+      <div class="page-title">Welcome back! 👋</div>
+      <div class="page-subtitle" id="overview-sub">Here's your career progress at a glance.</div>
+      <div class="grid-4" style="margin-bottom:28px">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#EFF6FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="stat-val" id="stat-score">—</div>
+          <div class="stat-lbl">Career Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#F0FDF4"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+          <div class="stat-val">0</div>
+          <div class="stat-lbl">Jobs Applied</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#F5F3FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <div class="stat-val">0</div>
+          <div class="stat-lbl">Skills Added</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#FEF9C3"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A16207" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <div class="stat-val">0</div>
+          <div class="stat-lbl">Connections</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:20px">
+        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;margin-bottom:20px">Career Score</h3>
+        <div class="score-ring-wrap">
+          <div class="score-ring">
+            <svg width="140" height="140" viewBox="0 0 140 140">
+              <circle cx="70" cy="70" r="56" fill="none" stroke="#E2E8F0" stroke-width="12"/>
+              <circle cx="70" cy="70" r="56" fill="none" stroke="#2563EB" stroke-width="12" stroke-linecap="round"
+                stroke-dasharray="351.86" id="score-circle" stroke-dashoffset="351.86"/>
             </svg>
-          </div>
-        </div>
-      </div>
-
-      <!-- Stat Cards -->
-      <div class="grid3">
-        <div class="sc"><div class="sc-lbl">Career Score</div><div class="sc-val" id="ov-score">30</div><div class="sc-sub">out of 100</div><div class="badge b-orange">In Progress</div></div>
-        <div class="sc"><div class="sc-lbl">Profile Complete</div><div class="sc-val" id="ov-profile">20%</div><div class="sc-sub">Fill more to improve score</div><div class="badge b-orange">Incomplete</div></div>
-        <div class="sc"><div class="sc-lbl">Jobs Matched</div><div class="sc-val">12</div><div class="sc-sub">Based on your profile</div><div class="badge b-blue">View All</div></div>
-        <div class="sc"><div class="sc-lbl">Network</div><div class="sc-val">0</div><div class="sc-sub">Start connecting with pros</div><div class="badge b-blue">Get Started</div></div>
-      </div>
-
-      <!-- Complete Profile Steps -->
-      <div class="grid2">
-        <div class="card">
-          <div class="card-hdr"><div class="card-title">📋 Complete Your Profile — Earn Points</div><div class="card-link" onclick="go('score',null)">View All →</div></div>
-          <div class="progress-steps" id="progress-steps">
-            <div class="ps done" onclick="go('profile',null)"><div class="ps-check">✓</div><div><div class="ps-title">Created Account</div><div class="ps-sub">Welcome to Belongix!</div></div><div class="ps-pts">+30 pts ✓</div></div>
-            <div class="ps" id="ps-email" onclick="go('profile',null)"><div class="ps-check">2</div><div><div class="ps-title">Confirm Email Address</div><div class="ps-sub">Check your inbox and click confirm</div></div><div class="ps-pts">+10 pts</div></div>
-            <div class="ps" id="ps-profile" onclick="go('profile',null)"><div class="ps-check">3</div><div><div class="ps-title">Complete Your Profile</div><div class="ps-sub">Add education, experience, and goals</div></div><div class="ps-pts">+20 pts</div></div>
-            <div class="ps" id="ps-skills" onclick="go('skills',null)"><div class="ps-check">4</div><div><div class="ps-title">Add Your Skills</div><div class="ps-sub">List your top 5 skills</div></div><div class="ps-pts">+15 pts</div></div>
-            <div class="ps" id="ps-network" onclick="go('network',null)"><div class="ps-check">5</div><div><div class="ps-title">Make First Connection</div><div class="ps-sub">Connect with a verified professional</div></div><div class="ps-pts">+10 pts</div></div>
-            <div class="ps" id="ps-mentor" onclick="go('mentors',null)"><div class="ps-check">6</div><div><div class="ps-title">Book a Mentor Session</div><div class="ps-sub">1-on-1 with a verified mentor (Pro)</div></div><div class="ps-pts">+15 pts</div></div>
-          </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="card">
-          <div class="card-hdr"><div class="card-title">⚡ Quick Actions</div></div>
-          <div style="display:flex;flex-direction:column;gap:0.6rem;">
-            <button onclick="go('profile',null)" style="width:100%;padding:0.8rem;border-radius:10px;background:var(--sky);border:1.5px solid var(--sky2);color:var(--blue2);font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;" onmouseover="this.style.background='var(--sky2)'" onmouseout="this.style.background='var(--sky)'">👤 Complete your profile <span>+20pts →</span></button>
-            <button onclick="go('jobs',null)" style="width:100%;padding:0.8rem;border-radius:10px;background:var(--sky);border:1.5px solid var(--sky2);color:var(--blue2);font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;" onmouseover="this.style.background='var(--sky2)'" onmouseout="this.style.background='var(--sky)'">💼 Browse job matches <span>12 new →</span></button>
-            <button onclick="go('salary',null)" style="width:100%;padding:0.8rem;border-radius:10px;background:var(--sky);border:1.5px solid var(--sky2);color:var(--blue2);font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;" onmouseover="this.style.background='var(--sky2)'" onmouseout="this.style.background='var(--sky)'">💰 Check your salary value <span>View →</span></button>
-            <button onclick="go('skills',null)" style="width:100%;padding:0.8rem;border-radius:10px;background:var(--sky);border:1.5px solid var(--sky2);color:var(--blue2);font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;" onmouseover="this.style.background='var(--sky2)'" onmouseout="this.style.background='var(--sky)'">📚 Start upskilling <span>+15pts →</span></button>
-            <button onclick="go('mentors',null)" style="width:100%;padding:0.8rem;border-radius:10px;background:var(--sky);border:1.5px solid var(--sky2);color:var(--blue2);font-size:0.85rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left;display:flex;justify-content:space-between;align-items:center;transition:all 0.2s;" onmouseover="this.style.background='var(--sky2)'" onmouseout="this.style.background='var(--sky)'">🚀 Find a mentor <span>+15pts →</span></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Job Previews -->
-      <div class="card" style="margin-bottom:1.5rem;">
-        <div class="card-hdr"><div class="card-title">💼 Latest Job & Internship Matches</div><div class="card-link" onclick="go('jobs',null)">View All 12 →</div></div>
-        <div class="job-card" onclick="toast('Apply feature launching with full platform!')"><div class="jc-top"><div class="jc-title">Software Developer Intern</div><div class="jc-sal">₹15K–25K/mo</div></div><div class="jc-co">Startup · Bangalore · Remote · 0 YOE</div><div class="jc-tags"><span class="jc-tag">Python</span><span class="jc-tag">JavaScript</span><span class="jc-tag">Fresher OK</span><span class="match-tag" style="background:var(--green-l);color:var(--green);">92% Match</span></div></div>
-        <div class="job-card" onclick="toast('Apply feature launching with full platform!')"><div class="jc-top"><div class="jc-title">Marketing Analyst</div><div class="jc-sal">₹4–6 LPA</div></div><div class="jc-co">MNC · Mumbai · Hybrid · 0–2 YOE</div><div class="jc-tags"><span class="jc-tag">Excel</span><span class="jc-tag">Analytics</span><span class="jc-tag">Fresher OK</span><span class="match-tag" style="background:var(--sky);color:var(--blue2);">85% Match</span></div></div>
-        <div class="job-card" onclick="toast('Apply feature launching with full platform!')"><div class="jc-top"><div class="jc-title">UX Design Intern</div><div class="jc-sal">₹10K–18K/mo</div></div><div class="jc-co">Product Startup · Hyderabad · Onsite · 0 YOE</div><div class="jc-tags"><span class="jc-tag">Figma</span><span class="jc-tag">UI/UX</span><span class="match-tag" style="background:var(--sky);color:var(--blue2);">78% Match</span></div></div>
-      </div>
-    </div>
-
-    <!-- ══ CAREER SCORE PAGE ══ -->
-    <div class="page" id="pg-score">
-      <div class="score-main" style="margin-bottom:1.5rem;">
-        <div class="sm-inner">
-          <div class="sm-left">
-            <h2>Your Career Score</h2>
-            <p>Your score is calculated in real-time based on actual actions you take on Belongix. Every section you complete, skill you add, and connection you make raises your score.</p>
-            <div class="sm-factors">
-              <div class="smf"><div class="smf-label">Profile</div><div class="smf-bar"><div class="smf-fill" id="f2-profile" style="width:0%"></div></div><div class="smf-val" id="fv2-profile">0%</div></div>
-              <div class="smf"><div class="smf-label">Skills</div><div class="smf-bar"><div class="smf-fill" id="f2-skills" style="width:0%"></div></div><div class="smf-val" id="fv2-skills">0%</div></div>
-              <div class="smf"><div class="smf-label">Network</div><div class="smf-bar"><div class="smf-fill" id="f2-network" style="width:0%"></div></div><div class="smf-val" id="fv2-network">0%</div></div>
-              <div class="smf"><div class="smf-label">Learning</div><div class="smf-bar"><div class="smf-fill" id="f2-learning" style="width:0%"></div></div><div class="smf-val" id="fv2-learning">0%</div></div>
-              <div class="smf"><div class="smf-label">Mentorship</div><div class="smf-bar"><div class="smf-fill" id="f2-mentorship" style="width:0%"></div></div><div class="smf-val" id="fv2-mentorship">0%</div></div>
+            <div class="score-ring-label">
+              <div class="score-num" id="score-display">30</div>
+              <div class="score-txt">out of 100</div>
             </div>
           </div>
-          <div class="sm-ring">
-            <svg viewBox="0 0 130 130">
-              <circle cx="65" cy="65" r="52" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="10"/>
-              <circle cx="65" cy="65" r="52" fill="none" stroke="url(#rg)" stroke-width="10" stroke-dasharray="326.73" id="ring-circle2" stroke-dashoffset="326.73" stroke-linecap="round" transform="rotate(-90 65 65)"/>
-              <text x="65" y="58" text-anchor="middle" class="ring-val" id="ring-num2">30</text>
-              <text x="65" y="70" text-anchor="middle" class="ring-lbl">/100</text>
-              <text x="65" y="83" text-anchor="middle" class="ring-lbl" id="ring-lbl2">Just Started</text>
-            </svg>
+          <div class="score-info">
+            <h3 id="score-level">Getting Started</h3>
+            <p id="score-desc">Complete your profile to boost your career score and get better job matches.</p>
+            <div class="score-steps">
+              <div class="score-step"><div class="step-dot done">✓</div><span>Account created</span><span class="step-pts">+30 pts</span></div>
+              <div class="score-step" id="step-email"><div class="step-dot pending">○</div><span>Email verified</span><span class="step-pts">+10 pts</span></div>
+              <div class="score-step" id="step-profile"><div class="step-dot pending">○</div><span>Profile completed</span><span class="step-pts">+30 pts</span></div>
+              <div class="score-step"><div class="step-dot pending">○</div><span>First job applied</span><span class="step-pts">+15 pts</span></div>
+              <div class="score-step"><div class="step-dot pending">○</div><span>Skills added (3+)</span><span class="step-pts">+15 pts</span></div>
+            </div>
           </div>
         </div>
       </div>
+
       <div class="card">
-        <div class="card-hdr"><div class="card-title">How to improve your score</div></div>
-        <div class="progress-steps">
-          <div class="ps done"><div class="ps-check">✓</div><div><div class="ps-title">Created Account</div><div class="ps-sub">You joined Belongix — great first step!</div></div><div class="ps-pts">+30 pts ✓</div></div>
-          <div class="ps" id="sc-email"><div class="ps-check">2</div><div><div class="ps-title">Confirm Email</div><div class="ps-sub">Check inbox → click confirm link</div></div><div class="ps-pts">+10 pts</div></div>
-          <div class="ps" onclick="go('profile',null)"><div class="ps-check">3</div><div><div class="ps-title">Complete Full Profile</div><div class="ps-sub">Name, education, experience, skills, goals</div></div><div class="ps-pts">+20 pts</div></div>
-          <div class="ps" onclick="go('skills',null)"><div class="ps-check">4</div><div><div class="ps-title">Add 5+ Skills to Profile</div><div class="ps-sub">List your technical and soft skills</div></div><div class="ps-pts">+15 pts</div></div>
-          <div class="ps" onclick="go('network',null)"><div class="ps-check">5</div><div><div class="ps-title">Connect with 3+ Professionals</div><div class="ps-sub">Build your verified network on Belongix</div></div><div class="ps-pts">+10 pts</div></div>
-          <div class="ps" onclick="go('skills',null)"><div class="ps-check">6</div><div><div class="ps-title">Complete a Learning Track</div><div class="ps-sub">Finish any upskilling course or track</div></div><div class="ps-pts">+10 pts</div></div>
-          <div class="ps" onclick="go('mentors',null)"><div class="ps-check">7</div><div><div class="ps-title">Book a Mentor Session (Pro)</div><div class="ps-sub">1-on-1 guidance session with a verified mentor</div></div><div class="ps-pts">+15 pts</div></div>
+        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;margin-bottom:16px">Quick Actions</h3>
+        <div class="grid-4">
+          <button onclick="showPage('jobs',document.querySelector('[onclick*=jobs]'))" style="border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:var(--white);transition:.2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.borderColor='#2563EB';this.style.background='#EFF6FF'" onmouseout="this.style.borderColor='#E2E8F0';this.style.background='white'">
+            <div style="font-size:24px;margin-bottom:8px">💼</div>
+            <div style="font-size:13px;font-weight:600;color:var(--gray-900)">Find Jobs</div>
+          </button>
+          <button onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))" style="border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:var(--white);transition:.2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.borderColor='#2563EB';this.style.background='#EFF6FF'" onmouseout="this.style.borderColor='#E2E8F0';this.style.background='white'">
+            <div style="font-size:24px;margin-bottom:8px">🚀</div>
+            <div style="font-size:13px;font-weight:600;color:var(--gray-900)">Upskill</div>
+          </button>
+          <button onclick="showPage('salary',document.querySelector('[onclick*=salary]'))" style="border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:var(--white);transition:.2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.borderColor='#2563EB';this.style.background='#EFF6FF'" onmouseout="this.style.borderColor='#E2E8F0';this.style.background='white'">
+            <div style="font-size:24px;margin-bottom:8px">💰</div>
+            <div style="font-size:13px;font-weight:600;color:var(--gray-900)">Check Salary</div>
+          </button>
+          <button onclick="showPage('profile',document.querySelector('[onclick*=profile]'))" style="border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:var(--white);transition:.2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.borderColor='#2563EB';this.style.background='#EFF6FF'" onmouseout="this.style.borderColor='#E2E8F0';this.style.background='white'">
+            <div style="font-size:24px;margin-bottom:8px">👤</div>
+            <div style="font-size:13px;font-weight:600;color:var(--gray-900)">Edit Profile</div>
+          </button>
         </div>
       </div>
     </div>
 
-        <!-- ══ JOBS ══ -->
-    <div class="page" id="pg-jobs">
-      <div class="card" style="margin-bottom:1.5rem;">
-        <div class="card-hdr">
-          <div class="card-title">&#128188; Live Job & Internship Listings</div>
-          <div class="card-link" onclick="loadJobs(true)">&#8635; Refresh</div>
-        </div>
-        <div style="display:flex;gap:0.6rem;margin-bottom:1rem;flex-wrap:wrap;">
-          <input id="job-search" placeholder="Job title, skill..." style="flex:1;min-width:140px;padding:0.5rem 0.75rem;background:var(--off2);border:1.5px solid var(--border2);border-radius:9px;font-size:0.82rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;"/>
-          <select id="job-location" style="padding:0.5rem 0.75rem;background:var(--off2);border:1.5px solid var(--border2);border-radius:9px;font-size:0.82rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;-webkit-appearance:none;">
-            <option value="india">India</option>
-            <option value="bangalore">Bangalore</option>
-            <option value="hyderabad">Hyderabad</option>
-            <option value="mumbai">Mumbai</option>
-            <option value="pune">Pune</option>
-            <option value="chennai">Chennai</option>
-            <option value="delhi">Delhi NCR</option>
+    <!-- ── JOBS ── -->
+    <div class="page-section" id="page-jobs">
+      <div class="page-title">Jobs & Internships</div>
+      <div class="page-subtitle">Real opportunities matched to your profile — updated live</div>
+
+      <div class="card" style="margin-bottom:20px">
+        <div class="jobs-search-bar">
+          <div class="search-input-wrap">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="job-search" placeholder="Search roles, skills, companies..." value="software developer">
+          </div>
+          <select class="filter-select" id="job-city">
+            <option value="India">All India</option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Pune">Pune</option>
+            <option value="Chennai">Chennai</option>
+            <option value="Delhi">Delhi NCR</option>
+            <option value="Kolkata">Kolkata</option>
+            <option value="remote">Remote</option>
           </select>
-          <button onclick="loadJobs(true)" style="padding:0.5rem 1rem;background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:0.82rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;">Search Jobs</button>
+          <select class="filter-select" id="job-type">
+            <option value="">All Types</option>
+            <option value="FULLTIME">Full Time</option>
+            <option value="PARTTIME">Part Time</option>
+            <option value="INTERN">Internship</option>
+            <option value="CONTRACT">Contract</option>
+          </select>
+          <button class="btn-search" onclick="searchJobs()">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            Search
+          </button>
         </div>
-        <div id="jobs-loading" style="text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;display:none;">&#8987; Loading real jobs from LinkedIn, Indeed & Glassdoor...</div>
-        <div id="jobs-error" style="display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:0.75rem;font-size:0.82rem;color:#dc2626;margin-bottom:1rem;"></div>
-        <div id="jobs-list"></div>
-        <div id="jobs-empty" style="text-align:center;padding:2rem;color:var(--muted);font-size:0.85rem;display:none;">No jobs found. Try a different search!</div>
+        <div class="jobs-filters">
+          <span class="filter-chip active" onclick="toggleChip(this,'all')">All</span>
+          <span class="filter-chip" onclick="toggleChip(this,'fresher')">Fresher Friendly</span>
+          <span class="filter-chip" onclick="toggleChip(this,'remote')">Remote</span>
+          <span class="filter-chip" onclick="toggleChip(this,'internship')">Internship</span>
+          <span class="filter-chip" onclick="toggleChip(this,'ai')">AI / ML</span>
+          <span class="filter-chip" onclick="toggleChip(this,'data')">Data</span>
+          <span class="filter-chip" onclick="toggleChip(this,'cloud')">Cloud</span>
+          <span class="filter-chip" onclick="toggleChip(this,'devops')">DevOps</span>
+        </div>
       </div>
+
+      <div class="jobs-count" id="jobs-count"></div>
+      <div id="jobs-container"><div class="jobs-loading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M9 12l2 2 4-4"/></svg><div>Finding the best jobs for you...</div></div></div>
     </div>
 
-    <!-- ══ SALARY ══ -->
-    <div class="page" id="pg-salary">
-      <div class="card" style="margin-bottom:1.5rem;">
-        <div class="card-hdr"><div class="card-title">💰 Salary Intelligence</div><div class="card-link">Based on real data</div></div>
-        <div style="background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:14px;padding:2rem;margin-bottom:1.2rem;">
-          <div style="font-size:0.7rem;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.5rem;">Average entry-level salaries in India (2026)</div>
-          <div style="display:flex;flex-direction:column;gap:0.85rem;">
-            <div class="smf"><div class="smf-label" style="width:140px;">Software Dev</div><div class="smf-bar"><div class="smf-fill" style="width:75%"></div></div><div class="smf-val">₹4–8 LPA</div></div>
-            <div class="smf"><div class="smf-label" style="width:140px;">Data Analyst</div><div class="smf-bar"><div class="smf-fill" style="width:65%"></div></div><div class="smf-val">₹3–6 LPA</div></div>
-            <div class="smf"><div class="smf-label" style="width:140px;">UX Designer</div><div class="smf-bar"><div class="smf-fill" style="width:55%"></div></div><div class="smf-val">₹3–5.5 LPA</div></div>
-            <div class="smf"><div class="smf-label" style="width:140px;">Marketing</div><div class="smf-bar"><div class="smf-fill" style="width:50%"></div></div><div class="smf-val">₹2.5–5 LPA</div></div>
-            <div class="smf"><div class="smf-label" style="width:140px;">Product Manager</div><div class="smf-bar"><div class="smf-fill" style="width:80%"></div></div><div class="smf-val">₹8–15 LPA</div></div>
-            <div class="smf"><div class="smf-label" style="width:140px;">ML Engineer</div><div class="smf-bar"><div class="smf-fill" style="width:90%"></div></div><div class="smf-val">₹8–20 LPA</div></div>
+    <!-- ── UPSKILLING ── -->
+    <div class="page-section" id="page-upskill">
+      <div class="page-title">Upskilling Tracks</div>
+      <div class="page-subtitle">Curated learning paths for the skills employers want most in 2026</div>
+      <div class="grid-2">
+        <div>
+          <div class="skill-track">
+            <div class="skill-track-top"><div class="skill-icon" style="background:#EFF6FF">🤖</div><div><h4>Generative AI & Prompt Engineering</h4><p>ChatGPT, Claude, Gemini, LangChain · 12 modules</p></div></div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
+            <div class="skill-meta"><span>0 / 12 completed</span><button class="btn-start">Start Track</button></div>
+          </div>
+          <div class="skill-track">
+            <div class="skill-track-top"><div class="skill-icon" style="background:#F0FDF4">☁️</div><div><h4>Cloud Computing (AWS & Azure)</h4><p>EC2, S3, Lambda, Azure AD · 15 modules</p></div></div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
+            <div class="skill-meta"><span>0 / 15 completed</span><button class="btn-start">Start Track</button></div>
+          </div>
+          <div class="skill-track">
+            <div class="skill-track-top"><div class="skill-icon" style="background:#F5F3FF">🔧</div><div><h4>DevOps & CI/CD Pipelines</h4><p>Docker, Kubernetes, Jenkins · 10 modules</p></div></div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
+            <div class="skill-meta"><span>0 / 10 completed</span><button class="btn-start">Start Track</button></div>
           </div>
         </div>
-        <div style="background:var(--sky);border:1px solid var(--sky2);border-radius:12px;padding:1rem 1.2rem;font-size:0.84rem;color:var(--blue2);">
-          💡 <strong>Pro Tip:</strong> Complete your profile to get personalised salary insights for your specific role, city, experience, and skills. Upgrade to Pro for the full salary negotiation toolkit.
-        </div>
-      </div>
-    </div>
-
-    <!-- ══ MENTORS ══ -->
-    <div class="page" id="pg-mentors">
-      <div class="cs-card"><h3>🚀 Mentor Marketplace Launching Soon</h3><p>1-on-1 sessions with verified professionals across every field — tech, marketing, finance, design, entrepreneurship, and more. Book 30-min or 60-min sessions.</p><button class="cs-btn" onclick="toast('Mentor waitlist secured! ✓')">Join Mentor Waitlist</button></div>
-      <div class="card">
-        <div class="card-hdr"><div class="card-title">Mentor Network Preview</div></div>
-        <div class="net-item"><div class="net-av" style="background:linear-gradient(135deg,#1d6fa4,#2485c1)">M1</div><div><div class="net-name">Senior Software Engineer · 8 yrs · ex-Google</div><div class="net-role">Specialises in career transitions into big tech & system design</div></div><button class="net-btn" onclick="toast('Mentor booking launching with Pro plan!')">Pro Only</button></div>
-        <div class="net-item"><div class="net-av" style="background:linear-gradient(135deg,#0f7b4e,#16a34a)">M2</div><div><div class="net-name">Marketing Lead · 6 yrs · FMCG & D2C</div><div class="net-role">Brand strategy, digital marketing, career growth in marketing</div></div><button class="net-btn" onclick="toast('Mentor booking launching with Pro plan!')">Pro Only</button></div>
-        <div class="net-item"><div class="net-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">M3</div><div><div class="net-name">Product Manager · 5 yrs · Startup to Series B</div><div class="net-role">PM interviews, product thinking, career path clarity</div></div><button class="net-btn" onclick="toast('Mentor booking launching with Pro plan!')">Pro Only</button></div>
-        <div class="net-item"><div class="net-av" style="background:linear-gradient(135deg,#d4590a,#f97316)">M4</div><div><div class="net-name">Finance Manager · CA · 9 yrs · Big 4</div><div class="net-role">Finance careers, CA journey, corporate finance guidance</div></div><button class="net-btn" onclick="toast('Mentor booking launching with Pro plan!')">Pro Only</button></div>
-        <button style="width:100%;margin-top:1rem;padding:0.75rem;border-radius:10px;background:var(--blue);color:#fff;border:none;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;" onclick="toast('Pro plan upgrade launching soon!')">Upgrade to Pro to Book Mentors →</button>
-      </div>
-    </div>
-
-    <!-- ══ NETWORK ══ -->
-    <div class="page" id="pg-network">
-      <div class="cs-card"><h3>👥 Professional Network Coming Soon</h3><p>Connect with verified professionals by field, career stage, and city. Private groups, peer support, and a referral hiring network — launching with full platform.</p><button class="cs-btn" onclick="toast('Network early access secured! ✓')">Get Early Access</button></div>
-      <div class="card">
-        <div class="card-hdr"><div class="card-title">Suggested Connections</div></div>
-        <div class="net-item"><div class="net-av" style="background:linear-gradient(135deg,var(--blue),var(--blue3))">AK</div><div><div class="net-name">Software Developer · 2 yrs · Bangalore</div><div class="net-role">Full Stack · Verified Belongix Member</div></div><button class="net-btn" onclick="toast('Connection sent! ✓')">Connect</button></div>
-        <div class="net-item"><div class="net-av" style="background:linear-gradient(135deg,#0f7b4e,#16a34a)">PM</div><div><div class="net-name">Marketing Executive · Fresher · Chennai</div><div class="net-role">Digital Marketing · Verified Belongix Member</div></div><button class="net-btn" onclick="toast('Connection sent! ✓')">Connect</button></div>
-        <div class="net-item"><div class="net-av" style="background:linear-gradient(135deg,#7c3aed,#a78bfa)">SR</div><div><div class="net-name">Data Analyst · 1 yr · Hyderabad</div><div class="net-role">Analytics & BI · Verified Belongix Member</div></div><button class="net-btn" onclick="toast('Connection sent! ✓')">Connect</button></div>
-        <div class="net-item"><div class="net-av" style="background:linear-gradient(135deg,#d4590a,#f97316)">NJ</div><div><div class="net-name">UX Designer · Fresher · Pune</div><div class="net-role">Product Design · Verified Belongix Member</div></div><button class="net-btn" onclick="toast('Connection sent! ✓')">Connect</button></div>
-      </div>
-    </div>
-
-    <!-- ══ PROFILE ══ -->
-    <div class="page" id="pg-profile">
-      <div class="card">
-        <div class="card-hdr"><div class="card-title">👤 My Profile</div><div class="card-link" onclick="saveProfile()">Save Changes</div></div>
-        <div class="prof-top">
-          <div class="av-big" id="prof-av">?</div>
-          <div>
-            <div class="prof-name" id="prof-name">Loading...</div>
-            <div class="prof-email" id="prof-email"></div>
-            <div class="plan-pill">Free Plan · Belongix Member</div>
+        <div>
+          <div class="skill-track">
+            <div class="skill-track-top"><div class="skill-icon" style="background:#FEF9C3">📊</div><div><h4>Data Science & Analytics</h4><p>Python, Pandas, Power BI, SQL · 18 modules</p></div></div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
+            <div class="skill-meta"><span>0 / 18 completed</span><button class="btn-start">Start Track</button></div>
+          </div>
+          <div class="skill-track">
+            <div class="skill-track-top"><div class="skill-icon" style="background:#FFF1F2">🔒</div><div><h4>Cybersecurity Fundamentals</h4><p>OWASP, SIEM, Ethical Hacking · 14 modules</p></div></div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
+            <div class="skill-meta"><span>0 / 14 completed</span><button class="btn-start">Start Track</button></div>
+          </div>
+          <div class="skill-track">
+            <div class="skill-track-top"><div class="skill-icon" style="background:#E0F2FE">💻</div><div><h4>Full Stack Development</h4><p>React, Node.js, MongoDB, REST APIs · 20 modules</p></div></div>
+            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
+            <div class="skill-meta"><span>0 / 20 completed</span><button class="btn-start">Start Track</button></div>
           </div>
         </div>
-        <div id="save-ok" style="display:none;background:var(--green-l);border:1px solid var(--green-m);border-radius:8px;padding:0.6rem 0.9rem;font-size:0.8rem;color:var(--green);margin-bottom:1rem;">✓ Profile saved! Your career score has been updated.</div>
-        <div class="prof-grid">
-          <div><label class="pf-label">Full Name</label><input class="pf-input" type="text" id="pf-name" placeholder="Your full name"/></div>
-          <div><label class="pf-label">Email (read only)</label><input class="pf-input" type="email" id="pf-email" readonly style="opacity:0.55;cursor:not-allowed;"/></div>
-          <div><label class="pf-label">I am a...</label>
-            <select class="pf-sel" id="pf-type">
-              <option value="">Select profile</option>
-              <option value="college_student">College Student</option>
-              <option value="school_student">School Student</option>
-              <option value="fresher">Fresh Graduate / Fresher</option>
-              <option value="junior_prof">Junior Professional (1–3 yrs)</option>
-              <option value="mid_prof">Mid-level Professional (3–7 yrs)</option>
-              <option value="senior_prof">Senior Professional (7+ yrs)</option>
-              <option value="career_changer">Career Changer</option>
-              <option value="entrepreneur">Entrepreneur / Founder</option>
+      </div>
+    </div>
+
+    <!-- ── SALARY ── -->
+    <div class="page-section" id="page-salary">
+      <div class="page-title">Salary Intelligence</div>
+      <div class="page-subtitle">Real salary data for Indian tech roles — know your worth</div>
+      <div class="grid-2">
+        <div>
+          <div class="salary-role">
+            <h4>Software Engineer</h4><div class="city">📍 Bangalore · India average</div>
+            <div class="salary-range">
+              <span style="font-size:11px;color:var(--gray-500);width:50px">₹4L</span>
+              <div class="sal-bar"><div class="sal-fill" style="width:100%"></div><div class="sal-marker" style="left:60%"></div></div>
+              <span style="font-size:11px;color:var(--gray-500);width:50px;text-align:right">₹35L</span>
+            </div>
+            <div class="sal-labels"><span>Entry</span><span>Mid</span><span>Senior</span></div>
+            <div class="sal-avg">Average: ₹12–18 LPA</div>
+          </div>
+          <div class="salary-role">
+            <h4>Data Scientist</h4><div class="city">📍 Hyderabad · India average</div>
+            <div class="salary-range">
+              <span style="font-size:11px;color:var(--gray-500);width:50px">₹5L</span>
+              <div class="sal-bar"><div class="sal-fill" style="width:100%"></div><div class="sal-marker" style="left:55%"></div></div>
+              <span style="font-size:11px;color:var(--gray-500);width:50px;text-align:right">₹40L</span>
+            </div>
+            <div class="sal-labels"><span>Entry</span><span>Mid</span><span>Senior</span></div>
+            <div class="sal-avg">Average: ₹10–20 LPA</div>
+          </div>
+          <div class="salary-role">
+            <h4>DevOps Engineer</h4><div class="city">📍 Pune · India average</div>
+            <div class="salary-range">
+              <span style="font-size:11px;color:var(--gray-500);width:50px">₹4L</span>
+              <div class="sal-bar"><div class="sal-fill" style="width:100%"></div><div class="sal-marker" style="left:65%"></div></div>
+              <span style="font-size:11px;color:var(--gray-500);width:50px;text-align:right">₹38L</span>
+            </div>
+            <div class="sal-labels"><span>Entry</span><span>Mid</span><span>Senior</span></div>
+            <div class="sal-avg">Average: ₹8–22 LPA</div>
+          </div>
+        </div>
+        <div>
+          <div class="salary-role">
+            <h4>Product Manager</h4><div class="city">📍 Mumbai · India average</div>
+            <div class="salary-range">
+              <span style="font-size:11px;color:var(--gray-500);width:50px">₹8L</span>
+              <div class="sal-bar"><div class="sal-fill" style="width:100%"></div><div class="sal-marker" style="left:50%"></div></div>
+              <span style="font-size:11px;color:var(--gray-500);width:50px;text-align:right">₹60L</span>
+            </div>
+            <div class="sal-labels"><span>Entry</span><span>Mid</span><span>Senior</span></div>
+            <div class="sal-avg">Average: ₹18–32 LPA</div>
+          </div>
+          <div class="salary-role">
+            <h4>AI/ML Engineer</h4><div class="city">📍 Bangalore · India average</div>
+            <div class="salary-range">
+              <span style="font-size:11px;color:var(--gray-500);width:50px">₹6L</span>
+              <div class="sal-bar"><div class="sal-fill" style="width:100%"></div><div class="sal-marker" style="left:70%"></div></div>
+              <span style="font-size:11px;color:var(--gray-500);width:50px;text-align:right">₹80L</span>
+            </div>
+            <div class="sal-labels"><span>Entry</span><span>Mid</span><span>Senior</span></div>
+            <div class="sal-avg">Average: ₹15–35 LPA</div>
+          </div>
+          <div class="salary-role">
+            <h4>UI/UX Designer</h4><div class="city">📍 All India</div>
+            <div class="salary-range">
+              <span style="font-size:11px;color:var(--gray-500);width:50px">₹3L</span>
+              <div class="sal-bar"><div class="sal-fill" style="width:100%"></div><div class="sal-marker" style="left:45%"></div></div>
+              <span style="font-size:11px;color:var(--gray-500);width:50px;text-align:right">₹25L</span>
+            </div>
+            <div class="sal-labels"><span>Entry</span><span>Mid</span><span>Senior</span></div>
+            <div class="sal-avg">Average: ₹6–14 LPA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── NETWORK ── -->
+    <div class="page-section" id="page-network">
+      <div class="page-title">Professional Network</div>
+      <div class="page-subtitle">Connect with professionals in your field</div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="network-card"><div class="net-avatar">AK</div><div class="net-info"><h4>Aarav Kumar</h4><p>Senior Software Engineer · TCS, Bangalore</p></div><button class="btn-connect">Connect</button></div>
+        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#7C3AED,#0EA5E9)">PS</div><div class="net-info"><h4>Priya Sharma</h4><p>Data Scientist · Infosys, Hyderabad</p></div><button class="btn-connect">Connect</button></div>
+        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#10B981,#2563EB)">RM</div><div class="net-info"><h4>Rahul Mehta</h4><p>DevOps Lead · Wipro, Pune</p></div><button class="btn-connect">Connect</button></div>
+        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">SN</div><div class="net-info"><h4>Sneha Nair</h4><p>Product Manager · Razorpay, Bangalore</p></div><button class="btn-connect">Connect</button></div>
+        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#EC4899,#7C3AED)">VP</div><div class="net-info"><h4>Vikram Patel</h4><p>AI Engineer · Microsoft, Hyderabad</p></div><button class="btn-connect">Connect</button></div>
+        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#0EA5E9,#10B981)">DG</div><div class="net-info"><h4>Deepa Gupta</h4><p>Cloud Architect · Amazon, Bangalore</p></div><button class="btn-connect">Connect</button></div>
+      </div>
+    </div>
+
+    <!-- ── PROFILE ── -->
+    <div class="page-section" id="page-profile">
+      <div class="page-title">My Profile</div>
+      <div class="page-subtitle">Complete your profile to improve your career score</div>
+      <div class="card">
+        <div class="profile-pic-area">
+          <div class="profile-avatar" id="prof-avatar">?</div>
+          <div class="profile-avatar-info">
+            <h3 id="prof-name">Your Name</h3>
+            <p id="prof-email-display">Loading...</p>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Full Name</label><input type="text" id="pf-name" placeholder="Enter your full name"></div>
+          <div class="form-group"><label>User Type</label>
+            <select id="pf-usertype">
+              <option value="">Select type</option>
+              <option value="Student">Student</option>
+              <option value="Fresher">Fresher (0–1 yr)</option>
+              <option value="Professional">Working Professional</option>
+              <option value="Career Changer">Career Changer</option>
             </select>
           </div>
-          <div><label class="pf-label">Field / Domain</label>
-            <select class="pf-sel" id="pf-field">
-              <option value="">Your field</option>
-              <option>Technology / Software</option>
-              <option>Data & Analytics</option>
-              <option>Design / UX</option>
-              <option>Marketing / Growth</option>
-              <option>Finance / Accounting</option>
-              <option>Sales / Business Dev</option>
-              <option>Product Management</option>
-              <option>Human Resources</option>
-              <option>Healthcare / Medical</option>
-              <option>Education / Teaching</option>
-              <option>Engineering (Non-IT)</option>
-              <option>Media / Content</option>
-              <option>Other / Exploring</option>
-            </select>
-          </div>
-          <div><label class="pf-label">City</label>
-            <select class="pf-sel" id="pf-city">
-              <option value="">Your city</option>
-              <option>Bangalore</option><option>Hyderabad</option><option>Chennai</option>
-              <option>Mumbai</option><option>Pune</option><option>Delhi / NCR</option>
-              <option>Kolkata</option><option>Ahmedabad</option><option>Kochi</option><option>Other</option>
-            </select>
-          </div>
-          <div><label class="pf-label">Current Company / College</label><input class="pf-input" type="text" id="pf-company" placeholder="Company or college name"/></div>
-          <div><label class="pf-label">LinkedIn URL</label><input class="pf-input" type="text" id="pf-linkedin" placeholder="linkedin.com/in/yourname"/></div>
-          <div><label class="pf-label">Phone Number</label><input class="pf-input" type="tel" id="pf-phone" placeholder="+91 9876543210"/></div>
         </div>
-        <div class="fg" style="margin-bottom:1.2rem;"><label class="pf-label">About Me / Career Goals</label><textarea class="pf-input" id="pf-bio" rows="3" placeholder="Tell us about your career goals and what you're looking for on Belongix..." style="resize:vertical;line-height:1.6;"></textarea></div>
-        <button class="save-btn" onclick="saveProfile()">Save Profile Changes →</button>
+        <div class="form-row">
+          <div class="form-group"><label>Current Role / Field</label><input type="text" id="pf-role" placeholder="e.g. Software Engineer, Data Analyst"></div>
+          <div class="form-group"><label>Experience Level</label>
+            <select id="pf-exp">
+              <option value="">Select experience</option>
+              <option value="0-1 years">0–1 years</option>
+              <option value="1-3 years">1–3 years</option>
+              <option value="3-5 years">3–5 years</option>
+              <option value="5-10 years">5–10 years</option>
+              <option value="10+ years">10+ years</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>City</label>
+            <select id="pf-city">
+              <option value="">Select city</option>
+              <option value="Bangalore">Bangalore</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Pune">Pune</option>
+              <option value="Chennai">Chennai</option>
+              <option value="Delhi NCR">Delhi NCR</option>
+              <option value="Kolkata">Kolkata</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Skills (comma separated)</label><input type="text" id="pf-skills" placeholder="e.g. Python, React, AWS, SQL"></div>
+        </div>
+        <div class="form-group"><label>About You</label><textarea id="pf-about" placeholder="Brief intro about your career goals..."></textarea></div>
+        <button class="btn-save" onclick="saveProfile()">Save Profile</button>
+        <div class="save-msg" id="save-msg">✓ Profile saved! Career score updated.</div>
       </div>
     </div>
 
-    <!-- ══ SETTINGS ══ -->
-    <div class="page" id="pg-settings">
+    <!-- ── SETTINGS ── -->
+    <div class="page-section" id="page-settings">
+      <div class="page-title">Settings</div>
+      <div class="page-subtitle">Manage your Belongix preferences</div>
       <div class="card">
-        <div class="card-hdr"><div class="card-title">⚙️ Account Settings</div></div>
-        <div class="setting-row"><div class="sr-left"><div class="sr-title">Email Notifications</div><div class="sr-desc">Job matches, career tips, platform updates</div></div><button class="sr-btn sr-fill" onclick="toast('Notifications enabled ✓')">Enabled</button></div>
-        <div class="setting-row"><div class="sr-left"><div class="sr-title">Current Plan</div><div class="sr-desc">Free Plan — Limited features</div></div><button class="sr-btn sr-fill" onclick="toast('Pro plan upgrade launching soon!')">Upgrade to Pro ₹499/mo</button></div>
-        <div class="setting-row"><div class="sr-left"><div class="sr-title">Profile Visibility</div><div class="sr-desc">Who can see your profile on Belongix</div></div><button class="sr-btn sr-ghost" onclick="toast('Privacy settings saved ✓')">Belongix Members Only</button></div>
-        <div class="setting-row"><div class="sr-left"><div class="sr-title">Change Password</div><div class="sr-desc">Send a password reset email</div></div><button class="sr-btn sr-ghost" onclick="sendReset()">Reset Password</button></div>
-        <div class="setting-row"><div class="sr-left"><div class="sr-title" style="color:var(--red);">Sign Out</div><div class="sr-desc">Sign out from Belongix</div></div><button class="sr-btn sr-danger" onclick="doLogout()">Sign Out</button></div>
+        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px">Notifications</h3>
+        <div class="settings-row"><div><h4>Job Alerts</h4><p>Get notified when new matching jobs are posted</p></div><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+        <div class="settings-row"><div><h4>Career Score Updates</h4><p>Notify when your score changes</p></div><div class="toggle on" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+        <div class="settings-row"><div><h4>Network Requests</h4><p>Notify when someone wants to connect</p></div><div class="toggle" onclick="this.classList.toggle('on')"><div class="toggle-knob"></div></div></div>
+      </div>
+      <div class="card" style="margin-top:20px">
+        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px">Account</h3>
+        <div class="settings-row"><div><h4>Email</h4><p id="settings-email">—</p></div></div>
+        <div class="settings-row"><div><h4>Plan</h4><p>Free — <a href="index.html#pricing" style="color:var(--blue);font-weight:600">Upgrade to Pro</a></p></div></div>
+        <div class="settings-row"><div><h4>Sign Out</h4><p>Sign out of your Belongix account</p></div><button onclick="signOut()" style="background:#FEF2F2;color:#DC2626;border:none;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Sign Out</button></div>
       </div>
     </div>
 
-  </div>
-</div>
+  </div><!-- /content -->
+</main>
+
+<div class="toast" id="toast"></div>
 
 <script>
-const SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
-const sb=supabase.createClient(SB_URL,SB_KEY);
+var SUPA_URL = "https://efhcfuaxgbzuqlmhlsxc.supabase.co";
+var SUPA_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY";
+var JSEARCH_KEY = "2ad5ce55ddmshd78f379095d2b3fp1d274djsn2ea31eca4506";
+var supaClient = supabase.createClient(SUPA_URL, SUPA_KEY);
+var currentUser = null;
+var savedJobs = [];
 
-let currentUser=null;
-let profileData=null;
+// ── AUTH ──
+async function init() {
+  var res = await supaClient.auth.getSession();
+  if (!res.data.session) { window.location.href = "index.html"; return; }
+  currentUser = res.data.session.user;
+  loadUserData();
+  setTimeout(function(){ document.getElementById("loading-screen").style.display = "none"; }, 800);
+  loadJobs();
+}
 
-// ── INIT ──
-// ── REAL JOBS FROM JSEARCH API ──
-async function loadJobs(reset){
-  var query=(document.getElementById("job-search")?.value||"").trim()||"software developer";
-  var location=document.getElementById("job-location")?.value||"India";
-  var listEl=document.getElementById("jobs-list");
-  var loadEl=document.getElementById("jobs-loading");
-  var errEl=document.getElementById("jobs-error");
-  var emptyEl=document.getElementById("jobs-empty");
-  if(!listEl)return;
-  loadEl.style.display="block";
-  errEl.style.display="none";
-  emptyEl.style.display="none";
-  listEl.innerHTML="";
+async function loadUserData() {
+  var r = await supaClient.from("profiles").select("*").eq("id", currentUser.id).single();
+  var d = r.data || {};
+  var name = d.full_name || currentUser.email.split("@")[0];
+  var initials = name.split(" ").map(function(w){ return w[0]; }).join("").toUpperCase().slice(0,2) || "U";
 
-  try{
-    var searchQ=query+" "+location;
-    var url="https://jsearch.p.rapidapi.com/search?query="+encodeURIComponent(searchQ)+"&page=1&num_pages=1&country=in";
-    var res=await fetch(url,{
-      method:"GET",
-      headers:{
-        "X-RapidAPI-Key":"2ad5ce55ddmshd78f379095d2b3fp1d274djsn2ea31eca4506",
-        "X-RapidAPI-Host":"jsearch.p.rapidapi.com"
-      }
-    });
-    var data=await res.json();
-    loadEl.style.display="none";
+  document.getElementById("sb-name").textContent = name;
+  document.getElementById("sb-role").textContent = d.role || (d.experience || "Member");
+  document.getElementById("sb-avatar").textContent = initials;
+  document.getElementById("overview-sub").textContent = "Welcome back, " + name + "! Here's your career progress.";
+  document.getElementById("prof-name").textContent = name;
+  document.getElementById("prof-email-display").textContent = currentUser.email;
+  document.getElementById("prof-avatar").textContent = initials;
+  document.getElementById("settings-email").textContent = currentUser.email;
 
-    // Check for API errors
-    if(data.status==="INTERNAL_SERVER_ERROR"||data.message){
-      showFallbackJobs(listEl,query,location);
-      return;
-    }
+  document.getElementById("pf-name").value = d.full_name || "";
+  document.getElementById("pf-role").value = d.role || "";
+  document.getElementById("pf-exp").value = d.experience || "";
+  document.getElementById("pf-city").value = d.city || "";
+  document.getElementById("pf-skills").value = d.skills || "";
+  document.getElementById("pf-about").value = d.about || "";
+  document.getElementById("pf-usertype").value = d.user_type || "";
 
-    if(!data.data||data.data.length===0){
-      showFallbackJobs(listEl,query,location);
-      return;
-    }
+  calcScore(d);
+}
 
-    data.data.slice(0,8).forEach(function(job){
-      renderJob(listEl,{
-        title:job.job_title,
-        company:job.employer_name,
-        location:job.job_city||(job.job_is_remote?"Remote":location),
-        type:job.job_employment_type||"Full Time",
-        remote:job.job_is_remote,
-        salary:job.job_min_salary&&job.job_max_salary?"₹"+Math.round(job.job_min_salary/100000)+"L–"+Math.round(job.job_max_salary/100000)+"L PA":"Not disclosed",
-        posted:job.job_posted_at_datetime_utc?new Date(job.job_posted_at_datetime_utc).toLocaleDateString("en-IN",{day:"numeric",month:"short"}):"Recently",
-        link:job.job_apply_link||"#",
-        exp:job.job_required_experience?.required_experience_in_months?Math.round(job.job_required_experience.required_experience_in_months/12)+"+ yrs":"Any"
-      });
-    });
-
-  }catch(err){
-    loadEl.style.display="none";
-    showFallbackJobs(listEl,query,location);
+function calcScore(d) {
+  var score = 30;
+  if (currentUser.email_confirmed_at) {
+    score += 10;
+    document.getElementById("step-email").querySelector(".step-dot").className = "step-dot done";
+    document.getElementById("step-email").querySelector(".step-dot").textContent = "✓";
   }
+  if (d && d.full_name && d.role && d.city && d.experience) {
+    score += 30;
+    document.getElementById("step-profile").querySelector(".step-dot").className = "step-dot done";
+    document.getElementById("step-profile").querySelector(".step-dot").textContent = "✓";
+  }
+  score = Math.min(score, 100);
+  document.getElementById("score-display").textContent = score;
+  document.getElementById("stat-score").textContent = score;
+  document.getElementById("score-chip").textContent = "Score: " + score;
+  var circ = document.getElementById("score-circle");
+  var circumf = 351.86;
+  circ.style.strokeDashoffset = circumf - (circumf * score / 100);
+  var lvl = score < 40 ? "Getting Started" : score < 70 ? "Building Momentum" : score < 90 ? "Career Ready" : "Top Performer";
+  document.getElementById("score-level").textContent = lvl;
+  if (score >= 70) document.getElementById("score-desc").textContent = "You are career-ready! Keep applying and networking.";
 }
 
-function renderJob(listEl,j){
-  var el=document.createElement("div");
-  el.className="job-card";
-  el.innerHTML="<div class='jc-top'><div class='jc-title'>"+j.title+"</div><div class='jc-sal'>"+j.salary+"</div></div>"+
-    "<div class='jc-co'>"+j.company+" &middot; "+j.location+" &middot; "+(j.remote?"Remote":"On-site")+" &middot; "+j.type+"</div>"+
-    "<div class='jc-tags'>"+
-    "<span class='jc-tag'>"+j.exp+"</span>"+
-    "<span class='jc-tag'>Posted "+j.posted+"</span>"+
-    "<a href='"+j.link+"' target='_blank' style='margin-left:auto;padding:0.22rem 0.7rem;background:var(--blue);color:#fff;border-radius:100px;font-size:0.68rem;font-weight:700;text-decoration:none;white-space:nowrap;'>Apply ↗</a>"+
-    "</div>";
-  listEl.appendChild(el);
+async function saveProfile() {
+  var updates = {
+    id: currentUser.id,
+    full_name: document.getElementById("pf-name").value,
+    role: document.getElementById("pf-role").value,
+    experience: document.getElementById("pf-exp").value,
+    city: document.getElementById("pf-city").value,
+    skills: document.getElementById("pf-skills").value,
+    about: document.getElementById("pf-about").value,
+    user_type: document.getElementById("pf-usertype").value,
+    email: currentUser.email
+  };
+  await supaClient.from("profiles").upsert(updates);
+  document.getElementById("save-msg").style.display = "block";
+  setTimeout(function(){ document.getElementById("save-msg").style.display = "none"; }, 3000);
+  loadUserData();
+  showToast("Profile saved!");
 }
 
-function showFallbackJobs(listEl,query,location){
-  // Curated real Indian job listings with apply links
-  var jobs=[
-    {title:"Software Developer",company:"TCS",location:"Bangalore",type:"Full Time",remote:false,salary:"₹4–8 LPA",posted:"Today",exp:"0–2 yrs",link:"https://www.tcs.com/careers"},
-    {title:"Full Stack Developer",company:"Infosys",location:"Hyderabad",type:"Full Time",remote:false,salary:"₹5–10 LPA",posted:"2 days ago",exp:"1–3 yrs",link:"https://career.infosys.com"},
-    {title:"Data Analyst",company:"Wipro",location:"Pune",type:"Full Time",remote:true,salary:"₹4–7 LPA",posted:"3 days ago",exp:"0–2 yrs",link:"https://careers.wipro.com"},
-    {title:"Product Manager",company:"Razorpay",location:"Bangalore",type:"Full Time",remote:false,salary:"₹15–25 LPA",posted:"Today",exp:"3–5 yrs",link:"https://razorpay.com/jobs"},
-    {title:"Backend Developer",company:"Swiggy",location:"Bangalore",type:"Full Time",remote:true,salary:"₹12–20 LPA",posted:"1 day ago",exp:"2–4 yrs",link:"https://bytes.swiggy.com/careers"},
-    {title:"ML Engineer",company:"Flipkart",location:"Bangalore",type:"Full Time",remote:false,salary:"₹15–28 LPA",posted:"2 days ago",exp:"2–5 yrs",link:"https://www.flipkartcareers.com"},
-    {title:"UI/UX Designer",company:"Meesho",location:"Bangalore",type:"Full Time",remote:true,salary:"₹8–14 LPA",posted:"Today",exp:"1–3 yrs",link:"https://meesho.io/jobs"},
-    {title:"DevOps Engineer",company:"Zomato",location:"Gurugram",type:"Full Time",remote:false,salary:"₹10–18 LPA",posted:"3 days ago",exp:"2–4 yrs",link:"https://www.zomato.com/careers"},
-    {title:"Software Intern",company:"Microsoft India",location:"Hyderabad",type:"Internship",remote:false,salary:"₹40K–60K/mo",posted:"Today",exp:"Fresher",link:"https://careers.microsoft.com"},
-    {title:"Data Science Intern",company:"Amazon",location:"Bangalore",type:"Internship",remote:false,salary:"₹50K–80K/mo",posted:"1 day ago",exp:"Fresher",link:"https://amazon.jobs"},
-    {title:"React Developer",company:"CRED",location:"Bangalore",type:"Full Time",remote:true,salary:"₹12–22 LPA",posted:"2 days ago",exp:"2–4 yrs",link:"https://careers.cred.club"},
-    {title:"Business Analyst",company:"Deloitte",location:"Mumbai",type:"Full Time",remote:false,salary:"₹6–10 LPA",posted:"Today",exp:"0–2 yrs",link:"https://apply.deloitte.com"}
-  ];
+async function signOut() {
+  await supaClient.auth.signOut();
+  window.location.href = "index.html";
+}
 
-  // Filter by search query
-  var q=query.toLowerCase();
-  var filtered=jobs.filter(function(j){
-    return j.title.toLowerCase().includes(q)||
-           j.company.toLowerCase().includes(q)||
-           q==="software developer"||q==="";
+// ── NAVIGATION ──
+function showPage(page, btn) {
+  document.querySelectorAll(".page-section").forEach(function(el){ el.classList.remove("active"); });
+  document.querySelectorAll(".sb-link").forEach(function(el){ el.classList.remove("active"); });
+  document.getElementById("page-" + page).classList.add("active");
+  if (btn) btn.classList.add("active");
+  var titles = { overview:"Overview", jobs:"Jobs & Internships", upskill:"Upskilling", salary:"Salary Insights", network:"Network", profile:"My Profile", settings:"Settings" };
+  document.getElementById("topbar-title").textContent = titles[page] || "Dashboard";
+  if (page === "jobs") loadJobs();
+}
+
+// ── JOBS ──
+var jobsLoaded = false;
+function loadJobs() {
+  if (jobsLoaded) return;
+  searchJobs();
+}
+
+function searchJobs() {
+  var q = document.getElementById("job-search").value || "software developer";
+  var city = document.getElementById("job-city").value || "India";
+  var type = document.getElementById("job-type").value || "";
+  document.getElementById("jobs-container").innerHTML = '<div class="jobs-loading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/><path d="M9 12l2 2 4-4"/></svg><div>Searching for ' + q + ' jobs...</div></div>';
+  document.getElementById("jobs-count").textContent = "";
+
+  var url = "https://jsearch.p.rapidapi.com/search?query=" + encodeURIComponent(q + " " + city) + "&page=1&num_pages=2&country=in&date_posted=all";
+  if (type) url += "&employment_types=" + type;
+
+  fetch(url, {
+    headers: {
+      "X-RapidAPI-Key": JSEARCH_KEY,
+      "X-RapidAPI-Host": "jsearch.p.rapidapi.com"
+    }
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(data){
+    if (data && data.data && data.data.length > 0) {
+      renderJobs(data.data);
+    } else {
+      renderFallbackJobs(q);
+    }
+    jobsLoaded = true;
+  })
+  .catch(function(){ renderFallbackJobs(q); jobsLoaded = true; });
+}
+
+function renderJobs(jobs) {
+  var html = '<div class="jobs-grid">';
+  jobs.forEach(function(j){
+    var match = Math.floor(60 + Math.random() * 35);
+    var matchColor = match >= 80 ? "#10B981" : match >= 65 ? "#F59E0B" : "#94A3B8";
+    var empType = j.job_employment_type || "FULLTIME";
+    var typeLabel = empType === "FULLTIME" ? "Full Time" : empType === "INTERN" ? "Internship" : empType === "PARTTIME" ? "Part Time" : "Contract";
+    var typeClass = empType === "INTERN" ? "internship" : "type";
+    var city = (j.job_city || j.job_country || "India");
+    var remote = j.job_is_remote ? "Remote" : city;
+    var salary = j.job_min_salary ? ("$" + Math.round(j.job_min_salary/1000) + "K – $" + Math.round(j.job_max_salary/1000) + "K") : "Salary not disclosed";
+    var posted = j.job_posted_at_datetime_utc ? new Date(j.job_posted_at_datetime_utc).toLocaleDateString("en-IN", {day:"numeric",month:"short"}) : "Recently";
+    var logo = j.employer_logo || "";
+    var logoHtml = logo ? '<img src="' + logo + '" style="width:100%;height:100%;object-fit:contain;border-radius:10px" onerror="this.parentNode.textContent=\'💼\'">' : "💼";
+    html += '<div class="job-card">';
+    html += '<div class="job-card-top"><div class="job-logo">' + logoHtml + '</div><button class="job-save" onclick="toggleSave(this)" title="Save job"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button></div>';
+    html += '<div class="job-title">' + (j.job_title || "Job Opening") + '</div>';
+    html += '<div class="job-company">🏢 ' + (j.employer_name || "Company") + '</div>';
+    html += '<div class="job-tags"><span class="job-tag type">' + typeLabel + '</span><span class="job-tag loc">📍 ' + remote + '</span></div>';
+    html += '<div class="job-salary">💰 <span>' + salary + '</span></div>';
+    html += '<div class="job-match-bar"><div class="job-match-fill" style="width:' + match + '%"></div></div>';
+    html += '<div class="job-footer"><div class="job-date">📅 ' + posted + '</div><div class="job-match"><div class="match-dot" style="background:' + matchColor + '"></div><span style="color:' + matchColor + '">' + match + '% match</span></div><a href="' + (j.job_apply_link || "#") + '" target="_blank" class="btn-apply">Apply ↗</a></div>';
+    html += '</div>';
   });
-  if(filtered.length===0)filtered=jobs;
-
-  filtered.slice(0,8).forEach(function(j){renderJob(listEl,j);});
-
-  // Show note that these are curated
-  var note=document.createElement("div");
-  note.style.cssText="text-align:center;padding:0.75rem;font-size:0.75rem;color:var(--muted);border-top:1px solid var(--border2);margin-top:0.5rem;";
-  note.innerHTML="&#9432; Showing curated listings. Live job search activates with full platform launch.";
-  listEl.appendChild(note);
+  html += '</div>';
+  document.getElementById("jobs-container").innerHTML = html;
+  document.getElementById("jobs-count").innerHTML = '<strong>' + jobs.length + ' jobs</strong> found for your search';
 }
 
-async function init(){
-  const{data:{session}}=await sb.auth.getSession();
-  if(!session){window.location.href='index.html';return;}
-  currentUser=session.user;
-  await loadProfile();
-  document.getElementById('loadScreen').style.display='none';
-}
-init();
-
-// ── LOAD PROFILE & CALCULATE SCORE ──
-async function loadProfile(){
-  const user=currentUser;
-  const meta=user.user_metadata||{};
-  const name=meta.full_name||user.email.split('@')[0]||'Professional';
-  const initials=name.substring(0,2).toUpperCase();
-
-  // Load from profiles table
-  const{data:prof}=await sb.from('profiles').select('*').eq('id',user.id).single();
-  profileData=prof||{};
-
-  // Update sidebar
-  document.getElementById('sb-av').textContent=initials;
-  document.getElementById('sb-name').textContent=name;
-
-  // Update profile page
-  document.getElementById('prof-av').textContent=initials;
-  document.getElementById('prof-name').textContent=name;
-  document.getElementById('prof-email').textContent=user.email;
-  document.getElementById('pf-name').value=name;
-  document.getElementById('pf-email').value=user.email;
-  if(prof){
-    if(prof.user_type)document.getElementById('pf-type').value=prof.user_type;
-    if(prof.field)document.getElementById('pf-field').value=prof.field;
-    if(prof.city)document.getElementById('pf-city').value=prof.city;
-    if(prof.company)document.getElementById('pf-company').value=prof.company||'';
-    if(prof.linkedin)document.getElementById('pf-linkedin').value=prof.linkedin||'';
-    if(prof.phone)document.getElementById('pf-phone').value=prof.phone||'';
-    if(prof.bio)document.getElementById('pf-bio').value=prof.bio||'';
-  }
-
-  // Welcome message
-  document.getElementById('welcome-msg').textContent=`Welcome, ${name.split(' ')[0]}! 👋`;
-
-  // Calculate real career score
-  calculateScore(user,prof);
+function renderFallbackJobs(q) {
+  var fallback = [
+    {title:"Software Engineer",company:"TCS",city:"Bangalore",type:"Full Time",salary:"₹4–12 LPA",match:87,logo:"🏢",remote:false,link:"https://ibegin.tcs.com/iBegin/"},
+    {title:"Junior Developer",company:"Infosys",city:"Hyderabad",type:"Full Time",salary:"₹3.6–8 LPA",match:82,logo:"🏢",remote:false,link:"https://career.infosys.com/"},
+    {title:"Software Engineer",company:"Wipro",city:"Pune",type:"Full Time",salary:"₹3.5–9 LPA",match:78,logo:"🏢",remote:false,link:"https://careers.wipro.com/"},
+    {title:"Frontend Developer",company:"Razorpay",city:"Bangalore",type:"Full Time",salary:"₹8–20 LPA",match:91,logo:"💳",remote:true,link:"https://razorpay.com/jobs/"},
+    {title:"Full Stack Engineer",company:"Swiggy",city:"Bangalore",type:"Full Time",salary:"₹10–25 LPA",match:85,logo:"🛵",remote:false,link:"https://bytes.swiggy.com/careers"},
+    {title:"Backend Engineer",company:"Flipkart",city:"Bangalore",type:"Full Time",salary:"₹12–30 LPA",match:79,logo:"🛒",remote:false,link:"https://www.flipkartcareers.com/"},
+    {title:"Software Development Engineer",company:"Amazon",city:"Hyderabad",type:"Full Time",salary:"₹18–50 LPA",match:74,logo:"📦",remote:false,link:"https://amazon.jobs/"},
+    {title:"SDE Intern",company:"Microsoft",city:"Hyderabad",type:"Internship",salary:"₹60,000–1L/month",match:88,logo:"🪟",remote:false,link:"https://careers.microsoft.com/"},
+    {title:"Data Analyst",company:"Deloitte",city:"Mumbai",type:"Full Time",salary:"₹5–12 LPA",match:72,logo:"📊",remote:false,link:"https://jobs2.deloitte.com/in/en"},
+    {title:"DevOps Engineer",company:"HCL Tech",city:"Noida",type:"Full Time",salary:"₹6–15 LPA",match:80,logo:"⚙️",remote:true,link:"https://www.hcltech.com/careers"},
+    {title:"ML Engineer",company:"CRED",city:"Bangalore",type:"Full Time",salary:"₹15–35 LPA",match:86,logo:"💳",remote:false,link:"https://careers.cred.club/"},
+    {title:"Cloud Engineer",company:"Meesho",city:"Bangalore",type:"Full Time",salary:"₹10–22 LPA",match:83,logo:"🛍️",remote:false,link:"https://meesho.io/jobs"}
+  ];
+  var html = '<div class="jobs-grid">';
+  fallback.forEach(function(j){
+    var matchColor = j.match >= 80 ? "#10B981" : j.match >= 65 ? "#F59E0B" : "#94A3B8";
+    html += '<div class="job-card">';
+    html += '<div class="job-card-top"><div class="job-logo" style="font-size:22px">' + j.logo + '</div><button class="job-save" onclick="toggleSave(this)" title="Save job"><svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button></div>';
+    html += '<div class="job-title">' + j.title + '</div>';
+    html += '<div class="job-company">🏢 ' + j.company + '</div>';
+    html += '<div class="job-tags"><span class="job-tag type">' + j.type + '</span><span class="job-tag ' + (j.remote ? "remote" : "loc") + '">' + (j.remote ? "🌐 Remote" : "📍 " + j.city) + '</span></div>';
+    html += '<div class="job-salary">💰 <span>' + j.salary + '</span></div>';
+    html += '<div class="job-match-bar"><div class="job-match-fill" style="width:' + j.match + '%"></div></div>';
+    html += '<div class="job-footer"><div class="job-date">📅 Recently posted</div><div class="job-match"><div class="match-dot" style="background:' + matchColor + '"></div><span style="color:' + matchColor + '">' + j.match + '% match</span></div><a href="' + j.link + '" target="_blank" class="btn-apply">Apply ↗</a></div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById("jobs-container").innerHTML = html;
+  document.getElementById("jobs-count").innerHTML = '<strong>' + fallback.length + ' curated jobs</strong> from top Indian companies';
 }
 
-function calculateScore(user,prof){
-  let score=30; // Base score for signing up
-  let profilePct=20;
-  let skillsPct=0;
-  let networkPct=0;
-  let learningPct=0;
-  let mentorshipPct=0;
-
-  // Email confirmed
-  if(user.email_confirmed_at){
-    score+=10;
-    document.getElementById('ps-email')?.classList.add('done');
-    document.getElementById('sc-email')?.classList.add('done');
-  }
-
-  // Profile completeness
-  if(prof){
-    let filled=0;
-    const fields=['full_name','user_type','field','city','company','linkedin','phone','bio'];
-    fields.forEach(f=>{if(prof[f]&&prof[f].trim&&prof[f].trim()!=='')filled++;});
-    const profScore=Math.round((filled/fields.length)*100);
-    profilePct=Math.max(20,profScore);
-    if(profScore>=50){score+=20;document.getElementById('ps-profile')?.classList.add('done');}
-  }
-
-  // Update all score displays
-  const finalScore=Math.min(score,100);
-  const scoreLabel=finalScore<40?'Just Started':finalScore<60?'Building Up':finalScore<80?'Looking Good':'Career Ready';
-
-  // Sidebar
-  document.getElementById('sb-score-num').textContent=finalScore;
-  document.getElementById('sb-score-fill').style.width=finalScore+'%';
-  document.getElementById('sb-score-tip').textContent=scoreLabel;
-
-  // Overview ring
-  updateRing('ring-circle','ring-num','ring-lbl',finalScore,scoreLabel);
-  updateRing('ring-circle2','ring-num2','ring-lbl2',finalScore,scoreLabel);
-
-  // Overview card
-  document.getElementById('ov-score').textContent=finalScore;
-  document.getElementById('ov-profile').textContent=profilePct+'%';
-
-  // Score factors
-  setFactor('f-profile','fv-profile',profilePct);
-  setFactor('f-skills','fv-skills',skillsPct);
-  setFactor('f-network','fv-network',networkPct);
-  setFactor('f-learning','fv-learning',learningPct);
-  setFactor('f-mentorship','fv-mentorship',mentorshipPct);
-  setFactor('f2-profile','fv2-profile',profilePct);
-  setFactor('f2-skills','fv2-skills',skillsPct);
-  setFactor('f2-network','fv2-network',networkPct);
-  setFactor('f2-learning','fv2-learning',learningPct);
-  setFactor('f2-mentorship','fv2-mentorship',mentorshipPct);
-
-  // Update badge
-  const badge=document.querySelector('#ov-score').nextElementSibling?.nextElementSibling;
-  if(finalScore<50&&badge){badge.textContent='In Progress';badge.className='badge b-orange';}
-  else if(finalScore<80&&badge){badge.textContent='Growing';badge.className='badge b-blue';}
-  else if(badge){badge.textContent='Career Ready';badge.className='badge b-green';}
+function toggleSave(btn) {
+  btn.classList.toggle("saved");
+  showToast(btn.classList.contains("saved") ? "Job saved!" : "Job removed from saved");
 }
 
-function updateRing(circleId,numId,lblId,score,label){
-  const circ=document.getElementById(circleId);
-  if(circ){const dashoffset=326.73-(326.73*(score/100));circ.style.strokeDashoffset=dashoffset;}
-  const num=document.getElementById(numId);if(num)num.textContent=score;
-  const lbl=document.getElementById(lblId);if(lbl)lbl.textContent=label;
-}
-
-function setFactor(barId,valId,pct){
-  const bar=document.getElementById(barId);if(bar)bar.style.width=pct+'%';
-  const val=document.getElementById(valId);if(val)val.textContent=pct+'%';
-}
-
-// ── SAVE PROFILE ──
-async function saveProfile(){
-  const name=document.getElementById('pf-name').value.trim();
-  const type=document.getElementById('pf-type').value;
-  const field=document.getElementById('pf-field').value;
-  const city=document.getElementById('pf-city').value;
-  const company=document.getElementById('pf-company').value.trim();
-  const linkedin=document.getElementById('pf-linkedin').value.trim();
-  const phone=document.getElementById('pf-phone').value.trim();
-  const bio=document.getElementById('pf-bio').value.trim();
-  try{
-    await sb.auth.updateUser({data:{full_name:name,user_type:type,field,city}});
-    await sb.from('profiles').upsert({
-      id:currentUser.id,email:currentUser.email,
-      full_name:name,user_type:type,field,city,company,linkedin,phone,bio,
-      updated_at:new Date().toISOString()
-    });
-    document.getElementById('save-ok').style.display='block';
-    toast('Profile saved! Score updated ✓','ok');
-    // Recalculate score
-    profileData={...profileData,full_name:name,user_type:type,field,city,company,linkedin,phone,bio};
-    calculateScore(currentUser,profileData);
-    document.getElementById('sb-name').textContent=name.split(' ')[0];
-    document.getElementById('prof-av').textContent=name.substring(0,2).toUpperCase();
-    document.getElementById('sb-av').textContent=name.substring(0,2).toUpperCase();
-    document.getElementById('prof-name').textContent=name;
-  }catch(err){
-    toast('Error saving: '+err.message,'err');
-  }
-}
-
-// ── RESET PASSWORD ──
-async function sendReset(){
-  const{error}=await sb.auth.resetPasswordForEmail(currentUser.email,{redirectTo:'https://belongix.in/dashboard.html'});
-  if(error){toast('Error: '+error.message,'err');return;}
-  toast('Password reset email sent! Check your inbox ✓','ok');
-}
-
-// ── LOGOUT ──
-async function doLogout(){
-  await sb.auth.signOut();
-  window.location.href='index.html';
+function toggleChip(el, type) {
+  document.querySelectorAll(".filter-chip").forEach(function(c){ c.classList.remove("active"); });
+  el.classList.add("active");
+  var queries = {all:"software developer",fresher:"fresher graduate entry level",remote:"remote work from home",internship:"internship",ai:"artificial intelligence machine learning",data:"data analyst data science",cloud:"cloud AWS azure",devops:"devops kubernetes docker"};
+  document.getElementById("job-search").value = queries[type] || type;
+  jobsLoaded = false;
+  searchJobs();
 }
 
 // ── TOAST ──
-function toast(msg,type=''){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.style.background=type==='ok'?'#052e16':type==='err'?'#7f1d1d':'#0a1628';
-  t.style.transform='translateX(-50%) translateY(0)';t.style.opacity='1';
-  setTimeout(()=>{t.style.transform='translateX(-50%) translateY(120px)';t.style.opacity='0';},3500);
+function showToast(msg) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(function(){ t.classList.remove("show"); }, 2500);
 }
 
-// ── PAGE NAV ──
-const pageTitles={overview:'Dashboard Overview',score:'Career Score',jobs:'Jobs & Internships',skills:'Upskilling',salary:'Salary Intelligence',mentors:'Expert Mentors',network:'My Network',profile:'My Profile',settings:'Settings'};
-function go(id,el){
-  if(id==="jobs"){
-    if(!document.getElementById("jobs-list").innerHTML){
-      setTimeout(function(){loadJobs(false);},200);
-    }
-  }
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('pg-'+id).classList.add('active');
-  document.getElementById('page-title').textContent=pageTitles[id]||'Dashboard';
-  if(el){document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('active'));el.classList.add('active');}
-  document.getElementById('save-ok').style.display='none';
-  window.scrollTo(0,0);
-}
+// ── ENTER KEY ──
+document.getElementById("job-search").addEventListener("keypress", function(e){ if (e.key === "Enter") { jobsLoaded = false; searchJobs(); } });
+
+// ── INIT ──
+init();
 </script>
-
-
-
-
-
-
-
-
-<!-- BELONG AI BUBBLE -->
-<style>
-#bx-btn{position:fixed;bottom:1.8rem;right:1.8rem;z-index:9999;width:56px;height:56px;border-radius:50%;background:#1d6fa4;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(29,111,164,0.5);border:none;font-size:22px;transition:transform 0.2s;color:#fff;}
-#bx-btn:hover{transform:scale(1.08);}
-#bx-dot{position:fixed;bottom:calc(1.8rem + 42px);right:calc(1.8rem - 2px);width:12px;height:12px;border-radius:50%;background:#22c55e;border:2px solid #fff;z-index:10000;pointer-events:none;}
-#bx-win{position:fixed;bottom:calc(1.8rem + 66px);right:1.8rem;width:320px;height:480px;background:#ffffff;border:1px solid #deeef9;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.15);z-index:9998;display:none;flex-direction:column;overflow:hidden;font-family:"DM Sans",sans-serif;}
-#bx-head{background:#0a1628;padding:12px 14px;display:flex;align-items:center;gap:10px;flex-shrink:0;}
-#bx-av{width:30px;height:30px;border-radius:50%;background:#1d6fa4;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;}
-#bx-info{flex:1;}
-#bx-name{font-size:13px;font-weight:600;color:#fff;line-height:1;}
-#bx-sub{font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;display:flex;align-items:center;gap:4px;}
-#bx-online{width:5px;height:5px;border-radius:50%;background:#22c55e;display:inline-block;}
-#bx-close{background:rgba(255,255,255,0.1);border:none;color:rgba(255,255,255,0.6);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;line-height:1;}
-#bx-modes{display:flex;gap:5px;padding:8px 10px;border-bottom:1px solid #deeef9;background:#f5faff;flex-shrink:0;flex-wrap:wrap;}
-.bxm{padding:3px 9px;border-radius:100px;border:1px solid #c2dff0;background:#fff;font-size:11px;font-weight:600;color:#4a7a9b;cursor:pointer;font-family:"DM Sans",sans-serif;transition:all 0.15s;}
-.bxm:hover{border-color:#1d6fa4;color:#1d6fa4;}
-.bxm.on{background:#1d6fa4;border-color:#1d6fa4;color:#fff;}
-#bx-msgs{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:8px;}
-#bx-msgs::-webkit-scrollbar{width:3px;}
-#bx-msgs::-webkit-scrollbar-thumb{background:#c2dff0;border-radius:2px;}
-.bxa{display:flex;gap:6px;align-items:flex-start;}
-.bxa-av{width:22px;height:22px;border-radius:50%;background:#1d6fa4;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px;}
-.bxa-txt{background:#f5faff;border:1px solid #deeef9;border-radius:3px 10px 10px 10px;padding:7px 10px;font-size:12px;color:#1e3a52;line-height:1.55;max-width:230px;}
-.bxu{display:flex;justify-content:flex-end;}
-.bxu-txt{background:#1d6fa4;border-radius:10px 3px 10px 10px;padding:7px 10px;font-size:12px;color:#fff;line-height:1.55;max-width:230px;}
-.bxt{display:flex;gap:6px;align-items:flex-start;}
-.bxt-d{background:#f5faff;border:1px solid #deeef9;border-radius:3px 10px 10px 10px;padding:7px 10px;display:flex;gap:3px;align-items:center;}
-.bxd{width:5px;height:5px;border-radius:50%;background:#c2dff0;animation:bxdt 1.2s infinite;}
-.bxd:nth-child(2){animation-delay:.2s;}.bxd:nth-child(3){animation-delay:.4s;}
-@keyframes bxdt{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-3px);}}
-#bx-err{font-size:11px;color:#c0392b;padding:3px 10px;text-align:center;display:none;flex-shrink:0;background:#fef2f2;}
-#bx-inp-row{padding:8px 10px;border-top:1px solid #deeef9;display:flex;gap:6px;align-items:center;flex-shrink:0;background:#fff;}
-#bx-inp{flex:1;background:#f5faff;border:1px solid #c2dff0;border-radius:8px;padding:7px 10px;font-size:12px;color:#1e3a52;font-family:"DM Sans",sans-serif;outline:none;}
-#bx-inp:focus{border-color:#1d6fa4;}
-#bx-inp::placeholder{color:#7aafc8;}
-#bx-snd{width:32px;height:32px;border-radius:8px;background:#1d6fa4;border:none;cursor:pointer;color:#fff;font-size:13px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
-#bx-snd:disabled{opacity:0.4;cursor:not-allowed;}
-#bx-foot{text-align:center;padding:4px 10px 8px;font-size:10px;color:#7aafc8;flex-shrink:0;background:#fff;}
-</style>
-
-<div id="bx-dot"></div>
-<button id="bx-btn" onclick="bxOpen()">&#129302;</button>
-
-<div id="bx-win">
-  <div id="bx-head">
-    <div id="bx-av">AI</div>
-    <div id="bx-info">
-      <div id="bx-name">Belong AI</div>
-      <div id="bx-sub"><span id="bx-online"></span>Always online &middot; Gemini AI</div>
-    </div>
-    <button id="bx-close" onclick="bxClose()">&#10005;</button>
-  </div>
-  <div id="bx-modes">
-    <button class="bxm on" onclick="bxMode(this,'coach')">&#128311; Coach</button>
-    <button class="bxm" onclick="bxMode(this,'resume')">&#128221; Resume</button>
-    <button class="bxm" onclick="bxMode(this,'jobs')">&#128188; Jobs</button>
-    <button class="bxm" onclick="bxMode(this,'salary')">&#128176; Salary</button>
-    <button class="bxm" onclick="bxMode(this,'interview')">&#127919; Interview</button>
-  </div>
-  <div id="bx-msgs">
-    <div class="bxa"><div class="bxa-av">AI</div><div class="bxa-txt">Hi! I am Belong AI. Ask me about career advice, resume, jobs, salary, or interview prep!</div></div>
-  </div>
-  <div id="bx-err"></div>
-  <div id="bx-inp-row">
-    <input id="bx-inp" placeholder="Ask me anything about your career..."/>
-    <button id="bx-snd" onclick="bxSend()">&#10148;</button>
-  </div>
-  <div id="bx-foot">Belong AI &middot; Powered by Gemini &middot; belongix.in</div>
-</div>
-
-<script>
-(function(){
-var M="coach",L=false,H=[];
-var GK="AIzaSyCNaLyrERDBapQZJdvEUDLpxJ-w2rp7mog";
-var SYS={
-  coach:"You are Belong AI, a career coach on Belongix.in for Indian professionals. Help with career decisions, growth strategies, and career path clarity. Be warm, practical, concise (2-4 sentences), India-specific. Give actionable advice.",
-  resume:"You are Belong AI on Belongix.in. Help Indian professionals build strong resumes. Ask for their details then give specific improvements and ATS tips. Be concise and actionable.",
-  jobs:"You are Belong AI on Belongix.in. Help Indian professionals find jobs. Recommend roles, companies like TCS, Infosys, Razorpay, startups, GCCs, and portals like Naukri and LinkedIn. Be specific.",
-  salary:"You are Belong AI on Belongix.in, salary expert for India. Give salary ranges in rupees LPA by role, city, experience. Give negotiation tips. Be data-driven.",
-  interview:"You are Belong AI on Belongix.in, interview coach. Give role-specific questions, STAR answers, company tips. Be thorough and encouraging."
-};
-var GR={
-  coach:"Hi! I am your Career Coach. Ask me about career paths, growth strategies, or any career decisions.",
-  resume:"Hi! I am your Resume Builder. Share your name, role, experience and skills and I will help.",
-  jobs:"Hi! I am your Job Matcher. Tell me your role and experience for the best opportunities in India.",
-  salary:"Hi! I am your Salary Advisor. Tell me your role, city and experience for accurate salary info.",
-  interview:"Hi! I am your Interview Coach. Tell me the role and company and I will prepare you."
-};
-
-window.bxOpen=function(){
-  var w=document.getElementById("bx-win");
-  w.style.display="flex";
-  document.getElementById("bx-inp").focus();
-};
-window.bxClose=function(){
-  document.getElementById("bx-win").style.display="none";
-};
-window.bxMode=function(el,m){
-  M=m;H=[];
-  document.querySelectorAll(".bxm").forEach(function(b){b.classList.remove("on");});
-  el.classList.add("on");
-  document.getElementById("bx-msgs").innerHTML="<div class='bxa'><div class='bxa-av'>AI</div><div class='bxa-txt'>"+GR[m]+"</div></div>";
-  document.getElementById("bx-err").style.display="none";
-};
-document.getElementById("bx-inp").addEventListener("keydown",function(e){
-  if(e.key==="Enter")bxSend();
-});
-window.bxSend=async function(){
-  var inp=document.getElementById("bx-inp");
-  var txt=inp.value.trim();
-  if(!txt||L)return;
-  inp.value="";L=true;
-  document.getElementById("bx-snd").disabled=true;
-  document.getElementById("bx-err").style.display="none";
-  var msgs=document.getElementById("bx-msgs");
-
-  var ud=document.createElement("div");
-  ud.className="bxu";
-  ud.innerHTML="<div class='bxu-txt'>"+txt.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</div>";
-  msgs.appendChild(ud);
-
-  var td=document.createElement("div");
-  td.className="bxt";td.id="bxtd";
-  td.innerHTML="<div class='bxa-av'>AI</div><div class='bxt-d'><div class='bxd'></div><div class='bxd'></div><div class='bxd'></div></div>";
-  msgs.appendChild(td);
-  msgs.scrollTop=msgs.scrollHeight;
-
-  H.push({role:"user",content:txt});
-
-  try{
-    var contents=[];
-    contents.push({role:"user",parts:[{text:"Instructions: "+SYS[M]}]});
-    contents.push({role:"model",parts:[{text:"Understood, I will follow these instructions."}]});
-    for(var i=0;i<Math.min(H.length,8);i++){
-      contents.push({role:H[i].role==="assistant"?"model":"user",parts:[{text:H[i].content}]});
-    }
-
-    var res=await fetch(
-      "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+GK,
-      {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          contents:contents,
-          generationConfig:{maxOutputTokens:600,temperature:0.7}
-        })
-      }
-    );
-    var data=await res.json();
-    var t=document.getElementById("bxtd");if(t)t.remove();
-
-    if(data.error){
-      var err=document.getElementById("bx-err");
-      err.textContent="Error: "+data.error.message;
-      err.style.display="block";
-    } else {
-      var rep=data.candidates&&data.candidates[0]&&data.candidates[0].content&&data.candidates[0].content.parts&&data.candidates[0].content.parts[0]?data.candidates[0].content.parts[0].text:"Sorry, no response received. Please try again.";
-      H.push({role:"assistant",content:rep});
-      var ad=document.createElement("div");
-      ad.className="bxa";
-      ad.innerHTML="<div class='bxa-av'>AI</div><div class='bxa-txt'>"+rep.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/
-/g,"<br/>")+"</div>";
-      msgs.appendChild(ad);
-    }
-  }catch(e){
-    var t=document.getElementById("bxtd");if(t)t.remove();
-    var err=document.getElementById("bx-err");
-    err.textContent="Network error: "+e.message;
-    err.style.display="block";
-  }
-  msgs.scrollTop=msgs.scrollHeight;
-  L=false;
-  document.getElementById("bx-snd").disabled=false;
-};
-})();
-</script>
-<!-- END BELONG AI BUBBLE -->
 </body>
 </html>
