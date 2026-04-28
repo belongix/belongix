@@ -465,8 +465,8 @@
   // ── UI ───────────────────────────────────────────────────────────
   var CSS = [
     "#bx-bubble{position:fixed;bottom:24px;right:24px;z-index:2147483647;font-family:'DM Sans',system-ui,sans-serif;display:block}",
-    "#bx-btn{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#0EA5E9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,99,235,.5),0 0 0 0 rgba(37,99,235,.4);transition:.3s;position:relative;animation:bxBtnPulse 3s infinite}",
-    "@keyframes bxBtnPulse{0%,100%{box-shadow:0 4px 20px rgba(37,99,235,.5),0 0 0 0 rgba(37,99,235,.3)}70%{box-shadow:0 4px 20px rgba(37,99,235,.5),0 0 0 10px rgba(37,99,235,.0)}}",
+    "#bx-btn{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1D4ED8,#0EA5E9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,99,235,.5);transition:.3s;position:relative;animation:bxPop 3s ease-in-out infinite}",
+    "@keyframes bxPop{0%,100%{box-shadow:0 4px 20px rgba(37,99,235,.5),0 0 0 0 rgba(37,99,235,.35)}65%{box-shadow:0 4px 20px rgba(37,99,235,.5),0 0 0 12px rgba(37,99,235,.0)}}",
     "#bx-btn:hover{transform:scale(1.1);animation:none}",
     "#bx-btn svg{width:26px;height:26px;color:white;display:block;flex-shrink:0}",
     "#bx-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;background:#10B981;border-radius:50%;border:2px solid white;animation:bxPulse 2s infinite;pointer-events:none}",
@@ -520,7 +520,40 @@
     head.id = "bx-head";
     var ava = document.createElement("div");
     ava.id = "bx-head-avatar";
-    ava.innerHTML = '<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><rect x="6" y="10" width="28" height="22" rx="6" fill="white" opacity="0.9"/><rect x="10" y="16" width="6" height="6" rx="1.5" fill="#2563EB"/><rect x="24" y="16" width="6" height="6" rx="1.5" fill="#2563EB"/><circle cx="13" cy="18.5" r="1.8" fill="white"/><circle cx="27" cy="18.5" r="1.8" fill="white"/><rect x="14" y="27" width="12" height="2.5" rx="1.25" fill="#93C5FD"/><rect x="17" y="5" width="6" height="6" rx="2" fill="rgba(255,255,255,0.7)"/><circle cx="20" cy="5.5" r="2" fill="#93C5FD"/><line x1="6" y1="21" x2="2" y2="21" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/><line x1="34" y1="21" x2="38" y2="21" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/></svg>';
+    ava.textContent = "\uD83E\uDD16";
+
+    // Build cartoon robot button icon via DOM — no string/quote issues
+    var robotSvg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+    robotSvg.setAttribute("viewBox","0 0 56 56");
+    robotSvg.setAttribute("width","34");
+    robotSvg.setAttribute("height","34");
+    robotSvg.style.cssText = "pointer-events:none;display:block";
+
+    function svgEl(tag,attrs){
+      var el = document.createElementNS("http://www.w3.org/2000/svg",tag);
+      Object.keys(attrs).forEach(function(k){ el.setAttribute(k,attrs[k]); });
+      return el;
+    }
+    // Robot body
+    robotSvg.appendChild(svgEl("rect",{x:"9",y:"15",width:"38",height:"28",rx:"9",fill:"white",opacity:"0.95"}));
+    // Eyes (glowing squares)
+    robotSvg.appendChild(svgEl("rect",{x:"14",y:"22",width:"9",height:"9",rx:"2.5",fill:"#3B82F6"}));
+    robotSvg.appendChild(svgEl("rect",{x:"33",y:"22",width:"9",height:"9",rx:"2.5",fill:"#3B82F6"}));
+    // Eye shine
+    robotSvg.appendChild(svgEl("circle",{cx:"17",cy:"24.5",r:"2.2",fill:"white"}));
+    robotSvg.appendChild(svgEl("circle",{cx:"36",cy:"24.5",r:"2.2",fill:"white"}));
+    // Smile
+    robotSvg.appendChild(svgEl("rect",{x:"19",y:"36",width:"18",height:"3",rx:"1.5",fill:"#BFDBFE"}));
+    robotSvg.appendChild(svgEl("rect",{x:"24",y:"39",width:"8",height:"2.5",rx:"1.25",fill:"#BFDBFE"}));
+    // Antenna
+    robotSvg.appendChild(svgEl("rect",{x:"25",y:"7",width:"6",height:"9",rx:"2",fill:"white",opacity:"0.85"}));
+    robotSvg.appendChild(svgEl("circle",{cx:"28",cy:"7",r:"3",fill:"#93C5FD"}));
+    // Arms
+    robotSvg.appendChild(svgEl("rect",{x:"2",y:"24",width:"8",height:"3",rx:"1.5",fill:"white",opacity:"0.8"}));
+    robotSvg.appendChild(svgEl("rect",{x:"46",y:"24",width:"8",height:"3",rx:"1.5",fill:"white",opacity:"0.8"}));
+    // Fists
+    robotSvg.appendChild(svgEl("circle",{cx:"4",cy:"25.5",r:"2.5",fill:"white",opacity:"0.75"}));
+    robotSvg.appendChild(svgEl("circle",{cx:"52",cy:"25.5",r:"2.5",fill:"white",opacity:"0.75"}));
     var hInfo = document.createElement("div");
     hInfo.id = "bx-head-info";
     var h4 = document.createElement("h4");
@@ -561,7 +594,7 @@
     var tBtn = document.createElement("button");
     tBtn.id = "bx-btn";
     tBtn.type = "button";
-    tBtn.innerHTML = '<svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36"><rect x="10" y="14" width="36" height="28" rx="8" fill="white" opacity="0.95"/><rect x="16" y="21" width="8" height="8" rx="2" fill="#2563EB"/><rect x="32" y="21" width="8" height="8" rx="2" fill="#2563EB"/><circle cx="19" cy="24" r="2.2" fill="white"/><circle cx="35" cy="24" r="2.2" fill="white"/><rect x="20" y="34" width="16" height="3" rx="1.5" fill="#BFDBFE"/><rect x="25" y="8" width="6" height="7" rx="2" fill="white" opacity="0.9"/><circle cx="28" cy="8" r="2.5" fill="#93C5FD"/><line x1="10" y1="27" x2="5" y2="27" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/><line x1="46" y1="27" x2="51" y2="27" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/></svg>';
+    tBtn.appendChild(robotSvg);
     var dot = document.createElement("div");
     dot.id = "bx-dot";
     tBtn.appendChild(dot);
