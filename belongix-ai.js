@@ -651,7 +651,6 @@
       bxAppendBot(resp.text, resp.chips);
     }, delay);
   }
-
   // ── INIT
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", inject);
