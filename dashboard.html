@@ -838,7 +838,6 @@ function renderFallbackJobs(q) {
   document.getElementById("jobs-container").innerHTML = html;
   document.getElementById("jobs-count").innerHTML = '<strong>' + fallback.length + ' curated jobs</strong> from top Indian companies';
 }
-
 function toggleSave(btn) {
   btn.classList.toggle("saved");
   showToast(btn.classList.contains("saved") ? "Job saved!" : "Job removed from saved");
