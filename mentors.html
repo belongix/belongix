@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mentors — Belongix | Find Your Career Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --blue:#2563EB;--blue-dark:#1D4ED8;--blue-light:#EFF6FF;--blue-mid:#DBEAFE;
+  --navy:#1E3A5F;--teal:#0EA5E9;--green:#10B981;--amber:#F59E0B;
+  --white:#FFFFFF;--gray-50:#F8FAFC;--gray-100:#F1F5F9;--gray-200:#E2E8F0;
+  --gray-300:#CBD5E1;--gray-400:#94A3B8;--gray-500:#64748B;--gray-700:#334155;--gray-900:#0F172A;
+  --radius:14px;--shadow:0 1px 3px rgba(0,0,0,.08),0 8px 24px rgba(0,0,0,.06);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray-900);min-height:100vh}
+
+/* ── NAV ── */
+nav{background:white;border-bottom:1px solid var(--gray-200);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.06)}
+.nav-logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;color:var(--navy);text-decoration:none}
+.nav-logo span{color:var(--blue)}
+.nav-links{display:flex;align-items:center;gap:24px}
+.nav-links a{font-size:14px;color:var(--gray-500);text-decoration:none;font-weight:500;transition:.2s}
+.nav-links a:hover{color:var(--gray-900)}
+.nav-links a.active{color:var(--blue);font-weight:600}
+.nav-cta{display:flex;gap:10px;align-items:center}
+.btn-outline{padding:8px 18px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:white;color:var(--gray-700);text-decoration:none;transition:.2s;font-family:'DM Sans',sans-serif}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+.btn-primary{padding:9px 20px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;background:var(--blue);color:white;text-decoration:none;transition:.2s;font-family:'DM Sans',sans-serif}
+.btn-primary:hover{background:var(--blue-dark)}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#1E3A5F 0%,#2563EB 60%,#0EA5E9 100%);padding:64px 40px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,.07),transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(14,165,233,.2),transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:white;margin-bottom:20px}
+.hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:800;color:white;line-height:1.15;margin-bottom:16px;position:relative;z-index:1}
+.hero h1 span{color:#93C5FD}
+.hero p{font-size:16px;color:rgba(255,255,255,.8);max-width:520px;margin:0 auto 32px;line-height:1.7;position:relative;z-index:1}
+.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.hero-btn-white{background:white;color:var(--blue);border:none;border-radius:10px;padding:13px 28px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;text-decoration:none;display:inline-block}
+.hero-btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.hero-btn-ghost{background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;padding:12px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;text-decoration:none;display:inline-block}
+.hero-btn-ghost:hover{background:rgba(255,255,255,.25)}
+.hero-stats{display:flex;gap:32px;justify-content:center;margin-top:40px;flex-wrap:wrap;position:relative;z-index:1}
+.hero-stat{text-align:center}
+.hero-stat-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;color:white}
+.hero-stat-label{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px}
+
+/* ── TABS ── */
+.tabs-bar{background:white;border-bottom:1px solid var(--gray-200);padding:0 40px;display:flex;gap:4px}
+.tab-btn{padding:16px 20px;font-size:14px;font-weight:600;color:var(--gray-500);border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;transition:.2s;font-family:'DM Sans',sans-serif}
+.tab-btn:hover{color:var(--gray-900)}
+.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* ── MAIN LAYOUT ── */
+.container{max-width:1200px;margin:0 auto;padding:40px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── FILTERS ── */
+.filters-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;align-items:center}
+.filter-select{padding:9px 14px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--gray-700);background:white;cursor:pointer;transition:.2s}
+.filter-select:focus{outline:none;border-color:var(--blue)}
+.search-wrap{flex:1;min-width:200px;position:relative}
+.search-wrap input{width:100%;padding:9px 14px 9px 38px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--gray-900);background:white;transition:.2s}
+.search-wrap input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gray-400);width:15px;height:15px}
+
+/* ── MENTOR GRID ── */
+.mentors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.mentor-card{background:white;border-radius:var(--radius);border:1.5px solid var(--gray-200);padding:24px;transition:.25s;position:relative}
+.mentor-card:hover{border-color:var(--blue);box-shadow:0 8px 32px rgba(37,99,235,.12);transform:translateY(-2px)}
+.mentor-card-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.mentor-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.mentor-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;margin-bottom:3px}
+.mentor-role{font-size:13px;color:var(--gray-500);margin-bottom:6px}
+.mentor-company{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gray-600,#475569);font-weight:500}
+.mentor-badge{position:absolute;top:16px;right:16px;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px}
+.badge-free{background:#F0FDF4;color:#15803D}
+.badge-paid{background:#EFF6FF;color:#2563EB}
+.mentor-bio{font-size:13px;color:var(--gray-500);line-height:1.6;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mentor-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.mentor-tag{background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
+.mentor-meta{display:flex;gap:16px;font-size:12px;color:var(--gray-500);margin-bottom:16px}
+.mentor-meta span{display:flex;align-items:center;gap:4px}
+.mentor-footer{display:flex;gap:8px}
+.btn-book{flex:1;background:var(--blue);color:white;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
+.btn-book:hover{background:var(--blue-dark)}
+.btn-view{background:white;color:var(--blue);border:1.5px solid var(--blue);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
+.btn-view:hover{background:var(--blue-light)}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:80px 24px;color:var(--gray-500)}
+.empty-state svg{width:64px;height:64px;color:var(--gray-300);margin-bottom:16px}
+.empty-state h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:700;color:var(--gray-700);margin-bottom:8px}
+
+/* ── REGISTRATION FORM ── */
+.register-layout{display:grid;grid-template-columns:1fr 400px;gap:32px;align-items:start}
+.form-card{background:white;border-radius:var(--radius);border:1px solid var(--gray-200);padding:32px;box-shadow:var(--shadow)}
+.form-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px}
+.form-subtitle{font-size:14px;color:var(--gray-500);margin-bottom:28px;line-height:1.5}
+.form-section{margin-bottom:24px}
+.form-section-title{font-size:12px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--gray-100)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:6px}
+.form-group label span{color:#EF4444;margin-left:2px}
+.form-control{width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--gray-900);transition:.2s;background:white}
+.form-control:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
+.form-control::placeholder{color:var(--gray-400)}
+textarea.form-control{resize:vertical;min-height:90px;line-height:1.6}
+select.form-control{cursor:pointer}
+.checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.checkbox-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:8px;cursor:pointer;transition:.15s;font-size:13px}
+.checkbox-item:hover{border-color:var(--blue);background:var(--blue-light)}
+.checkbox-item input{accent-color:var(--blue);width:15px;height:15px;flex-shrink:0}
+.checkbox-item.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:600}
+.submit-btn{width:100%;background:linear-gradient(135deg,var(--blue),var(--teal));color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;margin-top:8px}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(37,99,235,.35)}
+.submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
+
+/* ── SIDEBAR INFO ── */
+.info-card{background:white;border-radius:var(--radius);border:1px solid var(--gray-200);padding:24px;margin-bottom:20px;box-shadow:var(--shadow)}
+.info-card-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.info-step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
+.info-step:last-child{margin-bottom:0}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--blue);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
+.step-text h4{font-size:13px;font-weight:700;margin-bottom:2px}
+.step-text p{font-size:12px;color:var(--gray-500);line-height:1.4}
+.perk-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;font-size:13px}
+.perk-item:last-child{margin-bottom:0}
+.perk-icon{font-size:18px;flex-shrink:0;margin-top:-1px}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.25s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:white;border-radius:20px;padding:32px;max-width:500px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.2);transform:translateY(16px);transition:.25s}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;margin-bottom:6px}
+.modal-subtitle{font-size:13px;color:var(--gray-500);margin-bottom:24px}
+.modal-close{position:absolute;top:16px;right:16px;background:var(--gray-100);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+
+/* ── SUCCESS ── */
+.success-box{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1.5px solid #86EFAC;border-radius:16px;padding:40px;text-align:center;max-width:520px;margin:0 auto;display:none}
+
+/* ── LOADING ── */
+.spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--gray-900);color:white;padding:12px 20px;border-radius:10px;font-size:14px;z-index:9999;opacity:0;transform:translateY(8px);transition:.3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  nav{padding:0 16px}
+  .hero{padding:48px 20px}
+  .tabs-bar{padding:0 16px}
+  .container{padding:24px 16px}
+  .register-layout{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+  .checkbox-grid{grid-template-columns:1fr}
+  .filters-row{flex-direction:column}
+  .search-wrap{min-width:unset;width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Be<span>longix</span></a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="mentors.html" class="active">Mentors</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  <div class="nav-cta">
+    <a href="dashboard.html" class="btn-outline">Dashboard</a>
+    <a href="#register" onclick="switchTab('register');return false" class="btn-primary">Become a Mentor</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🎓 Real Mentors · Real Guidance</div>
+  <h1>Find Your <span>Career Mentor</span><br>or Become One</h1>
+  <p>Connect with verified professionals who've been where you want to go. Real guidance from real people — no fluff.</p>
+  <div class="hero-actions">
+    <a href="#directory" onclick="switchTab('directory');return false" class="hero-btn-white">🔍 Find a Mentor</a>
+    <a href="#register" onclick="switchTab('register');return false" class="hero-btn-ghost">✋ Become a Mentor</a>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat"><div class="hero-stat-num" id="stat-mentors">—</div><div class="hero-stat-label">Registered Mentors</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">Free</div><div class="hero-stat-label">To Browse & Connect</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">🇮🇳</div><div class="hero-stat-label">India Focused</div></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('directory',this)" id="tab-directory">🔍 Find a Mentor</button>
+  <button class="tab-btn" onclick="switchTab('register',this)" id="tab-register">✋ Become a Mentor</button>
+</div>
+
+<!-- ── DIRECTORY TAB ── -->
+<div class="tab-panel active" id="panel-directory">
+  <div class="container">
+
+    <div class="filters-row">
+      <div class="search-wrap">
+        <svg class="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="searchInput" placeholder="Search by name, role, or skill..." oninput="filterMentors()">
+      </div>
+      <select class="filter-select" id="filterField" onchange="filterMentors()">
+        <option value="">All Fields</option>
+        <option value="Software Engineering">Software Engineering</option>
+        <option value="Data Science">Data Science & AI/ML</option>
+        <option value="Product Management">Product Management</option>
+        <option value="DevOps">DevOps & Cloud</option>
+        <option value="Cybersecurity">Cybersecurity</option>
+        <option value="UI/UX Design">UI/UX Design</option>
+        <option value="Full Stack">Full Stack Development</option>
+        <option value="Data Engineering">Data Engineering</option>
+        <option value="Finance">Finance & FinTech</option>
+        <option value="Marketing">Marketing & Growth</option>
+        <option value="HR">HR & Recruitment</option>
+        <option value="Startup">Entrepreneurship & Startups</option>
+      </select>
+      <select class="filter-select" id="filterExp" onchange="filterMentors()">
+        <option value="">All Experience</option>
+        <option value="1-3">1–3 years</option>
+        <option value="3-5">3–5 years</option>
+        <option value="5-10">5–10 years</option>
+        <option value="10+">10+ years</option>
+      </select>
+      <select class="filter-select" id="filterType" onchange="filterMentors()">
+        <option value="">Free & Paid</option>
+        <option value="free">Free Only</option>
+        <option value="paid">Paid Only</option>
+      </select>
+    </div>
+
+    <div id="mentors-grid" class="mentors-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray-400)">
+        <div style="font-size:32px;margin-bottom:12px">⏳</div>
+        <div style="font-size:15px;font-weight:600">Loading mentors...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── REGISTER TAB ── -->
+<div class="tab-panel" id="panel-register">
+  <div class="container">
+    <div id="register-form-wrap">
+      <div class="register-layout">
+
+        <!-- FORM -->
+        <div class="form-card">
+          <div class="form-title">Apply to be a Mentor 🎓</div>
+          <div class="form-subtitle">Share your expertise with professionals who need your guidance. Applications reviewed within 48 hours.</div>
+
+          <!-- Personal Info -->
+          <div class="form-section">
+            <div class="form-section-title">Personal Information</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>First Name <span>*</span></label>
+                <input type="text" class="form-control" id="r-fname" placeholder="Arjun">
+              </div>
+              <div class="form-group">
+                <label>Last Name <span>*</span></label>
+                <input type="text" class="form-control" id="r-lname" placeholder="Sharma">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Email Address <span>*</span></label>
+              <input type="email" class="form-control" id="r-email" placeholder="arjun@example.com">
+            </div>
+            <div class="form-group">
+              <label>Phone Number <span>*</span></label>
+              <input type="tel" class="form-control" id="r-phone" placeholder="9876543210" maxlength="10">
+            </div>
+            <div class="form-group">
+              <label>City <span>*</span></label>
+              <select class="form-control" id="r-city">
+                <option value="">Select your city</option>
+                <option>Bangalore</option><option>Hyderabad</option><option>Mumbai</option>
+                <option>Pune</option><option>Chennai</option><option>Delhi NCR</option>
+                <option>Kolkata</option><option>Ahmedabad</option><option>Remote</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Professional Info -->
+          <div class="form-section">
+            <div class="form-section-title">Professional Background</div>
+            <div class="form-group">
+              <label>Current Job Title <span>*</span></label>
+              <input type="text" class="form-control" id="r-title" placeholder="Senior Software Engineer">
+            </div>
+            <div class="form-group">
+              <label>Current Company <span>*</span></label>
+              <input type="text" class="form-control" id="r-company" placeholder="Google, Razorpay, TCS...">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Field / Domain <span>*</span></label>
+                <select class="form-control" id="r-field">
+                  <option value="">Select field</option>
+                  <option>Software Engineering</option><option>Data Science</option>
+                  <option>Product Management</option><option>DevOps</option>
+                  <option>Cybersecurity</option><option>UI/UX Design</option>
+                  <option>Full Stack</option><option>Data Engineering</option>
+                  <option>Finance</option><option>Marketing</option>
+                  <option>HR</option><option>Startup</option><option>Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Years of Experience <span>*</span></label>
+                <select class="form-control" id="r-exp">
+                  <option value="">Select experience</option>
+                  <option value="1-3">1–3 years</option>
+                  <option value="3-5">3–5 years</option>
+                  <option value="5-10">5–10 years</option>
+                  <option value="10+">10+ years</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>LinkedIn Profile URL <span>*</span></label>
+              <input type="url" class="form-control" id="r-linkedin" placeholder="https://linkedin.com/in/yourname">
+            </div>
+          </div>
+
+          <!-- Mentoring -->
+          <div class="form-section">
+            <div class="form-section-title">Mentoring Details</div>
+            <div class="form-group">
+              <label>Who do you want to help? <span>*</span></label>
+              <div class="checkbox-grid" id="audience-grid">
+                <label class="checkbox-item"><input type="checkbox" value="Students"> College Students</label>
+                <label class="checkbox-item"><input type="checkbox" value="Freshers"> Fresh Graduates</label>
+                <label class="checkbox-item"><input type="checkbox" value="Professionals"> Working Professionals</label>
+                <label class="checkbox-item"><input type="checkbox" value="Career Changers"> Career Changers</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Key Skills / Topics you can mentor on <span>*</span></label>
+              <input type="text" class="form-control" id="r-skills" placeholder="e.g. Python, System Design, Resume Review, DSA, AWS...">
+              <div style="font-size:11px;color:var(--gray-400);margin-top:5px">Separate with commas</div>
+            </div>
+            <div class="form-group">
+              <label>Your Bio — Tell mentees about yourself <span>*</span></label>
+              <textarea class="form-control" id="r-bio" placeholder="I'm a senior engineer at Razorpay with 6 years of experience in fintech. I love helping freshers crack their first interviews and professionals navigate career growth..."></textarea>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Session Type <span>*</span></label>
+                <select class="form-control" id="r-session-type">
+                  <option value="">Select type</option>
+                  <option value="free">Free (Volunteer)</option>
+                  <option value="paid">Paid Sessions</option>
+                  <option value="both">Both Free & Paid</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Availability per month</label>
+                <select class="form-control" id="r-availability">
+                  <option value="1-2 sessions">1–2 sessions</option>
+                  <option value="3-5 sessions">3–5 sessions</option>
+                  <option value="5-10 sessions">5–10 sessions</option>
+                  <option value="10+ sessions">10+ sessions</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group" id="rate-group" style="display:none">
+              <label>Session Rate (₹ per 30 minutes)</label>
+              <input type="number" class="form-control" id="r-rate" placeholder="500" min="0">
+            </div>
+          </div>
+
+          <div style="background:var(--blue-light);border-radius:10px;padding:14px;font-size:13px;color:var(--blue);margin-bottom:20px;line-height:1.5">
+            <b>📋 What happens next:</b> Our team reviews your application within 48 hours. Approved mentors get a profile on Belongix and start receiving session requests.
+          </div>
+
+          <button class="submit-btn" id="register-btn" onclick="submitMentorApplication()">
+            Submit My Application →
+          </button>
+        </div>
+
+        <!-- SIDEBAR -->
+        <div>
+          <div class="info-card">
+            <div class="info-card-title">⚙️ How It Works</div>
+            <div class="info-step">
+              <div class="step-num">1</div>
+              <div class="step-text"><h4>Apply</h4><p>Fill in your details and submit your application</p></div>
+            </div>
+            <div class="info-step">
+              <div class="step-num">2</div>
+              <div class="step-text"><h4>Review</h4><p>Our team verifies your LinkedIn and background within 48 hours</p></div>
+            </div>
+            <div class="info-step">
+              <div class="step-num">3</div>
+              <div class="step-text"><h4>Go Live</h4><p>Your profile appears in the mentor directory</p></div>
+            </div>
+            <div class="info-step">
+              <div class="step-num">4</div>
+              <div class="step-text"><h4>Connect</h4><p>Mentees can find and book sessions with you</p></div>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <div class="info-card-title">💚 Why Mentor on Belongix</div>
+            <div class="perk-item"><div class="perk-icon">🎯</div><div><b>Right audience</b> — mentees who are genuinely motivated and career-focused</div></div>
+            <div class="perk-item"><div class="perk-icon">🌟</div><div><b>Build your brand</b> — establish yourself as a thought leader in your field</div></div>
+            <div class="perk-item"><div class="perk-icon">💰</div><div><b>Earn from sessions</b> — set your own rate for paid sessions</div></div>
+            <div class="perk-item"><div class="perk-icon">🤝</div><div><b>Give back</b> — help the next generation of Indian professionals</div></div>
+            <div class="perk-item"><div class="perk-icon">📅</div><div><b>Flexible schedule</b> — mentor at your own pace and availability</div></div>
+          </div>
+
+          <div class="info-card" style="background:linear-gradient(135deg,#1E3A5F,#2563EB);border:none">
+            <div style="color:white;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px">Questions?</div>
+            <div style="color:rgba(255,255,255,.75);font-size:13px;margin-bottom:16px;line-height:1.5">Write to us at teambelongix@gmail.com and we'll get back within 24 hours.</div>
+            <a href="mailto:teambelongix@gmail.com" style="display:inline-block;background:white;color:#2563EB;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;text-decoration:none">📧 Email Us</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-box" id="register-success">
+      <div style="font-size:52px;margin-bottom:16px">🎉</div>
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:800;color:#15803D;margin-bottom:8px">Application Submitted!</div>
+      <div style="font-size:14px;color:#166534;line-height:1.6;margin-bottom:20px">Thank you for applying to be a Belongix mentor! Our team will review your profile and get back to you at your email within 48 hours.</div>
+      <div style="background:white;border-radius:12px;padding:16px;margin-bottom:20px;text-align:left">
+        <div style="font-size:12px;font-weight:700;color:var(--gray-500);margin-bottom:8px">WHAT HAPPENS NEXT</div>
+        <div style="font-size:13px;color:var(--gray-700);display:flex;flex-direction:column;gap:8px">
+          <div>✅ Application received in our system</div>
+          <div>📧 Confirmation sent to your email</div>
+          <div>⏳ Review by Belongix team within 48 hrs</div>
+          <div>🚀 Profile goes live on mentor directory</div>
+        </div>
+      </div>
+      <button onclick="switchTab('directory')" style="background:#15803D;color:white;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Browse Other Mentors →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="bookingModal">
+  <div class="modal" style="position:relative">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modal-mentor-name">Book a Session</div>
+    <div class="modal-subtitle" id="modal-mentor-role">Send a session request to this mentor</div>
+    <div class="form-group">
+      <label>Your Name <span style="color:#EF4444">*</span></label>
+      <input type="text" class="form-control" id="book-name" placeholder="Your full name">
+    </div>
+    <div class="form-group">
+      <label>Your Email <span style="color:#EF4444">*</span></label>
+      <input type="email" class="form-control" id="book-email" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label>What do you need help with? <span style="color:#EF4444">*</span></label>
+      <textarea class="form-control" id="book-message" placeholder="e.g. I'm preparing for FAANG interviews and need help with system design. I have 2 years of experience as a backend developer..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Preferred Session Type</label>
+      <select class="form-control" id="book-type">
+        <option value="30min">30-minute session</option>
+        <option value="60min">60-minute session</option>
+        <option value="ongoing">Ongoing mentorship</option>
+      </select>
+    </div>
+    <button onclick="submitBooking()" class="submit-btn">Send Session Request →</button>
+    <div style="text-align:center;font-size:11px;color:var(--gray-400);margin-top:10px">Your request will be sent to the mentor's email. They will respond within 24-48 hours.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="belongix-ai.js"></script>
+
+<script>
+var SB_URL = 'https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb = supabase.createClient(SB_URL, SB_KEY);
+var allMentors = [];
+var currentMentorId = null;
+
+var AVATAR_COLORS = [
+  'linear-gradient(135deg,#2563EB,#0EA5E9)',
+  'linear-gradient(135deg,#7C3AED,#0EA5E9)',
+  'linear-gradient(135deg,#10B981,#2563EB)',
+  'linear-gradient(135deg,#F59E0B,#EF4444)',
+  'linear-gradient(135deg,#EC4899,#7C3AED)',
+  'linear-gradient(135deg,#0EA5E9,#10B981)',
+  'linear-gradient(135deg,#1E3A5F,#2563EB)',
+  'linear-gradient(135deg,#DC2626,#F59E0B)'
+];
+
+// ── TAB SWITCHING ──
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'directory') loadMentors();
+}
+
+// ── LOAD MENTORS ──
+async function loadMentors() {
+  try {
+    var res = await sb.from('mentors').select('*').eq('approved', true).order('created_at', { ascending: false });
+    allMentors = (res.data || []);
+    document.getElementById('stat-mentors').textContent = allMentors.length || '0';
+    renderMentors(allMentors);
+  } catch(e) {
+    renderMentors([]);
+  }
+}
+
+function renderMentors(mentors) {
+  var grid = document.getElementById('mentors-grid');
+  if (!mentors.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:80px 24px">' +
+      '<div style="font-size:48px;margin-bottom:16px">🎓</div>' +
+      '<div style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:20px;font-weight:700;color:var(--gray-700);margin-bottom:8px">No mentors yet — be the first!</div>' +
+      '<div style="font-size:14px;color:var(--gray-500);margin-bottom:24px">Belongix is building its mentor network. Apply to be among our founding mentors and shape the community.</div>' +
+      '<button onclick="switchTab(\'register\')" style="background:var(--blue);color:white;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif">Become a Founding Mentor →</button>' +
+      '</div>';
+    return;
+  }
+  grid.innerHTML = mentors.map(function(m, i) {
+    var initials = ((m.first_name || '')[0] || '') + ((m.last_name || '')[0] || '');
+    var color = AVATAR_COLORS[i % AVATAR_COLORS.length];
+    var skills = (m.skills || '').split(',').slice(0,3).map(function(s){
+      return '<span class="mentor-tag">' + s.trim() + '</span>';
+    }).join('');
+    var isFree = m.session_type === 'free' || m.session_type === 'both';
+    var isPaid = m.session_type === 'paid' || m.session_type === 'both';
+    var badge = isFree && !isPaid ? '<div class="mentor-badge badge-free">FREE</div>' :
+                isPaid && !isFree ? '<div class="mentor-badge badge-paid">PAID</div>' :
+                '<div class="mentor-badge badge-free">FREE & PAID</div>';
+    return '<div class="mentor-card">' +
+      badge +
+      '<div class="mentor-card-top">' +
+        '<div class="mentor-avatar" style="background:' + color + '">' + initials.toUpperCase() + '</div>' +
+        '<div>' +
+          '<div class="mentor-name">' + m.first_name + ' ' + m.last_name + '</div>' +
+          '<div class="mentor-role">' + (m.job_title || '') + '</div>' +
+          '<div class="mentor-company">🏢 ' + (m.company || '') + ' · 📍 ' + (m.city || '') + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="mentor-bio">' + (m.bio || '') + '</div>' +
+      '<div class="mentor-tags">' + skills + '</div>' +
+      '<div class="mentor-meta">' +
+        '<span>💼 ' + (m.experience || '') + ' exp</span>' +
+        '<span>📅 ' + (m.availability || '1-2 sessions') + '/month</span>' +
+        (m.rate ? '<span>💰 ₹' + m.rate + '/30min</span>' : '<span>💚 Free sessions</span>') +
+      '</div>' +
+      '<div class="mentor-footer">' +
+        '<button class="btn-book" onclick="openBooking(\'' + m.id + '\',\'' + m.first_name + ' ' + m.last_name + '\',\'' + (m.job_title || '') + ' at ' + (m.company || '') + '\',\'' + (m.email || '') + '\')">Book Session</button>' +
+        (m.linkedin ? '<a href="' + m.linkedin + '" target="_blank" class="btn-view">LinkedIn ↗</a>' : '') +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function filterMentors() {
+  var q = document.getElementById('searchInput').value.toLowerCase();
+  var field = document.getElementById('filterField').value;
+  var exp = document.getElementById('filterExp').value;
+  var type = document.getElementById('filterType').value;
+  var filtered = allMentors.filter(function(m) {
+    var text = ((m.first_name || '') + ' ' + (m.last_name || '') + ' ' + (m.job_title || '') + ' ' + (m.skills || '') + ' ' + (m.company || '')).toLowerCase();
+    if (q && text.indexOf(q) === -1) return false;
+    if (field && (m.field || '') !== field) return false;
+    if (exp && (m.experience || '') !== exp) return false;
+    if (type === 'free' && m.session_type === 'paid') return false;
+    if (type === 'paid' && m.session_type === 'free') return false;
+    return true;
+  });
+  renderMentors(filtered);
+}
+
+// ── REGISTRATION ──
+document.getElementById('r-session-type').addEventListener('change', function() {
+  document.getElementById('rate-group').style.display = (this.value === 'paid' || this.value === 'both') ? 'block' : 'none';
+});
+
+document.querySelectorAll('.checkbox-item').forEach(function(item) {
+  item.querySelector('input').addEventListener('change', function() {
+    item.classList.toggle('selected', this.checked);
+  });
+});
+
+async function submitMentorApplication() {
+  var btn = document.getElementById('register-btn');
+  var fname = document.getElementById('r-fname').value.trim();
+  var lname = document.getElementById('r-lname').value.trim();
+  var email = document.getElementById('r-email').value.trim();
+  var phone = document.getElementById('r-phone').value.trim();
+  var city = document.getElementById('r-city').value;
+  var title = document.getElementById('r-title').value.trim();
+  var company = document.getElementById('r-company').value.trim();
+  var field = document.getElementById('r-field').value;
+  var exp = document.getElementById('r-exp').value;
+  var linkedin = document.getElementById('r-linkedin').value.trim();
+  var skills = document.getElementById('r-skills').value.trim();
+  var bio = document.getElementById('r-bio').value.trim();
+  var sessionType = document.getElementById('r-session-type').value;
+  var availability = document.getElementById('r-availability').value;
+  var rate = document.getElementById('r-rate').value;
+
+  var audience = [];
+  document.querySelectorAll('#audience-grid input:checked').forEach(function(cb){ audience.push(cb.value); });
+
+  if (!fname || !lname || !email || !phone || !city || !title || !company || !field || !exp || !linkedin || !skills || !bio || !sessionType) {
+    showToast('Please fill in all required fields'); return;
+  }
+  if (!email.includes('@')) { showToast('Please enter a valid email'); return; }
+  if (!linkedin.includes('linkedin.com')) { showToast('Please enter a valid LinkedIn URL'); return; }
+  if (audience.length === 0) { showToast('Please select at least one audience type'); return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Submitting...';
+
+  try {
+    var payload = {
+      first_name: fname, last_name: lname, email: email, phone: phone,
+      city: city, job_title: title, company: company, field: field,
+      experience: exp, linkedin: linkedin, skills: skills, bio: bio,
+      session_type: sessionType, availability: availability,
+      rate: rate ? parseInt(rate) : null,
+      audience: audience.join(', '),
+      approved: false,
+      created_at: new Date().toISOString()
+    };
+
+    var res = await sb.from('mentors').insert([payload]);
+    if (res.error) throw res.error;
+
+    // Send email notification to Belongix team
+    var subject = encodeURIComponent('New Mentor Application — ' + fname + ' ' + lname + ' (' + company + ')');
+    var body = encodeURIComponent(
+      'NEW MENTOR APPLICATION — BELONGIX\n\n' +
+      'Name: ' + fname + ' ' + lname + '\n' +
+      'Email: ' + email + '\n' +
+      'Phone: ' + phone + '\n' +
+      'City: ' + city + '\n' +
+      'Title: ' + title + '\n' +
+      'Company: ' + company + '\n' +
+      'Field: ' + field + '\n' +
+      'Experience: ' + exp + '\n' +
+      'LinkedIn: ' + linkedin + '\n' +
+      'Skills: ' + skills + '\n' +
+      'Session Type: ' + sessionType + '\n' +
+      'Availability: ' + availability + '\n' +
+      'Rate: ' + (rate ? 'Rs.' + rate + '/30min' : 'Free') + '\n' +
+      'Audience: ' + audience.join(', ') + '\n\n' +
+      'Bio:\n' + bio + '\n\n' +
+      'Please review and approve in Supabase dashboard.'
+    );
+
+    document.getElementById('register-form-wrap').style.display = 'none';
+    document.getElementById('register-success').style.display = 'block';
+
+    setTimeout(function() {
+      try { window.location.href = 'mailto:teambelongix@gmail.com?subject=' + subject + '&body=' + body; } catch(e) {}
+    }, 800);
+
+  } catch(e) {
+    showToast('Something went wrong. Please try again or email us directly.');
+    btn.disabled = false;
+    btn.innerHTML = 'Submit My Application →';
+  }
+}
+
+// ── BOOKING ──
+function openBooking(mentorId, name, role, mentorEmail) {
+  currentMentorId = { id: mentorId, name: name, email: mentorEmail };
+  document.getElementById('modal-mentor-name').textContent = 'Book a session with ' + name;
+  document.getElementById('modal-mentor-role').textContent = role;
+  document.getElementById('bookingModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('bookingModal').classList.remove('open');
+  currentMentorId = null;
+}
+
+async function submitBooking() {
+  var name = document.getElementById('book-name').value.trim();
+  var email = document.getElementById('book-email').value.trim();
+  var message = document.getElementById('book-message').value.trim();
+  var type = document.getElementById('book-type').value;
+
+  if (!name || !email || !message) { showToast('Please fill in all fields'); return; }
+
+  try {
+    await sb.from('mentor_bookings').insert([{
+      mentor_id: currentMentorId.id,
+      mentee_name: name,
+      mentee_email: email,
+      message: message,
+      session_type: type,
+      status: 'pending',
+      created_at: new Date().toISOString()
+    }]);
+  } catch(e) {}
+
+  // Email to mentor
+  var subject = encodeURIComponent('New Session Request on Belongix from ' + name);
+  var body = encodeURIComponent(
+    'Hello,\n\nYou have a new session request on Belongix!\n\n' +
+    'From: ' + name + '\nEmail: ' + email + '\nSession Type: ' + type + '\n\n' +
+    'Their message:\n' + message + '\n\n' +
+    'Please reply to ' + email + ' to confirm the session.\n\nThanks,\nBelongix Team'
+  );
+
+  closeModal();
+  showToast('Request sent! The mentor will contact you within 24-48 hours.');
+  setTimeout(function() {
+    try { window.location.href = 'mailto:' + (currentMentorId ? currentMentorId.email : 'teambelongix@gmail.com') + '?subject=' + subject + '&body=' + body; } catch(e) {}
+  }, 1000);
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+// Close modal on backdrop click
+document.getElementById('bookingModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Init
+loadMentors();
+</script>
+</body>
+</html>
