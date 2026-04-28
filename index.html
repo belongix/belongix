@@ -308,6 +308,7 @@ footer{background:#060e1c;border-top:1px solid rgba(255,255,255,0.04);padding:4.
 @media(max-width:768px){.nlinks{display:none;}.footer-g{grid-template-columns:1fr;}.hero-stats{flex-direction:column;gap:1rem;}.fbot{flex-direction:column;text-align:center;}}
 @media(max-width:480px){.hero-form{flex-direction:column;}.cta-form{flex-direction:column;}.fr{grid-template-columns:1fr;}}
 </style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -771,7 +772,7 @@ footer{background:#060e1c;border-top:1px solid rgba(255,255,255,0.04);padding:4.
         <li>Interview prep & mock sessions</li>
         <li>Priority job matching</li>
       </ul>
-      <button class="pbtn pb-fill" onclick="openM('mSignup')">Start Pro — ₹499/mo</button>
+      <button class="pbtn pb-fill" onclick="handlePricing('pro')">Start Pro — ₹499/mo</button>
     </div>
     <div class="pc">
       <div class="plan">Premium</div>
@@ -785,7 +786,7 @@ footer{background:#060e1c;border-top:1px solid rgba(255,255,255,0.04);padding:4.
         <li>Priority recruiter access</li>
         <li>Personal career manager</li>
       </ul>
-      <button class="pbtn pb-out" onclick="openM('mSignup')">Go Premium</button>
+      <button class="pbtn pb-out" onclick="handlePricing('premium')">Go Premium — ₹999/mo</button>
     </div>
   </div>
   <div style="text-align:center;margin-top:1.5rem;font-size:0.82rem;color:var(--muted);">🏢 College & Corporate group plans available — <a style="color:var(--blue);cursor:pointer;font-weight:600;" href="contact.html">Contact us →</a></div>
@@ -1145,5 +1146,80 @@ document.getElementById('hEmail').addEventListener('keypress',e=>{if(e.key==='En
 
 
   <script src="belongix-ai.js"></script>
+
+<script>
+var RZP_KEY = "rzp_live_SiouVVDYQu9HTt";
+var SUPA_URL_IDX = "https://efhcfuaxgbzuqlmhlsxc.supabase.co";
+var SUPA_KEY_IDX = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY";
+
+async function handlePricing(plan) {
+  // Check if user is logged in via Supabase
+  var sc = window.supabase ? window.supabase.createClient(SUPA_URL_IDX, SUPA_KEY_IDX) : null;
+  var session = null;
+  if (sc) {
+    try {
+      var r = await sc.auth.getSession();
+      session = r.data && r.data.session;
+    } catch(e) {}
+  }
+
+  if (session && session.user) {
+    // Logged in — open Razorpay directly
+    openRazorpay(plan, session.user);
+  } else {
+    // Not logged in — open signup modal, store intended plan
+    sessionStorage.setItem('pendingPlan', plan);
+    if (typeof openM === 'function') openM('mSignup');
+  }
+}
+
+function openRazorpay(plan, user) {
+  var plans = {
+    pro:     { amount: 49900,  label: "Belongix Pro — ₹499/month" },
+    premium: { amount: 99900,  label: "Belongix Premium — ₹999/month" },
+    pro_yr:  { amount: 499900, label: "Belongix Pro — ₹4,999/year" }
+  };
+  var p = plans[plan] || plans.pro;
+
+  var options = {
+    key: RZP_KEY,
+    amount: p.amount,
+    currency: "INR",
+    name: "Belongix",
+    description: p.label,
+    prefill: {
+      name: (user && user.user_metadata && user.user_metadata.full_name) || "",
+      email: (user && user.email) || ""
+    },
+    theme: { color: "#2563EB" },
+    handler: function(response) {
+      onIndexPaymentSuccess(response, plan, user);
+    }
+  };
+
+  var rzp = new Razorpay(options);
+  rzp.on("payment.failed", function(resp) {
+    alert("Payment failed: " + ((resp.error && resp.error.description) || "Please try again."));
+  });
+  rzp.open();
+}
+
+async function onIndexPaymentSuccess(response, plan, user) {
+  // Update Supabase
+  try {
+    var sc = window.supabase.createClient(SUPA_URL_IDX, SUPA_KEY_IDX);
+    await sc.from("profiles").update({
+      plan: plan,
+      plan_activated: new Date().toISOString(),
+      payment_id: response.razorpay_payment_id
+    }).eq("id", user.id);
+  } catch(e) {}
+
+  // Show success and redirect to dashboard
+  alert("🎉 Payment successful! Welcome to Belongix " + (plan === 'premium' ? 'Premium' : 'Pro') + "! Redirecting to your dashboard...");
+  setTimeout(function() { window.location.href = "dashboard.html"; }, 1000);
+}
+</script>
+
 </body>
 </html>
