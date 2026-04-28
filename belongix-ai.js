@@ -463,40 +463,32 @@
   }
 
   // ── UI ───────────────────────────────────────────────────────────
-
   var CSS = [
-    "#bx-bubble{position:fixed;bottom:24px;right:24px;z-index:99999;font-family:'DM Sans',system-ui,sans-serif;all:initial;display:block}",
-    "#bx-bubble *{box-sizing:border-box;font-family:'DM Sans',system-ui,sans-serif;line-height:normal;letter-spacing:normal;text-transform:none}",
+    "#bx-bubble{position:fixed;bottom:24px;right:24px;z-index:2147483647;font-family:'DM Sans',system-ui,sans-serif;display:block}",
     "#bx-btn{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2563EB,#0EA5E9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,99,235,.4);transition:.3s;position:relative}",
     "#bx-btn:hover{transform:scale(1.08)}",
-    "#bx-btn svg{width:26px;height:26px;color:white}",
-    "#bx-dot{position:absolute;top:3px;right:3px;width:10px;height:10px;background:#10B981;border-radius:50%;border:2px solid white;animation:bxPulse 2s infinite}",
+    "#bx-btn svg{width:26px;height:26px;color:white;display:block;flex-shrink:0}",
+    "#bx-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;background:#10B981;border-radius:50%;border:2px solid white;animation:bxPulse 2s infinite;pointer-events:none}",
     "@keyframes bxPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}",
-    "#bx-window{position:fixed;bottom:92px;right:24px;width:370px;height:520px;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.18);display:none;flex-direction:column;overflow:hidden;border:1px solid #E2E8F0;z-index:99999}",
+    "#bx-window{position:fixed;bottom:92px;right:24px;width:370px;height:520px;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.18);display:none;flex-direction:column;overflow:hidden;border:1px solid #E2E8F0;z-index:2147483646}",
     "#bx-window.open{display:flex}",
-    "#bx-head{background:linear-gradient(135deg,#1E3A5F,#2563EB);padding:16px 18px;display:flex;align-items:center;gap:12px}",
+    "#bx-head{background:linear-gradient(135deg,#1E3A5F,#2563EB);padding:16px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}",
     "#bx-head-avatar{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}",
-    "#bx-head-info h4{color:white;font-size:14px;font-weight:700;margin:0}",
-    "#bx-head-info p{color:rgba(255,255,255,.7);font-size:11px;margin:0}",
-    "#bx-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:20px;line-height:1;padding:4px}",
+    "#bx-head-info h4{color:white;font-size:14px;font-weight:700;margin:0;padding:0}",
+    "#bx-head-info p{color:rgba(255,255,255,.7);font-size:11px;margin:2px 0 0 0;padding:0}",
+    "#bx-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:20px;line-height:1;padding:4px 0 4px 4px;flex-shrink:0}",
     "#bx-close:hover{color:white}",
-    "#bx-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}",
+    "#bx-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;min-height:0}",
     "#bx-msgs::-webkit-scrollbar{width:4px}",
     "#bx-msgs::-webkit-scrollbar-thumb{background:#E2E8F0;border-radius:4px}",
-    ".bx-msg{max-width:86%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6;animation:bxFadeIn .25s ease}",
     "@keyframes bxFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}",
-    ".bx-bot{background:#F1F5F9;color:#0F172A;border-bottom-left-radius:4px;align-self:flex-start}",
-    ".bx-user{background:linear-gradient(135deg,#2563EB,#0EA5E9);color:white;border-bottom-right-radius:4px;align-self:flex-end}",
+    "@keyframes bxBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}",
     ".bx-typing{display:flex;gap:4px;padding:12px 14px;background:#F1F5F9;border-radius:16px;border-bottom-left-radius:4px;align-self:flex-start}",
-    ".bx-typing span{width:7px;height:7px;border-radius:50%;background:#94A3B8;animation:bxBounce 1.2s infinite}",
+    ".bx-typing span{width:7px;height:7px;border-radius:50%;background:#94A3B8;animation:bxBounce 1.2s infinite;display:inline-block}",
     ".bx-typing span:nth-child(2){animation-delay:.2s}",
     ".bx-typing span:nth-child(3){animation-delay:.4s}",
-    "@keyframes bxBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}",
-    ".bx-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}",
-    ".bx-chip{background:white;border:1.5px solid #DBEAFE;color:#2563EB;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;transition:.2s;font-family:inherit}",
-    ".bx-chip:hover{background:#EFF6FF;border-color:#2563EB}",
-    "#bx-footer{padding:12px 16px;border-top:1px solid #F1F5F9;display:flex;gap:8px}",
-    "#bx-input{flex:1;border:1.5px solid #E2E8F0;border-radius:12px;padding:9px 14px;font-size:13px;font-family:inherit;color:#0F172A;outline:none;transition:.2s}",
+    "#bx-footer{padding:12px 16px;border-top:1px solid #F1F5F9;display:flex;gap:8px;flex-shrink:0;background:white}",
+    "#bx-input{flex:1;border:1.5px solid #E2E8F0;border-radius:12px;padding:9px 14px;font-size:13px;font-family:inherit;color:#0F172A;outline:none;transition:.2s;background:white;min-width:0}",
     "#bx-input:focus{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,.1)}",
     "#bx-send{width:38px;height:38px;border-radius:10px;background:#2563EB;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}",
     "#bx-send:hover{background:#1d4ed8}",
@@ -504,9 +496,6 @@
     "@media(max-width:480px){#bx-window{width:calc(100vw - 32px);right:16px}}"
   ].join("");
 
-  function inject() {
-    // Fonts
-    if (!document.getElementById("bx-font")) {
       var link = document.createElement("link");
       link.id = "bx-font";
       link.rel = "stylesheet";
