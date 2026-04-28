@@ -221,7 +221,6 @@
     .content{padding:16px}
   }
 </style>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -260,7 +259,7 @@
       </button>
       <button class="sb-link" onclick="showPage('network',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="17" cy="8" r="4"/><circle cx="7" cy="16" r="4"/><path d="M11 8H7M17 16h-4"/></svg>
-        <span>Network</span>
+        <span>Find a Mentor</span>
       </button>
     </div>
     <div class="sb-section">
@@ -268,10 +267,6 @@
       <button class="sb-link" onclick="showPage('profile',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>My Profile</span>
-      </button>
-      <button class="sb-link" onclick="showPage('upgrade',this)" style="background:linear-gradient(135deg,#2563EB,#0EA5E9);color:white;margin-bottom:4px">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-        <span style="color:white;font-weight:700">Upgrade Pro</span>
       </button>
       <button class="sb-link" onclick="showPage('settings',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -550,19 +545,19 @@
 
     <!-- ── NETWORK ── -->
     <div class="page-section" id="page-network">
-      <div class="page-title">Professional Network</div>
-      <div class="page-subtitle">Connect with professionals in your field</div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="network-card"><div class="net-avatar">AK</div><div class="net-info"><h4>Aarav Kumar</h4><p>Senior Software Engineer · TCS, Bangalore</p></div><button class="btn-connect">Connect</button></div>
-        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#7C3AED,#0EA5E9)">PS</div><div class="net-info"><h4>Priya Sharma</h4><p>Data Scientist · Infosys, Hyderabad</p></div><button class="btn-connect">Connect</button></div>
-        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#10B981,#2563EB)">RM</div><div class="net-info"><h4>Rahul Mehta</h4><p>DevOps Lead · Wipro, Pune</p></div><button class="btn-connect">Connect</button></div>
-        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">SN</div><div class="net-info"><h4>Sneha Nair</h4><p>Product Manager · Razorpay, Bangalore</p></div><button class="btn-connect">Connect</button></div>
-        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#EC4899,#7C3AED)">VP</div><div class="net-info"><h4>Vikram Patel</h4><p>AI Engineer · Microsoft, Hyderabad</p></div><button class="btn-connect">Connect</button></div>
-        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#0EA5E9,#10B981)">DG</div><div class="net-info"><h4>Deepa Gupta</h4><p>Cloud Architect · Amazon, Bangalore</p></div><button class="btn-connect">Connect</button></div>
+      <div class="page-title">Find a Mentor</div>
+      <div class="page-subtitle">Connect with verified professionals for 1-on-1 career guidance</div>
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+        <input type="text" id="dash-mentor-search" placeholder="Search by name, role, skill..." onkeyup="dashFilterMentors()" style="flex:1;min-width:200px;padding:9px 14px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color:var(--gray-900)">
+        <a href="mentors.html" target="_blank" style="background:var(--blue);color:white;border:none;border-radius:10px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center">Full Directory ↗</a>
+      </div>
+      <div id="dash-mentors-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+        <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-400)">
+          <div style="font-size:24px;margin-bottom:8px">⏳</div><div>Loading mentors...</div>
+        </div>
       </div>
     </div>
 
-    <!-- ── PROFILE ── -->
     <div class="page-section" id="page-profile">
       <div class="page-title">My Profile</div>
       <div class="page-subtitle">Complete your profile to improve your career score</div>
@@ -634,71 +629,11 @@
       <div class="card" style="margin-top:20px">
         <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px">Account</h3>
         <div class="settings-row"><div><h4>Email</h4><p id="settings-email">—</p></div></div>
-        <div class="settings-row" id="settings-plan-row"><div><h4>Plan</h4><p>Free — <a href="#" onclick="showPage('upgrade',document.querySelector('[onclick*=upgrade]'));return false;" style="color:var(--blue);font-weight:600">Upgrade to Pro ⚡</a></p></div></div>
+        <div class="settings-row"><div><h4>Plan</h4><p>Free — <a href="index.html#pricing" style="color:var(--blue);font-weight:600">Upgrade to Pro</a></p></div></div>
         <div class="settings-row"><div><h4>Sign Out</h4><p>Sign out of your Belongix account</p></div><button onclick="signOut()" style="background:#FEF2F2;color:#DC2626;border:none;border-radius:8px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Sign Out</button></div>
       </div>
     </div>
 
-
-    <!-- ── UPGRADE PAGE ── -->
-    <div class="page-section" id="page-upgrade">
-      <div class="page-title">Upgrade to Pro ⚡</div>
-      <div class="page-subtitle">Unlock the full power of Belongix — cancel anytime</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:28px;max-width:780px">
-        <!-- Free -->
-        <div style="background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:24px">
-          <div style="font-size:11px;font-weight:700;color:#64748B;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Current Plan</div>
-          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:30px;font-weight:800;color:#0F172A;margin-bottom:16px">Free</div>
-          <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;color:#475569">
-            <div><span style="color:#10B981;font-weight:700;margin-right:6px">✓</span>Career Score tracking</div>
-            <div><span style="color:#10B981;font-weight:700;margin-right:6px">✓</span>10 job applications/month</div>
-            <div><span style="color:#10B981;font-weight:700;margin-right:6px">✓</span>Basic salary insights</div>
-            <div><span style="color:#10B981;font-weight:700;margin-right:6px">✓</span>Bexi AI career guide</div>
-            <div style="color:#CBD5E1"><span style="margin-right:6px">✗</span>Unlimited applications</div>
-            <div style="color:#CBD5E1"><span style="margin-right:6px">✗</span>1-on-1 mentor matching</div>
-            <div style="color:#CBD5E1"><span style="margin-right:6px">✗</span>AI resume review</div>
-            <div style="color:#CBD5E1"><span style="margin-right:6px">✗</span>Salary negotiation coach</div>
-          </div>
-          <div style="margin-top:20px;background:#F8FAFC;border-radius:10px;padding:10px;text-align:center;font-size:13px;font-weight:600;color:#64748B">Your Current Plan</div>
-        </div>
-        <!-- Pro -->
-        <div style="background:linear-gradient(160deg,#1E3A5F,#2563EB);border-radius:16px;padding:24px;position:relative;overflow:hidden">
-          <div style="position:absolute;top:14px;right:14px;background:#F59E0B;color:white;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px">POPULAR</div>
-          <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">Pro Plan</div>
-          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:30px;font-weight:800;color:white;margin-bottom:4px">₹499<span style="font-size:15px;font-weight:400;opacity:.75">/month</span></div>
-          <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:16px">or ₹4,999/year — save 17%</div>
-          <div style="display:flex;flex-direction:column;gap:9px;font-size:13px;color:white;margin-bottom:20px">
-            <div><span style="color:#34D399;font-weight:700;margin-right:6px">✓</span>Everything in Free</div>
-            <div><span style="color:#34D399;font-weight:700;margin-right:6px">✓</span><b>Unlimited</b> job applications</div>
-            <div><span style="color:#34D399;font-weight:700;margin-right:6px">✓</span>Priority mentor matching</div>
-            <div><span style="color:#34D399;font-weight:700;margin-right:6px">✓</span>AI-powered resume review</div>
-            <div><span style="color:#34D399;font-weight:700;margin-right:6px">✓</span>Salary negotiation coach</div>
-            <div><span style="color:#34D399;font-weight:700;margin-right:6px">✓</span>Advanced career roadmap</div>
-            <div><span style="color:#34D399;font-weight:700;margin-right:6px">✓</span>Priority support 24/7</div>
-            <div><span style="color:#34D399;font-weight:700;margin-right:6px">✓</span>Exclusive Pro community</div>
-          </div>
-          <button onclick="startPayment('monthly')" style="background:white;color:#2563EB;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;margin-bottom:10px;transition:.2s" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">⚡ Upgrade Now — ₹499/month</button>
-          <button onclick="startPayment('yearly')" style="background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;transition:.2s" onmouseover="this.style.background='rgba(255,255,255,.25)'" onmouseout="this.style.background='rgba(255,255,255,.15)'">🏆 Annual — ₹4,999/year (Save 17%)</button>
-          <button onclick="startPayment('premium')" style="background:rgba(255,255,255,.1);color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;margin-top:4px;transition:.2s" onmouseover="this.style.background='rgba(255,255,255,.2)'" onmouseout="this.style.background='rgba(255,255,255,.1)'">👑 Premium Plan — ₹999/month</button>
-          <div style="text-align:center;margin-top:10px;font-size:11px;color:rgba(255,255,255,.55)">🔒 Razorpay secured · UPI · Cards · Net Banking · EMI</div>
-        </div>
-      </div>
-      <!-- Trust Row -->
-      <div style="display:flex;gap:14px;flex-wrap:wrap;max-width:780px;margin-bottom:24px">
-        <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:10px;flex:1;min-width:170px"><span style="font-size:20px">🔒</span><div><div style="font-size:13px;font-weight:700">100% Secure</div><div style="font-size:11px;color:#64748B">PCI-DSS certified</div></div></div>
-        <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:10px;flex:1;min-width:170px"><span style="font-size:20px">↩️</span><div><div style="font-size:13px;font-weight:700">Cancel Anytime</div><div style="font-size:11px;color:#64748B">No lock-in period</div></div></div>
-        <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:10px;flex:1;min-width:170px"><span style="font-size:20px">💳</span><div><div style="font-size:13px;font-weight:700">All Payments</div><div style="font-size:11px;color:#64748B">UPI, Cards, EMI</div></div></div>
-        <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:13px 16px;display:flex;align-items:center;gap:10px;flex:1;min-width:170px"><span style="font-size:20px">⚡</span><div><div style="font-size:13px;font-weight:700">Instant Access</div><div style="font-size:11px;color:#64748B">Unlocks immediately</div></div></div>
-      </div>
-      <!-- Success State -->
-      <div id="paySuccess" style="display:none;background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1.5px solid #86EFAC;border-radius:16px;padding:32px;text-align:center;max-width:500px">
-        <div style="font-size:48px;margin-bottom:12px">🎉</div>
-        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;color:#15803D;margin-bottom:8px">Welcome to Belongix Pro!</div>
-        <div style="font-size:14px;color:#166534;margin-bottom:20px">Your account has been upgraded. All Pro features are now unlocked!</div>
-        <button onclick="showPage('overview',document.querySelector('[onclick*=overview]'))" style="background:#15803D;color:white;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Go to Dashboard →</button>
-      </div>
-    </div>
-    <!-- ── END UPGRADE PAGE ── -->
   </div><!-- /content -->
 </main>
 
@@ -802,7 +737,7 @@ function showPage(page, btn) {
   document.querySelectorAll(".sb-link").forEach(function(el){ el.classList.remove("active"); });
   document.getElementById("page-" + page).classList.add("active");
   if (btn) btn.classList.add("active");
-  var titles = { overview:"Overview", jobs:"Jobs & Internships", upskill:"Upskilling", salary:"Salary Insights", network:"Network", profile:"My Profile", settings:"Settings", upgrade:"Upgrade to Pro ⚡" };
+  var titles = { overview:"Overview", jobs:"Jobs & Internships", upskill:"Upskilling", salary:"Salary Insights", network:"Network", profile:"My Profile", settings:"Settings" };
   document.getElementById("topbar-title").textContent = titles[page] || "Dashboard";
   if (page === "jobs") loadJobs();
 }
@@ -930,52 +865,53 @@ function showToast(msg) {
 document.getElementById("job-search").addEventListener("keypress", function(e){ if (e.key === "Enter") { jobsLoaded = false; searchJobs(); } });
 
 
-// ── RAZORPAY PAYMENT ──
-var RZP_KEY = "rzp_live_SiouVVDYQu9HTt";
-
-function startPayment(plan) {
-  var amount = plan === "yearly" ? 599900 : 59900;
-  var desc = plan === "yearly" ? "Belongix Pro — Annual Plan" : "Belongix Pro — Monthly Plan";
-  var userName = (document.getElementById("sb-name") || {}).textContent || "User";
-  var userEmail = currentUser ? currentUser.email : "";
-
-  var options = {
-    key: RZP_KEY,
-    amount: amount,
-    currency: "INR",
-    name: "Belongix",
-    description: desc,
-    prefill: { name: userName, email: userEmail },
-    theme: { color: "#2563EB" },
-    handler: function(response) {
-      onPaymentSuccess(response, plan);
-    }
-  };
-
-  var rzp = new Razorpay(options);
-  rzp.on("payment.failed", function(resp) {
-    showToast("Payment failed: " + ((resp.error && resp.error.description) || "Please try again."));
-  });
-  rzp.open();
-}
-
-async function onPaymentSuccess(response, plan) {
+// ── MENTOR SECTION ──
+var dashAllMentors = [];
+async function loadDashMentors() {
   try {
-    await supaClient.from("profiles").update({
-      plan: "pro",
-      plan_type: plan,
-      plan_activated: new Date().toISOString(),
-      payment_id: response.razorpay_payment_id
-    }).eq("id", currentUser.id);
-  } catch(e) { console.log("DB update error:", e); }
-
-  var successEl = document.getElementById("paySuccess");
-  if (successEl) successEl.style.display = "block";
-
-  var planRow = document.getElementById("settings-plan");
-  if (planRow) planRow.innerHTML = "<b style='color:#10B981'>Pro Plan Active ⚡</b>";
-
-  showToast("Welcome to Belongix Pro! All features unlocked.");
+    var res = await supaClient.from('mentors').select('id,first_name,last_name,job_title,company,city,skills,experience,session_type,rate,bio,linkedin,approved').eq('approved',true).order('created_at',{ascending:false}).limit(6);
+    dashAllMentors = res.data || [];
+    renderDashMentors(dashAllMentors);
+  } catch(e) { renderDashMentors([]); }
+}
+var MCOLORS=['linear-gradient(135deg,#2563EB,#0EA5E9)','linear-gradient(135deg,#7C3AED,#0EA5E9)','linear-gradient(135deg,#10B981,#2563EB)','linear-gradient(135deg,#F59E0B,#EF4444)','linear-gradient(135deg,#EC4899,#7C3AED)','linear-gradient(135deg,#1E3A5F,#2563EB)'];
+function renderDashMentors(mentors) {
+  var grid = document.getElementById('dash-mentors-grid');
+  if(!grid) return;
+  if(!mentors.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;background:white;border-radius:14px;border:1.5px dashed var(--gray-200)"><div style="font-size:36px;margin-bottom:12px">🎓</div><div style="font-weight:700;font-size:16px;color:var(--gray-700);margin-bottom:8px">No mentors yet</div><div style="font-size:13px;color:var(--gray-500);margin-bottom:20px">Be the first mentor on Belongix!</div><a href="mentors.html" style="background:var(--blue);color:white;border-radius:8px;padding:10px 22px;font-size:13px;font-weight:700;text-decoration:none">Apply to be a Mentor →</a></div>';
+    return;
+  }
+  grid.innerHTML = mentors.map(function(m,i){
+    var initials=((m.first_name||'')[0]||'')+((m.last_name||'')[0]||'');
+    var col=MCOLORS[i%MCOLORS.length];
+    var tags=(m.skills||'').split(',').slice(0,2).map(function(s){return '<span style="background:#EFF6FF;color:#2563EB;font-size:10px;font-weight:600;padding:2px 8px;border-radius:10px">'+s.trim()+'</span>';}).join('');
+    var isFree=m.session_type==='free'||m.session_type==='both';
+    return '<div style="background:white;border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;transition:.2s" onmouseover="this.style.borderColor='#2563EB'" onmouseout="this.style.borderColor='#E2E8F0'">' +
+      '<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">' +
+        '<div style="width:44px;height:44px;border-radius:50%;background:'+col+';display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px;flex-shrink:0">'+initials.toUpperCase()+'</div>' +
+        '<div style="flex:1;min-width:0">' +
+          '<div style="font-weight:700;font-size:14px;color:var(--gray-900)">'+m.first_name+' '+m.last_name+'</div>' +
+          '<div style="font-size:12px;color:var(--gray-500)">'+m.job_title+' · '+(m.company||'')+'</div>' +
+        '</div>' +
+        '<span style="background:'+(isFree?'#F0FDF4':'#EFF6FF')+';color:'+(isFree?'#15803D':'#2563EB')+';font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0">'+(isFree?'FREE':'PAID')+'</span>' +
+      '</div>' +
+      '<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">'+tags+'</div>' +
+      '<div style="font-size:11px;color:var(--gray-500);margin-bottom:12px">📍 '+m.city+' · '+m.experience+' exp</div>' +
+      '<div style="display:flex;gap:8px">' +
+        '<a href="mentors.html" style="flex:1;background:var(--blue);color:white;border:none;border-radius:8px;padding:8px;font-size:12px;font-weight:700;text-align:center;text-decoration:none;display:block">Book Session</a>' +
+        (m.linkedin?'<a href="'+m.linkedin+'" target="_blank" style="background:white;color:var(--blue);border:1.5px solid var(--blue);border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;text-decoration:none">LinkedIn ↗</a>':'') +
+      '</div>' +
+    '</div>';
+  }).join('') +
+  '<div style="grid-column:1/-1;text-align:center;padding:16px"><a href="mentors.html" style="color:var(--blue);font-size:13px;font-weight:600;text-decoration:none">View all mentors & apply to be one →</a></div>';
+}
+function dashFilterMentors(){
+  var q=(document.getElementById('dash-mentor-search')||{}).value||'';
+  q=q.toLowerCase();
+  renderDashMentors(dashAllMentors.filter(function(m){
+    return ((m.first_name||'')+' '+(m.last_name||'')+' '+(m.job_title||'')+' '+(m.skills||'')).toLowerCase().indexOf(q)!==-1;
+  }));
 }
 
 // ── INIT ──
