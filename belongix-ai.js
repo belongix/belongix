@@ -508,37 +508,72 @@
     document.head.appendChild(style);
 
     // HTML
-    var html = [
-      '<div id="bx-bubble">',
-        '<div id="bx-window">',
-          '<div id="bx-head">',
-            '<div id="bx-head-avatar">🤖</div>',
-            '<div id="bx-head-info"><h4>Bexi — Career AI</h4><p>Powered by Belongix · Always online</p></div>',
-            '<button id="bx-close" onclick="bxToggle()">✕</button>',
-          '</div>',
-          '<div id="bx-msgs"></div>',
-          '<div id="bx-footer">',
-            '<input id="bx-input" type="text" placeholder="Ask me anything about your career...">',
-            '<button id="bx-send"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>',
-          '</div>',
-        '</div>',
-        '<button id="bx-btn" onclick="bxToggle()">',
-          '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
-          '<div id="bx-dot"></div>',
-        '</button>',
-      '</div>'
-    ].join("");
+    // Build elements directly — no innerHTML, no inline onclick
+    var bubble = document.createElement("div");
+    bubble.id = "bx-bubble";
 
-    var wrap = document.createElement("div");
-    wrap.innerHTML = html;
-    document.body.appendChild(wrap.firstChild);
+    var win = document.createElement("div");
+    win.id = "bx-window";
 
-    // Events
-    document.getElementById("bx-input").addEventListener("keypress", function (e) {
-      if (e.key === "Enter") bxSend();
-    });
-    document.getElementById("bx-send").addEventListener("click", bxSend);
+    var head = document.createElement("div");
+    head.id = "bx-head";
+    var ava = document.createElement("div");
+    ava.id = "bx-head-avatar";
+    ava.textContent = "\uD83E\uDD16";
+    var hInfo = document.createElement("div");
+    hInfo.id = "bx-head-info";
+    var h4 = document.createElement("h4");
+    h4.textContent = "Bexi - Career AI";
+    var hP = document.createElement("p");
+    hP.textContent = "Powered by Belongix";
+    hInfo.appendChild(h4);
+    hInfo.appendChild(hP);
+    var cBtn = document.createElement("button");
+    cBtn.id = "bx-close";
+    cBtn.type = "button";
+    cBtn.textContent = "\u2715";
+    head.appendChild(ava);
+    head.appendChild(hInfo);
+    head.appendChild(cBtn);
 
+    var msgs = document.createElement("div");
+    msgs.id = "bx-msgs";
+
+    var footer = document.createElement("div");
+    footer.id = "bx-footer";
+    var inp = document.createElement("input");
+    inp.id = "bx-input";
+    inp.type = "text";
+    inp.placeholder = "Ask me anything about your career...";
+    inp.autocomplete = "off";
+    var sBtn = document.createElement("button");
+    sBtn.id = "bx-send";
+    sBtn.type = "button";
+    sBtn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+    footer.appendChild(inp);
+    footer.appendChild(sBtn);
+
+    win.appendChild(head);
+    win.appendChild(msgs);
+    win.appendChild(footer);
+
+    var tBtn = document.createElement("button");
+    tBtn.id = "bx-btn";
+    tBtn.type = "button";
+    tBtn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
+    var dot = document.createElement("div");
+    dot.id = "bx-dot";
+    tBtn.appendChild(dot);
+
+    bubble.appendChild(win);
+    bubble.appendChild(tBtn);
+    document.body.appendChild(bubble);
+
+    // All events via addEventListener — zero inline onclick
+    tBtn.addEventListener("click", function (e) { e.stopPropagation(); bxToggle(); });
+    cBtn.addEventListener("click", function (e) { e.stopPropagation(); bxToggle(); });
+    sBtn.addEventListener("click", function (e) { e.stopPropagation(); bxSend(); });
+    inp.addEventListener("keypress", function (e) { if (e.key === "Enter") bxSend(); });
   }
 
   var isOpen = false;
