@@ -430,278 +430,192 @@
     </div>
 
     <!-- ── UPSKILLING ── -->
-    <!-- ── UPSKILLING ── -->
+    <!-- UPSKILLING -->
     <div class="page-section" id="page-upskill">
-      <div class="page-title">Upskilling Tracks</div>
-      <div class="page-subtitle">Real courses from Google, AWS, Microsoft, Coursera & more — all verified and up to date</div>
+      <div class="page-title">Upskilling Hub</div>
+      <div class="page-subtitle">Handpicked courses from Google, AWS, Meta, Scaler, UpGrad, NPTEL and more — trending in 2026</div>
 
-      <!-- Filter Tabs -->
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
-        <button onclick="filterTracks('all',this)" class="track-tab active" style="padding:7px 18px;border-radius:20px;border:1.5px solid #2563EB;background:#EFF6FF;color:#2563EB;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">All Tracks</button>
-        <button onclick="filterTracks('free',this)" class="track-tab" style="padding:7px 18px;border-radius:20px;border:1.5px solid #E2E8F0;background:white;color:#64748B;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🆓 Free Only</button>
-        <button onclick="filterTracks('beginner',this)" class="track-tab" style="padding:7px 18px;border-radius:20px;border:1.5px solid #E2E8F0;background:white;color:#64748B;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🌱 Beginner</button>
-        <button onclick="filterTracks('advanced',this)" class="track-tab" style="padding:7px 18px;border-radius:20px;border:1.5px solid #E2E8F0;background:white;color:#64748B;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🚀 Advanced</button>
-        <button onclick="filterTracks('certification',this)" class="track-tab" style="padding:7px 18px;border-radius:20px;border:1.5px solid #E2E8F0;background:white;color:#64748B;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🏆 Certifications</button>
+      <div style="display:flex;gap:14px;margin-bottom:24px;flex-wrap:wrap">
+        <div style="background:linear-gradient(135deg,#EFF6FF,#DBEAFE);border:1px solid #BFDBFE;border-radius:12px;padding:12px 20px;flex:1;min-width:130px">
+          <div style="font-size:22px;font-weight:800;color:#2563EB;font-family:'Plus Jakarta Sans',sans-serif">48+</div>
+          <div style="font-size:12px;color:#64748B;margin-top:2px">Curated Courses</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1px solid #BBF7D0;border-radius:12px;padding:12px 20px;flex:1;min-width:130px">
+          <div style="font-size:22px;font-weight:800;color:#15803D;font-family:'Plus Jakarta Sans',sans-serif">30+</div>
+          <div style="font-size:12px;color:#64748B;margin-top:2px">100% Free</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#FEF9C3,#FEF08A);border:1px solid #FDE047;border-radius:12px;padding:12px 20px;flex:1;min-width:130px">
+          <div style="font-size:22px;font-weight:800;color:#A16207;font-family:'Plus Jakarta Sans',sans-serif">20+</div>
+          <div style="font-size:12px;color:#64748B;margin-top:2px">Certifications</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#FFF1F2,#FFE4E6);border:1px solid #FECDD3;border-radius:12px;padding:12px 20px;flex:1;min-width:130px">
+          <div style="font-size:22px;font-weight:800;color:#BE123C;font-family:'Plus Jakarta Sans',sans-serif">12</div>
+          <div style="font-size:12px;color:#64748B;margin-top:2px">Skill Tracks</div>
+        </div>
       </div>
 
-      <div id="tracks-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px" id="upskillFilters"></div>
+      <div id="tracksGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:20px"></div>
 
-        <!-- AI & Prompt Engineering -->
-        <div class="track-card" data-tags="free beginner advanced" style="background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.2s" onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 4px 20px rgba(37,99,235,.1)'" onmouseout="this.style.borderColor='#E2E8F0';this.style.boxShadow='none'">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <div style="width:48px;height:48px;border-radius:12px;background:#EFF6FF;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🤖</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif">Generative AI & Prompt Engineering</div>
-              <div style="font-size:12px;color:#64748B;margin-top:2px">ChatGPT, Claude, Gemini, LangChain</div>
-            </div>
-            <span style="margin-left:auto;background:#F0FDF4;color:#15803D;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0">FREE</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="https://www.coursera.org/learn/generative-ai-for-everyone" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Generative AI for Everyone</div><div style="font-size:11px;color:#64748B;margin-top:1px">Coursera · Andrew Ng · Beginner · Free audit</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Prompt Engineering for Developers</div><div style="font-size:11px;color:#64748B;margin-top:1px">DeepLearning.AI · 1 hour · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.cloudskillsboost.google/paths/118" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Generative AI Learning Path</div><div style="font-size:11px;color:#64748B;margin-top:1px">Google Cloud · Official path · Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://huggingface.co/learn/nlp-course" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">NLP & LLMs with Hugging Face</div><div style="font-size:11px;color:#64748B;margin-top:1px">Hugging Face · Advanced · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Cloud Computing -->
-        <div class="track-card" data-tags="free beginner advanced certification" style="background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.2s" onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 4px 20px rgba(37,99,235,.1)'" onmouseout="this.style.borderColor='#E2E8F0';this.style.boxShadow='none'">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <div style="width:48px;height:48px;border-radius:12px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">☁️</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif">Cloud Computing (AWS & Azure)</div>
-              <div style="font-size:12px;color:#64748B;margin-top:2px">EC2, S3, Lambda, Azure, GCP</div>
-            </div>
-            <span style="margin-left:auto;background:#FEF9C3;color:#A16207;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0">CERT</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="https://aws.amazon.com/training/learn-about/cloud-practitioner/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">AWS Cloud Practitioner</div><div style="font-size:11px;color:#64748B;margin-top:1px">Amazon · Official cert path · Free training</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://learn.microsoft.com/en-us/training/paths/az-900-describe-cloud-concepts/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Azure Fundamentals (AZ-900)</div><div style="font-size:11px;color:#64748B;margin-top:1px">Microsoft Learn · Official · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.cloudskillsboost.google/paths/11" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Google Cloud Associate Engineer</div><div style="font-size:11px;color:#64748B;margin-top:1px">Google Cloud Skills Boost · Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.youtube.com/watch?v=ulprqHHWlng" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">AWS Full Course for Beginners</div><div style="font-size:11px;color:#64748B;margin-top:1px">freeCodeCamp · YouTube · 5 hrs · Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Data Science -->
-        <div class="track-card" data-tags="free beginner advanced" style="background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.2s" onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 4px 20px rgba(37,99,235,.1)'" onmouseout="this.style.borderColor='#E2E8F0';this.style.boxShadow='none'">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <div style="width:48px;height:48px;border-radius:12px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">📊</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif">Data Science & Analytics</div>
-              <div style="font-size:12px;color:#64748B;margin-top:2px">Python, Pandas, SQL, Power BI</div>
-            </div>
-            <span style="margin-left:auto;background:#F0FDF4;color:#15803D;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0">FREE</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="https://www.kaggle.com/learn/python" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Python for Data Science</div><div style="font-size:11px;color:#64748B;margin-top:1px">Kaggle · 5 hrs · Certificate · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.kaggle.com/learn/pandas" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Pandas for Data Analysis</div><div style="font-size:11px;color:#64748B;margin-top:1px">Kaggle · 4 hrs · Certificate · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.coursera.org/professional-certificates/ibm-data-science" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">IBM Data Science Professional Certificate</div><div style="font-size:11px;color:#64748B;margin-top:1px">Coursera · 10 courses · Free audit</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.freecodecamp.org/learn/data-analysis-with-python/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Data Analysis with Python</div><div style="font-size:11px;color:#64748B;margin-top:1px">freeCodeCamp · Certificate · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Full Stack Development -->
-        <div class="track-card" data-tags="free beginner advanced" style="background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.2s" onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 4px 20px rgba(37,99,235,.1)'" onmouseout="this.style.borderColor='#E2E8F0';this.style.boxShadow='none'">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <div style="width:48px;height:48px;border-radius:12px;background:#E0F2FE;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">💻</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif">Full Stack Development</div>
-              <div style="font-size:12px;color:#64748B;margin-top:2px">React, Node.js, MongoDB, REST APIs</div>
-            </div>
-            <span style="margin-left:auto;background:#F0FDF4;color:#15803D;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0">FREE</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="https://www.freecodecamp.org/learn/javascript-algorithms-and-data-structures/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">JavaScript Algorithms & Data Structures</div><div style="font-size:11px;color:#64748B;margin-top:1px">freeCodeCamp · Certificate · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.freecodecamp.org/learn/front-end-development-libraries/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">React & Frontend Libraries</div><div style="font-size:11px;color:#64748B;margin-top:1px">freeCodeCamp · Certificate · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.freecodecamp.org/learn/back-end-development-and-apis/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Node.js & Backend APIs</div><div style="font-size:11px;color:#64748B;margin-top:1px">freeCodeCamp · Certificate · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.coursera.org/professional-certificates/meta-full-stack-developer" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Meta Full-Stack Developer Certificate</div><div style="font-size:11px;color:#64748B;margin-top:1px">Coursera · Meta · Free audit available</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- DevOps -->
-        <div class="track-card" data-tags="free advanced certification" style="background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.2s" onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 4px 20px rgba(37,99,235,.1)'" onmouseout="this.style.borderColor='#E2E8F0';this.style.boxShadow='none'">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <div style="width:48px;height:48px;border-radius:12px;background:#F5F3FF;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🔧</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif">DevOps & CI/CD Pipelines</div>
-              <div style="font-size:12px;color:#64748B;margin-top:2px">Docker, Kubernetes, Jenkins, GitHub Actions</div>
-            </div>
-            <span style="margin-left:auto;background:#FEF9C3;color:#A16207;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0">CERT</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="https://www.youtube.com/watch?v=3c-iBn73dDE" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Docker Full Course for Beginners</div><div style="font-size:11px;color:#64748B;margin-top:1px">TechWorld with Nana · YouTube · Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.youtube.com/watch?v=X48VuDVv0do" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Kubernetes Full Course</div><div style="font-size:11px;color:#64748B;margin-top:1px">TechWorld with Nana · YouTube · 4 hrs · Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.coursera.org/professional-certificates/devops-and-software-engineering" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">IBM DevOps & Software Engineering</div><div style="font-size:11px;color:#64748B;margin-top:1px">Coursera · IBM · Free audit available</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://training.linuxfoundation.org/training/kubernetes-fundamentals/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Kubernetes Fundamentals (LFS158)</div><div style="font-size:11px;color:#64748B;margin-top:1px">Linux Foundation · Official · Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Machine Learning -->
-        <div class="track-card" data-tags="free beginner advanced" style="background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.2s" onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 4px 20px rgba(37,99,235,.1)'" onmouseout="this.style.borderColor='#E2E8F0';this.style.boxShadow='none'">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <div style="width:48px;height:48px;border-radius:12px;background:#FFF1F2;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🧠</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif">Machine Learning & Deep Learning</div>
-              <div style="font-size:12px;color:#64748B;margin-top:2px">TensorFlow, PyTorch, scikit-learn</div>
-            </div>
-            <span style="margin-left:auto;background:#F0FDF4;color:#15803D;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0">FREE</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="https://www.coursera.org/specializations/machine-learning-introduction" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Machine Learning Specialization</div><div style="font-size:11px;color:#64748B;margin-top:1px">Coursera · Andrew Ng · Free audit</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://fast.ai" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Practical Deep Learning for Coders</div><div style="font-size:11px;color:#64748B;margin-top:1px">fast.ai · World's best DL course · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.tensorflow.org/certificate" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">TensorFlow Developer Certificate</div><div style="font-size:11px;color:#64748B;margin-top:1px">Google · Official certification path</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.kaggle.com/learn/intro-to-machine-learning" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Intro to Machine Learning</div><div style="font-size:11px;color:#64748B;margin-top:1px">Kaggle · 3 hrs · Certificate · 100% Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Cybersecurity -->
-        <div class="track-card" data-tags="free beginner certification" style="background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.2s" onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 4px 20px rgba(37,99,235,.1)'" onmouseout="this.style.borderColor='#E2E8F0';this.style.boxShadow='none'">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <div style="width:48px;height:48px;border-radius:12px;background:#FFF7ED;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🔒</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif">Cybersecurity Fundamentals</div>
-              <div style="font-size:12px;color:#64748B;margin-top:2px">OWASP, SIEM, Ethical Hacking</div>
-            </div>
-            <span style="margin-left:auto;background:#FEF9C3;color:#A16207;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0">CERT</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="https://www.coursera.org/professional-certificates/google-cybersecurity" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Google Cybersecurity Certificate</div><div style="font-size:11px;color:#64748B;margin-top:1px">Coursera · Google · Free audit available</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.cybrary.it/free-content/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Cybrary Free Security Courses</div><div style="font-size:11px;color:#64748B;margin-top:1px">Cybrary · CompTIA, CEH prep · Free tier</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://tryhackme.com" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">TryHackMe — Ethical Hacking</div><div style="font-size:11px;color:#64748B;margin-top:1px">Hands-on labs · Beginner friendly · Free plan</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.coursera.org/professional-certificates/ibm-cybersecurity-analyst" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">IBM Cybersecurity Analyst Certificate</div><div style="font-size:11px;color:#64748B;margin-top:1px">Coursera · IBM · Free audit available</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Interview Prep -->
-        <div class="track-card" data-tags="free beginner advanced" style="background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.2s" onmouseover="this.style.borderColor='#2563EB';this.style.boxShadow='0 4px 20px rgba(37,99,235,.1)'" onmouseout="this.style.borderColor='#E2E8F0';this.style.boxShadow='none'">
-          <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
-            <div style="width:48px;height:48px;border-radius:12px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0">🎯</div>
-            <div>
-              <div style="font-weight:700;font-size:15px;color:#0F172A;font-family:'Plus Jakarta Sans',sans-serif">Interview Prep & DSA</div>
-              <div style="font-size:12px;color:#64748B;margin-top:2px">LeetCode, System Design, Resume</div>
-            </div>
-            <span style="margin-left:auto;background:#F0FDF4;color:#15803D;font-size:10px;font-weight:700;padding:3px 8px;border-radius:10px;flex-shrink:0">FREE</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <a href="https://leetcode.com/study-plan/leetcode-75/" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">LeetCode 75 Study Plan</div><div style="font-size:11px;color:#64748B;margin-top:1px">LeetCode · Essential DSA · Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://www.youtube.com/watch?v=xo7XrRVxH8Y" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">System Design for Beginners</div><div style="font-size:11px;color:#64748B;margin-top:1px">ByteByteGo · YouTube · Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://pramp.com" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">Pramp — Mock Interviews</div><div style="font-size:11px;color:#64748B;margin-top:1px">Peer mock interviews · All levels · Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-            <a href="https://neetcode.io/roadmap" target="_blank" style="display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s" onmouseover="this.style.background='#EFF6FF';this.style.borderColor='#2563EB'" onmouseout="this.style.background='white';this.style.borderColor='#E2E8F0'">
-              <div><div style="font-size:13px;font-weight:600;color:#0F172A">NeetCode DSA Roadmap</div><div style="font-size:11px;color:#64748B;margin-top:1px">Structured roadmap · Video solutions · Free</div></div>
-              <span style="font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0">Start →</span>
-            </a>
-          </div>
-        </div>
-
-      </div><!-- /tracks-grid -->
+      <style>
+        .cCard{background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.25s}
+        .cCard:hover{border-color:#2563EB;box-shadow:0 6px 24px rgba(37,99,235,.12)}
+        .cLink{display:flex;align-items:center;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s;margin-bottom:7px;gap:10px}
+        .cLink:hover{background:#EFF6FF;border-color:#2563EB}
+        .cLink:last-child{margin-bottom:0}
+        .tTab{padding:7px 16px;border-radius:20px;border:1.5px solid #E2E8F0;background:white;color:#64748B;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s}
+        .tTab.active,.tTab:hover{background:#EFF6FF;color:#2563EB;border-color:#2563EB}
+        .bFree{background:#F0FDF4;color:#15803D;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bHot{background:#FFF1F2;color:#BE123C;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bCert{background:#FEF9C3;color:#A16207;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bPaid{background:#F5F3FF;color:#7C3AED;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bIndia{background:#FFF7ED;color:#C2410C;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+      </style>
 
       <script>
-      function filterTracks(tag, btn) {
-        document.querySelectorAll('.track-tab').forEach(function(b) {
-          b.style.background = 'white'; b.style.color = '#64748B'; b.style.borderColor = '#E2E8F0';
-        });
-        btn.style.background = '#EFF6FF'; btn.style.color = '#2563EB'; btn.style.borderColor = '#2563EB';
-        document.querySelectorAll('.track-card').forEach(function(card) {
-          if (tag === 'all' || card.dataset.tags.indexOf(tag) !== -1) {
-            card.style.display = 'block';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      }
+      (function(){
+        var TRACKS=[
+          {id:"ai-agents",emoji:"\uD83E\uDD16",title:"Agentic AI & AI Automation",sub:"LangChain, CrewAI, AutoGPT, n8n — #1 most hyped skill in 2026",tags:["hot","free","advanced"],badge:"hot",icon:"#FFF1F2",courses:[
+            {n:"Building AI Agents with CrewAI",by:"DeepLearning.AI \u00B7 Multi-agent systems \u00B7 Free",url:"https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/",free:true},
+            {n:"LangChain for LLM Application Dev",by:"DeepLearning.AI \u00B7 Andrew Ng \u00B7 100% Free",url:"https://www.deeplearning.ai/short-courses/langchain-for-llm-application-development/",free:true},
+            {n:"LangGraph \u2014 Stateful AI Agents",by:"DeepLearning.AI \u00B7 Advanced agents \u00B7 Free",url:"https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/",free:true},
+            {n:"Automate with n8n \u2014 No-code AI",by:"n8n Official Docs \u00B7 AI workflow automation \u00B7 Free",url:"https://docs.n8n.io/courses/",free:true}
+          ]},
+          {id:"genai",emoji:"\u2728",title:"Generative AI & Prompt Engineering",sub:"ChatGPT, Gemini, Claude, Midjourney, DALL-E — essential for every professional",tags:["hot","free","beginner"],badge:"hot",icon:"#FFF1F2",courses:[
+            {n:"Generative AI for Everyone",by:"Coursera \u00B7 Andrew Ng \u00B7 Beginner \u00B7 Free audit",url:"https://www.coursera.org/learn/generative-ai-for-everyone",free:true},
+            {n:"Prompt Engineering for Developers",by:"DeepLearning.AI \u00B7 1 hour \u00B7 100% Free",url:"https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/",free:true},
+            {n:"Google Generative AI Learning Path",by:"Google Cloud Skills Boost \u00B7 Official \u00B7 Free",url:"https://www.cloudskillsboost.google/paths/118",free:true},
+            {n:"Generative AI with LLMs",by:"Coursera \u00B7 AWS + DeepLearning.AI \u00B7 Free audit",url:"https://www.coursera.org/learn/generative-ai-with-llms",free:true}
+          ]},
+          {id:"cloud",emoji:"\u2601\uFE0F",title:"Cloud Computing (AWS, Azure, GCP)",sub:"#1 certification globally — adds Rs.3-8 LPA to your package instantly",tags:["cert","free","beginner","advanced"],badge:"cert",icon:"#F0FDF4",courses:[
+            {n:"AWS Cloud Practitioner CLF-C02",by:"AWS Official Training \u00B7 Industry standard \u00B7 Free",url:"https://aws.amazon.com/training/learn-about/cloud-practitioner/",free:true},
+            {n:"Azure Fundamentals AZ-900",by:"Microsoft Learn \u00B7 Official \u00B7 100% Free",url:"https://learn.microsoft.com/en-us/training/paths/az-900-describe-cloud-concepts/",free:true},
+            {n:"Google Cloud Associate Engineer",by:"Google Cloud Skills Boost \u00B7 Free path",url:"https://www.cloudskillsboost.google/paths/11",free:true},
+            {n:"AWS Solutions Architect Associate",by:"Udemy \u00B7 Stephane Maarek \u00B7 Best seller",url:"https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/",free:false}
+          ]},
+          {id:"data-eng",emoji:"\uD83D\uDD04",title:"Data Engineering & Modern Data Stack",sub:"dbt, Spark, Airflow, Snowflake, Kafka — fastest growing role in tech India",tags:["hot","advanced"],badge:"hot",icon:"#FFF1F2",courses:[
+            {n:"dbt Fundamentals \u2014 Official Course",by:"dbt Learn \u00B7 Official \u00B7 Highly valued by recruiters \u00B7 Free",url:"https://learn.getdbt.com/courses/dbt-fundamentals",free:true},
+            {n:"IBM Data Engineering Certificate",by:"Coursera \u00B7 IBM \u00B7 Industry recognised \u00B7 Free audit",url:"https://www.coursera.org/professional-certificates/ibm-data-engineer",free:true},
+            {n:"Apache Kafka Complete Guide",by:"Udemy \u00B7 Stephane Maarek \u00B7 Best seller",url:"https://www.udemy.com/course/apache-kafka/",free:false},
+            {n:"Snowflake \u2014 Official Hands-On Essentials",by:"Snowflake \u00B7 Official \u00B7 Badge awarded \u00B7 Free",url:"https://learn.snowflake.com/",free:true}
+          ]},
+          {id:"ml",emoji:"\uD83E\uDDE0",title:"Machine Learning & Deep Learning",sub:"TensorFlow, PyTorch, scikit-learn — foundation of all AI careers",tags:["free","beginner","advanced"],badge:"free",icon:"#EFF6FF",courses:[
+            {n:"Machine Learning Specialization",by:"Coursera \u00B7 Andrew Ng \u00B7 World's #1 ML course \u00B7 Free audit",url:"https://www.coursera.org/specializations/machine-learning-introduction",free:true},
+            {n:"Practical Deep Learning for Coders",by:"fast.ai \u00B7 Jeremy Howard \u00B7 Best DL course globally \u00B7 Free",url:"https://course.fast.ai/",free:true},
+            {n:"Kaggle \u2014 Intro to Machine Learning",by:"Kaggle \u00B7 3 hrs \u00B7 Certificate \u00B7 100% Free",url:"https://www.kaggle.com/learn/intro-to-machine-learning",free:true},
+            {n:"TensorFlow Developer Certificate",by:"Google \u00B7 Official certification path \u00B7 Free prep",url:"https://www.tensorflow.org/certificate",free:true}
+          ]},
+          {id:"fullstack",emoji:"\uD83D\uDCBB",title:"Full Stack Development",sub:"React, Next.js, Node.js, MongoDB — most in-demand profile at Indian startups",tags:["free","beginner","advanced"],badge:"free",icon:"#E0F2FE",courses:[
+            {n:"The Odin Project \u2014 Full Curriculum",by:"The Odin Project \u00B7 Complete web dev \u00B7 100% Free",url:"https://www.theodinproject.com/",free:true},
+            {n:"Meta Full-Stack Developer Certificate",by:"Coursera \u00B7 Meta \u00B7 Industry recognised \u00B7 Free audit",url:"https://www.coursera.org/professional-certificates/meta-full-stack-developer",free:true},
+            {n:"Next.js 14 Full Course 2024",by:"JavaScript Mastery \u00B7 YouTube \u00B7 Most watched \u00B7 Free",url:"https://www.youtube.com/watch?v=wm5gMKuwSYk",free:true},
+            {n:"Node.js & Backend APIs",by:"freeCodeCamp \u00B7 Certificate \u00B7 100% Free",url:"https://www.freecodecamp.org/learn/back-end-development-and-apis/",free:true}
+          ]},
+          {id:"devops",emoji:"\uD83D\uDD27",title:"DevOps, Docker & Kubernetes",sub:"GitHub Actions, Terraform, Jenkins — needed in every engineering team",tags:["cert","free","advanced"],badge:"cert",icon:"#F5F3FF",courses:[
+            {n:"Docker & Kubernetes Full Course",by:"TechWorld with Nana \u00B7 YouTube \u00B7 4 hrs \u00B7 Free",url:"https://www.youtube.com/watch?v=3c-iBn73dDE",free:true},
+            {n:"Kubernetes Fundamentals LFS158",by:"Linux Foundation \u00B7 Official CNCF \u00B7 100% Free",url:"https://training.linuxfoundation.org/training/kubernetes-fundamentals/",free:true},
+            {n:"Terraform for Beginners",by:"freeCodeCamp \u00B7 YouTube \u00B7 Infrastructure as Code \u00B7 Free",url:"https://www.youtube.com/watch?v=SLB_c_ayRMo",free:true},
+            {n:"GitHub Actions CI/CD Full Course",by:"TechWorld with Nana \u00B7 YouTube \u00B7 Free",url:"https://www.youtube.com/watch?v=R8_veQiYBjI",free:true}
+          ]},
+          {id:"cybersec",emoji:"\uD83D\uDD12",title:"Cybersecurity & Ethical Hacking",sub:"Google Cert, CompTIA, CEH — massive demand, very low supply in India",tags:["cert","free","beginner"],badge:"cert",icon:"#FFF7ED",courses:[
+            {n:"Google Cybersecurity Certificate",by:"Coursera \u00B7 Google \u00B7 Job-ready \u00B7 Free audit",url:"https://www.coursera.org/professional-certificates/google-cybersecurity",free:true},
+            {n:"TryHackMe \u2014 Ethical Hacking Labs",by:"TryHackMe \u00B7 Hands-on \u00B7 Beginner friendly \u00B7 Free plan",url:"https://tryhackme.com/",free:true},
+            {n:"Hack The Box \u2014 Advanced Penetration Testing",by:"HTB \u00B7 Real environments \u00B7 Free tier",url:"https://www.hackthebox.com/",free:true},
+            {n:"IBM Cybersecurity Analyst Certificate",by:"Coursera \u00B7 IBM \u00B7 Industry standard \u00B7 Free audit",url:"https://www.coursera.org/professional-certificates/ibm-cybersecurity-analyst",free:true}
+          ]},
+          {id:"dsa",emoji:"\uD83C\uDFAF",title:"DSA & FAANG Interview Prep",sub:"LeetCode 75, NeetCode, System Design — crack Google, Amazon, Razorpay",tags:["hot","free","beginner","advanced"],badge:"hot",icon:"#FFF1F2",courses:[
+            {n:"LeetCode 75 \u2014 Essential Study Plan",by:"LeetCode \u00B7 75 curated problems \u00B7 Free",url:"https://leetcode.com/studyplan/leetcode-75/",free:true},
+            {n:"NeetCode \u2014 Best Structured DSA Path",by:"NeetCode \u00B7 Video solutions \u00B7 100% Free",url:"https://neetcode.io/roadmap",free:true},
+            {n:"ByteByteGo \u2014 System Design",by:"Alex Xu \u00B7 YouTube \u00B7 Industry gold standard \u00B7 Free",url:"https://www.youtube.com/@ByteByteGo",free:true},
+            {n:"Pramp \u2014 Free Peer Mock Interviews",by:"Pramp \u00B7 All levels \u00B7 100% Free",url:"https://www.pramp.com/",free:true}
+          ]},
+          {id:"scaler",emoji:"\u26A1",title:"Scaler Academy \u2014 India's #1 Bootcamp",sub:"Most trusted paid bootcamp in India — job guarantee, live mentorship, EMI options",tags:["india","advanced","cert"],badge:"india",icon:"#FFF7ED",courses:[
+            {n:"Scaler \u2014 Data Science & ML Program",by:"Scaler Academy \u00B7 Live mentorship \u00B7 Job guarantee",url:"https://www.scaler.com/data-science-course/",free:false},
+            {n:"Scaler \u2014 Full Stack MERN/Java",by:"Scaler Academy \u00B7 Industry projects \u00B7 Placement support",url:"https://www.scaler.com/courses/full-stack-developer-course/",free:false},
+            {n:"InterviewBit \u2014 Free DSA Practice",by:"InterviewBit \u00B7 India's best DSA platform \u00B7 Free",url:"https://www.interviewbit.com/",free:true},
+            {n:"Scaler \u2014 DevOps & Cloud Engineering",by:"Scaler Academy \u00B7 AWS + Kubernetes \u00B7 Paid",url:"https://www.scaler.com/courses/devops-certification-training-course/",free:false}
+          ]},
+          {id:"nptel",emoji:"\uD83C\uDF93",title:"NPTEL & UpGrad \u2014 Indian Platforms",sub:"IIT & university-backed courses — free certification exams, government recognised",tags:["india","free","beginner","cert"],badge:"india",icon:"#FFF7ED",courses:[
+            {n:"NPTEL \u2014 Python for Data Science",by:"IIT Madras \u00B7 SWAYAM \u00B7 Free \u00B7 Govt certified",url:"https://nptel.ac.in/courses/106106145",free:true},
+            {n:"NPTEL \u2014 Database Management Systems",by:"IIT KGP \u00B7 SWAYAM \u00B7 Free \u00B7 Exam with certificate",url:"https://nptel.ac.in/courses/106105175",free:true},
+            {n:"NPTEL \u2014 Cloud Computing",by:"IIT KGP \u00B7 SWAYAM \u00B7 Free \u00B7 12 weeks",url:"https://nptel.ac.in/courses/106105167",free:true},
+            {n:"UpGrad \u2014 PG Diploma Data Science",by:"UpGrad + IIIT Bangalore \u00B7 University backed \u00B7 Paid",url:"https://www.upgrad.com/data-science-pgd-iiitb/",free:false}
+          ]},
+          {id:"product",emoji:"\uD83D\uDCF1",title:"Product Management & UX Design",sub:"Google UX Cert, PM School — most in-demand non-tech role at Razorpay, Swiggy, Flipkart",tags:["hot","beginner","cert"],badge:"hot",icon:"#FFF1F2",courses:[
+            {n:"Google UX Design Certificate",by:"Coursera \u00B7 Google \u00B7 Industry standard \u00B7 Free audit",url:"https://www.coursera.org/professional-certificates/google-ux-design",free:true},
+            {n:"PM School \u2014 Product Management India",by:"PM School \u00B7 India-focused case studies \u00B7 Free content",url:"https://pmschool.io/",free:true},
+            {n:"Figma UI/UX Complete Course",by:"freeCodeCamp \u00B7 YouTube \u00B7 Hands-on projects \u00B7 Free",url:"https://www.youtube.com/watch?v=1pW_sk-2y40",free:true},
+            {n:"Product Management Fundamentals",by:"Coursera \u00B7 Duke University \u00B7 Free audit",url:"https://www.coursera.org/learn/uva-darden-digital-product-management",free:true}
+          ]}
+        ];
+
+        var FILTERS=[
+          {key:"all",label:"All Tracks"},
+          {key:"hot",label:"\uD83D\uDD25 Trending"},
+          {key:"free",label:"\uD83C\uDDEB\uD83C\uDDF8 Free Only"},
+          {key:"beginner",label:"\uD83C\uDF31 Beginner"},
+          {key:"advanced",label:"\uD83D\uDE80 Advanced"},
+          {key:"cert",label:"\uD83C\uDFC6 Certifications"},
+          {key:"india",label:"\uD83C\uDDEE\uD83C\uDDF3 Indian Platforms"}
+        ];
+
+        var active="all";
+
+        function renderFilters(){
+          var fc=document.getElementById("upskillFilters");
+          if(!fc)return;
+          fc.innerHTML="";
+          FILTERS.forEach(function(f){
+            var b=document.createElement("button");
+            b.className="tTab"+(f.key===active?" active":"");
+            b.textContent=f.label;
+            b.addEventListener("click",function(){active=f.key;renderFilters();renderTracks();});
+            fc.appendChild(b);
+          });
+        }
+
+        function badgeCls(b){return{hot:"bHot",free:"bFree",cert:"bCert",paid:"bPaid",india:"bIndia"}[b]||"bFree";}
+        function badgeTxt(b){return{hot:"\uD83D\uDD25 HOT",free:"FREE",cert:"CERT",paid:"PAID",india:"\uD83C\uDDEE\uD83C\uDDF3 INDIA"}[b]||b.toUpperCase();}
+
+        function renderTracks(){
+          var grid=document.getElementById("tracksGrid");
+          if(!grid)return;
+          var list=active==="all"?TRACKS:TRACKS.filter(function(t){return t.tags.indexOf(active)!==-1;});
+          if(list.length===0){grid.innerHTML="<div style='color:#64748B;font-size:14px;padding:32px;text-align:center;grid-column:1/-1'>No tracks found for this filter.</div>";return;}
+          grid.innerHTML="";
+          list.forEach(function(t){
+            var div=document.createElement("div");
+            div.className="cCard";
+            var courses=t.courses.map(function(c){
+              return "<a href='"+c.url+"' target='_blank' class='cLink'>"+
+                "<div style='flex:1;min-width:0'>"+
+                  "<div style='font-size:13px;font-weight:600;color:#0F172A'>"+c.n+"</div>"+
+                  "<div style='font-size:11px;color:#64748B;margin-top:2px'>"+c.by+"</div>"+
+                "</div>"+
+                "<span class='"+(c.free?"bFree":"bPaid")+"' style='margin-right:6px'>"+(c.free?"FREE":"PAID")+"</span>"+
+                "<span style='font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0'>Start \u2192</span>"+
+              "</a>";
+            }).join("");
+            div.innerHTML=
+              "<div style='display:flex;align-items:flex-start;gap:12px;margin-bottom:14px'>"+
+                "<div style='width:50px;height:50px;border-radius:13px;background:"+t.icon+";display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0'>"+t.emoji+"</div>"+
+                "<div style='flex:1;min-width:0'>"+
+                  "<div style='font-weight:700;font-size:15px;color:#0F172A;font-family:\"Plus Jakarta Sans\",sans-serif;margin-bottom:3px'>"+t.title+"</div>"+
+                  "<div style='font-size:12px;color:#64748B;line-height:1.5'>"+t.sub+"</div>"+
+                "</div>"+
+                "<span class='"+badgeCls(t.badge)+"'>"+badgeTxt(t.badge)+"</span>"+
+              "</div>"+
+              "<div>"+courses+"</div>";
+            grid.appendChild(div);
+          });
+        }
+
+        if(document.readyState==="loading"){
+          document.addEventListener("DOMContentLoaded",function(){renderFilters();renderTracks();});
+        } else {
+          renderFilters();renderTracks();
+        }
+      })();
       </script>
     </div>
 
