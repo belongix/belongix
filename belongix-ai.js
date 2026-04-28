@@ -1,123 +1,662 @@
-/* Belongix AI Agent - Bexi v3.0 | Professional Career Guide + Support Tickets */
-(function(){"use strict";
-var KB={
-greet:["Hello! Welcome to Belongix \uD83D\uDC4B I'm <b>Bexi</b>, your personal career guide.<br><br>Here's what I can help you with:<br><br>\uD83C\uDFAF <b>Career Guidance</b> — roadmaps, role advice, growth strategy<br>\uD83D\uDCB0 <b>Salary Intelligence</b> — real market data for any role<br>\uD83C\uDFE2 <b>Interview Prep</b> — company-specific guides (TCS, Google, Amazon...)<br>\uD83D\uDCC4 <b>Resume & CV Tips</b> — beat ATS and impress recruiters<br>\uD83D\uDEE0 <b>Skills & Learning</b> — what to learn for the 2026 market<br>\uD83C\uDF93 <b>Fresher Guide</b> — complete first job roadmap<br>\uD83C\uDF9F <b>Help & Support</b> — raise a ticket to our team<br><br>How can I help you today?",
-"Hi there! I'm <b>Bexi</b> from Belongix \uD83E\uDD16<br><br>I'm here to help you make the best career decisions. Ask me about salaries, interview prep, skills, company culture, career paths — or raise a support ticket if you need our team's help.<br><br>What's on your mind?"],
-salaries:{"software engineer":{e:"Rs.4-8 LPA",m:"Rs.10-20 LPA",s:"Rs.22-40 LPA",note:"Product companies pay 40-60% more than TCS/Infosys/Wipro."},"data scientist":{e:"Rs.5-10 LPA",m:"Rs.12-22 LPA",s:"Rs.25-45 LPA",note:"AI/ML boom is driving salaries up fast across India."},"devops engineer":{e:"Rs.5-9 LPA",m:"Rs.10-22 LPA",s:"Rs.25-40 LPA",note:"AWS/Kubernetes skills add significant salary premium."},"product manager":{e:"Rs.8-14 LPA",m:"Rs.18-32 LPA",s:"Rs.35-65 LPA",note:"MBA or strong PM portfolio accelerates growth significantly."},"ml engineer":{e:"Rs.6-12 LPA",m:"Rs.15-30 LPA",s:"Rs.35-80 LPA",note:"Hottest role in India with 53% AI skill deficit."},"frontend developer":{e:"Rs.3-7 LPA",m:"Rs.8-18 LPA",s:"Rs.20-35 LPA",note:"React + TypeScript is the most in-demand combo in 2026."},"backend developer":{e:"Rs.4-8 LPA",m:"Rs.9-20 LPA",s:"Rs.22-38 LPA",note:"Node.js and Java/Spring dominate backend hiring."},"full stack developer":{e:"Rs.4-9 LPA",m:"Rs.10-22 LPA",s:"Rs.24-40 LPA",note:"Most in-demand role in India's startup ecosystem."},"data analyst":{e:"Rs.3-6 LPA",m:"Rs.7-14 LPA",s:"Rs.15-25 LPA",note:"SQL + Power BI combo is very valuable for Indian market."},"cloud architect":{e:"Rs.10-16 LPA",m:"Rs.18-35 LPA",s:"Rs.38-65 LPA",note:"AWS certification alone adds Rs.3-5 LPA to your package."},"ui ux designer":{e:"Rs.3-6 LPA",m:"Rs.7-15 LPA",s:"Rs.18-30 LPA",note:"Figma proficiency is now a hard requirement everywhere."},"qa engineer":{e:"Rs.3-6 LPA",m:"Rs.6-14 LPA",s:"Rs.15-25 LPA",note:"Automation testing (Selenium, Cypress) valued 3x over manual."},"cybersecurity analyst":{e:"Rs.5-9 LPA",m:"Rs.10-20 LPA",s:"Rs.22-35 LPA",note:"Growing demand with limited supply — great field to enter now."},"fresher":{e:"Rs.3.5-6 LPA",m:"Rs.6-12 LPA",s:"Rs.20-40 LPA",note:"FAANG freshers get Rs.20-40 LPA. Service companies Rs.3.5-6 LPA."}},
-companies:{tcs:{a:"India's largest IT company with 600,000+ employees. Best known for steady career growth and excellent fresher training.",p:["Complete the <b>TCS NQT</b> exam — covers aptitude, verbal, and coding sections","Practice on <b>TCS iON</b> platform — the interface matches the actual exam exactly","Coding rounds: easy-level problems in C, Java, or Python are sufficient","HR round: prepare 'Tell me about yourself' and 'Why TCS?' with genuine answers","<b>Key tip:</b> Apply only through <b>TCS NextStep</b> portal — it's the official and only valid path"],s:"Fresher: Rs.3.36-7 LPA | Experienced (3-5yr): Rs.6-15 LPA | Senior: Rs.15-25 LPA",c:"Strong training program (ILP — Initial Learning Program). Work-life balance varies by project. Good for building core fundamentals."},infosys:{a:"India's second largest IT company. Known for world-class training at the Mysore campus.",p:["Get <b>InfyTQ certified</b> before your interview — nearly mandatory for campus hires","Attempt <b>HackWithInfy</b> contest — top performers receive Rs.9.3 LPA package directly","Two rounds: online test (aptitude + coding) followed by HR interview","HR questions focus on relocation, career goals, and situational answers"],s:"Fresher: Rs.3.6-9.3 LPA | Experienced: Rs.7-20 LPA",c:"Strong learning culture. Mysore training is genuinely world-class. Good for early career professionals."},google:{a:"World's most innovative tech company. Extremely competitive but transformative salaries and culture.",p:["<b>DSA:</b> Solve LeetCode Medium and Hard problems daily for 3-6 months minimum","<b>System Design:</b> Study Grokking the System Design Interview end-to-end","<b>Behavioral:</b> Use STAR method for all answers — Google values structured, evidence-based thinking","5-6 interview rounds typical, each 45 minutes","<b>Critical tip:</b> A referral from a Google employee increases your chances by 5x — build LinkedIn connections actively"],s:"SDE-1: Rs.25-40 LPA | SDE-2: Rs.40-70 LPA | Senior: Rs.70-120+ LPA including RSUs",c:"Innovation-driven culture, very high autonomy, fast-paced environment. Best tech culture globally."},amazon:{a:"One of the world's largest tech companies. Unique culture driven entirely by 14 Leadership Principles.",p:["<b>Study all 14 Leadership Principles</b> deeply — every interview question maps to one of them","<b>STAR method is mandatory</b>: every behavioral answer must follow Situation-Task-Action-Result","<b>DSA:</b> Focus on arrays, trees, graphs, dynamic programming on LeetCode","System Design for SDE-2 and above — think about Amazon-scale distributed systems","<b>Key insight:</b> Amazon interviewers look for ownership and bias-for-action above all else"],s:"SDE-1: Rs.18-35 LPA | SDE-2: Rs.32-55 LPA | SDE-3: Rs.55-90 LPA + significant RSU grants",c:"Fast-paced, ownership-driven. Customer obsession is very real. High performance bar but excellent career growth opportunities."},microsoft:{a:"Under Satya Nadella, transformed into one of the most employee-friendly major tech companies.",p:["<b>DSA:</b> LeetCode Medium level is sufficient for most engineering roles","System Design for senior roles — Azure cloud services context helps","Collaborative problem-solving style — they want to see you think, not just produce answers fast","3-4 interview rounds with final 'as-app' round with the hiring manager"],s:"SDE-1: Rs.20-40 LPA | SDE-2: Rs.35-65 LPA | Senior: Rs.60-100+ LPA + RSU grants",c:"Growth mindset culture. Best work-life balance among FAANG. Strong internal mobility programs."},razorpay:{a:"India's leading fintech company. Fastest growing Indian startup in the payments space.",p:["Strong <b>DSA fundamentals</b> — LeetCode Medium level minimum","<b>System Design</b> with fintech context — payment flows, idempotency, high availability systems","Product thinking is valued — understand UPI, banking APIs, and payment gateway ecosystem","4-5 rounds including a mandatory system design round for all experience levels"],s:"SDE-1: Rs.12-20 LPA | SDE-2: Rs.20-35 LPA | Senior: Rs.35-60 LPA + valuable ESOPs",c:"High-growth fintech environment. Fast pace. Significant learning curve. ESOPs could appreciate substantially."},swiggy:{a:"India's food delivery giant. Strong engineering culture solving massive real-world scale problems.",p:["DSA + System Design at scale — distributed systems knowledge is critical","Data problems and optimization are very common in interviews at all levels","Product sense is evaluated alongside technical skills","5 rounds typically for most engineering roles"],s:"SDE-1: Rs.14-22 LPA | SDE-2: Rs.22-40 LPA | Senior: Rs.40-70 LPA + ESOPs",c:"High-energy startup culture with excellent engineering challenges. Strong growth opportunities internally."}},
-skills:{top:["Generative AI & Prompt Engineering","Python","Cloud Computing (AWS, Azure, GCP)","React.js / Next.js","Node.js","Data Analysis & SQL","Kubernetes & Docker","Machine Learning","Cybersecurity Fundamentals","TypeScript"],rising:["LangChain & RAG Systems","Vector Databases (Pinecone, Weaviate)","Rust","Go (Golang)","Platform Engineering","FinOps","WebAssembly"],certs:["AWS Solutions Architect Associate","Google Professional Cloud Engineer","Azure Administrator (AZ-104)","Certified Kubernetes Administrator (CKA)","TensorFlow Developer Certificate","Certified Scrum Master (CSM)","PMP Project Management Professional"]}};
+/* ================================================================
+   BELONGIX AI AGENT — BelongixAI v1.0
+   100% Custom Built · No External APIs · Always Free
+   Career Guidance for Indian Professionals
+   ================================================================ */
 
-function rnd(a){return a[Math.floor(Math.random()*a.length)];}
-function getRole(m){var r=Object.keys(KB.salaries);for(var i=0;i<r.length;i++){if(m.indexOf(r[i])!==-1)return r[i];}return null;}
-function getComp(m){var c=Object.keys(KB.companies);for(var i=0;i<c.length;i++){if(m.indexOf(c[i])!==-1)return c[i];}return null;}
+(function () {
+  "use strict";
 
-function detect(m){
-if(/^(hi|hello|hey|start|help|namaste|good morning|good evening|what can|howdy)/.test(m)||m.length<4)return"greet";
-if(/salary|ctc|lpa|pay |earn|package|compensation|stipend|how much/.test(m))return"salary";
-if(/tcs|infosys|wipro|google|amazon|microsoft|razorpay|swiggy|flipkart/.test(m))return"company";
-if(/skill|learn|course|certif|technolog|upskill|what to study/.test(m))return"skills";
-if(/resume|cv\b|curriculum|ats/.test(m))return"resume";
-if(/interview|crack|prepar|technical round|hr round|coding round/.test(m))return"interview";
-if(/fresher|graduate|first job|no experience|entry level|campus|just pass/.test(m))return"fresher";
-if(/career path|roadmap|how to become|career change|switch|grow|promotion|when to switch/.test(m))return"career";
-if(/negotiat|counter offer|salary hike/.test(m))return"negotiate";
-if(/machine learning|artificial intel|data science|deep learning|llm|genai| ai /.test(m))return"aiml";
-if(/burnout|stress|tired|exhausted|toxic|mental health/.test(m))return"burnout";
-if(/motivat|stuck|give up|rejected|failure|discourag|hopeless|lost my job/.test(m))return"motivate";
-if(/ticket|support|issue|problem|complaint|bug|feedback|contact team|report/.test(m))return"ticket";
-if(/belongix|about this|what is this|platform|how does/.test(m))return"about";
-if(/job search|find job|where to apply|job portal|naukri|instahyre/.test(m))return"jobsearch";
-return"fallback";}
+  // ── KNOWLEDGE BASE ──────────────────────────────────────────────
 
-function respond(msg){
-var m=msg.toLowerCase().trim(),role,comp,sal,cd;
-switch(detect(m)){
-case"greet":return{h:rnd(KB.greet),c:["Check my salary","Interview prep tips","I am a fresher","Raise a support ticket"]};
-case"salary":
-role=getRole(m);
-if(role){sal=KB.salaries[role];return{h:"<b>Salary Insights: "+role.replace(/\b\w/g,function(l){return l.toUpperCase();})+" in India (2026)</b><br><br><table style='border-collapse:collapse;width:100%;font-size:12px'><tr style='background:#EFF6FF'><td style='padding:5px 9px;border:1px solid #DBEAFE;font-weight:700'>Level</td><td style='padding:5px 9px;border:1px solid #DBEAFE;font-weight:700'>Exp</td><td style='padding:5px 9px;border:1px solid #DBEAFE;font-weight:700'>Range</td></tr><tr><td style='padding:5px 9px;border:1px solid #E2E8F0'>Entry</td><td style='padding:5px 9px;border:1px solid #E2E8F0'>0-2 yrs</td><td style='padding:5px 9px;border:1px solid #E2E8F0'>"+sal.e+"</td></tr><tr style='background:#F8FAFC'><td style='padding:5px 9px;border:1px solid #E2E8F0'>Mid</td><td style='padding:5px 9px;border:1px solid #E2E8F0'>3-6 yrs</td><td style='padding:5px 9px;border:1px solid #E2E8F0'>"+sal.m+"</td></tr><tr><td style='padding:5px 9px;border:1px solid #E2E8F0'>Senior</td><td style='padding:5px 9px;border:1px solid #E2E8F0'>7+ yrs</td><td style='padding:5px 9px;border:1px solid #E2E8F0'>"+sal.s+"</td></tr></table><br><i>"+sal.note+"</i>",c:["How to negotiate this salary","Top companies for this role","How to grow faster in this role"]};}
-return{h:"<b>Average Tech Salaries in India (2026)</b><br><br><table style='border-collapse:collapse;width:100%;font-size:12px'><tr style='background:#EFF6FF'><td style='padding:5px 9px;border:1px solid #DBEAFE;font-weight:700'>Level</td><td style='padding:5px 9px;border:1px solid #DBEAFE;font-weight:700'>Salary</td></tr><tr><td style='padding:5px 9px;border:1px solid #E2E8F0'>Fresher (0-1 yr)</td><td style='padding:5px 9px;border:1px solid #E2E8F0'>Rs.3.5-8 LPA</td></tr><tr style='background:#F8FAFC'><td style='padding:5px 9px;border:1px solid #E2E8F0'>Mid-level (2-5 yr)</td><td style='padding:5px 9px;border:1px solid #E2E8F0'>Rs.8-22 LPA</td></tr><tr><td style='padding:5px 9px;border:1px solid #E2E8F0'>Senior (5-10 yr)</td><td style='padding:5px 9px;border:1px solid #E2E8F0'>Rs.18-45 LPA</td></tr><tr style='background:#F8FAFC'><td style='padding:5px 9px;border:1px solid #E2E8F0'>Lead/Architect (10+ yr)</td><td style='padding:5px 9px;border:1px solid #E2E8F0'>Rs.35-80+ LPA</td></tr></table><br>Which role would you like details for?",c:["Software Engineer salary","Data Scientist salary","DevOps salary","Product Manager salary"]};
-case"company":
-comp=getComp(m);
-if(comp){cd=KB.companies[comp];return{h:"<b>"+comp.charAt(0).toUpperCase()+comp.slice(1)+" — Complete Interview Guide</b><br><br><b>About:</b> "+cd.a+"<br><br><b>How to prepare:</b><br><ol style='padding-left:16px;margin:6px 0'>"+cd.p.map(function(p){return"<li style='margin-bottom:5px;font-size:12px'>"+p+"</li>";}).join("")+"</ol><b>Salary:</b> "+cd.s+"<br><br><b>Culture:</b> "+cd.c,c:["Negotiate at "+comp,"Resume tips for "+comp,"Is "+comp+" good for freshers"]};}
-return{h:"I have detailed guides for: <b>TCS, Infosys, Wipro, Google, Amazon, Microsoft, Razorpay, Swiggy</b>.<br><br>Which company are you targeting?",c:["Google interview","Amazon interview","TCS interview","Razorpay interview"]};
-case"skills":return{h:"<b>Top Skills to Learn in 2026</b><br><br><b>Most In-Demand Right Now:</b><br>"+KB.skills.top.slice(0,7).map(function(s,i){return(i+1)+". "+s;}).join("<br>")+"<br><br><b>Rising Fast — Get Ahead of the Curve:</b><br>"+KB.skills.rising.slice(0,4).map(function(s){return"• "+s;}).join("<br>")+"<br><br><b>Certifications That Pay Off:</b><br>"+KB.skills.certs.slice(0,4).map(function(s){return"• "+s;}).join("<br>")+"<br><br><i>Best strategy: pick one skill and go deep. Employers pay a premium for genuine expertise.</i>",c:["Best AI/ML skills","Cloud certifications","Frontend or backend?","How long to learn Python"]};
-case"resume":return{h:"<b>Resume Tips for Indian Tech Market</b><br><br><b>Format:</b><br>• 1 page if under 5 years experience — no exceptions<br>• ATS-friendly template: Novoresume or Overleaf<br>• No Canva graphics, tables, or text boxes — ATS cannot parse them<br><br><b>Content:</b><br>• Replace 'Objective' with a 2-line Professional Summary<br>• Every bullet = Action Verb + What you did + Quantified result<br>• Example: <i>'Reduced API response time by 40% using Redis caching'</i><br>• Include GitHub link and certifications prominently<br><br><b>ATS Optimization:</b><br>• Copy keywords directly from the job description<br>• What recruiters look for in 6 seconds: job title match, company names, skills, education, years of experience",c:["How to write project bullets","ATS optimization tips","Should I include my GPA?"]};
-case"interview":return{h:"<b>Interview Preparation — Complete Guide</b><br><br><b>Technical:</b><br>• DSA: LeetCode — 2 easy + 1 medium per day. Focus on arrays, trees, graphs, DP<br>• System Design: study Grokking the System Design Interview — know load balancing, caching, microservices<br>• CS Fundamentals: OS, DBMS, Networking, OOP — asked in 70% of Indian tech interviews<br><br><b>Behavioral:</b><br>• Use STAR method: Situation, Task, Action, Result<br>• Prepare 5-6 stories covering leadership, failure, conflict, achievement, learning<br>• Research the company: recent news, products, culture, challenges<br><br><b>On the day:</b><br>• Think aloud during coding — your process matters as much as the answer<br>• Ask clarifying questions before you code — shows senior engineering thinking<br>• End with smart questions: 'What does success look like in 90 days?'<br>• Follow up with a thank-you email within 24 hours",c:["Google interview prep","Amazon Leadership Principles","System design tips","HR behavioral tips"]};
-case"fresher":return{h:"<b>Complete Fresher Guide — Your First Job in India</b><br><br><b>Step 1 — Build credibility:</b><br>Get a free certification: AWS Cloud Practitioner, Google IT Support (Coursera), or Meta Frontend Developer<br><br><b>Step 2 — Build portfolio:</b><br>Create 2-3 real projects on GitHub. Solve actual problems — not tutorial clones.<br>Ideas: expense tracker, job tracker, mini e-commerce, REST API project<br><br><b>Step 3 — Resume:</b><br>1 page. Use Novoresume or Overleaf. Every bullet must be quantified with numbers.<br><br><b>Step 4 — Where to apply:</b><br>• Naukri.com — service companies<br>• LinkedIn — product companies and referrals<br>• Instahyre — AI-powered matching (underrated)<br>• Wellfound — startup jobs<br><br><b>Step 5 — Strategy:</b><br>Start with service companies (TCS/Infosys) for 2 years of experience, then switch to product companies for 2-3x salary jump.<br><br>Expected salary: Rs.3.5-9 LPA for service/mid-tier | Rs.12-40 LPA for FAANG",c:["Best companies for freshers","Fresher resume tips","TCS interview prep","How to get referrals"]};
-case"career":return{h:"<b>Career Path & Growth Strategy for India</b><br><br><b>Common tech ladder:</b><br>Junior Engineer → Software Engineer → Senior Engineer → Staff/Lead Engineer → Principal Engineer / Engineering Manager → Director → VP Engineering<br><br><b>Fastest ways to grow salary:</b><br>1. Switch companies every 2-3 years — gets 30-50% hike vs 8-12% internal increment<br>2. Get certified — AWS/GCP cert alone adds Rs.3-5 LPA<br>3. Specialise in a high-demand niche: AI/ML, Cloud Security, Platform Engineering<br>4. Network actively — 85% of roles are filled through referrals<br>5. Build your brand — publish technical content, contribute to open source<br><br><b>When to switch:</b><br>• You've learned everything this role can teach you<br>• Your increment is below 15% for 2+ consecutive years<br>• You've been passed over for promotion without clear reason<br>• The culture is negatively affecting your wellbeing",c:["When should I switch jobs?","How to get promoted faster","Should I do an MBA?","How to build my LinkedIn brand"]};
-case"negotiate":return{h:"<b>Salary Negotiation — Complete Playbook</b><br><br><b>Before the conversation:</b><br>• Research market rate: Glassdoor, LinkedIn Salary, Levels.fyi, AmbitionBox<br>• Having another offer is your strongest leverage — try to get one before negotiating<br>• Never be first to name a number if you can avoid it<br><br><b>Key rules:</b><br>• Always negotiate — 78% of employers have room to go higher and expect it<br>• Give a range, start 25-30% above your target when asked for expected CTC<br>• Never reveal current salary — it's not legally required in India<br>• Counter in writing — email feels official and gives you time to craft your response<br>• Negotiate the full package: base, joining bonus, ESOPs, WFH policy, title, notice buyout<br><br><b>Script that works:</b><br><i>'Thank you for the offer. Based on my research for this role in [city], I was expecting closer to [X]. Is there flexibility on the base compensation?'</i><br><br>Average successful negotiation in India: <b>10-25% above initial offer</b>",c:["Counter offer script","How to ask for a raise","Negotiate a joining bonus"]};
-case"aiml":return{h:"<b>AI/ML Career in India — 2026 Guide</b><br><br>India faces a <b>53% AI skill deficit</b> with demand projected at 1 million AI roles by 2026. Entry salaries have jumped 40% in 2 years.<br><br><b>Learning Roadmap (8-12 months):</b><br>1. Python mastery — NumPy, Pandas, Matplotlib (2 months)<br>2. Statistics and Math basics — probability, linear algebra (2 months)<br>3. Machine Learning — scikit-learn, regression, classification, clustering (2-3 months)<br>4. Deep Learning — TensorFlow or PyTorch, CNNs, RNNs (2-3 months)<br>5. Specialisation — pick one: NLP, Computer Vision, or Generative AI<br>6. Portfolio — 3 strong projects + 1 deployed app on Hugging Face Spaces<br><br><b>Best free resources:</b><br>• fast.ai — world's best free deep learning course<br>• Kaggle — free courses and competitions<br>• Hugging Face — NLP and GenAI tutorials<br><br>Salaries: Entry Rs.8-12 LPA | Mid Rs.15-30 LPA | Senior Rs.35-80 LPA",c:["Best ML courses free","AI engineer salary","Top AI companies India"]};
-case"burnout":return{h:"<b>You are not alone.</b><br><br>83% of Indian IT professionals experience burnout at some point. It's real and it's valid.<br><br><b>Immediate steps:</b><br>• Take 2-3 proper rest days — even a long weekend genuinely helps reset<br>• Set one firm boundary this week: no work after 8 PM, no weekend messages<br>• Talk to one trusted person — colleague, friend, or family member<br><br><b>Medium-term steps:</b><br>• Identify the root cause: overwork? Bad manager? Wrong role? Wrong company?<br>• If the company is toxic, start planning your exit quietly — never quit impulsively without another offer<br>• Explore internal transfer options if you enjoy the company but not your current team<br><br><b>Free support resources in India:</b><br>• iCall: 9152987821 (free counselling)<br>• Vandrevala Foundation: 1860-2662-345 (24/7 mental health helpline)<br><br>You deserve a workplace that respects you. When you're ready to explore better opportunities, I'm here. <br>",c:["Help me find a better job","When should I quit?","How to handle a toxic manager"]};
-case"motivate":return{h:"<b>About job rejections — the honest truth:</b><br><br>The average software engineer gets rejected <b>8-12 times</b> before landing their target role. Engineers now at Google and Amazon were rejected from their first 5 companies.<br><br>Rejection is not a verdict on your worth. It's feedback about fit, timing, and preparation gaps.<br><br><b>What to do right now:</b><br>1. Review your last 3 rejections — was it resume, DSA, system design, or behavioral? Find the pattern.<br>2. Identify the weakest link and spend 2 focused weeks fixing just that one thing<br>3. Apply to 5 new companies today — momentum is everything<br>4. Reach out to one new connection on LinkedIn today<br><br>The gap between where you are and where you want to be is filled with daily action — not talent.<br><br>What's specifically blocking you? Tell me and I'll help you build a concrete plan.",c:["My resume gets rejected","I fail coding rounds","I fail HR rounds","Help me make a plan"]};
-case"ticket":return{h:"<b>Raise a Support Ticket</b><br><br>I'll help you connect with the Belongix team. Our support team responds within 24 hours on working days.<br><br>Please select the type of issue:",c:["Bug Report","Account & Login Help","Feature Request","Billing & Payments","General Enquiry"],act:"ticket"};
-case"about":return{h:"<b>About Belongix</b><br><br>Belongix is India's professional career platform for students, freshers, and working professionals across all fields.<br><br><b>What we offer:</b><br>• Career Score — track and grow your professional profile<br>• Live Job Listings — matched to your skills and goals<br>• Salary Intelligence — real market data<br>• Upskilling Tracks — curated learning for 2026 skills<br>• Professional Network — connect with peers<br>• Bexi AI — 24/7 career guidance<br>• Help & Support — dedicated team<br><br>Contact: teambelongix@gmail.com | Website: belongix.in<br>Free to join | Premium: Rs.599/month",c:["How career score works","Is Belongix free?","Raise a support ticket"]};
-case"jobsearch":return{h:"<b>Job Search Strategy for India (2026)</b><br><br><b>Best platforms by use case:</b><br>• LinkedIn — product companies, referrals, senior roles<br>• Naukri.com — largest database, service companies<br>• Instahyre — AI-powered matching, mid-level roles<br>• Wellfound — startup jobs and equity roles<br>• Company career pages directly — better visibility than job boards<br><br><b>Strategy that works:</b><br>1. Apply to 30-50 jobs per week — it is a numbers game<br>2. Referrals increase interview rates by 5-10x — prioritise them<br>3. Customise your resume for each role (match keywords exactly)<br>4. Follow up after 5-7 days if no response<br><br>Also check the Jobs section in your Belongix dashboard for live curated listings!",c:["How to get referrals","LinkedIn profile tips","How to write a cold message"]};
-default:return{h:"I want to give you the most useful answer! Here's what I can help with:<br><br>• Salary for any role in India<br>• Interview prep for TCS, Google, Amazon, Razorpay and more<br>• Resume and CV tips<br>• Skills and certifications to learn in 2026<br>• Fresher first-job complete guide<br>• Career roadmap and growth strategy<br>• Salary negotiation playbook<br>• Support ticket to our team<br><br>What would you like to explore?",c:["Salary check","Interview prep","Fresher guide","Raise support ticket"]};}
-}
+  var KB = {
 
-var ticketCat=null;
-function genId(){return"BLX-"+Date.now().toString(36).toUpperCase().slice(-6);}
+    salaries: {
+      "software engineer":       { min: 4,  max: 35, avg: "8–15",  note: "Higher in product companies vs service firms" },
+      "data scientist":          { min: 5,  max: 40, avg: "10–20", note: "AI/ML boom is driving salaries up fast" },
+      "devops engineer":         { min: 5,  max: 38, avg: "9–22",  note: "Cloud skills add big salary premium" },
+      "product manager":         { min: 8,  max: 60, avg: "18–32", note: "MBA or strong PM experience helps" },
+      "ml engineer":             { min: 6,  max: 80, avg: "15–35", note: "Hottest role in India right now" },
+      "frontend developer":      { min: 3,  max: 25, avg: "6–16",  note: "React + TypeScript skills are essential" },
+      "backend developer":       { min: 4,  max: 30, avg: "8–18",  note: "Node.js and Java dominate the market" },
+      "full stack developer":    { min: 4,  max: 32, avg: "8–20",  note: "Most in-demand role in startups" },
+      "data analyst":            { min: 3,  max: 20, avg: "5–12",  note: "SQL + Power BI combo is very valuable" },
+      "cloud architect":         { min: 12, max: 60, avg: "20–40", note: "AWS certification adds 30-40% salary bump" },
+      "cybersecurity analyst":   { min: 5,  max: 30, avg: "8–18",  note: "Growing demand, limited supply" },
+      "ui ux designer":          { min: 3,  max: 25, avg: "6–14",  note: "Figma proficiency is must-have" },
+      "qa engineer":             { min: 3,  max: 20, avg: "5–12",  note: "Automation testing (Selenium/Cypress) valued more" },
+      "business analyst":        { min: 4,  max: 22, avg: "7–15",  note: "Domain expertise multiplies value" },
+      "scrum master":            { min: 6,  max: 28, avg: "10–20", note: "CSM certification helps significantly" },
+      "fresher":                 { min: 3,  max: 8,  avg: "3.5–6", note: "Top MNCs offer ₹6–9 LPA for freshers" }
+    },
 
-function showTicketForm(cat,ms){
-ticketCat=cat;
-var d=document.createElement("div");d.className="bb";
-d.innerHTML='<div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:10px;padding:14px"><div style="font-weight:700;font-size:13px;color:#1E3A5F;margin-bottom:12px">Support Ticket: '+cat+'</div><div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:#64748B;display:block;margin-bottom:4px">YOUR NAME *</label><input id="bxTn" type="text" placeholder="Full name" style="width:100%;padding:8px 10px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:13px;font-family:inherit;color:#0F172A;outline:none;box-sizing:border-box;background:#fff"></div><div style="margin-bottom:10px"><label style="font-size:11px;font-weight:600;color:#64748B;display:block;margin-bottom:4px">YOUR EMAIL *</label><input id="bxTe" type="email" placeholder="Email address" style="width:100%;padding:8px 10px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:13px;font-family:inherit;color:#0F172A;outline:none;box-sizing:border-box;background:#fff"></div><div style="margin-bottom:12px"><label style="font-size:11px;font-weight:600;color:#64748B;display:block;margin-bottom:4px">DESCRIBE YOUR ISSUE *</label><textarea id="bxTd" placeholder="Please describe your issue in detail..." style="width:100%;padding:8px 10px;border:1.5px solid #E2E8F0;border-radius:8px;font-size:13px;font-family:inherit;color:#0F172A;outline:none;box-sizing:border-box;background:#fff;resize:vertical;min-height:80px"></textarea></div><button id="bxTsub" style="background:#2563EB;color:#fff;border:none;border-radius:8px;padding:10px 0;font-size:13px;font-weight:700;cursor:pointer;width:100%;font-family:inherit">Submit Ticket</button><p style="font-size:11px;color:#94A3B8;text-align:center;margin:8px 0 0 0">We respond within 24 hours on working days</p></div>';
-ms.appendChild(d);ms.scrollTop=99999;
-setTimeout(function(){
-var sub=document.getElementById("bxTsub");
-if(sub){sub.addEventListener("click",function(){
-var n=(document.getElementById("bxTn")||{}).value||"";
-var e=(document.getElementById("bxTe")||{}).value||"";
-var desc=(document.getElementById("bxTd")||{}).value||"";
-if(!n.trim()||!e.trim()||!desc.trim()){alert("Please fill in all required fields.");return;}
-var tid=genId();
-var subject=encodeURIComponent("Belongix Support Ticket "+tid+" — "+cat);
-var body=encodeURIComponent("BELONGIX SUPPORT TICKET\nTicket ID: "+tid+"\nCategory: "+cat+"\nName: "+n+"\nEmail: "+e+"\nMessage:\n"+desc+"\nSubmitted: "+new Date().toLocaleString("en-IN"));
-d.innerHTML='<div style="text-align:center;padding:12px"><div style="font-size:32px;margin-bottom:8px">✅</div><div style="font-weight:700;color:#10B981;font-size:14px;margin-bottom:6px">Ticket Submitted!</div><div style="font-size:12px;color:#64748B;margin-bottom:4px">Ticket ID: <b style="color:#2563EB">'+tid+'</b></div><div style="font-size:12px;color:#64748B">We will reach out to <b>'+e+'</b> within 24 hours.</div></div>';
-ms.scrollTop=99999;
-setTimeout(function(){try{window.location.href="mailto:teambelongix@gmail.com?subject="+subject+"&body="+body;}catch(ex){}},600);
-ticketCat=null;
-});}},150);}
+    companies: {
+      "tcs": {
+        prep: ["📚 Complete InfyTQ / TCS iON platform", "🔢 Aptitude: verbal, quant, reasoning (RS Aggarwal)", "💻 Coding: easy problems in C/Java/Python", "🎤 HR round: standard behavioral questions"],
+        culture: "India's largest IT company. Great for freshers — strong training program (ILP). Work-life balance varies by project.",
+        salary: "₹3.36–7 LPA for freshers. Experienced: ₹6–20 LPA",
+        tip: "Apply through TCS NextStep portal. NQT exam is the gateway."
+      },
+      "infosys": {
+        prep: ["🖥️ InfyTQ certification (mandatory for campus)", "🔢 Aptitude + verbal + coding sections", "💡 HackWithInfy for above-band packages", "🎤 Simple HR interview"],
+        culture: "Strong learning culture. Mysore training campus is world-class. Good for freshers wanting structured growth.",
+        salary: "₹3.6–9.3 LPA for freshers. Experienced: ₹7–25 LPA",
+        tip: "Get InfyTQ certified before interviews. It gives you an edge."
+      },
+      "wipro": {
+        prep: ["📝 WILP exam for lateral hires", "💻 Coding in any language", "🔢 Aptitude and reasoning", "🎤 Two rounds of interviews"],
+        culture: "Stable company, large delivery teams. Good for mid-career professionals.",
+        salary: "₹3.5–7 LPA for freshers. Experienced: ₹6–18 LPA",
+        tip: "Wipro NLTH (National Level Talent Hunt) is best entry path."
+      },
+      "google": {
+        prep: ["🧮 DSA: LeetCode (Medium/Hard daily for 3–6 months)", "🏗️ System Design: Grokking the System Design Interview", "🧠 Behavioral: STAR method for all answers", "🔄 5–6 interview rounds typical"],
+        culture: "Innovation-driven, high autonomy, high performance bar. Best tech culture in industry.",
+        salary: "₹25–80+ LPA. FAANG salaries are industry benchmark.",
+        tip: "Referrals increase interview chances by 5x. Network on LinkedIn."
+      },
+      "amazon": {
+        prep: ["📖 Study Amazon Leadership Principles (14 of them)", "🧮 DSA: LeetCode focus on arrays, trees, graphs", "🏗️ System Design for senior roles", "⭐ STAR method is mandatory for behavioral"],
+        culture: "Fast-paced, ownership-driven, high bar. Customer obsession is real.",
+        salary: "₹18–60 LPA. Includes RSU stock grants.",
+        tip: "Leadership Principles are as important as coding. Prepare both equally."
+      },
+      "microsoft": {
+        prep: ["💻 DSA: LeetCode Medium level", "🏗️ System Design for senior roles", "🤝 Collaborative culture means teamwork questions matter", "3–4 rounds typical"],
+        culture: "Growth mindset culture under Satya Nadella. Very employee-friendly.",
+        salary: "₹20–70 LPA + significant RSU grants.",
+        tip: "MSFT is known for good work-life balance vs other FAANG companies."
+      },
+      "razorpay": {
+        prep: ["💻 Strong DSA fundamentals", "🏗️ System design (payments/fintech context)", "📦 Product thinking valued", "4–5 rounds"],
+        culture: "Fast-growing Indian startup. Fintech leader. High growth opportunity.",
+        salary: "₹12–40 LPA. ESOPs are valuable.",
+        tip: "Know payments domain — UPI, banking APIs, PG ecosystem."
+      },
+      "swiggy": {
+        prep: ["💻 DSA + system design", "📊 Data and scale problems", "🚀 Product sense important", "5 rounds typically"],
+        culture: "High-energy startup, scale challenges daily. Great learning curve.",
+        salary: "₹14–45 LPA. ESOPs available.",
+        tip: "Swiggy values problem-solving at scale. Focus on distributed systems."
+      }
+    },
 
-function build(){
-var ex=document.getElementById("bxWrap");if(ex)ex.parentNode.removeChild(ex);
-var st=document.createElement("style");st.id="bxStyle";
-st.textContent="#bxWrap{position:fixed;bottom:24px;right:24px;z-index:2147483647;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}#bxBtn{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#2563EB,#0EA5E9);border:none;cursor:pointer;box-shadow:0 4px 24px rgba(37,99,235,.5);position:relative;display:flex;align-items:center;justify-content:center;transition:transform .2s}#bxBtn:hover{transform:scale(1.1)}#bxBtn svg{width:24px;height:24px;color:#fff;pointer-events:none}#bxDot{position:absolute;top:3px;right:3px;width:12px;height:12px;background:#10B981;border-radius:50%;border:2px solid #fff;pointer-events:none;animation:bxP 2s infinite}@keyframes bxP{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.7}}#bxBox{display:none;position:fixed;bottom:92px;right:24px;width:380px;height:560px;background:#fff;border-radius:20px;box-shadow:0 12px 48px rgba(0,0,0,.18);flex-direction:column;overflow:hidden;border:1px solid #E2E8F0}#bxBox.on{display:flex}#bxHd{background:linear-gradient(135deg,#1E3A5F,#2563EB);padding:15px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}#bxAv{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:2px solid rgba(255,255,255,.3)}#bxNm b{color:#fff;font-size:14px;font-weight:700;display:block;margin-bottom:2px}#bxNm small{color:rgba(255,255,255,.7);font-size:11px}#bxOnline{width:7px;height:7px;background:#10B981;border-radius:50%;display:inline-block;margin-right:4px}#bxCl{margin-left:auto;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:16px;cursor:pointer;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}#bxCl:hover{background:rgba(255,255,255,.3)}#bxMs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:0}#bxMs::-webkit-scrollbar{width:3px}#bxMs::-webkit-scrollbar-thumb{background:#CBD5E1;border-radius:3px}.bb{background:#F1F5F9;color:#0F172A;border-radius:16px 16px 16px 3px;padding:11px 14px;font-size:13px;line-height:1.7;max-width:94%;align-self:flex-start;word-break:break-word}.bu{background:linear-gradient(135deg,#2563EB,#0EA5E9);color:#fff;border-radius:16px 16px 3px 16px;padding:11px 14px;font-size:13px;line-height:1.7;max-width:80%;align-self:flex-end;word-break:break-word}.bxD{background:#F1F5F9;border-radius:16px 16px 16px 3px;padding:13px 16px;align-self:flex-start;display:flex;gap:4px}.bxD i{width:7px;height:7px;background:#94A3B8;border-radius:50%;animation:bxB 1.2s infinite;display:inline-block}.bxD i:nth-child(2){animation-delay:.2s}.bxD i:nth-child(3){animation-delay:.4s}@keyframes bxB{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}.bxCW{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;max-width:94%}.bxC{background:#fff;border:1.5px solid #BFDBFE;color:#2563EB;border-radius:16px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;line-height:1.4}.bxC:hover{background:#EFF6FF;border-color:#2563EB}#bxFt{padding:12px 14px;border-top:1px solid #F1F5F9;display:flex;gap:8px;flex-shrink:0;background:#fff}#bxIn{flex:1;border:1.5px solid #E2E8F0;border-radius:12px;padding:9px 13px;font-size:13px;font-family:inherit;color:#0F172A;outline:none;background:#fff;min-width:0;transition:.2s}#bxIn:focus{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,.1)}#bxSd{width:38px;height:38px;border-radius:10px;background:#2563EB;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}#bxSd:hover{background:#1D4ED8}#bxSd svg{width:15px;height:15px;color:#fff;pointer-events:none}@media(max-width:480px){#bxBox{width:calc(100vw - 24px);right:12px;height:520px}}";
-document.head.appendChild(st);
-var wrap=document.createElement("div");wrap.id="bxWrap";
-var box=document.createElement("div");box.id="bxBox";
-var hd=document.createElement("div");hd.id="bxHd";
-var av=document.createElement("div");av.id="bxAv";av.textContent="\uD83E\uDD16";
-var nm=document.createElement("div");nm.id="bxNm";nm.innerHTML="<b>Bexi \u2014 Career AI</b><small><span id='bxOnline'></span>Powered by Belongix \u00B7 Always online</small>";
-var cl=document.createElement("button");cl.id="bxCl";cl.innerHTML="\u2715";
-hd.appendChild(av);hd.appendChild(nm);hd.appendChild(cl);
-var ms=document.createElement("div");ms.id="bxMs";
-var ft=document.createElement("div");ft.id="bxFt";
-var inp=document.createElement("input");inp.id="bxIn";inp.type="text";inp.placeholder="Ask about careers, salaries, interviews...";inp.autocomplete="off";
-var sd=document.createElement("button");sd.id="bxSd";sd.innerHTML='<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
-ft.appendChild(inp);ft.appendChild(sd);
-box.appendChild(hd);box.appendChild(ms);box.appendChild(ft);
-var btn=document.createElement("button");btn.id="bxBtn";
-btn.innerHTML='<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>';
-var dot=document.createElement("div");dot.id="bxDot";btn.appendChild(dot);
-wrap.appendChild(box);wrap.appendChild(btn);
-document.body.appendChild(wrap);
-var open=false,welcomed=false;
-function toggle(){open=!open;open?box.classList.add("on"):box.classList.remove("on");if(open){inp.focus();if(!welcomed){welcomed=true;setTimeout(function(){addBot(rnd(KB.greet),["Check my salary","Interview prep tips","I am a fresher","Raise a support ticket"]);},200);}}}
-function addBot(html,chips,act){
-var d=document.createElement("div");d.className="bb";d.innerHTML=html;ms.appendChild(d);
-if(chips&&chips.length){var cw=document.createElement("div");cw.className="bxCW";chips.forEach(function(c){var ch=document.createElement("button");ch.className="bxC";ch.textContent=c;ch.addEventListener("click",function(){if(act==="ticket"){showTicketForm(c,ms);}else{doSend(c);}});cw.appendChild(ch);});ms.appendChild(cw);}
-ms.scrollTop=99999;}
-function doSend(text){
-var msg=text!==undefined?text:inp.value.trim();if(!msg)return;inp.value="";
-var u=document.createElement("div");u.className="bu";u.textContent=msg;ms.appendChild(u);
-var dots=document.createElement("div");dots.className="bxD";dots.innerHTML="<i></i><i></i><i></i>";ms.appendChild(dots);ms.scrollTop=99999;
-setTimeout(function(){if(dots.parentNode)ms.removeChild(dots);var r=respond(msg);addBot(r.h,r.c,r.act);},600+Math.random()*500);}
-btn.addEventListener("click",function(e){e.stopPropagation();toggle();});
-cl.addEventListener("click",function(e){e.stopPropagation();toggle();});
-sd.addEventListener("click",function(e){e.stopPropagation();doSend();});
-inp.addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();doSend();}});}
+    skills2026: {
+      "most demanded": ["Generative AI / Prompt Engineering", "Python", "Cloud Computing (AWS, Azure, GCP)", "React.js", "Node.js", "Data Analysis", "Kubernetes & Docker", "Cybersecurity", "SQL & NoSQL", "Machine Learning"],
+      "rising fast": ["LangChain & RAG", "Vector Databases", "Rust", "Go (Golang)", "WebAssembly", "Edge Computing", "FinOps", "Platform Engineering"],
+      "certifications": ["AWS Solutions Architect", "Google Professional Cloud Engineer", "Azure Administrator", "Certified Kubernetes Admin (CKA)", "TensorFlow Developer", "Scrum Master (CSM)", "PMP"]
+    },
 
-if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",build);}else{build();}
+    careerPaths: {
+      "software engineer": ["Junior Dev → Senior Dev → Tech Lead → Engineering Manager → VP Engineering", "OR: Senior Dev → Principal Engineer → Staff Engineer → Distinguished Engineer"],
+      "data scientist": ["Data Analyst → Junior Data Scientist → Senior DS → Lead DS → Head of Data / Chief Data Officer"],
+      "devops": ["DevOps Engineer → Senior DevOps → DevOps Lead → Cloud Architect → VP Infrastructure"],
+      "product manager": ["Associate PM → PM → Senior PM → Group PM → Director of Product → CPO"],
+      "frontend": ["Junior Frontend → Senior Frontend → Frontend Lead → Full Stack → Principal Engineer"],
+      "fresher": ["Start with any service company (TCS/Infosys/Wipro) → Build 2 years experience → Move to product company for 2x salary"]
+    },
+
+    resumeTips: [
+      "✅ Keep resume to 1 page if under 5 years experience",
+      "✅ Start every bullet with an action verb (Built, Designed, Reduced, Increased)",
+      "✅ Quantify everything — 'Improved app speed by 40%' beats 'Improved performance'",
+      "✅ Put skills section at top — recruiters scan for keywords in 6 seconds",
+      "✅ Include GitHub profile link with active projects",
+      "✅ No objective statement — replace with a 2-line professional summary",
+      "✅ Use ATS-friendly format — clean, no tables, no graphics",
+      "✅ Tailor resume for each job — match keywords from job description",
+      "✅ List certifications (AWS, GCP, etc.) prominently",
+      "✅ GPA only matters if above 7.5 — otherwise skip it"
+    ],
+
+    interviewTips: [
+      "🧮 DSA: Practice LeetCode daily — 2 easy + 1 medium per day minimum",
+      "🏗️ System Design: Study Grokking the System Design Interview",
+      "⭐ Behavioral: Use STAR method — Situation, Task, Action, Result",
+      "🔍 Company Research: Read annual report, recent news, Glassdoor reviews",
+      "❓ Ask good questions: 'What does success look like in 90 days?'",
+      "📱 Mock interviews: Practice with friends or use Pramp.com (free)",
+      "🕐 First 5 minutes matter most — strong intro is essential",
+      "💬 Think aloud during coding — interviewers value your thought process",
+      "🔄 Follow up within 24 hours with a thank-you email",
+      "💪 Rejection is normal — even top engineers get rejected at FAANG"
+    ],
+
+    aboutBelongix: [
+      "Belongix is India's professional career platform built for students, freshers, and working professionals.",
+      "We offer: career score tracking, live job listings, salary intelligence, upskilling tracks, and professional networking.",
+      "Our mission: Every professional in India deserves to Connect, Belong, and Grow.",
+      "Belongix is free to join. Premium plan at ₹599/month unlocks advanced features.",
+      "Visit belongix.in to create your account and start your career journey!"
+    ],
+
+    cities: {
+      "bangalore": "India's Silicon Valley. Best for software, AI/ML, startups. Average tech salary is 15-20% higher than other cities.",
+      "hyderabad": "HITEC City is growing fast. Amazon, Microsoft, Google all have major offices. Cost of living lower than Bangalore.",
+      "mumbai": "Financial capital. Best for fintech, product management, data roles. High cost of living.",
+      "pune": "Growing tech hub. TCS, Infosys, Wipro large campuses. Good work-life balance vs Bangalore.",
+      "chennai": "Strong in automotive, manufacturing tech, IT services. Cost of living is reasonable.",
+      "delhi ncr": "Gurgaon/Noida tech corridor. Good for startup ecosystem, e-commerce, fintech.",
+      "remote": "Remote work is now standard in India. 60% of tech companies offer hybrid/remote options."
+    }
+  };
+
+  // ── INTENTS ─────────────────────────────────────────────────────
+
+  var INTENTS = [
+    { name: "greeting",     patterns: ["hello", "hi", "hey", "start", "help me", "good morning", "good evening", "namaste", "what can you do"] },
+    { name: "salary",       patterns: ["salary", "pay", "ctc", "lpa", "earn", "package", "compensation", "how much", "stipend", "wages", "income"] },
+    { name: "company",      patterns: ["tcs", "infosys", "wipro", "google", "amazon", "microsoft", "razorpay", "swiggy", "flipkart", "accenture", "cognizant"] },
+    { name: "skills",       patterns: ["skill", "learn", "course", "certification", "upskill", "study", "technology", "programming", "language", "framework", "what should i learn", "which technology"] },
+    { name: "resume",       patterns: ["resume", "cv", "curriculum vitae", "portfolio", "write resume", "resume tips", "resume format", "resume review"] },
+    { name: "interview",    patterns: ["interview", "prepare", "crack", "question", "round", "technical round", "hr round", "coding interview", "system design"] },
+    { name: "fresher",      patterns: ["fresher", "graduate", "college", "campus", "entry level", "beginner", "new to", "first job", "no experience", "just graduated"] },
+    { name: "career_path",  patterns: ["career path", "roadmap", "how to become", "career change", "switch career", "grow", "promotion", "future", "scope", "career in"] },
+    { name: "job_search",   patterns: ["find job", "job search", "how to get job", "apply for job", "job hunting", "job portal", "where to find", "naukri", "linkedin", "glassdoor"] },
+    { name: "city",         patterns: ["bangalore", "hyderabad", "mumbai", "pune", "chennai", "delhi", "noida", "gurgaon", "remote", "work from home", "which city"] },
+    { name: "burnout",      patterns: ["burnout", "stress", "tired", "exhausted", "mental health", "anxiety", "pressure", "depressed", "overwhelmed", "toxic", "quit"] },
+    { name: "about",        patterns: ["belongix", "what is belongix", "about this", "platform", "how does belongix", "features"] },
+    { name: "motivation",   patterns: ["motivat", "stuck", "give up", "not getting", "rejected", "failure", "discourage", "hopeless", "lost"] },
+    { name: "ai_ml",        patterns: ["artificial intelligence", "machine learning", "deep learning", "ai career", "data science career", "nlp", "llm", "generative ai", "prompt"] },
+    { name: "startup",      patterns: ["startup", "own business", "entrepreneur", "build product", "my own", "found a company", "side project"] }
+  ];
+
+  // ── RESPONSE ENGINE ─────────────────────────────────────────────
+
+  var context = { lastIntent: null, mentioned: [], turnCount: 0 };
+
+  function detectIntent(msg) {
+    var lower = msg.toLowerCase();
+    var scores = {};
+    INTENTS.forEach(function (intent) {
+      scores[intent.name] = 0;
+      intent.patterns.forEach(function (p) {
+        if (lower.indexOf(p) !== -1) scores[intent.name]++;
+      });
+    });
+    var best = "general";
+    var bestScore = 0;
+    Object.keys(scores).forEach(function (k) {
+      if (scores[k] > bestScore) { bestScore = scores[k]; best = k; }
+    });
+    return bestScore > 0 ? best : "general";
+  }
+
+  function detectRole(msg) {
+    var lower = msg.toLowerCase();
+    var roles = Object.keys(KB.salaries);
+    for (var i = 0; i < roles.length; i++) {
+      if (lower.indexOf(roles[i]) !== -1) return roles[i];
+    }
+    return null;
+  }
+
+  function detectCompany(msg) {
+    var lower = msg.toLowerCase();
+    var companies = Object.keys(KB.companies);
+    for (var i = 0; i < companies.length; i++) {
+      if (lower.indexOf(companies[i]) !== -1) return companies[i];
+    }
+    return null;
+  }
+
+  function detectCity(msg) {
+    var lower = msg.toLowerCase();
+    var cities = Object.keys(KB.cities);
+    for (var i = 0; i < cities.length; i++) {
+      if (lower.indexOf(cities[i]) !== -1) return cities[i];
+    }
+    return null;
+  }
+
+  function pickRandom(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function getResponse(msg) {
+    var intent = detectIntent(msg);
+    var role = detectRole(msg);
+    var company = detectCompany(msg);
+    var city = detectCity(msg);
+    context.turnCount++;
+    context.lastIntent = intent;
+
+    // ── GREETING
+    if (intent === "greeting") {
+      var greetings = [
+        "Hi! I'm <strong>Bexi</strong> — Belongix's career AI 👋<br><br>I can help you with:<br>💰 Salary insights for any role<br>🏢 Company interview prep<br>📄 Resume & CV tips<br>🚀 Career path guidance<br>🛠️ Skills to learn in 2026<br><br>What would you like to know?",
+        "Hello! I'm <strong>Bexi</strong>, your career guide on Belongix! 🤖<br><br>Ask me anything about:<br>• Salaries in India 💰<br>• How to crack Google/Amazon/TCS interviews 🏢<br>• What skills to learn 🛠️<br>• Career switching advice 🔄<br><br>What's on your mind?",
+        "Hey there! I'm <strong>Bexi</strong> 👋 — built by Belongix to help you navigate your career.<br><br>Quick options:<br>📊 Check salary for any role<br>🎯 Get interview prep tips<br>📄 Resume advice<br>🗺️ Career roadmap<br><br>What would you like help with today?"
+      ];
+      return { text: pickRandom(greetings), chips: ["Check my salary", "Interview tips", "What skills to learn", "Resume help"] };
+    }
+
+    // ── SALARY
+    if (intent === "salary") {
+      if (role && KB.salaries[role]) {
+        var s = KB.salaries[role];
+        return {
+          text: "💰 <strong>Salary for " + role.replace(/\b\w/g, function(l){ return l.toUpperCase(); }) + " in India:</strong><br><br>" +
+                "📉 Entry level: ₹" + s.min + "–" + Math.round(s.min * 1.8) + " LPA<br>" +
+                "📊 Mid level: ₹" + s.avg + " LPA<br>" +
+                "📈 Senior level: ₹" + Math.round(s.max * 0.6) + "–" + s.max + " LPA<br><br>" +
+                "💡 <em>" + s.note + "</em><br><br>" +
+                "Want tips on how to negotiate a higher salary?",
+          chips: ["How to negotiate salary", "Top companies for this role", "What skills increase my pay"]
+        };
+      }
+      return {
+        text: "💰 <strong>Average IT salaries in India (2026):</strong><br><br>" +
+              "🟢 Fresher (0–1 yr): ₹3.5–8 LPA<br>" +
+              "🔵 Mid-level (2–5 yr): ₹8–22 LPA<br>" +
+              "🟣 Senior (5–10 yr): ₹18–45 LPA<br>" +
+              "🔴 Lead/Architect (10+ yr): ₹35–80+ LPA<br><br>" +
+              "Product companies (Razorpay, Swiggy) pay 40–60% more than service companies (TCS, Infosys).<br><br>" +
+              "Which specific role would you like salary details for?",
+        chips: ["Software Engineer salary", "Data Scientist salary", "DevOps salary", "Product Manager salary"]
+      };
+    }
+
+    // ── COMPANY
+    if (intent === "company" || company) {
+      var comp = company || detectCompany(msg);
+      if (comp && KB.companies[comp]) {
+        var c = KB.companies[comp];
+        var prepList = c.prep.join("<br>");
+        return {
+          text: "🏢 <strong>" + comp.charAt(0).toUpperCase() + comp.slice(1) + " — Complete Guide:</strong><br><br>" +
+                "<strong>Interview Preparation:</strong><br>" + prepList + "<br><br>" +
+                "<strong>Company Culture:</strong><br>" + c.culture + "<br><br>" +
+                "<strong>Salary Range:</strong> " + c.salary + "<br><br>" +
+                "💡 <em>" + c.tip + "</em>",
+          chips: ["Interview tips for " + comp, "What salary to expect", "Resume tips"]
+        };
+      }
+      return {
+        text: "🏢 I have detailed interview guides for: <strong>TCS, Infosys, Wipro, Google, Amazon, Microsoft, Razorpay, Swiggy</strong>.<br><br>Which company are you targeting?",
+        chips: ["Google interview prep", "TCS interview prep", "Amazon interview prep", "Razorpay interview prep"]
+      };
+    }
+
+    // ── SKILLS
+    if (intent === "skills") {
+      return {
+        text: "🛠️ <strong>Top skills to learn in 2026:</strong><br><br>" +
+              "<strong>🔥 Most In-Demand:</strong><br>" +
+              KB.skills2026["most demanded"].slice(0, 5).join(", ") + "<br><br>" +
+              "<strong>🚀 Rising Fast:</strong><br>" +
+              KB.skills2026["rising fast"].slice(0, 4).join(", ") + "<br><br>" +
+              "<strong>🏆 Top Certifications:</strong><br>" +
+              KB.skills2026["certifications"].slice(0, 3).join(", ") + "<br><br>" +
+              "💡 <em>Focus on one skill deeply rather than many superficially. Employers value depth over breadth.</em>",
+        chips: ["Best AI/ML skills", "Cloud certifications", "Frontend skills", "How long to learn Python"]
+      };
+    }
+
+    // ── RESUME
+    if (intent === "resume") {
+      var tips = KB.resumeTips.slice(0, 5).join("<br>");
+      return {
+        text: "📄 <strong>Resume Tips for Indian Job Market:</strong><br><br>" + tips + "<br><br>💡 <strong>Recommended format:</strong> Use a clean ATS-friendly template from Overleaf or Novoresume. Avoid fancy Canva designs for tech roles.",
+        chips: ["Resume format tips", "What to write in summary", "How to list projects", "ATS optimization"]
+      };
+    }
+
+    // ── INTERVIEW
+    if (intent === "interview") {
+      var itips = KB.interviewTips.slice(0, 5).join("<br>");
+      return {
+        text: "🎯 <strong>Interview Preparation Guide:</strong><br><br>" + itips + "<br><br>Which type of interview do you want to prepare for?",
+        chips: ["Technical coding round", "System design round", "HR behavioral round", "Amazon Leadership Principles"]
+      };
+    }
+
+    // ── FRESHER
+    if (intent === "fresher") {
+      return {
+        text: "🎓 <strong>Guide for Freshers — Your First Job in India:</strong><br><br>" +
+              "📍 <strong>Step 1:</strong> Get certified — AWS/GCP free tier, Google courses, Coursera<br>" +
+              "💻 <strong>Step 2:</strong> Build 2–3 projects on GitHub (not just tutorial projects — solve real problems)<br>" +
+              "📄 <strong>Step 3:</strong> Create a strong 1-page resume with projects and skills<br>" +
+              "🎯 <strong>Step 4:</strong> Apply on Naukri, LinkedIn, Instahyre, Wellfound for startups<br>" +
+              "🏢 <strong>Step 5:</strong> Target service companies first (TCS/Infosys) to get 2 years of experience<br>" +
+              "🚀 <strong>Step 6:</strong> After 2 years, move to product companies for 2–3x salary jump<br><br>" +
+              "💰 Expected fresher salary: ₹3.5–9 LPA depending on company and skills",
+        chips: ["Best companies for freshers", "Fresher resume tips", "Which skills to learn first", "How to crack TCS NQT"]
+      };
+    }
+
+    // ── CAREER PATH
+    if (intent === "career_path") {
+      if (role) {
+        var paths = KB.careerPaths;
+        var pathKey = Object.keys(paths).find(function(k){ return role.indexOf(k) !== -1; });
+        if (pathKey) {
+          return {
+            text: "🗺️ <strong>Career Path for " + role.replace(/\b\w/g, function(l){ return l.toUpperCase(); }) + ":</strong><br><br>" +
+                  KB.careerPaths[pathKey] + "<br><br>" +
+                  "⏱️ Typically takes 2–3 years to move up each level in India.<br>" +
+                  "💡 Switching companies is the fastest way to get 30–50% salary hikes.",
+            chips: ["How to get promoted faster", "When to switch companies", "Skills needed for next level"]
+          };
+        }
+      }
+      return {
+        text: "🗺️ <strong>Career paths I can guide you on:</strong><br><br>" +
+              "💻 Software Engineering<br>📊 Data Science & Analytics<br>⚙️ DevOps & Cloud<br>🎯 Product Management<br>🎨 UI/UX Design<br>🔒 Cybersecurity<br><br>Which field would you like a roadmap for?",
+        chips: ["Software Engineer path", "Data Scientist path", "DevOps path", "Product Manager path"]
+      };
+    }
+
+    // ── JOB SEARCH
+    if (intent === "job_search") {
+      return {
+        text: "🔍 <strong>Best job search strategy for India (2026):</strong><br><br>" +
+              "1️⃣ <strong>LinkedIn</strong> — best for product companies and referrals<br>" +
+              "2️⃣ <strong>Naukri.com</strong> — largest job database in India<br>" +
+              "3️⃣ <strong>Instahyre</strong> — AI-powered, great for mid-level roles<br>" +
+              "4️⃣ <strong>Wellfound</strong> — best for startup jobs<br>" +
+              "5️⃣ <strong>Referrals</strong> — 85% of jobs are filled this way. Network on LinkedIn!<br><br>" +
+              "💡 <strong>Pro tip:</strong> On Belongix dashboard, go to Jobs section for curated live listings from top Indian companies!",
+        chips: ["How to get referrals", "LinkedIn profile tips", "Resume for job hunting", "How many jobs to apply daily"]
+      };
+    }
+
+    // ── CITY
+    if (intent === "city" || city) {
+      var c2 = city || "bangalore";
+      if (KB.cities[c2]) {
+        return {
+          text: "📍 <strong>" + c2.charAt(0).toUpperCase() + c2.slice(1) + " — Career Insights:</strong><br><br>" + KB.cities[c2] + "<br><br>Would you like to know about job opportunities or salary levels in this city?",
+          chips: ["Top companies in " + c2, "Average salary in " + c2, "Compare cities for tech jobs"]
+        };
+      }
+    }
+
+    // ── BURNOUT
+    if (intent === "burnout") {
+      return {
+        text: "💚 <strong>First, you're not alone.</strong> 83% of Indian IT professionals face burnout at some point.<br><br>" +
+              "Here's what actually helps:<br><br>" +
+              "🛑 <strong>Short-term:</strong> Take a proper break — even 2–3 days makes a difference<br>" +
+              "💬 <strong>Talk:</strong> To a trusted colleague, friend, or mentor<br>" +
+              "🎯 <strong>Boundary:</strong> Set clear work hours and protect them<br>" +
+              "🔄 <strong>Switch:</strong> If the job itself is toxic, plan your exit — don't quit impulsively<br>" +
+              "📋 <strong>Career move:</strong> Sometimes burnout is a signal it's time for a new role<br><br>" +
+              "Belongix community is being built for exactly this — a safe space to talk and find better opportunities.",
+        chips: ["When should I switch jobs", "How to find better work culture", "How to negotiate better hours"]
+      };
+    }
+
+    // ── MOTIVATION
+    if (intent === "motivation") {
+      var quotes = [
+        "💪 Every rejection is data — not a verdict on your worth.<br><br>The average software engineer gets rejected 7–10 times before landing their dream job. Keep applying. Keep improving. The offer will come.",
+        "🚀 Being stuck doesn't mean you're falling behind — it means you're about to level up.<br><br>The engineers at Google today were rejected from their first 5 companies. Every 'no' is getting you closer to the right 'yes'.",
+        "💡 The gap between where you are and where you want to be is filled with action.<br><br>What's ONE thing you can do today — even a small thing — to move forward? Apply to one job. Learn one concept. Message one connection."
+      ];
+      return {
+        text: pickRandom(quotes),
+        chips: ["Help me make a plan", "How to prepare better", "What should I focus on"]
+      };
+    }
+
+    // ── AI/ML CAREER
+    if (intent === "ai_ml") {
+      return {
+        text: "🤖 <strong>AI/ML Career in India — 2026 Guide:</strong><br><br>" +
+              "<strong>Why it's hot:</strong> India faces 53% AI talent deficit. Demand is massive, supply is low.<br><br>" +
+              "<strong>Roadmap to become an AI Engineer:</strong><br>" +
+              "1️⃣ Master Python (1–2 months)<br>" +
+              "2️⃣ Statistics & Math basics (2 months)<br>" +
+              "3️⃣ Machine Learning (scikit-learn, 2–3 months)<br>" +
+              "4️⃣ Deep Learning (TensorFlow/PyTorch, 2–3 months)<br>" +
+              "5️⃣ Specialise: NLP, Computer Vision, or GenAI (2–3 months)<br>" +
+              "6️⃣ Build 2–3 strong projects + Kaggle competitions<br><br>" +
+              "💰 <strong>Salary:</strong> ₹8–35 LPA (entry to senior). Top AI engineers earn ₹50–80+ LPA.",
+        chips: ["Best ML courses", "AI certifications", "Top companies hiring AI engineers", "ML engineer salary"]
+      };
+    }
+
+    // ── STARTUP
+    if (intent === "startup") {
+      return {
+        text: "🚀 <strong>Building a startup in India — Key advice:</strong><br><br>" +
+              "✅ Validate before building — talk to 20+ potential users first<br>" +
+              "✅ Register on Startup India (startupindia.gov.in) — free, tax benefits<br>" +
+              "✅ Apply to NASSCOM 10000 Startups — free mentorship + funding<br>" +
+              "✅ 100x.vc offers ₹25L at 1% equity — great first funding<br>" +
+              "✅ Microsoft & Google give free cloud credits for startups<br>" +
+              "✅ Y Combinator is open to Indian founders — apply every batch<br><br>" +
+              "💡 <em>The best time to start? When you've validated a real problem people will pay to solve.</em>",
+        chips: ["How to get funding", "Startup India registration", "No-code tools to build MVP"]
+      };
+    }
+
+    // ── ABOUT BELONGIX
+    if (intent === "about") {
+      return {
+        text: "💚 <strong>About Belongix:</strong><br><br>" +
+              "Belongix is India's professional career platform built for students, freshers, and working professionals.<br><br>" +
+              "<strong>What we offer:</strong><br>" +
+              "📊 Career Score — track your professional growth<br>" +
+              "💼 Live Jobs — matched to your profile<br>" +
+              "💰 Salary Intelligence — know your worth<br>" +
+              "🛠️ Upskilling Tracks — learn in-demand skills<br>" +
+              "🤝 Professional Network — connect with peers<br><br>" +
+              "🌐 Visit: <strong>belongix.in</strong><br>" +
+              "📧 Contact: teambelongix@gmail.com",
+        chips: ["How to use Belongix", "Is Belongix free", "How career score works"]
+      };
+    }
+
+    // ── GENERAL FALLBACK
+    var fallbacks = [
+      "That's a great question! I'm still learning about that topic. Here's what I <em>can</em> help you with:<br><br>💰 Salary for any role in India<br>🏢 Interview prep for TCS, Google, Amazon, etc.<br>📄 Resume tips<br>🛠️ Skills to learn in 2026<br>🗺️ Career path guidance<br><br>What would you like to explore?",
+      "Hmm, let me make sure I help you best! I specialise in Indian career guidance. Try asking me:<br><br>• 'What is the salary for a Data Scientist?'<br>• 'How to crack Google interview?'<br>• 'What skills should I learn in 2026?'<br>• 'I am a fresher, what should I do?'",
+      "I want to give you the best answer! Could you be a bit more specific? For example:<br><br>🎯 Which role are you in or targeting?<br>📍 Which city are you based in?<br>🏢 Which company are you preparing for?<br><br>That'll help me give you a much more tailored answer!"
+    ];
+    return {
+      text: pickRandom(fallbacks),
+      chips: ["Salary check", "Interview prep", "Career advice", "What is Belongix"]
+    };
+  }
+
+  // ── UI ───────────────────────────────────────────────────────────
+  var CSS = [
+    "#bx-bubble{position:fixed;bottom:24px;right:24px;z-index:2147483647;font-family:'DM Sans',system-ui,sans-serif;display:block}",
+    "#bx-btn{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#1d4ed8,#0EA5E9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,99,235,.5),0 0 0 0 rgba(37,99,235,.4);transition:.3s;position:relative;animation:bxBtnPulse 3s infinite}",
+    "@keyframes bxBtnPulse{0%,100%{box-shadow:0 4px 20px rgba(37,99,235,.5),0 0 0 0 rgba(37,99,235,.3)}70%{box-shadow:0 4px 20px rgba(37,99,235,.5),0 0 0 10px rgba(37,99,235,.0)}}",
+    "#bx-btn:hover{transform:scale(1.1);animation:none}",
+    "#bx-btn svg{width:26px;height:26px;color:white;display:block;flex-shrink:0}",
+    "#bx-dot{position:absolute;top:2px;right:2px;width:12px;height:12px;background:#10B981;border-radius:50%;border:2px solid white;animation:bxPulse 2s infinite;pointer-events:none}",
+    "@keyframes bxPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.3);opacity:.7}}",
+    "#bx-window{position:fixed;bottom:92px;right:24px;width:370px;height:520px;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.18);display:none;flex-direction:column;overflow:hidden;border:1px solid #E2E8F0;z-index:2147483646}",
+    "#bx-window.open{display:flex}",
+    "#bx-head{background:linear-gradient(135deg,#1E3A5F,#2563EB);padding:16px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}",
+    "#bx-head-avatar{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}",
+    "#bx-head-info h4{color:white;font-size:14px;font-weight:700;margin:0;padding:0}",
+    "#bx-head-info p{color:rgba(255,255,255,.7);font-size:11px;margin:2px 0 0 0;padding:0}",
+    "#bx-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:20px;line-height:1;padding:4px 0 4px 4px;flex-shrink:0}",
+    "#bx-close:hover{color:white}",
+    "#bx-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;min-height:0}",
+    "#bx-msgs::-webkit-scrollbar{width:4px}",
+    "#bx-msgs::-webkit-scrollbar-thumb{background:#E2E8F0;border-radius:4px}",
+    "@keyframes bxFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}",
+    "@keyframes bxBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}",
+    ".bx-typing{display:flex;gap:4px;padding:12px 14px;background:#F1F5F9;border-radius:16px;border-bottom-left-radius:4px;align-self:flex-start}",
+    ".bx-typing span{width:7px;height:7px;border-radius:50%;background:#94A3B8;animation:bxBounce 1.2s infinite;display:inline-block}",
+    ".bx-typing span:nth-child(2){animation-delay:.2s}",
+    ".bx-typing span:nth-child(3){animation-delay:.4s}",
+    "#bx-footer{padding:12px 16px;border-top:1px solid #F1F5F9;display:flex;gap:8px;flex-shrink:0;background:white}",
+    "#bx-input{flex:1;border:1.5px solid #E2E8F0;border-radius:12px;padding:9px 14px;font-size:13px;font-family:inherit;color:#0F172A;outline:none;transition:.2s;background:white;min-width:0}",
+    "#bx-input:focus{border-color:#2563EB;box-shadow:0 0 0 3px rgba(37,99,235,.1)}",
+    "#bx-send{width:38px;height:38px;border-radius:10px;background:#2563EB;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex-shrink:0}",
+    "#bx-send:hover{background:#1d4ed8}",
+    "#bx-send svg{width:16px;height:16px;color:white}",
+    "@media(max-width:480px){#bx-window{width:calc(100vw - 32px);right:16px}}"
+  ].join("");
+
+      var link = document.createElement("link");
+      link.id = "bx-font";
+      link.rel = "stylesheet";
+      link.href = "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap";
+      document.head.appendChild(link);
+    }
+    // Style
+    var style = document.createElement("style");
+    style.textContent = CSS;
+    document.head.appendChild(style);
+
+    // HTML
+    // Build elements directly — no innerHTML, no inline onclick
+    var bubble = document.createElement("div");
+    bubble.id = "bx-bubble";
+
+    var win = document.createElement("div");
+    win.id = "bx-window";
+
+    var head = document.createElement("div");
+    head.id = "bx-head";
+    var ava = document.createElement("div");
+    ava.id = "bx-head-avatar";
+    ava.innerHTML = '<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" width="28" height="28"><rect x="6" y="10" width="28" height="22" rx="6" fill="white" opacity="0.9"/><rect x="10" y="16" width="6" height="6" rx="1.5" fill="#2563EB"/><rect x="24" y="16" width="6" height="6" rx="1.5" fill="#2563EB"/><circle cx="13" cy="18.5" r="1.8" fill="white"/><circle cx="27" cy="18.5" r="1.8" fill="white"/><rect x="14" y="27" width="12" height="2.5" rx="1.25" fill="#93C5FD"/><rect x="17" y="5" width="6" height="6" rx="2" fill="rgba(255,255,255,0.7)"/><circle cx="20" cy="5.5" r="2" fill="#93C5FD"/><line x1="6" y1="21" x2="2" y2="21" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/><line x1="34" y1="21" x2="38" y2="21" stroke="white" stroke-width="2" stroke-linecap="round" opacity="0.8"/></svg>';
+    var hInfo = document.createElement("div");
+    hInfo.id = "bx-head-info";
+    var h4 = document.createElement("h4");
+    h4.textContent = "Bexi - Career AI";
+    var hP = document.createElement("p");
+    hP.textContent = "Powered by Belongix";
+    hInfo.appendChild(h4);
+    hInfo.appendChild(hP);
+    var cBtn = document.createElement("button");
+    cBtn.id = "bx-close";
+    cBtn.type = "button";
+    cBtn.textContent = "\u2715";
+    head.appendChild(ava);
+    head.appendChild(hInfo);
+    head.appendChild(cBtn);
+
+    var msgs = document.createElement("div");
+    msgs.id = "bx-msgs";
+
+    var footer = document.createElement("div");
+    footer.id = "bx-footer";
+    var inp = document.createElement("input");
+    inp.id = "bx-input";
+    inp.type = "text";
+    inp.placeholder = "Ask me anything about your career...";
+    inp.autocomplete = "off";
+    var sBtn = document.createElement("button");
+    sBtn.id = "bx-send";
+    sBtn.type = "button";
+    sBtn.innerHTML = '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>';
+    footer.appendChild(inp);
+    footer.appendChild(sBtn);
+
+    win.appendChild(head);
+    win.appendChild(msgs);
+    win.appendChild(footer);
+
+    var tBtn = document.createElement("button");
+    tBtn.id = "bx-btn";
+    tBtn.type = "button";
+    tBtn.innerHTML = '<svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36"><rect x="10" y="14" width="36" height="28" rx="8" fill="white" opacity="0.95"/><rect x="16" y="21" width="8" height="8" rx="2" fill="#2563EB"/><rect x="32" y="21" width="8" height="8" rx="2" fill="#2563EB"/><circle cx="19" cy="24" r="2.2" fill="white"/><circle cx="35" cy="24" r="2.2" fill="white"/><rect x="20" y="34" width="16" height="3" rx="1.5" fill="#BFDBFE"/><rect x="25" y="8" width="6" height="7" rx="2" fill="white" opacity="0.9"/><circle cx="28" cy="8" r="2.5" fill="#93C5FD"/><line x1="10" y1="27" x2="5" y2="27" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/><line x1="46" y1="27" x2="51" y2="27" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.85"/></svg>';
+    var dot = document.createElement("div");
+    dot.id = "bx-dot";
+    tBtn.appendChild(dot);
+
+    bubble.appendChild(win);
+    bubble.appendChild(tBtn);
+    document.body.appendChild(bubble);
+
+    // All events via addEventListener — zero inline onclick
+    tBtn.addEventListener("click", function (e) { e.stopPropagation(); bxToggle(); });
+    cBtn.addEventListener("click", function (e) { e.stopPropagation(); bxToggle(); });
+    sBtn.addEventListener("click", function (e) { e.stopPropagation(); bxSend(); });
+    inp.addEventListener("keypress", function (e) { if (e.key === "Enter") bxSend(); });
+  }
+
+  var isOpen = false;
+  var welcomed = false;
+  window.bxToggle = function () {
+    isOpen = !isOpen;
+    var w = document.getElementById("bx-window");
+    if (isOpen) {
+      w.classList.add("open");
+      setTimeout(function(){ document.getElementById("bx-input").focus(); }, 100);
+      if (!welcomed) {
+        welcomed = true;
+        setTimeout(function () {
+          bxAppendBot("Hi! I'm <strong>Bexi</strong> — Belongix's career guide 👋<br><br>Ask me anything about salaries, interview prep, skills to learn, or career paths in India!", ["Check my salary", "Interview tips", "Best skills 2026", "I am a fresher"]);
+        }, 300);
+      }
+    } else {
+      w.classList.remove("open");
+    }
+  };
+
+  function bxAppendBot(text, chips) {
+    var msgs = document.getElementById("bx-msgs");
+    if (!msgs) return;
+    var div = document.createElement("div");
+    div.className = "bx-msg bx-bot";
+    div.style.cssText = "max-width:86%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6;background:#F1F5F9;color:#0F172A;border-bottom-left-radius:4px;align-self:flex-start;display:block;margin:0;word-wrap:break-word";
+    div.innerHTML = text;
+    msgs.appendChild(div);
+    if (chips && chips.length) {
+      var chipWrap = document.createElement("div");
+      chipWrap.style.cssText = "display:flex;flex-wrap:wrap;gap:6px;margin-top:6px";
+      chips.forEach(function (chip) {
+        var btn = document.createElement("button");
+        btn.style.cssText = "background:white;border:1.5px solid #DBEAFE;color:#2563EB;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s";
+        btn.textContent = chip;
+        btn.onclick = function () { bxHandleChip(chip); };
+        btn.onmouseover = function(){ this.style.background="#EFF6FF"; };
+        btn.onmouseout = function(){ this.style.background="white"; };
+        chipWrap.appendChild(btn);
+      });
+      msgs.appendChild(chipWrap);
+    }
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function bxHandleChip(text) {
+    var input = document.getElementById("bx-input");
+    input.value = text;
+    bxSend();
+  }
+
+  function bxSend() {
+    var input = document.getElementById("bx-input");
+    var msg = input.value.trim();
+    if (!msg) return;
+    input.value = "";
+
+    var msgs = document.getElementById("bx-msgs");
+    var userDiv = document.createElement("div");
+    userDiv.style.cssText = "max-width:86%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.6;background:linear-gradient(135deg,#2563EB,#0EA5E9);color:white;border-bottom-right-radius:4px;align-self:flex-end;display:block;margin:0;word-wrap:break-word";
+    userDiv.textContent = msg;
+    msgs.appendChild(userDiv);
+
+    var typing = document.createElement("div");
+    typing.className = "bx-typing";
+    typing.innerHTML = "<span></span><span></span><span></span>";
+    msgs.appendChild(typing);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    var delay = 600 + Math.random() * 600;
+    setTimeout(function () {
+      msgs.removeChild(typing);
+      var resp = getResponse(msg);
+      bxAppendBot(resp.text, resp.chips);
+    }, delay);
+  }
+  // ── INIT
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", inject);
+  } else {
+    inject();
+  }
+
 })();
