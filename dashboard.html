@@ -221,6 +221,7 @@
     .content{padding:16px}
   }
 </style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -259,7 +260,7 @@
       </button>
       <button class="sb-link" onclick="showPage('network',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="17" cy="8" r="4"/><circle cx="7" cy="16" r="4"/><path d="M11 8H7M17 16h-4"/></svg>
-        <span>Network</span>
+        <span>Find a Mentor</span>
       </button>
     </div>
     <div class="sb-section">
@@ -268,6 +269,7 @@
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>My Profile</span>
       </button>
+      <button class="sb-link" onclick="showPage('upgrade',this)" style="background:linear-gradient(135deg,#2563EB,#0EA5E9);color:white;margin-bottom:4px"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="18" height="18"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg><span style="color:white;font-weight:700">Upgrade Pro</span></button>
       <button class="sb-link" onclick="showPage('settings',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
         <span>Settings</span>
@@ -431,47 +433,99 @@
 
     <!-- ── UPSKILLING ── -->
     <div class="page-section" id="page-upskill">
-      <div class="page-title">Upskilling Tracks</div>
-      <div class="page-subtitle">Curated learning paths for the skills employers want most in 2026</div>
-      <div class="grid-2">
-        <div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#EFF6FF">🤖</div><div><h4>Generative AI & Prompt Engineering</h4><p>ChatGPT, Claude, Gemini, LangChain · 12 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 12 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#F0FDF4">☁️</div><div><h4>Cloud Computing (AWS & Azure)</h4><p>EC2, S3, Lambda, Azure AD · 15 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 15 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#F5F3FF">🔧</div><div><h4>DevOps & CI/CD Pipelines</h4><p>Docker, Kubernetes, Jenkins · 10 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 10 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-        </div>
-        <div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#FEF9C3">📊</div><div><h4>Data Science & Analytics</h4><p>Python, Pandas, Power BI, SQL · 18 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 18 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#FFF1F2">🔒</div><div><h4>Cybersecurity Fundamentals</h4><p>OWASP, SIEM, Ethical Hacking · 14 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 14 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#E0F2FE">💻</div><div><h4>Full Stack Development</h4><p>React, Node.js, MongoDB, REST APIs · 20 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 20 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-        </div>
-      </div>
+      <div class="page-title">Upskilling Hub</div>
+      <div class="page-subtitle">Handpicked real courses from Google, AWS, Meta, Kaggle, Scaler and more - trending in 2026</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px" id="upskillFilters"></div>
+      <div id="tracksGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px"></div>
+      <style>
+        .cCard{background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.25s}
+        .cCard:hover{border-color:#2563EB;box-shadow:0 6px 24px rgba(37,99,235,.1)}
+        .cLink{display:flex;align-items:center;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s;margin-bottom:7px;gap:10px}
+        .cLink:hover{background:#EFF6FF;border-color:#2563EB}
+        .cLink:last-child{margin-bottom:0}
+        .tTab{padding:7px 14px;border-radius:20px;border:1.5px solid #E2E8F0;background:white;color:#64748B;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s}
+        .tTab.active,.tTab:hover{background:#EFF6FF;color:#2563EB;border-color:#2563EB}
+        .bFree{background:#F0FDF4;color:#15803D;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bHot{background:#FFF1F2;color:#BE123C;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bCert{background:#FEF9C3;color:#A16207;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bPaid{background:#F5F3FF;color:#7C3AED;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bIndia{background:#FFF7ED;color:#C2410C;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+      </style>
+      <script>
+      (function(){
+        var TRACKS=[
+          {emoji:"&#129302;",title:"Agentic AI and AI Automation",sub:"LangChain, CrewAI, AutoGPT, n8n - #1 hyped skill in 2026",tags:["hot","free","advanced"],badge:"hot",icon:"#FFF1F2",courses:[
+            {n:"Building AI Agents with CrewAI",by:"DeepLearning.AI - Multi-agent systems - Free",url:"https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/",free:true},
+            {n:"LangChain for LLM Application Dev",by:"DeepLearning.AI - Andrew Ng - 100% Free",url:"https://www.deeplearning.ai/short-courses/langchain-for-llm-application-development/",free:true},
+            {n:"LangGraph - Stateful AI Agents",by:"DeepLearning.AI - Advanced agents - Free",url:"https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/",free:true},
+            {n:"Automate with n8n - No-code AI",by:"n8n Official Docs - AI workflow automation - Free",url:"https://docs.n8n.io/courses/",free:true}]},
+          {emoji:"&#10024;",title:"Generative AI and Prompt Engineering",sub:"ChatGPT, Gemini, Claude, Midjourney - essential for every professional",tags:["hot","free","beginner"],badge:"hot",icon:"#FFF1F2",courses:[
+            {n:"Generative AI for Everyone",by:"Coursera - Andrew Ng - Beginner - Free audit",url:"https://www.coursera.org/learn/generative-ai-for-everyone",free:true},
+            {n:"Prompt Engineering for Developers",by:"DeepLearning.AI - 1 hour - 100% Free",url:"https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/",free:true},
+            {n:"Google Generative AI Learning Path",by:"Google Cloud Skills Boost - Official - Free",url:"https://www.cloudskillsboost.google/paths/118",free:true},
+            {n:"Generative AI with LLMs",by:"Coursera - AWS + DeepLearning.AI - Free audit",url:"https://www.coursera.org/learn/generative-ai-with-llms",free:true}]},
+          {emoji:"&#9729;&#65039;",title:"Cloud Computing (AWS, Azure, GCP)",sub:"Adds Rs.3-8 LPA to salary instantly - most hired cert globally",tags:["cert","free","beginner","advanced"],badge:"cert",icon:"#F0FDF4",courses:[
+            {n:"AWS Cloud Practitioner CLF-C02",by:"AWS Official Training - Free - Industry standard",url:"https://aws.amazon.com/training/learn-about/cloud-practitioner/",free:true},
+            {n:"Azure Fundamentals AZ-900",by:"Microsoft Learn - Official - 100% Free",url:"https://learn.microsoft.com/en-us/training/paths/az-900-describe-cloud-concepts/",free:true},
+            {n:"Google Cloud Associate Engineer",by:"Google Cloud Skills Boost - Free path",url:"https://www.cloudskillsboost.google/paths/11",free:true},
+            {n:"AWS Solutions Architect Associate",by:"Udemy - Stephane Maarek - Best seller - Paid",url:"https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/",free:false}]},
+          {emoji:"&#128260;",title:"Data Engineering and Modern Data Stack",sub:"dbt, Spark, Airflow, Snowflake, Kafka - fastest growing role in India",tags:["hot","advanced"],badge:"hot",icon:"#FFF1F2",courses:[
+            {n:"dbt Fundamentals - Official Course",by:"dbt Learn - Official - Highly valued by recruiters - Free",url:"https://learn.getdbt.com/courses/dbt-fundamentals",free:true},
+            {n:"IBM Data Engineering Certificate",by:"Coursera - IBM - Industry recognised - Free audit",url:"https://www.coursera.org/professional-certificates/ibm-data-engineer",free:true},
+            {n:"Apache Kafka Complete Guide",by:"Udemy - Stephane Maarek - Best seller - Paid",url:"https://www.udemy.com/course/apache-kafka/",free:false},
+            {n:"Snowflake Hands-On Essentials",by:"Snowflake - Official - Badge awarded - Free",url:"https://learn.snowflake.com/",free:true}]},
+          {emoji:"&#129504;",title:"Machine Learning and Deep Learning",sub:"TensorFlow, PyTorch, scikit-learn - foundation of all AI careers",tags:["free","beginner","advanced"],badge:"free",icon:"#EFF6FF",courses:[
+            {n:"Machine Learning Specialization",by:"Coursera - Andrew Ng - World's best ML course - Free audit",url:"https://www.coursera.org/specializations/machine-learning-introduction",free:true},
+            {n:"Practical Deep Learning for Coders",by:"fast.ai - Jeremy Howard - Best DL course globally - Free",url:"https://course.fast.ai/",free:true},
+            {n:"Kaggle - Intro to Machine Learning",by:"Kaggle - 3 hrs - Certificate - 100% Free",url:"https://www.kaggle.com/learn/intro-to-machine-learning",free:true},
+            {n:"TensorFlow Developer Certificate",by:"Google - Official certification path - Free prep",url:"https://www.tensorflow.org/certificate",free:true}]},
+          {emoji:"&#128187;",title:"Full Stack Development",sub:"React, Next.js, Node.js, MongoDB - most in-demand at Indian startups",tags:["free","beginner","advanced"],badge:"free",icon:"#E0F2FE",courses:[
+            {n:"The Odin Project - Full Curriculum",by:"The Odin Project - Complete web dev - 100% Free",url:"https://www.theodinproject.com/",free:true},
+            {n:"Meta Full-Stack Developer Certificate",by:"Coursera - Meta - Industry recognised - Free audit",url:"https://www.coursera.org/professional-certificates/meta-full-stack-developer",free:true},
+            {n:"Next.js 14 Full Course 2024",by:"JavaScript Mastery - YouTube - Most watched - Free",url:"https://www.youtube.com/watch?v=wm5gMKuwSYk",free:true},
+            {n:"Node.js and Backend APIs",by:"freeCodeCamp - Certificate - 100% Free",url:"https://www.freecodecamp.org/learn/back-end-development-and-apis/",free:true}]},
+          {emoji:"&#128295;",title:"DevOps, Docker and Kubernetes",sub:"GitHub Actions, Terraform, Jenkins - needed in every engineering team",tags:["cert","free","advanced"],badge:"cert",icon:"#F5F3FF",courses:[
+            {n:"Docker and Kubernetes Full Course",by:"TechWorld with Nana - YouTube - 4 hrs - Free",url:"https://www.youtube.com/watch?v=3c-iBn73dDE",free:true},
+            {n:"Kubernetes Fundamentals LFS158",by:"Linux Foundation - Official CNCF - 100% Free",url:"https://training.linuxfoundation.org/training/kubernetes-fundamentals/",free:true},
+            {n:"Terraform for Beginners",by:"freeCodeCamp - YouTube - Infrastructure as Code - Free",url:"https://www.youtube.com/watch?v=SLB_c_ayRMo",free:true},
+            {n:"GitHub Actions CI/CD Full Course",by:"TechWorld with Nana - YouTube - Free",url:"https://www.youtube.com/watch?v=R8_veQiYBjI",free:true}]},
+          {emoji:"&#128274;",title:"Cybersecurity and Ethical Hacking",sub:"Google Cert, CompTIA, CEH - massive demand, very low supply in India",tags:["cert","free","beginner"],badge:"cert",icon:"#FFF7ED",courses:[
+            {n:"Google Cybersecurity Certificate",by:"Coursera - Google - Job-ready - Free audit",url:"https://www.coursera.org/professional-certificates/google-cybersecurity",free:true},
+            {n:"TryHackMe - Ethical Hacking Labs",by:"TryHackMe - Hands-on - Beginner friendly - Free plan",url:"https://tryhackme.com/",free:true},
+            {n:"Hack The Box - Penetration Testing",by:"HTB - Real environments - Free tier",url:"https://www.hackthebox.com/",free:true},
+            {n:"IBM Cybersecurity Analyst Certificate",by:"Coursera - IBM - Industry standard - Free audit",url:"https://www.coursera.org/professional-certificates/ibm-cybersecurity-analyst",free:true}]},
+          {emoji:"&#127919;",title:"DSA and FAANG Interview Prep",sub:"LeetCode 75, NeetCode, System Design - crack Google, Amazon, Razorpay",tags:["hot","free","beginner","advanced"],badge:"hot",icon:"#FFF1F2",courses:[
+            {n:"LeetCode 75 - Essential Study Plan",by:"LeetCode - 75 curated problems - Free",url:"https://leetcode.com/studyplan/leetcode-75/",free:true},
+            {n:"NeetCode - Best Structured DSA Path",by:"NeetCode - Video solutions - 100% Free",url:"https://neetcode.io/roadmap",free:true},
+            {n:"ByteByteGo - System Design",by:"Alex Xu - YouTube - Industry gold standard - Free",url:"https://www.youtube.com/@ByteByteGo",free:true},
+            {n:"Pramp - Free Peer Mock Interviews",by:"Pramp - All levels - 100% Free",url:"https://www.pramp.com/",free:true}]},
+          {emoji:"&#9889;",title:"Scaler Academy - India's #1 Bootcamp",sub:"Most trusted paid bootcamp in India - job guarantee, live mentorship",tags:["india","advanced","cert"],badge:"india",icon:"#FFF7ED",courses:[
+            {n:"Scaler - Data Science and ML Program",by:"Scaler Academy - Live mentorship - Job guarantee",url:"https://www.scaler.com/data-science-course/",free:false},
+            {n:"Scaler - Full Stack MERN/Java",by:"Scaler Academy - Industry projects - Placement support",url:"https://www.scaler.com/courses/full-stack-developer-course/",free:false},
+            {n:"InterviewBit - Free DSA Practice",by:"InterviewBit - India's best DSA platform - Free",url:"https://www.interviewbit.com/",free:true},
+            {n:"Scaler - DevOps and Cloud Engineering",by:"Scaler Academy - AWS + Kubernetes - Paid",url:"https://www.scaler.com/courses/devops-certification-training-course/",free:false}]},
+          {emoji:"&#127891;",title:"NPTEL and UpGrad - Indian Platforms",sub:"IIT and university-backed courses - free certification, government recognised",tags:["india","free","beginner","cert"],badge:"india",icon:"#FFF7ED",courses:[
+            {n:"NPTEL - Python for Data Science",by:"IIT Madras - SWAYAM - Free - Govt certified",url:"https://nptel.ac.in/courses/106106145",free:true},
+            {n:"NPTEL - Database Management Systems",by:"IIT KGP - SWAYAM - Free - Exam with certificate",url:"https://nptel.ac.in/courses/106105175",free:true},
+            {n:"NPTEL - Cloud Computing",by:"IIT KGP - SWAYAM - Free - 12 weeks",url:"https://nptel.ac.in/courses/106105167",free:true},
+            {n:"UpGrad - PG Diploma Data Science",by:"UpGrad + IIIT Bangalore - University backed - Paid",url:"https://www.upgrad.com/data-science-pgd-iiitb/",free:false}]},
+          {emoji:"&#128241;",title:"Product Management and UX Design",sub:"Google UX Cert, PM School - most in-demand non-tech role at Razorpay, Swiggy",tags:["hot","beginner","cert"],badge:"hot",icon:"#FFF1F2",courses:[
+            {n:"Google UX Design Certificate",by:"Coursera - Google - Industry standard - Free audit",url:"https://www.coursera.org/professional-certificates/google-ux-design",free:true},
+            {n:"PM School - Product Management India",by:"PM School - India-focused case studies - Free content",url:"https://pmschool.io/",free:true},
+            {n:"Figma UI/UX Complete Course",by:"freeCodeCamp - YouTube - Hands-on - Free",url:"https://www.youtube.com/watch?v=1pW_sk-2y40",free:true},
+            {n:"Product Management Fundamentals",by:"Coursera - Duke University - Free audit",url:"https://www.coursera.org/learn/uva-darden-digital-product-management",free:true}]}
+        ];
+        var FILTERS=[{key:"all",label:"All Tracks"},{key:"hot",label:"Trending"},{key:"free",label:"Free Only"},{key:"beginner",label:"Beginner"},{key:"advanced",label:"Advanced"},{key:"cert",label:"Certifications"},{key:"india",label:"Indian Platforms"}];
+        var active="all";
+        function renderFilters(){var fc=document.getElementById("upskillFilters");if(!fc)return;fc.innerHTML="";FILTERS.forEach(function(f){var b=document.createElement("button");b.className="tTab"+(f.key===active?" active":"");b.textContent=f.label;b.addEventListener("click",function(){active=f.key;renderFilters();renderTracks();});fc.appendChild(b);});}
+        function badgeCls(b){return{hot:"bHot",free:"bFree",cert:"bCert",paid:"bPaid",india:"bIndia"}[b]||"bFree";}
+        function badgeTxt(b){return{hot:"HOT",free:"FREE",cert:"CERT",paid:"PAID",india:"INDIA"}[b]||b.toUpperCase();}
+        function renderTracks(){var grid=document.getElementById("tracksGrid");if(!grid)return;var list=active==="all"?TRACKS:TRACKS.filter(function(t){return t.tags.indexOf(active)!==-1;});if(!list.length){grid.innerHTML="<div style='color:#64748B;padding:32px;text-align:center;grid-column:1/-1'>No tracks found.</div>";return;}grid.innerHTML="";list.forEach(function(t){var div=document.createElement("div");div.className="cCard";var courses=t.courses.map(function(c){return "<a href='"+c.url+"' target='_blank' class='cLink'><div style='flex:1;min-width:0'><div style='font-size:13px;font-weight:600;color:#0F172A'>"+c.n+"</div><div style='font-size:11px;color:#64748B;margin-top:2px'>"+c.by+"</div></div><span class='"+(c.free?"bFree":"bPaid")+"' style='margin-right:6px'>"+(c.free?"FREE":"PAID")+"</span><span style='font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0'>Start</span></a>";}).join("");div.innerHTML="<div style='display:flex;align-items:flex-start;gap:12px;margin-bottom:14px'><div style='width:50px;height:50px;border-radius:13px;background:"+t.icon+";display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0'>"+t.emoji+"</div><div style='flex:1;min-width:0'><div style='font-weight:700;font-size:15px;color:#0F172A;margin-bottom:3px'>"+t.title+"</div><div style='font-size:12px;color:#64748B;line-height:1.5'>"+t.sub+"</div></div><span class='"+badgeCls(t.badge)+"'>"+badgeTxt(t.badge)+"</span></div><div>"+courses+"</div>";grid.appendChild(div);});}
+        if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){renderFilters();renderTracks();});}else{renderFilters();renderTracks();}
+      })();
+      </script>
     </div>
 
-    <!-- ── SALARY ── -->
     <div class="page-section" id="page-salary">
       <div class="page-title">Salary Intelligence</div>
       <div class="page-subtitle">Real salary data for Indian tech roles — know your worth</div>
@@ -545,15 +599,14 @@
 
     <!-- ── NETWORK ── -->
     <div class="page-section" id="page-network">
-      <div class="page-title">Professional Network</div>
-      <div class="page-subtitle">Connect with professionals in your field</div>
-      <div style="display:flex;flex-direction:column;gap:12px">
-        <div class="network-card"><div class="net-avatar">AK</div><div class="net-info"><h4>Aarav Kumar</h4><p>Senior Software Engineer · TCS, Bangalore</p></div><button class="btn-connect">Connect</button></div>
-        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#7C3AED,#0EA5E9)">PS</div><div class="net-info"><h4>Priya Sharma</h4><p>Data Scientist · Infosys, Hyderabad</p></div><button class="btn-connect">Connect</button></div>
-        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#10B981,#2563EB)">RM</div><div class="net-info"><h4>Rahul Mehta</h4><p>DevOps Lead · Wipro, Pune</p></div><button class="btn-connect">Connect</button></div>
-        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#F59E0B,#EF4444)">SN</div><div class="net-info"><h4>Sneha Nair</h4><p>Product Manager · Razorpay, Bangalore</p></div><button class="btn-connect">Connect</button></div>
-        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#EC4899,#7C3AED)">VP</div><div class="net-info"><h4>Vikram Patel</h4><p>AI Engineer · Microsoft, Hyderabad</p></div><button class="btn-connect">Connect</button></div>
-        <div class="network-card"><div class="net-avatar" style="background:linear-gradient(135deg,#0EA5E9,#10B981)">DG</div><div class="net-info"><h4>Deepa Gupta</h4><p>Cloud Architect · Amazon, Bangalore</p></div><button class="btn-connect">Connect</button></div>
+      <div class="page-title">Find a Mentor</div>
+      <div class="page-subtitle">Connect with verified professionals for 1-on-1 career guidance</div>
+      <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap"><input type="text" id="dash-mentor-search" placeholder="Search mentors..." onkeyup="dashFilterMentors()" style="flex:1;padding:9px 14px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color:var(--gray-900)"><a href="mentors.html" target="_blank" style="background:var(--blue);color:white;border-radius:10px;padding:9px 20px;font-size:13px;font-weight:700;text-decoration:none;display:flex;align-items:center">Full Directory &#8599;</a></div>
+      <div id="dash-mentors-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px"><div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-400)">Loading mentors...</div></div>
+      <div style="display:flex;flex-direction:column;gap:12px" style="display:none">
+                <div id="dash-mentors-loading" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-400)">
+          <div style="font-size:24px;margin-bottom:8px">Loading mentors...</div>
+        </div></div>
       </div>
     </div>
 
@@ -634,6 +687,45 @@
       </div>
     </div>
 
+
+    <!-- UPGRADE PAGE -->
+    <div class="page-section" id="page-upgrade">
+      <div class="page-title">Upgrade to Pro &#9889;</div>
+      <div class="page-subtitle">Unlock the full power of Belongix</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:780px;margin-bottom:24px">
+        <div style="background:white;border:1.5px solid var(--gray-200);border-radius:16px;padding:24px">
+          <div style="font-size:11px;font-weight:700;color:var(--gray-500);text-transform:uppercase;margin-bottom:8px">Current Plan</div>
+          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;margin-bottom:16px">Free</div>
+          <div style="font-size:13px;color:var(--gray-600,#475569);display:flex;flex-direction:column;gap:8px">
+            <div>&#10003; Career Score tracking</div><div>&#10003; 10 job applications/month</div>
+            <div>&#10003; Basic salary insights</div><div>&#10003; Bexi AI career guide</div>
+            <div style="color:var(--gray-300)">&#10007; Unlimited applications</div>
+            <div style="color:var(--gray-300)">&#10007; Mentor matching</div>
+          </div>
+          <div style="margin-top:20px;background:var(--gray-100);border-radius:10px;padding:10px;text-align:center;font-size:13px;font-weight:600;color:var(--gray-500)">Your Current Plan</div>
+        </div>
+        <div style="background:linear-gradient(160deg,#1E3A5F,#2563EB);border-radius:16px;padding:24px;position:relative">
+          <div style="position:absolute;top:14px;right:14px;background:#F59E0B;color:white;font-size:10px;font-weight:800;padding:3px 10px;border-radius:20px">POPULAR</div>
+          <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.65);text-transform:uppercase;margin-bottom:8px">Pro Plan</div>
+          <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;color:white;margin-bottom:4px">&#8377;499<span style="font-size:14px;font-weight:400;opacity:.75">/month</span></div>
+          <div style="font-size:12px;color:rgba(255,255,255,.6);margin-bottom:16px">or &#8377;4,999/year</div>
+          <div style="font-size:13px;color:white;display:flex;flex-direction:column;gap:8px;margin-bottom:20px">
+            <div>&#10003; Everything in Free</div><div>&#10003; Unlimited job applications</div>
+            <div>&#10003; Priority mentor matching</div><div>&#10003; AI resume review</div>
+            <div>&#10003; Salary negotiation coach</div><div>&#10003; Priority support 24/7</div>
+          </div>
+          <button onclick="startPayment('monthly')" style="background:white;color:#2563EB;border:none;border-radius:12px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%;margin-bottom:8px">&#9889; Upgrade Now - &#8377;499/month</button>
+          <button onclick="startPayment('yearly')" style="background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;width:100%">Annual - &#8377;4,999/year (Save 17%)</button>
+          <div style="text-align:center;margin-top:10px;font-size:11px;color:rgba(255,255,255,.55)">Secured by Razorpay - UPI, Cards, EMI</div>
+        </div>
+      </div>
+      <div id="paySuccess" style="display:none;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:16px;padding:32px;text-align:center;max-width:480px">
+        <div style="font-size:48px;margin-bottom:12px">&#127881;</div>
+        <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:#15803D;margin-bottom:8px">Welcome to Belongix Pro!</div>
+        <div style="font-size:14px;color:#166534;margin-bottom:20px">All Pro features are now unlocked!</div>
+        <button onclick="showPage('overview',document.querySelector('[onclick*=overview]'))" style="background:#15803D;color:white;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Go to Dashboard</button>
+      </div>
+    </div>
   </div><!-- /content -->
 </main>
 
@@ -647,7 +739,7 @@ var supaClient = supabase.createClient(SUPA_URL, SUPA_KEY);
 var currentUser = null;
 var savedJobs = [];
 
-// \u2500\u2500 AUTH \u2500\u2500
+// -- AUTH --
 async function init() {
   var res = await supaClient.auth.getSession();
   if (!res.data.session) { window.location.href = "index.html"; return; }
@@ -731,18 +823,19 @@ async function signOut() {
   window.location.href = "index.html";
 }
 
-// \u2500\u2500 NAVIGATION \u2500\u2500
+// -- NAVIGATION --
 function showPage(page, btn) {
   document.querySelectorAll(".page-section").forEach(function(el){ el.classList.remove("active"); });
   document.querySelectorAll(".sb-link").forEach(function(el){ el.classList.remove("active"); });
   document.getElementById("page-" + page).classList.add("active");
   if (btn) btn.classList.add("active");
-  var titles = { overview:"Overview", jobs:"Jobs & Internships", upskill:"Upskilling", salary:"Salary Insights", network:"Network", profile:"My Profile", settings:"Settings" };
+  var titles = { overview:"Overview", jobs:"Jobs & Internships", upskill:"Upskilling", salary:"Salary Insights", network:"Find a Mentor", profile:"My Profile", settings:"Settings", upgrade:"Upgrade to Pro" };
+  if(page==="network") setTimeout(loadDashMentors, 100);
   document.getElementById("topbar-title").textContent = titles[page] || "Dashboard";
   if (page === "jobs") loadJobs();
 }
 
-// \u2500\u2500 JOBS \u2500\u2500
+// -- JOBS --
 var jobsLoaded = false;
 function loadJobs() {
   if (jobsLoaded) return;
@@ -798,7 +891,7 @@ function renderJobs(jobs) {
     html += '<div class="job-tags"><span class="job-tag type">' + typeLabel + '</span><span class="job-tag loc">📍 ' + remote + '</span></div>';
     html += '<div class="job-salary">💰 <span>' + salary + '</span></div>';
     html += '<div class="job-match-bar"><div class="job-match-fill" style="width:' + match + '%"></div></div>';
-    html += '<div class="job-footer"><div class="job-date">📅 ' + posted + '</div><div class="job-match"><div class="match-dot" style="background:' + matchColor + '"></div><span style="color:' + matchColor + '">' + match + '% match</span></div><a href="' + (j.job_apply_link || "#") + '" target="_blank" class="btn-apply">Apply \u2197</a></div>';
+    html += '<div class="job-footer"><div class="job-date">📅 ' + posted + '</div><div class="job-match"><div class="match-dot" style="background:' + matchColor + '"></div><span style="color:' + matchColor + '">' + match + '% match</span></div><a href="' + (j.job_apply_link || "#") + '" target="_blank" class="btn-apply">Apply ↗</a></div>';
     html += '</div>';
   });
   html += '</div>';
@@ -817,9 +910,9 @@ function renderFallbackJobs(q) {
     {title:"Software Development Engineer",company:"Amazon",city:"Hyderabad",type:"Full Time",salary:"₹18-50 LPA",match:74,logo:"📦",remote:false,link:"https://amazon.jobs/"},
     {title:"SDE Intern",company:"Microsoft",city:"Hyderabad",type:"Internship",salary:"₹60,000-1L/month",match:88,logo:"🪟",remote:false,link:"https://careers.microsoft.com/"},
     {title:"Data Analyst",company:"Deloitte",city:"Mumbai",type:"Full Time",salary:"₹5-12 LPA",match:72,logo:"📊",remote:false,link:"https://jobs2.deloitte.com/in/en"},
-    {title:"DevOps Engineer",company:"HCL Tech",city:"Noida",type:"Full Time",salary:"₹6-15 LPA",match:80,logo:"*\uFE0F",remote:true,link:"https://www.hcltech.com/careers"},
+    {title:"DevOps Engineer",company:"HCL Tech",city:"Noida",type:"Full Time",salary:"₹6-15 LPA",match:80,logo:"⚙️",remote:true,link:"https://www.hcltech.com/careers"},
     {title:"ML Engineer",company:"CRED",city:"Bangalore",type:"Full Time",salary:"₹15-35 LPA",match:86,logo:"💳",remote:false,link:"https://careers.cred.club/"},
-    {title:"Cloud Engineer",company:"Meesho",city:"Bangalore",type:"Full Time",salary:"₹10-22 LPA",match:83,logo:"🛍\uFE0F",remote:false,link:"https://meesho.io/jobs"}
+    {title:"Cloud Engineer",company:"Meesho",city:"Bangalore",type:"Full Time",salary:"₹10-22 LPA",match:83,logo:"🛍️",remote:false,link:"https://meesho.io/jobs"}
   ];
   var html = '<div class="jobs-grid">';
   fallback.forEach(function(j){
@@ -831,7 +924,7 @@ function renderFallbackJobs(q) {
     html += '<div class="job-tags"><span class="job-tag type">' + j.type + '</span><span class="job-tag ' + (j.remote ? "remote" : "loc") + '">' + (j.remote ? "🌐 Remote" : "📍 " + j.city) + '</span></div>';
     html += '<div class="job-salary">💰 <span>' + j.salary + '</span></div>';
     html += '<div class="job-match-bar"><div class="job-match-fill" style="width:' + j.match + '%"></div></div>';
-    html += '<div class="job-footer"><div class="job-date">📅 Recently posted</div><div class="job-match"><div class="match-dot" style="background:' + matchColor + '"></div><span style="color:' + matchColor + '">' + j.match + '% match</span></div><a href="' + j.link + '" target="_blank" class="btn-apply">Apply \u2197</a></div>';
+    html += '<div class="job-footer"><div class="job-date">📅 Recently posted</div><div class="job-match"><div class="match-dot" style="background:' + matchColor + '"></div><span style="color:' + matchColor + '">' + j.match + '% match</span></div><a href="' + j.link + '" target="_blank" class="btn-apply">Apply ↗</a></div>';
     html += '</div>';
   });
   html += '</div>';
@@ -853,7 +946,7 @@ function toggleChip(el, type) {
   searchJobs();
 }
 
-// \u2500\u2500 TOAST \u2500\u2500
+// -- TOAST --
 function showToast(msg) {
   var t = document.getElementById("toast");
   t.textContent = msg;
@@ -861,10 +954,10 @@ function showToast(msg) {
   setTimeout(function(){ t.classList.remove("show"); }, 2500);
 }
 
-// \u2500\u2500 ENTER KEY \u2500\u2500
+// -- ENTER KEY --
 document.getElementById("job-search").addEventListener("keypress", function(e){ if (e.key === "Enter") { jobsLoaded = false; searchJobs(); } });
 
-// \u2500\u2500 INIT \u2500\u2500
+// -- INIT --
 init();
 </script>
   <script src="belongix-ai.js"></script>
