@@ -6,6 +6,7 @@
 <title>Belongix — Your Professional Career Starts Here</title>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 :root{
@@ -753,7 +754,7 @@ footer{background:#060e1c;border-top:1px solid rgba(255,255,255,0.04);padding:4.
         <li>Career Score tracking</li>
         <li>2 learning tracks</li>
       </ul>
-      <button class="pbtn pb-out" onclick="openM('mSignup')">Get Started Free</button>
+      <button class="pbtn pb-out" onclick="handleFree()">Get Started Free</button>
     </div>
     <div class="pc hot">
       <div class="hot-lbl">✦ Most Popular</div>
@@ -771,7 +772,7 @@ footer{background:#060e1c;border-top:1px solid rgba(255,255,255,0.04);padding:4.
         <li>Interview prep & mock sessions</li>
         <li>Priority job matching</li>
       </ul>
-      <button class="pbtn pb-fill" onclick="openM('mSignup')">Start Pro — ₹499/mo</button>
+      <button class="pbtn pb-fill" onclick="handlePricing(499,'pro_monthly')">Start Pro — ₹499/mo</button>
     </div>
     <div class="pc">
       <div class="plan">Premium</div>
@@ -785,7 +786,7 @@ footer{background:#060e1c;border-top:1px solid rgba(255,255,255,0.04);padding:4.
         <li>Priority recruiter access</li>
         <li>Personal career manager</li>
       </ul>
-      <button class="pbtn pb-out" onclick="openM('mSignup')">Go Premium</button>
+      <button class="pbtn pb-out" onclick="handlePricing(999,'premium_monthly')" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);color:white;border-color:#7c3aed">Go Premium — ₹999/mo</button>
     </div>
   </div>
   <div style="text-align:center;margin-top:1.5rem;font-size:0.82rem;color:var(--muted);">🏢 College & Corporate group plans available — <a style="color:var(--blue);cursor:pointer;font-weight:600;" href="contact.html">Contact us →</a></div>
@@ -892,7 +893,86 @@ async function initAuth(){
 }
 initAuth();
 
+// ── SMART PRICING HANDLERS ──
+var RZP_KEY = "rzp_live_SiouVVDYQu9HTt";
+
+async function handleFree() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    window.location.href = "dashboard.html";
+  } else {
+    openM('mSignup');
+  }
+}
+
+async function handlePricing(amount, planType) {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    // Not logged in — open signup first, then store intent
+    localStorage.setItem('pendingPlan', planType);
+    localStorage.setItem('pendingAmount', amount);
+    openM('mSignup');
+    toast('Create your account first, then complete payment 👇', '');
+    return;
+  }
+  // Already logged in — open Razorpay directly
+  openRazorpay(amount, planType, session.user);
+}
+
+function openRazorpay(amount, planType, user) {
+  var planName = planType === 'pro_monthly' ? 'Pro Plan — ₹499/month' : 'Premium Plan — ₹999/month';
+  var options = {
+    key: RZP_KEY,
+    amount: amount * 100,
+    currency: "INR",
+    name: "Belongix",
+    description: planName,
+    prefill: {
+      name: (user && (user.user_metadata?.full_name || user.email.split('@')[0])) || '',
+      email: (user && user.email) || ''
+    },
+    theme: { color: "#1558d6" },
+    handler: async function(response) {
+      // Save plan to Supabase
+      await sb.from('profiles').upsert({
+        id: user.id,
+        plan: planType.includes('premium') ? 'premium' : 'pro',
+        plan_type: planType,
+        plan_activated: new Date().toISOString(),
+        payment_id: response.razorpay_payment_id
+      });
+      localStorage.removeItem('pendingPlan');
+      localStorage.removeItem('pendingAmount');
+      toast('🎉 Payment successful! Redirecting to dashboard...', 'ok');
+      setTimeout(function(){ window.location.href = 'dashboard.html'; }, 1500);
+    },
+    modal: {
+      ondismiss: function() {
+        toast('Payment cancelled. You can upgrade anytime from your dashboard.', '');
+      }
+    }
+  };
+  var rzp = new Razorpay(options);
+  rzp.open();
+}
+
+// ── CHECK PENDING PLAN AFTER LOGIN ──
+async function checkPendingPlan() {
+  var pendingPlan = localStorage.getItem('pendingPlan');
+  var pendingAmount = localStorage.getItem('pendingAmount');
+  if (pendingPlan && pendingAmount) {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      setTimeout(function() {
+        openRazorpay(parseInt(pendingAmount), pendingPlan, session.user);
+      }, 800);
+    }
+  }
+}
+
+
 function showLoggedIn(user){
+  checkPendingPlan();
   const name=user.user_metadata?.full_name||user.email.split('@')[0]||'User';
   document.getElementById('nav-loggedout').style.display='none';
   const ni=document.getElementById('nav-loggedin');
