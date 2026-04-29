@@ -3,15 +3,13 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>About Us — Belongix</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Bricolage+Grotesque:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<title>About Us — Belongix | India's Professional Career Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-:root{--navy:#0a1628;--blue:#1d6fa4;--blue2:#1a5f8e;--sky:#e6f3fb;--sky2:#cce5f6;--white:#fff;--off:#f5faff;--text:#1e3a52;--muted:#4a7a9b;--muted2:#7aafc8;--border:#c2dff0;--border2:#deeef9;--green:#0f7b4e;--green-s:#d1fae5;}
-body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);}
-
-/* NAV */
+:root{--navy:#0a1628;--blue:#1d6fa4;--blue2:#1a5f8e;--blue3:#2485c1;--sky:#e6f3fb;--sky2:#cce5f6;--sky3:#a8d4ee;--white:#fff;--off:#f5faff;--off2:#eef6fc;--text:#1e3a52;--muted:#4a7a9b;--muted2:#7aafc8;--border:#c2dff0;--border2:#deeef9;--green:#0f7b4e;--red:#c0392b;}
+body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);font-weight:400;}
 nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(255,255,255,0.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--border2);box-shadow:0 1px 10px rgba(29,111,164,0.06);}
 .nlogo{font-size:1.4rem;font-weight:700;color:var(--navy);text-decoration:none;letter-spacing:-0.03em;}.nlogo span{color:var(--blue);}
 .nlinks{display:flex;gap:2rem;list-style:none;}
@@ -20,325 +18,265 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;ali
 .nbtns{display:flex;gap:0.5rem;}
 .nghost{padding:0.45rem 1rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-size:0.84rem;font-weight:600;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;}
 .nghost:hover{border-color:var(--blue);color:var(--blue);}
-.nsolid{padding:0.45rem 1.1rem;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:0.84rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.nsolid:hover{background:var(--blue2);}
+.nfill{padding:0.45rem 1.2rem;border-radius:8px;background:var(--blue);border:none;font-size:0.84rem;font-weight:600;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.nav-user{display:none;align-items:center;gap:0.6rem;}
+.nav-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue3));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.78rem;color:#fff;}
+.nav-nm{font-size:0.84rem;font-weight:600;color:var(--text);}
+.nav-dash{padding:0.42rem 0.9rem;border-radius:8px;background:var(--blue);border:none;font-size:0.8rem;font-weight:600;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.nav-sign-out{padding:0.42rem 0.85rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-size:0.8rem;font-weight:600;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;}
 
-/* HERO */
-.hero{padding:110px 5% 64px;background:linear-gradient(160deg,var(--navy) 0%,#0f2d50 60%,#1a4a6e 100%);text-align:center;position:relative;overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(29,111,164,.25),transparent);}
-.hero-tag{display:inline-block;background:rgba(29,111,164,.3);border:1px solid rgba(29,111,164,.5);color:#7ecfee;font-size:0.75rem;font-weight:700;padding:5px 14px;border-radius:100px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.5rem;}
-.hero h1{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(2rem,5vw,3.2rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:1.2rem;letter-spacing:-.03em;position:relative;}
-.hero h1 span{color:#5bc4ef;}
-.hero p{font-size:1.05rem;color:rgba(255,255,255,.65);max-width:620px;margin:0 auto 2.5rem;line-height:1.7;}
-.hero-stats{display:flex;justify-content:center;gap:3rem;flex-wrap:wrap;position:relative;}
-.hstat{text-align:center;}
-.hstat-val{font-family:'Bricolage Grotesque',sans-serif;font-size:2rem;font-weight:800;color:#5bc4ef;}
-.hstat-lbl{font-size:0.8rem;color:rgba(255,255,255,.5);margin-top:3px;}
+.hero{padding:9rem 5% 5rem;background:linear-gradient(160deg,var(--white),var(--off),var(--sky));text-align:center;}
+.tag{display:inline-block;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);background:var(--sky);border:1px solid var(--sky2);border-radius:100px;padding:0.25rem 0.8rem;margin-bottom:0.85rem;}
+h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;color:var(--navy);letter-spacing:-0.03em;line-height:1.15;margin-bottom:1rem;}
+h1 span{color:var(--blue);}
+.sub{font-size:0.95rem;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.75;}
 
-/* SECTION */
-section{padding:72px 5%;}
-.section-tag{font-size:0.72rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.8rem;}
-h2{font-family:'Bricolage Grotesque',sans-serif;font-size:clamp(1.6rem,3.5vw,2.2rem);font-weight:800;color:var(--navy);letter-spacing:-.03em;margin-bottom:1rem;}
-h2 span{color:var(--blue);}
-.lead{font-size:1rem;color:var(--muted);line-height:1.75;max-width:600px;}
+.layout{display:grid;grid-template-columns:1fr 1.4fr;gap:4rem;padding:5rem 5%;align-items:start;}
+.stag{display:inline-block;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);background:var(--sky);border:1px solid var(--sky2);border-radius:100px;padding:0.25rem 0.8rem;margin-bottom:0.75rem;}
+.sh{font-size:1.7rem;font-weight:700;color:var(--navy);letter-spacing:-0.03em;line-height:1.15;margin-bottom:0.75rem;}
+.sh span{color:var(--blue);}
+.sp{font-size:0.875rem;color:var(--muted);line-height:1.75;margin-bottom:1.8rem;}
 
-/* MISSION */
-.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;max-width:1100px;margin:0 auto;}
-.mission-card{background:linear-gradient(135deg,var(--navy),#0f2d50);border-radius:20px;padding:2.5rem;color:white;}
-.mission-icon{font-size:2.5rem;margin-bottom:1rem;}
-.mission-card h3{font-family:'Bricolage Grotesque',sans-serif;font-size:1.4rem;font-weight:800;margin-bottom:.8rem;}
-.mission-card p{color:rgba(255,255,255,.65);line-height:1.7;font-size:.95rem;}
+.ccard{background:var(--white);border:1px solid var(--border2);border-radius:12px;padding:1rem 1.3rem;display:flex;align-items:center;gap:0.85rem;margin-bottom:0.6rem;transition:all 0.2s;text-decoration:none;color:inherit;cursor:pointer;}
+.ccard:hover{border-color:var(--sky2);box-shadow:0 4px 14px rgba(29,111,164,0.1);transform:translateX(4px);}
+.cc-icon{width:36px;height:36px;border-radius:9px;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.cc-label{font-size:0.68rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.12rem;}
+.cc-val{font-size:0.85rem;font-weight:600;color:var(--navy);}
 
-/* PROBLEM / SOLUTION */
-.ps-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:1100px;margin:2rem auto 0;}
-.ps-box{border-radius:16px;padding:2rem;}
-.ps-box.problem{background:#fff1f2;border:1.5px solid #fecdd3;}
-.ps-box.solution{background:var(--green-s);border:1.5px solid #a7f3d0;}
-.ps-box h3{font-family:'Bricolage Grotesque',sans-serif;font-size:1.1rem;font-weight:800;margin-bottom:1rem;}
-.ps-box.problem h3{color:#be123c;}
-.ps-box.solution h3{color:var(--green);}
-.ps-list{list-style:none;display:flex;flex-direction:column;gap:.6rem;}
-.ps-list li{font-size:.9rem;display:flex;align-items:flex-start;gap:.5rem;line-height:1.5;}
-.ps-box.problem .ps-list li::before{content:'✗';color:#be123c;font-weight:700;flex-shrink:0;}
-.ps-box.solution .ps-list li::before{content:'✓';color:var(--green);font-weight:700;flex-shrink:0;}
+.for-section{margin-top:1.8rem;}
+.for-section h4{font-size:0.84rem;font-weight:700;color:var(--navy);margin-bottom:0.85rem;}
+.for-item{display:flex;align-items:flex-start;gap:0.65rem;margin-bottom:0.6rem;padding:0.65rem 0.9rem;background:var(--off2);border-radius:9px;border:1px solid var(--border2);}
+.for-icon{font-size:0.95rem;flex-shrink:0;margin-top:0.05rem;}
+.for-text strong{display:block;font-size:0.82rem;font-weight:600;color:var(--navy);margin-bottom:0.08rem;}
+.for-text span{font-size:0.74rem;color:var(--muted);}
 
-/* VALUES */
-.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;max-width:1100px;margin:2rem auto 0;}
-.val-card{background:var(--off);border:1.5px solid var(--border2);border-radius:14px;padding:1.5rem;transition:.2s;}
-.val-card:hover{border-color:var(--blue);background:var(--sky);transform:translateY(-2px);}
-.val-icon{font-size:1.8rem;margin-bottom:.8rem;}
-.val-title{font-family:'Bricolage Grotesque',sans-serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:.4rem;}
-.val-desc{font-size:.875rem;color:var(--muted);line-height:1.6;}
+.form-wrap{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:2rem;box-shadow:0 4px 24px rgba(29,111,164,0.08);}
+.form-title{font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:0.25rem;letter-spacing:-0.02em;}
+.form-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;}
+.fg{margin-bottom:0.85rem;}
+.fl{font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:0.28rem;display:block;}
+.fi,.fsel,.fta{width:100%;padding:0.65rem 0.9rem;background:var(--off2);border:1.5px solid var(--border2);border-radius:9px;font-size:0.875rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:all 0.2s;-webkit-appearance:none;}
+.fi:focus,.fsel:focus,.fta:focus{border-color:var(--blue);background:var(--white);}
+.fi::placeholder,.fta::placeholder{color:var(--muted2);}
+.fta{resize:vertical;min-height:120px;line-height:1.6;}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+.submit-btn{width:100%;padding:0.8rem;border-radius:9px;background:var(--blue);color:#fff;border:none;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;margin-top:0.4rem;}
+.submit-btn:hover{background:var(--blue2);}
+.success-box{display:none;background:rgba(15,123,78,0.08);border:1.5px solid #86efac;border-radius:10px;padding:1rem 1.2rem;text-align:center;margin-top:0.85rem;}
+.success-box h4{font-size:0.95rem;font-weight:700;color:var(--green);margin-bottom:0.25rem;}
+.success-box p{font-size:0.82rem;color:var(--muted);}
+.err-box{display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:0.55rem 0.85rem;font-size:0.78rem;color:var(--red);margin-bottom:0.65rem;}
 
-/* ROADMAP */
-.roadmap{max-width:800px;margin:2rem auto 0;position:relative;}
-.roadmap::before{content:'';position:absolute;left:20px;top:0;bottom:0;width:2px;background:var(--sky2);}
-.rm-item{display:flex;gap:1.5rem;margin-bottom:2rem;position:relative;}
-.rm-dot{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;position:relative;z-index:1;}
-.rm-dot.done{background:var(--green-s);border:2px solid #6ee7b7;}
-.rm-dot.active{background:var(--sky);border:2px solid var(--blue);animation:pulse 2s ease infinite;}
-.rm-dot.upcoming{background:var(--off);border:2px solid var(--border);}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(29,111,164,.3);}50%{box-shadow:0 0 0 8px rgba(29,111,164,0);}}
-.rm-content{padding-top:.4rem;}
-.rm-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;margin-bottom:.3rem;}
-.rm-dot.done~.rm-content .rm-label{color:var(--green);}
-.rm-dot.active~.rm-content .rm-label{color:var(--blue);}
-.rm-dot.upcoming~.rm-content .rm-label{color:var(--muted2);}
-.rm-title{font-family:'Bricolage Grotesque',sans-serif;font-size:1rem;font-weight:700;color:var(--navy);margin-bottom:.3rem;}
-.rm-desc{font-size:.875rem;color:var(--muted);line-height:1.6;}
+.faq-sec{padding:4rem 5%;background:var(--off);}
+.faq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:2rem;}
+.faq-card{background:var(--white);border:1px solid var(--border2);border-radius:12px;padding:1.3rem;transition:all 0.2s;}
+.faq-card:hover{border-color:var(--sky2);box-shadow:0 4px 14px rgba(29,111,164,0.08);}
+.faq-card h4{font-size:0.875rem;font-weight:700;color:var(--navy);margin-bottom:0.35rem;}
+.faq-card p{font-size:0.8rem;color:var(--muted);line-height:1.6;}
 
-/* TEAM */
-.team-note{max-width:700px;margin:0 auto;background:linear-gradient(135deg,var(--sky),var(--off));border:1.5px solid var(--sky2);border-radius:16px;padding:2rem;text-align:center;}
-.team-note p{font-size:.95rem;color:var(--muted);line-height:1.75;}
-.team-note p strong{color:var(--navy);}
+footer{background:#060e1c;border-top:1px solid rgba(255,255,255,0.04);padding:3rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+.flogo{font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-0.03em;}.flogo span{color:var(--sky3);}
+footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
+.flinks{display:flex;gap:1.5rem;}
+.flinks a{font-size:0.8rem;color:rgba(255,255,255,0.35);text-decoration:none;cursor:pointer;transition:color 0.2s;}.flinks a:hover{color:var(--sky3);}
 
-/* CTA */
-.cta-section{background:linear-gradient(135deg,var(--navy),#1a4a6e);padding:72px 5%;text-align:center;}
-.cta-section h2{color:#fff;margin-bottom:1rem;}
-.cta-section p{color:rgba(255,255,255,.6);max-width:500px;margin:0 auto 2rem;line-height:1.7;}
-.cta-btn{display:inline-block;padding:.85rem 2rem;background:var(--blue);color:#fff;text-decoration:none;border-radius:10px;font-weight:700;font-size:.95rem;transition:.2s;}
-.cta-btn:hover{background:var(--blue2);transform:translateY(-1px);}
-
-/* FOOTER */
-footer{background:var(--navy);color:rgba(255,255,255,.5);text-align:center;padding:2rem 5%;font-size:.82rem;}
-footer a{color:rgba(255,255,255,.5);text-decoration:none;margin:0 .75rem;}
-footer a:hover{color:#fff;}
-
-@media(max-width:768px){
-  .mission-grid,.ps-grid{grid-template-columns:1fr;}
-  .values-grid{grid-template-columns:1fr 1fr;}
-  .nlinks,.nbtns{display:none;}
-  .hero-stats{gap:2rem;}
-}
+#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--navy);color:#fff;padding:0.65rem 1.4rem;border-radius:10px;font-size:0.84rem;font-weight:500;z-index:9999;transition:transform 0.3s,opacity 0.3s;opacity:0;box-shadow:0 8px 28px rgba(0,0,0,0.2);}
+.rv{opacity:0;transform:translateY(18px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.rv.on{opacity:1;transform:translateY(0);}
+@media(max-width:1024px){.layout{grid-template-columns:1fr;gap:2.5rem;}}
+@media(max-width:768px){.nlinks{display:none;}.fr{grid-template-columns:1fr;}.flinks{display:none;}}
 </style>
 </head>
 <body>
-
+<div id="toast"></div>
 <nav>
-  <a class="nlogo" href="index.html">Belong<span>ix</span></a>
+  <a href="index.html" class="nlogo">Belong<span>ix</span></a>
   <ul class="nlinks">
     <li><a href="index.html">Home</a></li>
     <li><a href="about.html" class="active">About</a></li>
-    <li><a href="mentors.html">Mentors</a></li>
     <li><a href="contact.html">Contact</a></li>
+    <li><a href="dashboard.html">Dashboard</a></li>
   </ul>
-  <div class="nbtns">
+  <div class="nbtns" id="nav-out">
     <button class="nghost" onclick="window.location.href='index.html'">Sign In</button>
-    <button class="nsolid" onclick="window.location.href='dashboard.html'">Dashboard</button>
+    <button class="nfill" onclick="window.location.href='index.html'">Join Free →</button>
+  </div>
+  <div class="nav-user" id="nav-in">
+    <div class="nav-av" id="nav-av">?</div>
+    <div class="nav-nm" id="nav-nm"></div>
+    <button class="nav-dash" onclick="window.location.href='dashboard.html'">Dashboard</button>
+    <button class="nav-sign-out" onclick="signOut()">Sign Out</button>
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-tag">Our Story</div>
-  <h1>Built for the people who<br><span>build everything else</span></h1>
-  <p>Belongix was born from a simple observation — India has 9.5 million IT professionals, yet not a single platform was built exclusively for their growth, wellbeing, and career success.</p>
-  <div class="hero-stats">
-    <div class="hstat"><div class="hstat-val">9.5M+</div><div class="hstat-lbl">IT Professionals in India</div></div>
-    <div class="hstat"><div class="hstat-val">83%</div><div class="hstat-lbl">Experience Burnout</div></div>
-    <div class="hstat"><div class="hstat-val">₹0</div><div class="hstat-lbl">To Get Started</div></div>
-    <div class="hstat"><div class="hstat-val">2025</div><div class="hstat-lbl">Year Founded</div></div>
-  </div>
+  <div class="tag">Our Story</div>
+  <h1 class="ht">About <span>Belongix</span></h1>
+  <p class="sub">We are building India's most complete professional career platform — for students, freshers, and working professionals at every stage of their journey.</p>
 </div>
 
-<!-- MISSION & VISION -->
-<section style="background:var(--off)">
-  <div style="max-width:1100px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:3rem">
-      <div class="section-tag">Who We Are</div>
-      <h2>Our Mission & <span>Vision</span></h2>
-      <p class="lead" style="margin:0 auto">We believe every IT professional deserves a platform that understands their world — the late nights, the sprint pressures, the imposter syndrome, and the ambition to grow beyond their current role.</p>
-    </div>
-    <div class="mission-grid">
-      <div>
-        <div class="mission-card" style="margin-bottom:1.5rem">
-          <div class="mission-icon">🎯</div>
-          <h3>Our Mission</h3>
-          <p>To accelerate the career growth of every IT professional in India by providing them with AI-powered tools, real salary data, verified mentors, and a community that truly understands tech life.</p>
-        </div>
-        <div class="mission-card" style="background:linear-gradient(135deg,#1a3a6b,#0f2d50)">
-          <div class="mission-icon">🌟</div>
-          <h3>Our Vision</h3>
-          <p>A world where no IT professional feels lost, undervalued, or alone in their career journey. Where every developer, QA engineer, DevOps specialist, and PM has the resources they need to thrive.</p>
-        </div>
+<!-- MISSION -->
+<section class="sec rv">
+  <div class="sec-in">
+    <div class="stag">Why We Exist</div>
+    <h2 class="sh">Our <span>Mission</span></h2>
+    <p class="sp">India has over 9.5 million tech and business professionals — yet most of them lack the right tools, guidance, and community to grow in their careers. Belongix was built to change that.</p>
+    <div class="fr" style="margin-top:2rem;gap:1.5rem">
+      <div style="background:var(--sky-bg,#EFF6FF);border-radius:14px;padding:1.5rem;border:1px solid var(--border2)">
+        <div style="font-size:2rem;margin-bottom:0.75rem">🎯</div>
+        <h4 style="font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem">Career Intelligence</h4>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.6">Real salary data, live job listings, and AI-powered career guidance — all in one place, built specifically for the Indian market.</p>
       </div>
-      <div style="background:linear-gradient(135deg,var(--sky),white);border-radius:20px;padding:2.5rem;border:1.5px solid var(--sky2)">
-        <h3 style="font-family:'Bricolage Grotesque',sans-serif;font-size:1.3rem;font-weight:800;color:var(--navy);margin-bottom:1.2rem">Why Belongix Exists</h3>
-        <p style="color:var(--muted);line-height:1.8;font-size:.95rem;margin-bottom:1rem">India's IT sector generates $250B+ in revenue annually. Yet the people powering it — the developers, QA leads, DevOps engineers — often face:</p>
-        <div style="display:flex;flex-direction:column;gap:.75rem">
-          <div style="display:flex;gap:.75rem;align-items:flex-start"><span style="font-size:1.2rem;flex-shrink:0">😓</span><p style="color:var(--muted);font-size:.9rem;line-height:1.6"><strong style="color:var(--navy)">Severe burnout</strong> — 83% of IT professionals experience it, yet no platform addresses it</p></div>
-          <div style="display:flex;gap:.75rem;align-items:flex-start"><span style="font-size:1.2rem;flex-shrink:0">💰</span><p style="color:var(--muted);font-size:.9rem;line-height:1.6"><strong style="color:var(--navy)">Salary blindness</strong> — most professionals don't know they're underpaid by 20–40%</p></div>
-          <div style="display:flex;gap:.75rem;align-items:flex-start"><span style="font-size:1.2rem;flex-shrink:0">🗺️</span><p style="color:var(--muted);font-size:.9rem;line-height:1.6"><strong style="color:var(--navy)">Career stagnation</strong> — no clear roadmap from mid-level to senior roles</p></div>
-          <div style="display:flex;gap:.75rem;align-items:flex-start"><span style="font-size:1.2rem;flex-shrink:0">🤝</span><p style="color:var(--muted);font-size:.9rem;line-height:1.6"><strong style="color:var(--navy)">Lack of community</strong> — IT professionals feel isolated despite working in large teams</p></div>
-        </div>
+      <div style="background:var(--sky-bg,#EFF6FF);border-radius:14px;padding:1.5rem;border:1px solid var(--border2)">
+        <div style="font-size:2rem;margin-bottom:0.75rem">🤝</div>
+        <h4 style="font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem">Real Mentors</h4>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.6">Connect with verified professionals who have been where you want to go — for interview prep, salary negotiation, and career growth.</p>
+      </div>
+      <div style="background:var(--sky-bg,#EFF6FF);border-radius:14px;padding:1.5rem;border:1px solid var(--border2)">
+        <div style="font-size:2rem;margin-bottom:0.75rem">📈</div>
+        <h4 style="font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:0.4rem">Skill Growth</h4>
+        <p style="font-size:0.82rem;color:var(--muted);line-height:1.6">48+ curated courses from Google, AWS, Coursera, Kaggle, and NPTEL — free and paid paths to the skills employers want most in 2026.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PROBLEM vs SOLUTION -->
-<section>
-  <div style="max-width:1100px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:2rem">
-      <div class="section-tag">The Gap We're Filling</div>
-      <h2>Before Belongix <span>vs After</span></h2>
-    </div>
-    <div class="ps-grid">
-      <div class="ps-box problem">
-        <h3>❌ Without Belongix</h3>
-        <ul class="ps-list">
-          <li>Searching 5 different websites for jobs</li>
-          <li>No idea if your salary is fair or not</li>
-          <li>Learning from random YouTube videos with no structure</li>
-          <li>No mentor to guide your career decisions</li>
-          <li>Burning out with no support system</li>
-          <li>Preparing for interviews alone without feedback</li>
-          <li>LinkedIn feels overwhelming and generic</li>
-        </ul>
-      </div>
-      <div class="ps-box solution">
-        <h3>✅ With Belongix</h3>
-        <ul class="ps-list">
-          <li>AI-matched jobs personalised to your skills</li>
-          <li>Real salary benchmarks for your exact role and city</li>
-          <li>Structured learning paths from top global platforms</li>
-          <li>1-on-1 mentor sessions with experienced IT leaders</li>
-          <li>Career Score to track and improve your growth</li>
-          <li>Mock interviews and resume reviews by experts</li>
-          <li>A community built exclusively for IT professionals</li>
-        </ul>
-      </div>
+<!-- WHAT WE OFFER -->
+<section class="faq-sec rv">
+  <div class="sec-in">
+    <div class="stag">The Platform</div>
+    <h2 class="sh">What <span>Belongix offers</span></h2>
+    <div class="faq-grid" style="margin-top:1.5rem">
+      <div class="faq-card"><h4>🤖 Bexi — AI Career Guide</h4><p>Our built-in AI agent answers questions about salaries, interview prep, career paths, skills to learn, and company culture — 24/7, free for every user.</p></div>
+      <div class="faq-card"><h4>💼 Live Job Board</h4><p>Real-time job listings from LinkedIn, Indeed, Glassdoor and direct company portals — filtered and matched to your profile and skills.</p></div>
+      <div class="faq-card"><h4>💰 Salary Intelligence</h4><p>Real market salary data for 15+ tech roles across Bangalore, Hyderabad, Mumbai, Pune and remote — know your worth before you negotiate.</p></div>
+      <div class="faq-card"><h4>📊 Career Score</h4><p>A dynamic score that tracks your professional growth — based on your profile, skills, applications, and activity on the platform.</p></div>
+      <div class="faq-card"><h4>🎓 Mentor Network</h4><p>Connect with verified professionals for 1-on-1 sessions — resume reviews, mock interviews, career switching advice, and salary negotiation coaching.</p></div>
+      <div class="faq-card"><h4>🛠️ Upskilling Hub</h4><p>48+ handpicked courses from Google, AWS, Meta, Scaler, NPTEL, fast.ai, and more — with filters for free, certification, beginner, and advanced tracks.</p></div>
     </div>
   </div>
 </section>
 
 <!-- VALUES -->
-<section style="background:var(--off)">
-  <div style="max-width:1100px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:2rem">
-      <div class="section-tag">What We Stand For</div>
-      <h2>Our Core <span>Values</span></h2>
-    </div>
-    <div class="values-grid">
-      <div class="val-card">
-        <div class="val-icon">🔍</div>
-        <div class="val-title">Radical Transparency</div>
-        <div class="val-desc">Real salary data. Honest pricing. No fake stats. We show you what's real — including when we're still building something.</div>
+<section class="sec rv">
+  <div class="sec-in">
+    <div class="stag">What We Stand For</div>
+    <h2 class="sh">Our <span>Core Values</span></h2>
+    <div class="fr" style="margin-top:2rem;gap:1.2rem">
+      <div style="background:white;border:1px solid var(--border2);border-radius:12px;padding:1.3rem;text-align:center">
+        <div style="font-size:1.8rem;margin-bottom:0.6rem">🌟</div>
+        <h4 style="font-size:0.875rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem">Honesty</h4>
+        <p style="font-size:0.8rem;color:var(--muted);line-height:1.5">No fake numbers, no inflated claims. We only show real data, real jobs, and real mentors.</p>
       </div>
-      <div class="val-card">
-        <div class="val-icon">🇮🇳</div>
-        <div class="val-title">India-First</div>
-        <div class="val-desc">Built for Bangalore, Hyderabad, Chennai, Pune, Mumbai. Every feature, every salary figure, every course recommendation is tuned for the Indian IT market.</div>
+      <div style="background:white;border:1px solid var(--border2);border-radius:12px;padding:1.3rem;text-align:center">
+        <div style="font-size:1.8rem;margin-bottom:0.6rem">🇮🇳</div>
+        <h4 style="font-size:0.875rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem">India First</h4>
+        <p style="font-size:0.8rem;color:var(--muted);line-height:1.5">Built for Indian professionals — our salary data, job listings, and mentors are all India-focused.</p>
       </div>
-      <div class="val-card">
-        <div class="val-icon">🚀</div>
-        <div class="val-title">Growth Over Everything</div>
-        <div class="val-desc">We measure success by how much our users grow — in salary, in skills, in confidence. Your career progress is our north star metric.</div>
+      <div style="background:white;border:1px solid var(--border2);border-radius:12px;padding:1.3rem;text-align:center">
+        <div style="font-size:1.8rem;margin-bottom:0.6rem">🆓</div>
+        <h4 style="font-size:0.875rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem">Access for All</h4>
+        <p style="font-size:0.8rem;color:var(--muted);line-height:1.5">Core features are always free. We believe career guidance should not be a privilege.</p>
       </div>
-      <div class="val-card">
-        <div class="val-icon">💚</div>
-        <div class="val-title">People Before Metrics</div>
-        <div class="val-desc">Behind every profile is a human being with real pressures. We build features that genuinely help people, not just features that look good in a pitch deck.</div>
+      <div style="background:white;border:1px solid var(--border2);border-radius:12px;padding:1.3rem;text-align:center">
+        <div style="font-size:1.8rem;margin-bottom:0.6rem">🚀</div>
+        <h4 style="font-size:0.875rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem">Always Improving</h4>
+        <p style="font-size:0.8rem;color:var(--muted);line-height:1.5">We ship fast, listen to users, and update the platform constantly based on real feedback.</p>
       </div>
-      <div class="val-card">
-        <div class="val-icon">🤝</div>
-        <div class="val-title">Community-Driven</div>
-        <div class="val-desc">Belongix is shaped by its users. Every feature request, every piece of feedback, every support ticket influences what we build next.</div>
+      <div style="background:white;border:1px solid var(--border2);border-radius:12px;padding:1.3rem;text-align:center">
+        <div style="font-size:1.8rem;margin-bottom:0.6rem">🔒</div>
+        <h4 style="font-size:0.875rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem">Privacy First</h4>
+        <p style="font-size:0.8rem;color:var(--muted);line-height:1.5">Your data belongs to you. We never sell user data to advertisers or third parties.</p>
       </div>
-      <div class="val-card">
-        <div class="val-icon">⚡</div>
-        <div class="val-title">Ship Fast, Fix Faster</div>
-        <div class="val-desc">We're a startup. We move fast, learn from mistakes, and fix them quickly. We'd rather launch something useful today than perfect something useless tomorrow.</div>
+      <div style="background:white;border:1px solid var(--border2);border-radius:12px;padding:1.3rem;text-align:center">
+        <div style="font-size:1.8rem;margin-bottom:0.6rem">💚</div>
+        <h4 style="font-size:0.875rem;font-weight:700;color:var(--navy);margin-bottom:0.3rem">Community</h4>
+        <p style="font-size:0.8rem;color:var(--muted);line-height:1.5">We are building more than a platform — a community where professionals help each other grow.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ROADMAP -->
-<section>
-  <div style="max-width:1100px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:2rem">
-      <div class="section-tag">Where We're Headed</div>
-      <h2>Product <span>Roadmap</span></h2>
-      <p class="lead" style="margin:0 auto">What's live, what we're building, and what's coming — with full transparency.</p>
-    </div>
-    <div class="roadmap">
-      <div class="rm-item">
-        <div class="rm-dot done">✅</div>
-        <div class="rm-content">
-          <div class="rm-label">Launched — April 2025</div>
-          <div class="rm-title">Core Platform Live</div>
-          <div class="rm-desc">Login/signup, dashboard, career score, salary intelligence, job listings, upskilling hub with 48 real courses, Bexi AI agent, Razorpay payments, mentor registration system.</div>
-        </div>
-      </div>
-      <div class="rm-item">
-        <div class="rm-dot active">🔨</div>
-        <div class="rm-content">
-          <div class="rm-label">In Progress — Q2 2025</div>
-          <div class="rm-title">Mentor Marketplace</div>
-          <div class="rm-desc">Live 1-on-1 mentor booking with calendar integration, session tracking, and payment splits between mentors and Belongix.</div>
-        </div>
-      </div>
-      <div class="rm-item">
-        <div class="rm-dot upcoming">⏳</div>
-        <div class="rm-content">
-          <div class="rm-label">Coming — Q3 2025</div>
-          <div class="rm-title">Resume Builder & LinkedIn Audit</div>
-          <div class="rm-desc">AI-powered resume builder tailored for Indian IT market, ATS optimization, and LinkedIn profile scoring with actionable fixes.</div>
-        </div>
-      </div>
-      <div class="rm-item">
-        <div class="rm-dot upcoming">⏳</div>
-        <div class="rm-content">
-          <div class="rm-label">Coming — Q4 2025</div>
-          <div class="rm-title">Mock Interview Engine</div>
-          <div class="rm-desc">Role-specific mock interviews with AI feedback, company-specific prep guides for TCS, Infosys, Google, Amazon, Razorpay, and more.</div>
-        </div>
-      </div>
-      <div class="rm-item">
-        <div class="rm-dot upcoming">⏳</div>
-        <div class="rm-content">
-          <div class="rm-label">Coming — 2026</div>
-          <div class="rm-title">Mobile App & Southeast Asia Expansion</div>
-          <div class="rm-desc">Native iOS & Android app. Expansion to Singapore, Malaysia, UAE — markets with large Indian IT professional communities.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- TEAM NOTE -->
-<section style="background:var(--off)">
-  <div style="max-width:1100px;margin:0 auto;text-align:center">
-    <div class="section-tag">The Team</div>
-    <h2 style="margin-bottom:2rem">Built by <span>IT professionals</span>, for IT professionals</h2>
-    <div class="team-note">
-      <p style="margin-bottom:1rem">Belongix was founded by someone who deeply understands what it means to be an IT professional in India — the pressure of deadlines, the anxiety about career growth, the confusion about salary negotiations, and the loneliness of feeling like no one gets it.</p>
-      <p style="margin-bottom:1rem">We're a small, passionate team building something we wish existed when we were starting out. Every feature on this platform comes from real conversations with real IT professionals across Bangalore, Hyderabad, Chennai, Pune, and Mumbai.</p>
-      <p><strong>We're hiring!</strong> If you're passionate about helping IT professionals grow and want to join our mission, reach out at <a href="mailto:teambelongix@gmail.com" style="color:var(--blue);font-weight:600">teambelongix@gmail.com</a></p>
+
+<!-- BEFORE VS AFTER -->
+<section class="sec rv">
+  <div class="sec-in">
+    <div class="stag">The Gap We Are Filling</div>
+    <h2 class="sh">Before Belongix <span>vs After</span></h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem">
+
+      <div style="background:#FFF1F2;border:1.5px solid #FECDD3;border-radius:16px;padding:1.8rem">
+        <div style="font-size:1.2rem;font-weight:700;color:#BE123C;margin-bottom:1.2rem">&#10060; Without Belongix</div>
+        <div style="display:flex;flex-direction:column;gap:0.8rem;font-size:0.85rem;color:#64748B;line-height:1.5">
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#BE123C;font-weight:700;flex-shrink:0">&#10007;</span>Searching 5 different websites for jobs</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#BE123C;font-weight:700;flex-shrink:0">&#10007;</span>No idea if your salary is fair or not</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#BE123C;font-weight:700;flex-shrink:0">&#10007;</span>Learning from random YouTube videos with no structure</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#BE123C;font-weight:700;flex-shrink:0">&#10007;</span>No mentor to guide your career decisions</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#BE123C;font-weight:700;flex-shrink:0">&#10007;</span>Burning out with no support system</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#BE123C;font-weight:700;flex-shrink:0">&#10007;</span>Preparing for interviews alone without feedback</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#BE123C;font-weight:700;flex-shrink:0">&#10007;</span>LinkedIn feels overwhelming and generic</div>
+        </div>
+      </div>
+
+      <div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:16px;padding:1.8rem">
+        <div style="font-size:1.2rem;font-weight:700;color:#15803D;margin-bottom:1.2rem">&#9989; With Belongix</div>
+        <div style="display:flex;flex-direction:column;gap:0.8rem;font-size:0.85rem;color:#64748B;line-height:1.5">
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#15803D;font-weight:700;flex-shrink:0">&#10003;</span>AI-matched jobs personalised to your skills</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#15803D;font-weight:700;flex-shrink:0">&#10003;</span>Real salary benchmarks for your exact role and city</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#15803D;font-weight:700;flex-shrink:0">&#10003;</span>Structured learning paths from top global platforms</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#15803D;font-weight:700;flex-shrink:0">&#10003;</span>1-on-1 mentor sessions with experienced professionals</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#15803D;font-weight:700;flex-shrink:0">&#10003;</span>Career Score to track and improve your growth</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#15803D;font-weight:700;flex-shrink:0">&#10003;</span>Mock interviews and resume reviews by experts</div>
+          <div style="display:flex;gap:0.6rem;align-items:flex-start"><span style="color:#15803D;font-weight:700;flex-shrink:0">&#10003;</span>A community built exclusively for Indian professionals</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
 <!-- CTA -->
-<div class="cta-section">
-  <h2>Ready to accelerate your IT career?</h2>
-  <p>Join Belongix today — it's free to start. No credit card required.</p>
-  <a href="index.html" class="cta-btn">Get Started Free →</a>
-</div>
-
-<!-- FOOTER -->
-<footer>
-  <div style="margin-bottom:1rem">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="mentors.html">Mentors</a>
-    <a href="contact.html">Contact</a>
-    <a href="dashboard.html">Dashboard</a>
+<section class="sec rv" style="text-align:center">
+  <div class="sec-in">
+    <div class="stag">Join Us</div>
+    <h2 class="sh">Ready to <span>start your journey?</span></h2>
+    <p class="sp">Belongix is free to join. Create your account and get your career score, live job matches, and AI guidance today.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;margin-top:2rem;flex-wrap:wrap">
+      <button onclick="window.location.href='index.html'" style="background:linear-gradient(135deg,var(--sky2,#2563EB),var(--sky3,#0EA5E9));color:white;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Get Started Free &rarr;</button>
+      <button onclick="window.location.href='contact.html'" style="background:white;color:var(--navy,#1E3A5F);border:1.5px solid var(--border2,#E2E8F0);border-radius:10px;padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif">Contact Us</button>
+    </div>
   </div>
-  <p>© 2025 Belongix · India's Career Acceleration Platform for IT Professionals · <a href="mailto:teambelongix@gmail.com">teambelongix@gmail.com</a></p>
+</section>
+
+<footer>
+  <div class="flogo">Belong<span>ix</span></div>
+  <p>&copy; 2026 Belongix &middot; teambelongix@gmail.com &middot; belongix.in</p>
+  <div class="flinks">
+    <a href="index.html">Home</a><a href="about.html">About</a>
+    <a href="contact.html">Contact</a><a href="dashboard.html">Dashboard</a>
+  </div>
 </footer>
 
-<script src="belongix-ai.js"></script>
+<script>
+const SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+async function checkAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session){
+    const name=session.user.user_metadata?.full_name||session.user.email.split('@')[0];
+    document.getElementById('nav-out').style.display='none';
+    document.getElementById('nav-in').style.display='flex';
+    document.getElementById('nav-av').textContent=name.substring(0,2).toUpperCase();
+    document.getElementById('nav-nm').textContent=name.split(' ')[0];
+  }
+}
+checkAuth();
+async function signOut(){await sb.auth.signOut();window.location.href='index.html';}
+const obs=new IntersectionObserver(e=>{e.forEach((el,i)=>{if(el.isIntersecting){setTimeout(()=>el.target.classList.add('on'),i*80);obs.unobserve(el.target);}});},{threshold:0.08});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+</script>
+  <script src="belongix-ai.js"></script>
 </body>
 </html>
