@@ -433,47 +433,145 @@
 
     <!-- ── UPSKILLING ── -->
     <div class="page-section" id="page-upskill">
-      <div class="page-title">Upskilling Tracks</div>
-      <div class="page-subtitle">Curated learning paths for the skills employers want most in 2026</div>
-      <div class="grid-2">
-        <div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#EFF6FF">🤖</div><div><h4>Generative AI & Prompt Engineering</h4><p>ChatGPT, Claude, Gemini, LangChain · 12 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 12 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#F0FDF4">☁️</div><div><h4>Cloud Computing (AWS & Azure)</h4><p>EC2, S3, Lambda, Azure AD · 15 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 15 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#F5F3FF">🔧</div><div><h4>DevOps & CI/CD Pipelines</h4><p>Docker, Kubernetes, Jenkins · 10 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 10 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-        </div>
-        <div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#FEF9C3">📊</div><div><h4>Data Science & Analytics</h4><p>Python, Pandas, Power BI, SQL · 18 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 18 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#FFF1F2">🔒</div><div><h4>Cybersecurity Fundamentals</h4><p>OWASP, SIEM, Ethical Hacking · 14 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 14 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-          <div class="skill-track">
-            <div class="skill-track-top"><div class="skill-icon" style="background:#E0F2FE">💻</div><div><h4>Full Stack Development</h4><p>React, Node.js, MongoDB, REST APIs · 20 modules</p></div></div>
-            <div class="skill-bar"><div class="skill-bar-fill" style="width:0%"></div></div>
-            <div class="skill-meta"><span>0 / 20 completed</span><button class="btn-start">Start Track</button></div>
-          </div>
-        </div>
-      </div>
+      <div class="page-title">Upskilling Hub</div>
+      <div class="page-subtitle">Real courses from Google, AWS, Meta, Kaggle, Scaler, NPTEL — trending in 2026</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px" id="upskillFilters"></div>
+      <div id="tracksGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px"></div>
+      <style>
+        .cCard{background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.25s}
+        .cCard:hover{border-color:#2563EB;box-shadow:0 4px 20px rgba(37,99,235,.1)}
+        .cLink{display:flex;align-items:center;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s;margin-bottom:7px;gap:10px}
+        .cLink:hover{background:#EFF6FF;border-color:#2563EB}.cLink:last-child{margin-bottom:0}
+        .tTab{padding:6px 14px;border-radius:20px;border:1.5px solid #E2E8F0;background:white;color:#64748B;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s}
+        .tTab.active,.tTab:hover{background:#EFF6FF;color:#2563EB;border-color:#2563EB}
+        .bFree{background:#F0FDF4;color:#15803D;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bHot{background:#FFF1F2;color:#BE123C;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bCert{background:#FEF9C3;color:#A16207;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bPaid{background:#F5F3FF;color:#7C3AED;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+        .bIndia{background:#FFF7ED;color:#C2410C;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
+      </style>
+      <script>
+      (function(){
+        var T=[
+          {e:"AI",title:"Agentic AI & Automation",sub:"LangChain, CrewAI, n8n - #1 hyped skill 2026",tags:["hot","free","advanced"],b:"hot",ic:"#FFF1F2",c:[
+            {n:"Building AI Agents with CrewAI",by:"DeepLearning.AI - Free",url:"https://www.deeplearning.ai/short-courses/multi-ai-agent-systems-with-crewai/",f:true},
+            {n:"LangChain for LLM App Development",by:"DeepLearning.AI - Andrew Ng - Free",url:"https://www.deeplearning.ai/short-courses/langchain-for-llm-application-development/",f:true},
+            {n:"LangGraph - Stateful AI Agents",by:"DeepLearning.AI - Advanced - Free",url:"https://www.deeplearning.ai/short-courses/ai-agents-in-langgraph/",f:true},
+            {n:"Automate with n8n - No-code AI",by:"n8n Official - Free",url:"https://docs.n8n.io/courses/",f:true}]},
+          {e:"GenAI",title:"Generative AI & Prompt Engineering",sub:"ChatGPT, Gemini, Claude, Midjourney",tags:["hot","free","beginner"],b:"hot",ic:"#FFF1F2",c:[
+            {n:"Generative AI for Everyone",by:"Coursera - Andrew Ng - Free audit",url:"https://www.coursera.org/learn/generative-ai-for-everyone",f:true},
+            {n:"Prompt Engineering for Developers",by:"DeepLearning.AI - 1 hour - Free",url:"https://www.deeplearning.ai/short-courses/chatgpt-prompt-engineering-for-developers/",f:true},
+            {n:"Google Generative AI Learning Path",by:"Google Cloud Skills Boost - Free",url:"https://www.cloudskillsboost.google/paths/118",f:true},
+            {n:"Generative AI with LLMs",by:"Coursera - AWS + DeepLearning.AI - Free audit",url:"https://www.coursera.org/learn/generative-ai-with-llms",f:true}]},
+          {e:"Cloud",title:"Cloud Computing (AWS, Azure, GCP)",sub:"Adds Rs.3-8 LPA instantly - most hired cert globally",tags:["cert","free","beginner","advanced"],b:"cert",ic:"#F0FDF4",c:[
+            {n:"AWS Cloud Practitioner (CLF-C02)",by:"AWS Official - Free training",url:"https://aws.amazon.com/training/learn-about/cloud-practitioner/",f:true},
+            {n:"Azure Fundamentals AZ-900",by:"Microsoft Learn - Official - Free",url:"https://learn.microsoft.com/en-us/training/paths/az-900-describe-cloud-concepts/",f:true},
+            {n:"Google Cloud Associate Engineer",by:"Google Cloud Skills Boost - Free",url:"https://www.cloudskillsboost.google/paths/11",f:true},
+            {n:"AWS Solutions Architect Associate",by:"Udemy - Stephane Maarek - Paid",url:"https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/",f:false}]},
+          {e:"Data",title:"Data Engineering & Modern Stack",sub:"dbt, Spark, Kafka, Snowflake - fastest growing role",tags:["hot","advanced"],b:"hot",ic:"#FFF1F2",c:[
+            {n:"dbt Fundamentals - Official",by:"dbt Learn - Highly valued - Free",url:"https://learn.getdbt.com/courses/dbt-fundamentals",f:true},
+            {n:"IBM Data Engineering Certificate",by:"Coursera - IBM - Free audit",url:"https://www.coursera.org/professional-certificates/ibm-data-engineer",f:true},
+            {n:"Apache Kafka Complete Guide",by:"Udemy - Stephane Maarek - Paid",url:"https://www.udemy.com/course/apache-kafka/",f:false},
+            {n:"Snowflake Hands-On Essentials",by:"Snowflake Official - Badge - Free",url:"https://learn.snowflake.com/",f:true}]},
+          {e:"ML",title:"Machine Learning & Deep Learning",sub:"TensorFlow, PyTorch, scikit-learn",tags:["free","beginner","advanced"],b:"free",ic:"#EFF6FF",c:[
+            {n:"Machine Learning Specialization",by:"Coursera - Andrew Ng - Best ML course - Free audit",url:"https://www.coursera.org/specializations/machine-learning-introduction",f:true},
+            {n:"Practical Deep Learning for Coders",by:"fast.ai - Jeremy Howard - Free",url:"https://course.fast.ai/",f:true},
+            {n:"Intro to Machine Learning",by:"Kaggle - Certificate - Free",url:"https://www.kaggle.com/learn/intro-to-machine-learning",f:true},
+            {n:"TensorFlow Developer Certificate",by:"Google Official - Free prep",url:"https://www.tensorflow.org/certificate",f:true}]},
+          {e:"FS",title:"Full Stack Development",sub:"React, Next.js, Node.js - most in-demand at startups",tags:["free","beginner","advanced"],b:"free",ic:"#E0F2FE",c:[
+            {n:"The Odin Project - Full Curriculum",by:"The Odin Project - 100% Free",url:"https://www.theodinproject.com/",f:true},
+            {n:"Meta Full-Stack Developer Certificate",by:"Coursera - Meta - Free audit",url:"https://www.coursera.org/professional-certificates/meta-full-stack-developer",f:true},
+            {n:"Next.js 14 Full Course",by:"JavaScript Mastery - YouTube - Free",url:"https://www.youtube.com/watch?v=wm5gMKuwSYk",f:true},
+            {n:"Node.js & Backend APIs",by:"freeCodeCamp - Certificate - Free",url:"https://www.freecodecamp.org/learn/back-end-development-and-apis/",f:true}]},
+          {e:"DevOps",title:"DevOps, Docker & Kubernetes",sub:"GitHub Actions, Terraform - needed everywhere",tags:["cert","free","advanced"],b:"cert",ic:"#F5F3FF",c:[
+            {n:"Docker & Kubernetes Full Course",by:"TechWorld with Nana - YouTube - Free",url:"https://www.youtube.com/watch?v=3c-iBn73dDE",f:true},
+            {n:"Kubernetes Fundamentals LFS158",by:"Linux Foundation - Official - Free",url:"https://training.linuxfoundation.org/training/kubernetes-fundamentals/",f:true},
+            {n:"Terraform for Beginners",by:"freeCodeCamp - YouTube - Free",url:"https://www.youtube.com/watch?v=SLB_c_ayRMo",f:true},
+            {n:"GitHub Actions CI/CD",by:"TechWorld with Nana - YouTube - Free",url:"https://www.youtube.com/watch?v=R8_veQiYBjI",f:true}]},
+          {e:"Sec",title:"Cybersecurity & Ethical Hacking",sub:"Google Cert, TryHackMe - huge demand low supply",tags:["cert","free","beginner"],b:"cert",ic:"#FFF7ED",c:[
+            {n:"Google Cybersecurity Certificate",by:"Coursera - Google - Free audit",url:"https://www.coursera.org/professional-certificates/google-cybersecurity",f:true},
+            {n:"TryHackMe - Ethical Hacking",by:"TryHackMe - Hands-on - Free plan",url:"https://tryhackme.com/",f:true},
+            {n:"Hack The Box - Penetration Testing",by:"HTB - Real environments - Free tier",url:"https://www.hackthebox.com/",f:true},
+            {n:"IBM Cybersecurity Analyst Certificate",by:"Coursera - IBM - Free audit",url:"https://www.coursera.org/professional-certificates/ibm-cybersecurity-analyst",f:true}]},
+          {e:"DSA",title:"DSA & FAANG Interview Prep",sub:"LeetCode 75, NeetCode, System Design - crack Google, Amazon",tags:["hot","free","beginner","advanced"],b:"hot",ic:"#FFF1F2",c:[
+            {n:"LeetCode 75 - Essential Study Plan",by:"LeetCode - 75 curated problems - Free",url:"https://leetcode.com/studyplan/leetcode-75/",f:true},
+            {n:"NeetCode - Best DSA Roadmap",by:"NeetCode - Video solutions - Free",url:"https://neetcode.io/roadmap",f:true},
+            {n:"ByteByteGo - System Design",by:"Alex Xu - YouTube - Free",url:"https://www.youtube.com/@ByteByteGo",f:true},
+            {n:"Pramp - Free Mock Interviews",by:"Pramp - Peer interviews - Free",url:"https://www.pramp.com/",f:true}]},
+          {e:"Scaler",title:"Scaler Academy - India #1 Bootcamp",sub:"Job guarantee, live mentorship, EMI options",tags:["india","advanced","cert"],b:"india",ic:"#FFF7ED",c:[
+            {n:"Scaler - Data Science & ML",by:"Scaler Academy - Job guarantee - Paid",url:"https://www.scaler.com/data-science-course/",f:false},
+            {n:"Scaler - Full Stack MERN/Java",by:"Scaler Academy - Placement support - Paid",url:"https://www.scaler.com/courses/full-stack-developer-course/",f:false},
+            {n:"InterviewBit - Free DSA Practice",by:"InterviewBit - India best DSA - Free",url:"https://www.interviewbit.com/",f:true},
+            {n:"Scaler - DevOps & Cloud",by:"Scaler Academy - AWS + K8s - Paid",url:"https://www.scaler.com/courses/devops-certification-training-course/",f:false}]},
+          {e:"NPTEL",title:"NPTEL & UpGrad - Indian Platforms",sub:"IIT-backed free courses, govt recognised certificates",tags:["india","free","beginner","cert"],b:"india",ic:"#FFF7ED",c:[
+            {n:"NPTEL - Python for Data Science",by:"IIT Madras - SWAYAM - Govt cert - Free",url:"https://nptel.ac.in/courses/106106145",f:true},
+            {n:"NPTEL - Database Management Systems",by:"IIT KGP - SWAYAM - Exam cert - Free",url:"https://nptel.ac.in/courses/106105175",f:true},
+            {n:"NPTEL - Cloud Computing",by:"IIT KGP - SWAYAM - 12 weeks - Free",url:"https://nptel.ac.in/courses/106105167",f:true},
+            {n:"UpGrad - PG Diploma Data Science",by:"UpGrad + IIIT Bangalore - Paid",url:"https://www.upgrad.com/data-science-pgd-iiitb/",f:false}]},
+          {e:"PM",title:"Product Management & UX Design",sub:"Google UX Cert, PM School - top non-tech role at Razorpay, Swiggy",tags:["hot","beginner","cert"],b:"hot",ic:"#FFF1F2",c:[
+            {n:"Google UX Design Certificate",by:"Coursera - Google - Free audit",url:"https://www.coursera.org/professional-certificates/google-ux-design",f:true},
+            {n:"PM School - Product Management India",by:"PM School - India focused - Free content",url:"https://pmschool.io/",f:true},
+            {n:"Figma UI/UX Complete Course",by:"freeCodeCamp - YouTube - Free",url:"https://www.youtube.com/watch?v=1pW_sk-2y40",f:true},
+            {n:"Product Management Fundamentals",by:"Coursera - Duke University - Free audit",url:"https://www.coursera.org/learn/uva-darden-digital-product-management",f:true}]}
+        ];
+        var FILTERS=[
+          {k:"all",l:"All Tracks"},{k:"hot",l:"Trending"},{k:"free",l:"Free Only"},
+          {k:"beginner",l:"Beginner"},{k:"advanced",l:"Advanced"},
+          {k:"cert",l:"Certifications"},{k:"india",l:"Indian Platforms"}
+        ];
+        var active="all";
+        function renderFilters(){
+          var fc=document.getElementById("upskillFilters");
+          if(!fc)return;
+          fc.innerHTML="";
+          FILTERS.forEach(function(f){
+            var b=document.createElement("button");
+            b.className="tTab"+(f.k===active?" active":"");
+            b.textContent=f.l;
+            b.onclick=function(){active=f.k;renderFilters();renderTracks();};
+            fc.appendChild(b);
+          });
+        }
+        var BM={hot:"bHot",free:"bFree",cert:"bCert",paid:"bPaid",india:"bIndia"};
+        var BL={hot:"HOT",free:"FREE",cert:"CERT",paid:"PAID",india:"INDIA"};
+        function renderTracks(){
+          var grid=document.getElementById("tracksGrid");
+          if(!grid)return;
+          var list=active==="all"?T:T.filter(function(t){return t.tags.indexOf(active)!==-1;});
+          grid.innerHTML="";
+          list.forEach(function(t){
+            var div=document.createElement("div");
+            div.className="cCard";
+            var courses=t.c.map(function(c){
+              return "<a href='"+c.url+"' target='_blank' class='cLink'>"+
+                "<div style='flex:1;min-width:0'>"+
+                  "<div style='font-size:13px;font-weight:600;color:#0F172A'>"+c.n+"</div>"+
+                  "<div style='font-size:11px;color:#64748B;margin-top:2px'>"+c.by+"</div>"+
+                "</div>"+
+                "<span class='"+(c.f?"bFree":"bPaid")+"' style='margin-right:6px'>"+(c.f?"FREE":"PAID")+"</span>"+
+                "<span style='font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0'>Start</span>"+
+              "</a>";
+            }).join("");
+            div.innerHTML=
+              "<div style='display:flex;align-items:flex-start;gap:12px;margin-bottom:14px'>"+
+                "<div style='width:50px;height:50px;border-radius:13px;background:"+t.ic+";display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#2563EB;flex-shrink:0'>"+t.e+"</div>"+
+                "<div style='flex:1;min-width:0'>"+
+                  "<div style='font-weight:700;font-size:15px;color:#0F172A;margin-bottom:3px'>"+t.title+"</div>"+
+                  "<div style='font-size:12px;color:#64748B;line-height:1.5'>"+t.sub+"</div>"+
+                "</div>"+
+                "<span class='"+BM[t.b]+"'>"+BL[t.b]+"</span>"+
+              "</div>"+
+              "<div>"+courses+"</div>";
+            grid.appendChild(div);
+          });
+        }
+        if(document.readyState==="loading"){
+          document.addEventListener("DOMContentLoaded",function(){renderFilters();renderTracks();});
+        }else{renderFilters();renderTracks();}
+      })();
+      </script>
     </div>
 
-    <!-- ── SALARY ── -->
     <div class="page-section" id="page-salary">
       <div class="page-title">Salary Intelligence</div>
       <div class="page-subtitle">Real salary data for Indian tech roles — know your worth</div>
