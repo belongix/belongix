@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Offline — Belongix</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#F8FAFC;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.card{background:white;border-radius:20px;padding:48px 32px;max-width:380px;width:100%;text-align:center;box-shadow:0 4px 24px rgba(0,0,0,.08)}
+.logo{font-size:24px;font-weight:800;color:#1E3A5F;margin-bottom:32px}.logo span{color:#2563EB}
+.icon{font-size:56px;margin-bottom:16px}
+h1{font-size:22px;font-weight:700;color:#0F172A;margin-bottom:10px}
+p{font-size:14px;color:#64748B;line-height:1.6;margin-bottom:24px}
+button{background:#2563EB;color:white;border:none;border-radius:12px;padding:14px 32px;font-size:15px;font-weight:700;cursor:pointer;width:100%;font-family:inherit}
+.tips{margin-top:20px;background:#F8FAFC;border-radius:12px;padding:16px;text-align:left}
+.tips h4{font-size:12px;font-weight:700;color:#0F172A;margin-bottom:8px}
+.tips ul{font-size:12px;color:#64748B;padding-left:16px;line-height:1.8}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Be<span>longix</span></div>
+  <div class="icon">📡</div>
+  <h1>You are offline</h1>
+  <p>No internet connection. Check your connection and try again — some pages are cached and may still work.</p>
+  <button onclick="window.location.reload()">Try Again</button>
+  <div class="tips">
+    <h4>Available offline:</h4>
+    <ul>
+      <li>Your cached dashboard</li>
+      <li>Bexi AI career guide</li>
+      <li>Previously visited pages</li>
+    </ul>
+  </div>
+</div>
+</body>
+</html>

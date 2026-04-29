@@ -86,6 +86,18 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
 @media(max-width:1024px){.layout{grid-template-columns:1fr;gap:2.5rem;}}
 @media(max-width:768px){.nlinks{display:none;}.fr{grid-template-columns:1fr;}.flinks{display:none;}}
 </style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2563EB">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Belongix">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512.png">
+  <meta name="msapplication-TileColor" content="#2563EB">
+  <meta name="msapplication-TileImage" content="/icons/icon-144.png">
 </head>
 <body>
 <div id="toast"></div>
@@ -235,7 +247,165 @@ document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
 
 
 
+<!-- BELONG AI BUBBLE -->
+<style>
+#bx-btn{position:fixed;bottom:1.8rem;right:1.8rem;z-index:9999;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 6px 24px rgba(29,111,164,0.55);border:none;font-size:1.5rem;transition:transform 0.25s;}
+#bx-btn:hover{transform:scale(1.1);}
+#bx-dot{position:fixed;bottom:calc(1.8rem + 40px);right:calc(1.8rem - 3px);width:13px;height:13px;border-radius:50%;background:#22c55e;border:2.5px solid #fff;z-index:10000;pointer-events:none;}
+#bx-win{position:fixed;bottom:calc(1.8rem + 68px);right:1.8rem;width:320px;background:#0d1e38;border:1px solid rgba(29,111,164,0.35);border-radius:18px;box-shadow:0 16px 48px rgba(0,0,0,0.5);z-index:9998;display:none;flex-direction:column;overflow:hidden;font-family:"DM Sans",sans-serif;}
+#bx-head{background:#0a1628;padding:0.85rem 1rem;display:flex;align-items:center;gap:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);}
+#bx-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+#bx-info{flex:1;}
+#bx-name{font-size:0.85rem;font-weight:700;color:#fff;line-height:1;}
+#bx-sub{font-size:0.65rem;color:rgba(255,255,255,0.4);margin-top:2px;display:flex;align-items:center;gap:3px;}
+#bx-online{width:5px;height:5px;border-radius:50%;background:#22c55e;display:inline-block;}
+#bx-x{background:rgba(255,255,255,0.07);border:none;color:rgba(255,255,255,0.45);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:0.85rem;display:flex;align-items:center;justify-content:center;}
+#bx-modes{display:flex;gap:0.35rem;padding:0.6rem 0.8rem;border-bottom:1px solid rgba(255,255,255,0.05);flex-wrap:wrap;}
+.bxm{padding:0.22rem 0.65rem;border-radius:100px;border:1px solid rgba(255,255,255,0.1);background:transparent;font-size:0.68rem;font-weight:600;color:rgba(255,255,255,0.4);cursor:pointer;font-family:"DM Sans",sans-serif;transition:all 0.2s;}
+.bxm:hover,.bxm.on{border-color:rgba(29,111,164,0.5);color:#a8d4ee;background:rgba(29,111,164,0.15);}
+#bx-msgs{height:210px;overflow-y:auto;padding:0.8rem;display:flex;flex-direction:column;gap:0.55rem;}
+#bx-msgs::-webkit-scrollbar{width:3px;}
+#bx-msgs::-webkit-scrollbar-thumb{background:rgba(29,111,164,0.4);border-radius:2px;}
+.bxa{display:flex;gap:0.4rem;align-items:flex-start;}
+.bxa-av{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#1d6fa4,#2485c1);display:flex;align-items:center;justify-content:center;font-size:0.7rem;flex-shrink:0;margin-top:2px;}
+.bxa-txt{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:3px 12px 12px 12px;padding:0.55rem 0.75rem;font-size:0.8rem;color:rgba(255,255,255,0.85);line-height:1.55;max-width:235px;}
+.bxu{display:flex;justify-content:flex-end;}
+.bxu-txt{background:linear-gradient(135deg,#1d6fa4,#1a5f8e);border-radius:12px 3px 12px 12px;padding:0.55rem 0.75rem;font-size:0.8rem;color:#fff;line-height:1.55;max-width:235px;}
+.bxt{display:flex;gap:0.4rem;align-items:flex-start;}
+.bxt-dots{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:3px 12px 12px 12px;padding:0.55rem 0.75rem;display:flex;gap:3px;align-items:center;}
+.bxd{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.35);animation:bxDt 1.2s infinite;}
+.bxd:nth-child(2){animation-delay:.2s;}.bxd:nth-child(3){animation-delay:.4s;}
+@keyframes bxDt{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-4px);}}
+#bx-inp-row{padding:0.6rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;gap:0.4rem;align-items:center;}
+#bx-inp{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:0.5rem 0.75rem;font-size:0.8rem;color:#fff;font-family:"DM Sans",sans-serif;outline:none;}
+#bx-inp:focus{border-color:rgba(29,111,164,0.5);}
+#bx-inp::placeholder{color:rgba(255,255,255,0.22);}
+#bx-snd{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,#1d6fa4,#2485c1);border:none;cursor:pointer;color:#fff;font-size:1rem;flex-shrink:0;}
+#bx-snd:disabled{opacity:0.4;cursor:not-allowed;}
+#bx-foot{text-align:center;padding:0 0.8rem 0.55rem;font-size:0.62rem;color:rgba(255,255,255,0.18);}
+</style>
+
+<div id="bx-dot"></div>
+<button id="bx-btn" onclick="bxToggle()">&#129302;</button>
+<div id="bx-win">
+  <div id="bx-head">
+    <div id="bx-av">&#129302;</div>
+    <div id="bx-info">
+      <div id="bx-name">Belong AI</div>
+      <div id="bx-sub"><span id="bx-online"></span>Always online &middot; Claude AI</div>
+    </div>
+    <button id="bx-x" onclick="bxToggle()">&#10005;</button>
+  </div>
+  <div id="bx-modes">
+    <button class="bxm on" onclick="bxMode(this,'coach')">&#129959; Coach</button>
+    <button class="bxm" onclick="bxMode(this,'resume')">&#128221; Resume</button>
+    <button class="bxm" onclick="bxMode(this,'jobs')">&#128188; Jobs</button>
+    <button class="bxm" onclick="bxMode(this,'salary')">&#128176; Salary</button>
+    <button class="bxm" onclick="bxMode(this,'interview')">&#127919; Interview</button>
+  </div>
+  <div id="bx-msgs">
+    <div class="bxa"><div class="bxa-av">&#129302;</div><div class="bxa-txt">Hi! I am Belong AI. Ask me about career advice, resume, jobs, salary, or interview prep!</div></div>
+  </div>
+  <div id="bx-inp-row">
+    <input id="bx-inp" placeholder="Ask me anything..."/>
+    <button id="bx-snd" onclick="bxSend()">&#10148;</button>
+  </div>
+  <div id="bx-foot">Belong AI &middot; Powered by Claude &middot; belongix.in</div>
+</div>
+<script>
+(function(){
+var M="coach",L=false,H=[];
+var SYS={
+  coach:"You are Belong AI on Belongix.in, India's professional career platform. You are a helpful career coach. Help Indian professionals with career decisions, growth strategies, and development. Be warm, practical, concise (3-5 sentences), India-specific. Give actionable advice.",
+  resume:"You are Belong AI on Belongix.in. Help Indian professionals build strong resumes. Ask for their details then give specific improvements, ATS tips, and formatting advice. Be concise and actionable.",
+  jobs:"You are Belong AI on Belongix.in. Help Indian professionals find job opportunities. Recommend specific roles, companies like TCS, Infosys, Razorpay, startups and GCCs, portals like Naukri and LinkedIn. Be specific and practical.",
+  salary:"You are Belong AI on Belongix.in. You are a salary expert for the Indian job market. Give specific salary ranges in rupees LPA by role, city, experience. Provide negotiation tips. Be data-driven and confident.",
+  interview:"You are Belong AI on Belongix.in. You are an interview coach for Indian professionals. Give role-specific questions, STAR answers, technical prep, company-specific tips. Be thorough and encouraging."
+};
+var GR={
+  coach:"Hi! I am your Career Coach. Ask me about career paths, growth strategies, or any career decisions.",
+  resume:"Hi! I am your Resume Builder. Share your name, role, experience, and skills and I will help you.",
+  jobs:"Hi! I am your Job Matcher. Tell me your role and experience and I will find the best opportunities.",
+  salary:"Hi! I am your Salary Advisor. Tell me your role, city, and experience for accurate salary info.",
+  interview:"Hi! I am your Interview Coach. Tell me the role and company and I will prepare you."
+};
+window.bxToggle=function(){
+  var w=document.getElementById("bx-win");
+  var o=w.style.display==="flex";
+  w.style.display=o?"none":"flex";
+  if(!o)setTimeout(function(){document.getElementById("bx-inp").focus();},100);
+};
+window.bxMode=function(el,m){
+  M=m;H=[];
+  document.querySelectorAll(".bxm").forEach(function(b){b.classList.remove("on");});
+  el.classList.add("on");
+  document.getElementById("bx-msgs").innerHTML="<div class='bxa'><div class='bxa-av'>&#129302;</div><div class='bxa-txt'>"+GR[m]+"</div></div>";
+};
+document.addEventListener("DOMContentLoaded",function(){
+  document.getElementById("bx-inp").addEventListener("keydown",function(e){if(e.key==="Enter")bxSend();});
+});
+window.bxSend=async function(){
+  var inp=document.getElementById("bx-inp");
+  var txt=inp.value.trim();
+  if(!txt||L)return;
+  inp.value="";L=true;
+  document.getElementById("bx-snd").disabled=true;
+  var msgs=document.getElementById("bx-msgs");
+  var u=document.createElement("div");
+  u.className="bxu";
+  u.innerHTML="<div class='bxu-txt'>"+txt.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</div>";
+  msgs.appendChild(u);
+  var t=document.createElement("div");
+  t.className="bxt";t.id="bxt";
+  t.innerHTML="<div class='bxa-av'>&#129302;</div><div class='bxt-dots'><div class='bxd'></div><div class='bxd'></div><div class='bxd'></div></div>";
+  msgs.appendChild(t);
+  msgs.scrollTop=msgs.scrollHeight;
+  H.push({role:"user",content:txt});
+  try{
+    var msgs8=H.slice(-8);
+    var contents=[];
+    contents.push({role:"user",parts:[{text:"System: "+SYS[M]}]});
+    contents.push({role:"model",parts:[{text:"Understood, I will follow these instructions."}]});
+    for(var i=0;i<msgs8.length;i++){
+      contents.push({role:msgs8[i].role==="assistant"?"model":"user",parts:[{text:msgs8[i].content}]});
+    }
+    var GKEY="AIzaSyCNaLyrERDBapQZJdvEUDLpxJ-w2rp7mog";
+    var r=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+GKEY,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({contents:contents,generationConfig:{maxOutputTokens:1000,temperature:0.7}})
+    });
+    var d=await r.json();
+    var rep;
+    if(d&&d.candidates&&d.candidates[0]&&d.candidates[0].content&&d.candidates[0].content.parts&&d.candidates[0].content.parts[0]){
+      rep=d.candidates[0].content.parts[0].text;
+    } else if(d&&d.error){
+      rep="API Error: "+d.error.message+" (Code: "+d.error.code+")";
+    } else if(d&&d.promptFeedback){
+      rep="Content blocked by safety filter. Please rephrase your question.";
+    } else {
+      rep="No response received. Raw: "+JSON.stringify(d).substring(0,100);
+    }
+    H.push({role:"assistant",content:rep});
+    var el=document.getElementById("bxt");if(el)el.remove();
+    var a=document.createElement("div");
+    a.className="bxa";
+    a.innerHTML="<div class='bxa-av'>&#129302;</div><div class='bxa-txt'>"+rep.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\n/g,"<br/>")+"</div>";
+    msgs.appendChild(a);
+  }catch(e){
+    var el=document.getElementById("bxt");if(el)el.remove();
+    var a=document.createElement("div");
+    a.className="bxa";
+    a.innerHTML="<div class='bxa-av'>&#129302;</div><div class='bxa-txt'>Sorry, something went wrong. Please try again!</div>";
+    msgs.appendChild(a);
+  }
+  msgs.scrollTop=msgs.scrollHeight;
+  L=false;document.getElementById("bx-snd").disabled=false;
+};
+})();
+</script>
 <!-- END BELONG AI BUBBLE -->
   <script src="belongix-ai.js"></script>
+  <script src="/pwa-install.js"></script>
 </body>
 </html>
