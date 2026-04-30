@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>About Us — Belongix</title>
+<title>About Belongix — Belongix</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -86,6 +86,9 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
 @media(max-width:1024px){.layout{grid-template-columns:1fr;gap:2.5rem;}}
 @media(max-width:768px){.nlinks{display:none;}.fr{grid-template-columns:1fr;}.flinks{display:none;}}
 </style>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#2563EB">
+<meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
 <div id="toast"></div>
@@ -94,7 +97,7 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
   <ul class="nlinks">
     <li><a href="index.html">Home</a></li>
     <li><a href="about.html" class="active">About</a></li>
-    <li><a href="contact.html">Contact</a></li>
+    <li><a href="contact.html" class="">Contact</a></li>
     <li><a href="dashboard.html">Dashboard</a></li>
   </ul>
   <div class="nbtns" id="nav-out">
@@ -112,29 +115,29 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
 <div class="hero">
   <div class="tag">About Us</div>
   <h1 class="ht">About <span>Belongix</span></h1>
-  <p class="sub">India's most complete professional career platform — for students, freshers, and working professionals at every stage of their journey.</p>
+  <p class="sub">India's most complete professional career platform — for students, freshers, and working professionals at every stage.</p>
 </div>
 
 <section class="sec rv">
   <div class="sec-in">
     <div class="stag">Why We Exist</div>
     <h2 class="sh">Our <span>Mission</span></h2>
-    <p class="sp">India has over 9.5 million tech and business professionals — yet most lack the right tools, guidance, and community to grow. Belongix was built to change that.</p>
+    <p class="sp">India has over 9.5 million tech professionals — yet most lack the right tools and guidance to grow. Belongix was built to change that with one free platform for everything.</p>
     <div class="fr" style="margin-top:2rem;gap:1.5rem">
-      <div style="background:var(--sky-bg,#EFF6FF);border-radius:14px;padding:1.5rem;border:1px solid var(--border2,#DBEAFE)">
+      <div style="background:#EFF6FF;border-radius:14px;padding:1.5rem;border:1px solid #DBEAFE">
         <div style="font-size:2rem;margin-bottom:.75rem">&#127919;</div>
-        <h4 style="font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:.4rem">Career Intelligence</h4>
-        <p style="font-size:.82rem;color:var(--muted);line-height:1.6">Real salary data, live job listings, and AI career guidance — built specifically for the Indian market.</p>
+        <h4 style="font-size:.95rem;font-weight:700;color:#1E3A5F;margin-bottom:.4rem">Career Intelligence</h4>
+        <p style="font-size:.82rem;color:#64748B;line-height:1.6">Real salary data, live job listings, and AI career guidance — built specifically for the Indian market.</p>
       </div>
-      <div style="background:var(--sky-bg,#EFF6FF);border-radius:14px;padding:1.5rem;border:1px solid var(--border2,#DBEAFE)">
+      <div style="background:#EFF6FF;border-radius:14px;padding:1.5rem;border:1px solid #DBEAFE">
         <div style="font-size:2rem;margin-bottom:.75rem">&#127891;</div>
-        <h4 style="font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:.4rem">Real Mentors</h4>
-        <p style="font-size:.82rem;color:var(--muted);line-height:1.6">Connect with verified professionals for interview prep, salary negotiation, and career growth guidance.</p>
+        <h4 style="font-size:.95rem;font-weight:700;color:#1E3A5F;margin-bottom:.4rem">Real Mentors</h4>
+        <p style="font-size:.82rem;color:#64748B;line-height:1.6">Connect with verified professionals for interview prep, salary negotiation, and career growth guidance.</p>
       </div>
-      <div style="background:var(--sky-bg,#EFF6FF);border-radius:14px;padding:1.5rem;border:1px solid var(--border2,#DBEAFE)">
+      <div style="background:#EFF6FF;border-radius:14px;padding:1.5rem;border:1px solid #DBEAFE">
         <div style="font-size:2rem;margin-bottom:.75rem">&#128200;</div>
-        <h4 style="font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:.4rem">Skill Growth</h4>
-        <p style="font-size:.82rem;color:var(--muted);line-height:1.6">48+ curated courses from Google, AWS, Coursera, Kaggle, and NPTEL — free and paid paths for 2026 skills.</p>
+        <h4 style="font-size:.95rem;font-weight:700;color:#1E3A5F;margin-bottom:.4rem">Skill Growth</h4>
+        <p style="font-size:.82rem;color:#64748B;line-height:1.6">48+ curated courses from Google, AWS, Coursera, Kaggle, and NPTEL — free and paid paths for 2026 skills.</p>
       </div>
     </div>
   </div>
@@ -145,12 +148,12 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
     <div class="stag">The Platform</div>
     <h2 class="sh">What <span>Belongix Offers</span></h2>
     <div class="faq-grid" style="margin-top:1.5rem">
-      <div class="faq-card"><h4>&#129302; Bexi AI Career Guide</h4><p>Our built-in AI answers salary questions, interview prep, career paths, skills to learn — 24/7, free for every user.</p></div>
-      <div class="faq-card"><h4>&#128188; Live Job Board</h4><p>Real-time listings from LinkedIn, Indeed, Glassdoor and direct portals — filtered and matched to your profile.</p></div>
+      <div class="faq-card"><h4>&#129302; Bexi AI Career Guide</h4><p>Our built-in AI answers salary questions, interview prep, career paths — 24/7, free for every user.</p></div>
+      <div class="faq-card"><h4>&#128188; Live Job Board</h4><p>Real-time listings matched and filtered to your profile, skills, and city.</p></div>
       <div class="faq-card"><h4>&#128200; Salary Intelligence</h4><p>Real market salary data for 15+ tech roles across Bangalore, Hyderabad, Mumbai, Pune and remote.</p></div>
       <div class="faq-card"><h4>&#128202; Career Score</h4><p>A dynamic score that tracks your professional growth based on your profile, skills, and activity.</p></div>
-      <div class="faq-card"><h4>&#127891; Mentor Network</h4><p>Connect with verified professionals for 1-on-1 sessions — resume reviews, mock interviews, and career coaching.</p></div>
-      <div class="faq-card"><h4>&#128295; Upskilling Hub</h4><p>48+ handpicked courses from Google, AWS, Meta, Scaler, NPTEL — with free, cert, beginner and advanced filters.</p></div>
+      <div class="faq-card"><h4>&#127891; Mentor Network</h4><p>Connect with verified professionals for 1-on-1 sessions — resume reviews, mock interviews, coaching.</p></div>
+      <div class="faq-card"><h4>&#128295; Upskilling Hub</h4><p>48+ handpicked courses from Google, AWS, Meta, Scaler, NPTEL — with free, cert, beginner, advanced filters.</p></div>
     </div>
   </div>
 </section>
@@ -160,36 +163,12 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
     <div class="stag">What We Stand For</div>
     <h2 class="sh">Our <span>Core Values</span></h2>
     <div class="fr" style="margin-top:2rem;gap:1.2rem">
-      <div style="background:white;border:1px solid var(--border2,#E2E8F0);border-radius:12px;padding:1.3rem;text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:.6rem">&#127775;</div>
-        <h4 style="font-size:.875rem;font-weight:700;color:var(--navy);margin-bottom:.3rem">Honesty</h4>
-        <p style="font-size:.8rem;color:var(--muted);line-height:1.5">No fake numbers, no inflated claims. We only show real data, real jobs, and real mentors.</p>
-      </div>
-      <div style="background:white;border:1px solid var(--border2,#E2E8F0);border-radius:12px;padding:1.3rem;text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:.6rem">&#127988;</div>
-        <h4 style="font-size:.875rem;font-weight:700;color:var(--navy);margin-bottom:.3rem">India First</h4>
-        <p style="font-size:.8rem;color:var(--muted);line-height:1.5">Built for Indian professionals — salary data, job listings, and mentors are all India-focused.</p>
-      </div>
-      <div style="background:white;border:1px solid var(--border2,#E2E8F0);border-radius:12px;padding:1.3rem;text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:.6rem">&#127358;</div>
-        <h4 style="font-size:.875rem;font-weight:700;color:var(--navy);margin-bottom:.3rem">Access for All</h4>
-        <p style="font-size:.8rem;color:var(--muted);line-height:1.5">Core features are always free. Career guidance should not be a privilege.</p>
-      </div>
-      <div style="background:white;border:1px solid var(--border2,#E2E8F0);border-radius:12px;padding:1.3rem;text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:.6rem">&#128274;</div>
-        <h4 style="font-size:.875rem;font-weight:700;color:var(--navy);margin-bottom:.3rem">Privacy First</h4>
-        <p style="font-size:.8rem;color:var(--muted);line-height:1.5">Your data belongs to you. We never sell user data to advertisers or third parties.</p>
-      </div>
-      <div style="background:white;border:1px solid var(--border2,#E2E8F0);border-radius:12px;padding:1.3rem;text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:.6rem">&#128640;</div>
-        <h4 style="font-size:.875rem;font-weight:700;color:var(--navy);margin-bottom:.3rem">Always Improving</h4>
-        <p style="font-size:.8rem;color:var(--muted);line-height:1.5">We ship fast and update the platform constantly based on real user feedback.</p>
-      </div>
-      <div style="background:white;border:1px solid var(--border2,#E2E8F0);border-radius:12px;padding:1.3rem;text-align:center">
-        <div style="font-size:1.8rem;margin-bottom:.6rem">&#128154;</div>
-        <h4 style="font-size:.875rem;font-weight:700;color:var(--navy);margin-bottom:.3rem">Community</h4>
-        <p style="font-size:.8rem;color:var(--muted);line-height:1.5">Building more than a platform — a community where professionals help each other grow.</p>
-      </div>
+      <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:1.3rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:.6rem">&#127775;</div><h4 style="font-size:.875rem;font-weight:700;color:#1E3A5F;margin-bottom:.3rem">Honesty</h4><p style="font-size:.8rem;color:#64748B;line-height:1.5">No fake numbers. Only real data, real jobs, real mentors.</p></div>
+      <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:1.3rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:.6rem">&#127988;</div><h4 style="font-size:.875rem;font-weight:700;color:#1E3A5F;margin-bottom:.3rem">India First</h4><p style="font-size:.8rem;color:#64748B;line-height:1.5">Salary data, job listings, and mentors all focused on India.</p></div>
+      <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:1.3rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:.6rem">&#127358;</div><h4 style="font-size:.875rem;font-weight:700;color:#1E3A5F;margin-bottom:.3rem">Access for All</h4><p style="font-size:.8rem;color:#64748B;line-height:1.5">Core features are always free. Career guidance should not be a privilege.</p></div>
+      <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:1.3rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:.6rem">&#128274;</div><h4 style="font-size:.875rem;font-weight:700;color:#1E3A5F;margin-bottom:.3rem">Privacy First</h4><p style="font-size:.8rem;color:#64748B;line-height:1.5">Your data belongs to you. We never sell it to anyone.</p></div>
+      <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:1.3rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:.6rem">&#128640;</div><h4 style="font-size:.875rem;font-weight:700;color:#1E3A5F;margin-bottom:.3rem">Always Improving</h4><p style="font-size:.8rem;color:#64748B;line-height:1.5">We ship fast and update based on real user feedback.</p></div>
+      <div style="background:white;border:1px solid #E2E8F0;border-radius:12px;padding:1.3rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:.6rem">&#128154;</div><h4 style="font-size:.875rem;font-weight:700;color:#1E3A5F;margin-bottom:.3rem">Community</h4><p style="font-size:.8rem;color:#64748B;line-height:1.5">A community where Indian professionals help each other grow.</p></div>
     </div>
   </div>
 </section>
@@ -201,24 +180,24 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem">
       <div style="background:#FFF1F2;border:1.5px solid #FECDD3;border-radius:16px;padding:1.8rem">
         <div style="font-size:1.1rem;font-weight:700;color:#BE123C;margin-bottom:1rem">&#10060; Without Belongix</div>
-        <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.83rem;color:#64748B;line-height:1.5">
+        <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.85rem;color:#64748B;line-height:1.5">
           <div>&#10007; Searching 5 websites for jobs</div>
-          <div>&#10007; No idea if salary is fair</div>
-          <div>&#10007; Random YouTube videos, no structure</div>
+          <div>&#10007; No idea if your salary is fair</div>
+          <div>&#10007; Random YouTube with no structure</div>
           <div>&#10007; No mentor for career decisions</div>
           <div>&#10007; Burning out with no support</div>
           <div>&#10007; Preparing for interviews alone</div>
-          <div>&#10007; LinkedIn feels generic</div>
+          <div>&#10007; LinkedIn feels generic and overwhelming</div>
         </div>
       </div>
       <div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:16px;padding:1.8rem">
         <div style="font-size:1.1rem;font-weight:700;color:#15803D;margin-bottom:1rem">&#9989; With Belongix</div>
-        <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.83rem;color:#64748B;line-height:1.5">
+        <div style="display:flex;flex-direction:column;gap:.75rem;font-size:.85rem;color:#64748B;line-height:1.5">
           <div>&#10003; AI-matched jobs for your skills</div>
           <div>&#10003; Real salary benchmarks for your role</div>
           <div>&#10003; Structured paths from top platforms</div>
-          <div>&#10003; 1-on-1 mentor sessions</div>
-          <div>&#10003; Career Score to track growth</div>
+          <div>&#10003; 1-on-1 mentor sessions booked easily</div>
+          <div>&#10003; Career Score to track your growth</div>
           <div>&#10003; Mock interviews and resume review</div>
           <div>&#10003; Community built for Indian professionals</div>
         </div>
