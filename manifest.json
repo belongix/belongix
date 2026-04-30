@@ -1,15 +1,19 @@
 {
-  "name": "Belongix — Professional Career Platform",
+  "name": "Belongix \u2014 Professional Career Platform",
   "short_name": "Belongix",
-  "description": "India's professional career platform — Jobs, Salary Insights, AI Career Guide, Mentors & Upskilling",
-  "start_url": "/dashboard.html",
+  "description": "India's professional career platform \u2014 Jobs, Salary Insights, AI Career Guide, Mentors & Upskilling",
+  "start_url": "/app.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#2563EB",
   "lang": "en-IN",
   "scope": "/",
-  "categories": ["education", "business", "productivity"],
+  "categories": [
+    "education",
+    "business",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "icons/icon-72.png",
@@ -66,28 +70,48 @@
       "short_name": "Jobs",
       "description": "Browse live job listings",
       "url": "/dashboard.html#jobs",
-      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
       "name": "Check Salary",
       "short_name": "Salary",
       "description": "Real salary insights for your role",
       "url": "/dashboard.html#salary",
-      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
       "name": "Find Mentor",
       "short_name": "Mentors",
       "description": "Connect with career mentors",
       "url": "/mentors.html",
-      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
     },
     {
       "name": "Upskilling",
       "short_name": "Learn",
       "description": "Browse 48+ curated courses",
       "url": "/dashboard.html#upskill",
-      "icons": [{ "src": "icons/icon-96.png", "sizes": "96x96" }]
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
     }
   ],
   "screenshots": [
