@@ -73,8 +73,8 @@ nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.92);backdrop-
 .ud-divider{height:1px;background:var(--border);margin:4px 0}
 
 /* ── HERO ── */
-.hero{padding:72px 5vw 64px;background:var(--white);text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(20,71,230,.07),transparent);pointer-events:none}
+.hero{padding:72px 5vw 64px;background:linear-gradient(180deg,#EEF3FF 0%,#ffffff 60%);text-align:center;position:relative;overflow:hidden}
+
 .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--blue-light);color:var(--blue);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;margin-bottom:20px;letter-spacing:.2px}
 .hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0}
 .hero h1{font-family:var(--ff-head);font-size:clamp(32px,5vw,56px);font-weight:700;color:var(--navy);line-height:1.12;letter-spacing:-1px;margin-bottom:18px}
@@ -129,7 +129,7 @@ section{padding:64px 5vw}
 .pill span{font-size:18px}
 
 /* ── MENTOR CTA ── */
-.mentor-cta{background:var(--bg);padding:64px 5vw;text-align:center;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.mentor-cta{background:#EEF3FF;padding:64px 5vw;text-align:center;border-top:1px solid #C7D7FD;border-bottom:1px solid #C7D7FD}
 .mentor-cta .sec-tag{color:var(--blue)}
 .mentor-cta .sec-h{color:var(--navy)}
 .mentor-cta .sec-sub{color:var(--muted);margin:0 auto 28px}
@@ -202,6 +202,12 @@ footer{background:var(--navy);padding:40px 5vw;display:flex;align-items:center;j
 .fi-otp{letter-spacing:6px;font-size:20px;text-align:center}
 
 /* ── TOAST ── */
+
+/* Chat with AI button */
+.chat-ai-btn{position:fixed;bottom:24px;right:24px;display:flex;align-items:center;gap:8px;background:var(--blue);color:white;border:none;border-radius:24px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ff-body);box-shadow:0 4px 20px rgba(20,71,230,.35);transition:.2s;z-index:999;text-decoration:none}
+.chat-ai-btn:hover{background:var(--blue-dark);transform:translateY(-2px);box-shadow:0 8px 28px rgba(20,71,230,.4)}
+.chat-ai-dot{width:7px;height:7px;border-radius:50%;background:#22C55E;flex-shrink:0}
+
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:white;padding:11px 20px;border-radius:10px;font-size:13.5px;font-weight:500;z-index:999;opacity:0;transition:.3s;white-space:nowrap;font-family:var(--ff-body)}
 
 /* ── ANIMATIONS ── */
@@ -253,6 +259,32 @@ footer{background:var(--navy);padding:40px 5vw;display:flex;align-items:center;j
         <a class="dd-item" href="dashboard.html">
           <div class="dd-icon">🤖</div>
           <div class="dd-text"><strong>Bexi AI</strong><span>Your 24/7 career guide</span></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Who It's For -->
+    <div class="nav-item">
+      <button class="nav-link">
+        Who It's For
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div class="dropdown">
+        <a class="dd-item" onclick="openM('mSignup')">
+          <div class="dd-icon">🎓</div>
+          <div class="dd-text"><strong>College Students</strong><span>Internship & placement prep</span></div>
+        </a>
+        <a class="dd-item" onclick="openM('mSignup')">
+          <div class="dd-icon">🌱</div>
+          <div class="dd-text"><strong>Fresh Graduates</strong><span>First job roadmap & interview prep</span></div>
+        </a>
+        <a class="dd-item" onclick="openM('mSignup')">
+          <div class="dd-icon">💼</div>
+          <div class="dd-text"><strong>Working Professionals</strong><span>Promotions, salary & growth</span></div>
+        </a>
+        <a class="dd-item" onclick="openM('mSignup')">
+          <div class="dd-icon">🔄</div>
+          <div class="dd-text"><strong>Career Changers</strong><span>Reskilling & transition roadmap</span></div>
         </a>
       </div>
     </div>
@@ -321,7 +353,7 @@ footer{background:var(--navy);padding:40px 5vw;display:flex;align-items:center;j
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
           Dashboard
         </a>
-        <a class="ud-item" href="dashboard.html">
+        <a class="ud-item" href="dashboard.html?page=profile">
           <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
           My Profile
         </a>
@@ -446,7 +478,7 @@ footer{background:var(--navy);padding:40px 5vw;display:flex;align-items:center;j
 </section>
 
 <!-- ── MENTOR CTA ── -->
-<div class="mentor-cta fade-up">
+<div class="mentor-cta">
   <div class="sec-tag">Mentor Network</div>
   <h2 class="sec-h" style="color:white">Find your career guide<br>or become one</h2>
   <p class="sec-sub">Real professionals. Real guidance. Whether you need help or want to give back — the Belongix mentor network is for you.</p>
@@ -630,7 +662,7 @@ footer{background:var(--navy);padding:40px 5vw;display:flex;align-items:center;j
 </div>
 
 <div id="toast"></div>
-<script src="belongix-ai.js"></script>
+<a href="dashboard.html" class="chat-ai-btn"><div class="chat-ai-dot"></div>Chat with Bexi AI</a>
 <script src="pwa-install.js"></script>
 
 <script>
