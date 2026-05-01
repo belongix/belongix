@@ -877,7 +877,7 @@ async function saveProfile() {
   var base={id:currentUser.id,email:currentUser.email,
     full_name:gv("pf-name")||null,city:gv("pf-city")||null,user_type:gv("pf-usertype")||null,
     role:gv("pf-role")||null,experience:gv("pf-exp")||null,skills:gv("pf-skills")||null,
-    bio:gv("pf-about")||null,about:gv("pf-about")||null};
+    bio:gv("pf-about")||null};
   var extra={field:gv("pf-field")||null,company:gv("pf-company")||null,notice_period:gv("pf-notice")||null};
   var scoreF=["full_name","city","user_type","role","experience","skills","bio"];
   var filled=scoreF.filter(function(k){return base[k]&&base[k].trim();}).length;
