@@ -297,7 +297,7 @@
 <!-- Main Content -->
 <main class="main">
   <div class="topbar">
-    <div class="topbar-title" id="topbar-title">Portfolio</div>
+    <div class="topbar-title" id="topbar-title">Overview</div>
     <div class="topbar-right">
       <div class="topbar-chip" id="score-chip">Score: —</div>
       <a href="index.html" style="font-size:13px;color:var(--gray-500);text-decoration:none;">← Home</a>
@@ -309,297 +309,269 @@
     <!-- ── OVERVIEW ── -->
     <div class="page-section active" id="page-overview">
 <style>
-/* Portfolio styles */
-.port-wrap{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
-.port-left{display:flex;flex-direction:column;gap:14px;position:sticky;top:80px}
-/* Hero card */
-.port-hero{background:white;border-radius:16px;border:1px solid #E5E7EB;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.port-cover{height:80px;background:linear-gradient(135deg,#1447E6 0%,#0EA5E9 100%);position:relative}
-.port-cover-score{position:absolute;top:10px;right:12px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:white}
-.port-hero-body{padding:0 16px 16px;margin-top:-28px}
-.port-av-wrap{position:relative;width:56px;margin-bottom:8px}
-.port-av{width:56px;height:56px;border-radius:50%;background:#1447E6;color:white;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid white;cursor:pointer;background-size:cover;background-position:center}
-.port-online{position:absolute;bottom:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#22C55E;border:2px solid white}
-.port-name{font-size:16px;font-weight:700;color:#0A1628;margin-bottom:2px}
-.port-title{font-size:12px;color:#6B7280;margin-bottom:6px}
-.port-loc{display:flex;align-items:center;gap:4px;font-size:11px;color:#9CA3AF;margin-bottom:12px}
-.port-actions{display:flex;gap:8px}
-.btn-edit-profile{flex:1;background:#1447E6;color:white;border:none;border-radius:8px;padding:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
-.btn-share-profile{background:white;color:#374151;border:1px solid #E5E7EB;border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer;font-family:inherit}
-/* Score ring mini */
-.port-score-mini{background:white;border:1px solid #E5E7EB;border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
-.score-ring-mini{width:52px;height:52px;flex-shrink:0;position:relative}
-.score-ring-mini svg{transform:rotate(-90deg)}
-.score-ring-mini .score-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#1447E6;font-family:inherit}
-.port-score-info{flex:1}
-.port-score-label{font-size:13px;font-weight:700;color:#0A1628;margin-bottom:2px}
-.port-score-sub{font-size:11px;color:#9CA3AF}
-/* Quick stats */
-.port-stats{background:white;border:1px solid #E5E7EB;border-radius:14px;padding:14px}
-.port-stats-title{font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.port-stat-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #F9FAFB}
-.port-stat-row:last-child{border-bottom:none;padding-bottom:0}
-.port-stat-name{font-size:12px;color:#374151;display:flex;align-items:center;gap:6px}
-.port-stat-val{font-size:12px;font-weight:700;color:#0A1628}
-/* Quick links */
-.port-links{background:white;border:1px solid #E5E7EB;border-radius:14px;padding:14px}
-.port-link-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F9FAFB;cursor:pointer;transition:.15s;text-decoration:none}
-.port-link-item:last-child{border-bottom:none;padding-bottom:0}
-.port-link-item:hover .port-link-name{color:#1447E6}
-.port-link-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.port-link-name{font-size:13px;font-weight:500;color:#374151}
-.port-link-arrow{margin-left:auto;color:#D1D5DB;font-size:14px}
-/* Right column sections */
-.port-right{display:flex;flex-direction:column;gap:14px}
-.port-section{background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:.2s}
-.port-section:hover{border-color:#C7D7FD}
-.port-sec-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.port-sec-title{font-size:14px;font-weight:700;color:#0A1628;display:flex;align-items:center;gap:8px}
-.port-sec-edit{font-size:12px;color:#1447E6;cursor:pointer;border:none;background:none;font-family:inherit;padding:0}
-.port-sec-edit:hover{text-decoration:underline}
+.port-wrap{display:grid;grid-template-columns:300px 1fr;gap:18px;align-items:start}
+.port-left{display:flex;flex-direction:column;gap:12px;position:sticky;top:80px}
+.port-hero{background:white;border-radius:16px;border:1px solid #E5E7EB;overflow:hidden}
+.port-cover{height:72px;background:linear-gradient(135deg,#1447E6,#0EA5E9);position:relative}
+.port-score-pill{position:absolute;top:10px;right:12px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:white}
+.port-hero-body{padding:0 14px 14px;margin-top:-25px}
+.port-av-wrap{position:relative;display:inline-block;margin-bottom:8px}
+.port-av{width:50px;height:50px;border-radius:50%;background:#1447E6;color:white;font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid white;cursor:pointer;background-size:cover;background-position:center}
+.port-online{position:absolute;bottom:1px;right:1px;width:11px;height:11px;border-radius:50%;background:#22C55E;border:2px solid white}
+.port-name{font-size:15px;font-weight:700;color:#0A1628;margin-bottom:1px}
+.port-jobtitle{font-size:12px;color:#6B7280;margin-bottom:3px}
+.port-loc{display:flex;align-items:center;gap:4px;font-size:11px;color:#9CA3AF;margin-bottom:10px}
+.port-btns{display:flex;gap:7px}
+.btn-ep{flex:1;background:#1447E6;color:white;border:none;border-radius:8px;padding:7px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-sp{background:white;color:#374151;border:1px solid #E5E7EB;border-radius:8px;padding:7px 10px;font-size:12px;cursor:pointer;font-family:inherit}
+.port-ring-card{background:white;border:1px solid #E5E7EB;border-radius:12px;padding:12px;display:flex;align-items:center;gap:10px}
+.ring-mini{width:48px;height:48px;position:relative;flex-shrink:0}
+.ring-mini svg{transform:rotate(-90deg)}
+.ring-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#1447E6}
+.ring-info{flex:1}.ring-level{font-size:12px;font-weight:700;color:#0A1628;margin-bottom:1px}.ring-sub{font-size:10px;color:#9CA3AF}
+.port-stats-card{background:white;border:1px solid #E5E7EB;border-radius:12px;padding:12px}
+.psc-title{font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.psc-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #F9FAFB;font-size:12px}
+.psc-row:last-child{border-bottom:none;padding-bottom:0}
+.psc-lbl{color:#374151}.psc-val{font-weight:700;color:#0A1628}
+.port-ql{background:white;border:1px solid #E5E7EB;border-radius:12px;padding:12px}
+.ql-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid #F9FAFB;cursor:pointer;text-decoration:none}
+.ql-item:last-child{border-bottom:none;padding-bottom:0}
+.ql-item:hover span:first-child{color:#1447E6}
+.ql-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ql-name{font-size:12px;font-weight:500;color:#374151;flex:1}
+.ql-arr{color:#D1D5DB;font-size:14px;margin-left:auto}
+.port-right{display:flex;flex-direction:column;gap:12px}
+.psec{background:white;border:1px solid #E5E7EB;border-radius:14px;padding:18px}
+.psec-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.psec-title{font-size:13px;font-weight:700;color:#0A1628;display:flex;align-items:center;gap:7px}
+.psec-btn{font-size:12px;color:#1447E6;cursor:pointer;border:none;background:none;font-family:inherit;padding:0;font-weight:500}
 .port-empty{font-size:13px;color:#9CA3AF;font-style:italic}
-.port-bio-text{font-size:13.5px;color:#374151;line-height:1.7}
-/* Skills chips */
-.skills-wrap{display:flex;flex-wrap:wrap;gap:8px}
-.skill-chip{background:#EEF3FF;color:#1447E6;border:1px solid #C7D7FD;border-radius:20px;padding:5px 13px;font-size:12.5px;font-weight:500}
-/* Work exp */
-.work-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #F9FAFB}
-.work-item:last-child{border-bottom:none;padding-bottom:0}
-.work-logo{width:40px;height:40px;border-radius:9px;background:#EEF3FF;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.work-title{font-size:13px;font-weight:700;color:#0A1628}
-.work-company{font-size:12px;color:#6B7280;margin-top:1px}
-.work-period{font-size:11px;color:#9CA3AF;margin-top:2px}
-/* Education */
-.edu-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #F9FAFB}
-.edu-item:last-child{border-bottom:none;padding-bottom:0}
-.edu-icon{width:36px;height:36px;border-radius:8px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-/* Job prefs */
-.pref-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pref-item{background:#F9FAFB;border-radius:10px;padding:10px 12px}
-.pref-label{font-size:11px;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.pref-val{font-size:13px;font-weight:600;color:#0A1628}
-/* Cert */
-.cert-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F9FAFB}
-.cert-item:last-child{border-bottom:none;padding-bottom:0}
-.cert-badge{width:36px;height:36px;border-radius:8px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.cert-name{font-size:13px;font-weight:600;color:#0A1628}
-.cert-issuer{font-size:11px;color:#9CA3AF;margin-top:1px}
-/* Resume upload */
-.resume-box{border:2px dashed #E5E7EB;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:.2s}
-.resume-box:hover{border-color:#1447E6;background:#EEF3FF}
-.resume-uploaded{display:flex;align-items:center;gap:12px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:10px;padding:12px}
-/* Personal grid */
-.personal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.personal-item{padding:10px 12px;background:#F9FAFB;border-radius:10px}
-.personal-lbl{font-size:11px;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
-.personal-val{font-size:13px;font-weight:600;color:#0A1628}
-@media(max-width:900px){.port-wrap{grid-template-columns:1fr}.port-left{position:static}.pref-grid,.personal-grid{grid-template-columns:1fr}}
+.port-bio{font-size:13px;color:#374151;line-height:1.7}
+.skills-row{display:flex;flex-wrap:wrap;gap:7px}
+.sk{background:#EEF3FF;color:#1447E6;border:1px solid #C7D7FD;border-radius:20px;padding:4px 12px;font-size:12px;font-weight:500}
+.work-it{display:flex;gap:11px;padding:10px 0;border-bottom:1px solid #F9FAFB}
+.work-it:last-child{border-bottom:none;padding-bottom:0}
+.work-logo{width:38px;height:38px;border-radius:8px;background:#EEF3FF;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.wt{font-size:13px;font-weight:700;color:#0A1628}.wc{font-size:12px;color:#6B7280;margin-top:1px}.wp{font-size:11px;color:#9CA3AF;margin-top:2px}
+.edu-it{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid #F9FAFB}
+.edu-it:last-child{border-bottom:none;padding-bottom:0}
+.edu-ic{width:34px;height:34px;border-radius:8px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.pref-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pref-it{background:#F9FAFB;border-radius:9px;padding:9px 11px}
+.pref-lbl{font-size:10px;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+.pref-val{font-size:12px;font-weight:600;color:#0A1628}
+.pd-g{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pd-it{padding:9px 11px;background:#F9FAFB;border-radius:9px}
+.pd-lbl{font-size:10px;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:2px}
+.pd-val{font-size:12px;font-weight:600;color:#0A1628;word-break:break-all}
+.cert-it{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #F9FAFB}
+.cert-it:last-child{border-bottom:none;padding-bottom:0}
+.cert-ic{width:34px;height:34px;border-radius:8px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.cert-name{font-size:12px;font-weight:600;color:#0A1628}.cert-iss{font-size:11px;color:#9CA3AF}
+.resume-drop{border:2px dashed #E5E7EB;border-radius:10px;padding:18px;text-align:center;cursor:pointer;transition:.2s}
+.resume-drop:hover{border-color:#1447E6;background:#EEF3FF}
+.resume-done{display:flex;align-items:center;gap:10px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:9px;padding:11px}
+/* Inline edit fields in portfolio */
+.pfin{width:100%;padding:7px 10px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:13px;font-family:inherit;outline:none;color:#0A1628;background:white;transition:.15s;margin-top:8px}
+.pfin:focus{border-color:#1447E6;box-shadow:0 0 0 3px rgba(20,71,230,.07)}
+.port-save-btn{background:#1447E6;color:white;border:none;border-radius:8px;padding:8px 20px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px}
+@media(max-width:900px){.port-wrap{grid-template-columns:1fr}.port-left{position:static}.pref-g,.pd-g{grid-template-columns:1fr}}
 </style>
 
 <div class="port-wrap">
-  <!-- LEFT SIDEBAR -->
+  <!-- LEFT -->
   <div class="port-left">
-    <!-- Hero Card -->
     <div class="port-hero">
       <div class="port-cover">
-        <div class="port-cover-score">Career Score: <span id="ov-score-badge">--</span></div>
+        <div class="port-score-pill">Score: <span id="ov-score-badge">--</span></div>
       </div>
       <div class="port-hero-body">
         <div class="port-av-wrap">
-          <div class="port-av" id="ov-avatar" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">?</div>
+          <div class="port-av" id="ov-avatar" onclick="document.getElementById('ov-av-file').click()" title="Click to change photo"></div>
           <div class="port-online"></div>
+          <input type="file" id="ov-av-file" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/>
         </div>
         <div class="port-name" id="ov-name">Loading...</div>
-        <div class="port-title" id="ov-title">Add your role</div>
-        <div class="port-loc"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg><span id="ov-loc">India</span></div>
-        <div class="port-actions">
-          <button class="btn-edit-profile" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">&#9998; Edit Profile</button>
-          <button class="btn-share-profile" onclick="shareProfile()">&#8679; Share</button>
+        <div class="port-jobtitle" id="ov-jobtitle">Add your role</div>
+        <div class="port-loc"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg><span id="ov-loc">India</span></div>
+        <div class="port-btns">
+          <button class="btn-ep" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">&#9998; Edit Profile</button>
+          <button class="btn-sp" onclick="shareProfile()">&#8679; Share</button>
         </div>
       </div>
     </div>
 
-    <!-- Score ring -->
-    <div class="port-score-mini">
-      <div class="score-ring-mini">
-        <svg width="52" height="52" viewBox="0 0 52 52">
-          <circle cx="26" cy="26" r="21" fill="none" stroke="#E5E7EB" stroke-width="5"/>
-          <circle cx="26" cy="26" r="21" fill="none" stroke="#1447E6" stroke-width="5" stroke-linecap="round"
-            stroke-dasharray="131.95" id="ov-ring" stroke-dashoffset="131.95"/>
+    <div class="port-ring-card">
+      <div class="ring-mini">
+        <svg width="48" height="48" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="18" fill="none" stroke="#E5E7EB" stroke-width="5"/>
+          <circle cx="24" cy="24" r="18" fill="none" stroke="#1447E6" stroke-width="5" stroke-linecap="round" stroke-dasharray="113.1" id="ov-ring" stroke-dashoffset="113.1"/>
         </svg>
-        <div class="score-center" id="ov-score-center">30</div>
+        <div class="ring-center" id="ov-score-c">30</div>
       </div>
-      <div class="port-score-info">
-        <div class="port-score-label" id="ov-score-level">Getting Started</div>
-        <div class="port-score-sub">Complete profile to reach 100</div>
+      <div class="ring-info">
+        <div class="ring-level" id="ov-level">Getting Started</div>
+        <div class="ring-sub">Complete profile to reach 100</div>
       </div>
     </div>
 
-    <!-- Quick stats -->
-    <div class="port-stats">
-      <div class="port-stats-title">Activity</div>
-      <div class="port-stat-row"><div class="port-stat-name">&#128188; Jobs Applied</div><div class="port-stat-val" id="ov-jobs-applied">0</div></div>
-      <div class="port-stat-row"><div class="port-stat-name">&#128218; Courses</div><div class="port-stat-val" id="ov-courses">48+</div></div>
-      <div class="port-stat-row"><div class="port-stat-name">&#129504; AI Sessions</div><div class="port-stat-val">Active</div></div>
-      <div class="port-stat-row"><div class="port-stat-name">&#127891; Profile</div><div class="port-stat-val" id="ov-pct">0%</div></div>
+    <div class="port-stats-card">
+      <div class="psc-title">Activity</div>
+      <div class="psc-row"><div class="psc-lbl">&#128188; Jobs Applied</div><div class="psc-val">0</div></div>
+      <div class="psc-row"><div class="psc-lbl">&#128218; Courses Available</div><div class="psc-val">48+</div></div>
+      <div class="psc-row"><div class="psc-lbl">&#129504; AI Sessions</div><div class="psc-val">Active</div></div>
+      <div class="psc-row"><div class="psc-lbl">&#127891; Profile Complete</div><div class="psc-val" id="ov-pct">0%</div></div>
     </div>
 
-    <!-- Quick links -->
-    <div class="port-links">
-      <div class="port-stats-title" style="margin-bottom:8px">Quick Access</div>
-      <a class="port-link-item" onclick="showPage('jobs',document.querySelector('[onclick*=jobs]'))">
-        <div class="port-link-icon" style="background:#EEF3FF">&#128188;</div>
-        <span class="port-link-name">Find Jobs</span>
-        <span class="port-link-arrow">&#8250;</span>
-      </a>
-      <a class="port-link-item" onclick="showPage('salary',document.querySelector('[onclick*=salary]'))">
-        <div class="port-link-icon" style="background:#F0FDF4">&#128176;</div>
-        <span class="port-link-name">Salary Insights</span>
-        <span class="port-link-arrow">&#8250;</span>
-      </a>
-      <a class="port-link-item" onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))">
-        <div class="port-link-icon" style="background:#FEF9C3">&#127891;</div>
-        <span class="port-link-name">Upskilling Hub</span>
-        <span class="port-link-arrow">&#8250;</span>
-      </a>
-      <a class="port-link-item" href="mentors.html">
-        <div class="port-link-icon" style="background:#FFF1F2">&#129309;</div>
-        <span class="port-link-name">Find a Mentor</span>
-        <span class="port-link-arrow">&#8250;</span>
-      </a>
+    <div class="port-ql">
+      <div class="psc-title" style="margin-bottom:6px">Quick Access</div>
+      <div class="ql-item" onclick="showPage('jobs',document.querySelector('[onclick*=jobs]'))"><div class="ql-icon" style="background:#EEF3FF">&#128188;</div><span class="ql-name">Find Jobs</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-item" onclick="showPage('salary',document.querySelector('[onclick*=salary]'))"><div class="ql-icon" style="background:#F0FDF4">&#128176;</div><span class="ql-name">Salary Insights</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-item" onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))"><div class="ql-icon" style="background:#FEF9C3">&#127891;</div><span class="ql-name">Upskilling Hub</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-item" onclick="location.href='mentors.html'"><div class="ql-icon" style="background:#FFF1F2">&#129309;</div><span class="ql-name">Find a Mentor</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-item" onclick="showPage('upgrade',document.querySelector('[onclick*=upgrade]'))"><div class="ql-icon" style="background:#F5F3FF">&#9889;</div><span class="ql-name">Upgrade Pro</span><span class="ql-arr">&#8250;</span></div>
     </div>
   </div>
 
-  <!-- RIGHT COLUMN -->
+  <!-- RIGHT -->
   <div class="port-right">
 
     <!-- Profile Summary -->
-    <div class="port-section">
-      <div class="port-sec-head">
-        <div class="port-sec-title">&#128203; Profile Summary</div>
-        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">+ Add / Edit</button>
+    <div class="psec">
+      <div class="psec-head">
+        <div class="psec-title">&#128203; Profile Summary</div>
+        <button class="psec-btn" onclick="toggleEdit('bio-edit')">+ Edit</button>
       </div>
-      <div id="ov-bio" class="port-bio-text port-empty">No summary added yet. Click Edit to add your professional summary.</div>
+      <div id="ov-bio" class="port-bio port-empty">No summary added yet.</div>
+      <div id="bio-edit" style="display:none">
+        <textarea class="pfin" id="bio-inp" rows="3" placeholder="Describe your experience, skills and career goals..."></textarea>
+        <button class="port-save-btn" onclick="saveField('bio')">Save Summary</button>
+      </div>
     </div>
 
     <!-- Work Experience -->
-    <div class="port-section">
-      <div class="port-sec-head">
-        <div class="port-sec-title">&#128188; Work Experience</div>
-        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">+ Add</button>
+    <div class="psec">
+      <div class="psec-head">
+        <div class="psec-title">&#128188; Work Experience</div>
+        <button class="psec-btn" onclick="toggleEdit('work-edit')">+ Add / Edit</button>
       </div>
-      <div id="ov-work-section">
-        <div class="port-empty">No experience added yet.</div>
+      <div id="ov-work"><div class="port-empty">No experience added yet.</div></div>
+      <div id="work-edit" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label style="font-size:11px;color:#374151;font-weight:600">Current Role</label><input class="pfin" id="we-role" placeholder="Software Engineer"/></div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600">Company</label><input class="pfin" id="we-company" placeholder="Google, TCS..."/></div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600">Experience</label>
+            <select class="pfin" id="we-exp"><option value="">Select</option><option value="Fresher">Fresher</option><option value="1-3 yrs">1-3 yrs</option><option value="3-5 yrs">3-5 yrs</option><option value="5-10 yrs">5-10 yrs</option><option value="10+ yrs">10+ yrs</option></select>
+          </div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600">Notice Period</label>
+            <select class="pfin" id="we-notice"><option value="">Select</option><option>Immediate</option><option>15 days</option><option>30 days</option><option>60 days</option><option>90 days</option></select>
+          </div>
+        </div>
+        <button class="port-save-btn" onclick="saveField('work')">Save Experience</button>
       </div>
     </div>
 
     <!-- Skills -->
-    <div class="port-section">
-      <div class="port-sec-head">
-        <div class="port-sec-title">&#9889; Skills</div>
-        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">+ Add</button>
+    <div class="psec">
+      <div class="psec-head">
+        <div class="psec-title">&#9889; Skills</div>
+        <button class="psec-btn" onclick="toggleEdit('skills-edit')">+ Add / Edit</button>
       </div>
-      <div id="ov-skills-section" class="skills-wrap">
-        <div class="port-empty">No skills added yet.</div>
+      <div id="ov-skills" class="skills-row"><div class="port-empty">No skills added yet.</div></div>
+      <div id="skills-edit" style="display:none">
+        <input class="pfin" id="skills-inp" placeholder="Python, React, SQL, AWS, Docker..."/>
+        <div style="font-size:11px;color:#9CA3AF;margin-top:4px">Separate with commas</div>
+        <button class="port-save-btn" onclick="saveField('skills')">Save Skills</button>
       </div>
     </div>
 
     <!-- Education -->
-    <div class="port-section">
-      <div class="port-sec-head">
-        <div class="port-sec-title">&#127891; Education</div>
-        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">+ Add</button>
+    <div class="psec">
+      <div class="psec-head">
+        <div class="psec-title">&#127891; Education</div>
+        <button class="psec-btn" onclick="toggleEdit('edu-edit')">+ Add</button>
       </div>
-      <div id="ov-edu-section">
-        <div class="edu-item">
-          <div class="edu-icon">&#127979;</div>
-          <div>
-            <div class="work-title" id="ov-edu-degree">Add your education</div>
-            <div class="work-company">University / College name</div>
-            <div class="work-period">Year of graduation</div>
-          </div>
+      <div id="ov-edu"><div class="port-empty">No education added yet.</div></div>
+      <div id="edu-edit" style="display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label style="font-size:11px;color:#374151;font-weight:600">Degree / Course</label><input class="pfin" id="edu-degree" placeholder="B.Tech Computer Science"/></div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600">College / University</label><input class="pfin" id="edu-college" placeholder="Anna University"/></div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600">Graduation Year</label><input class="pfin" id="edu-year" placeholder="2022"/></div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600">Grade / CGPA</label><input class="pfin" id="edu-grade" placeholder="8.5 CGPA"/></div>
         </div>
+        <button class="port-save-btn" onclick="saveField('edu')">Save Education</button>
       </div>
     </div>
 
     <!-- Job Preferences -->
-    <div class="port-section">
-      <div class="port-sec-head">
-        <div class="port-sec-title">&#127919; Job Preferences</div>
-        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">Edit</button>
+    <div class="psec">
+      <div class="psec-head">
+        <div class="psec-title">&#127919; Job Preferences</div>
+        <button class="psec-btn" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">Edit</button>
       </div>
-      <div class="pref-grid">
-        <div class="pref-item"><div class="pref-label">Preferred Role</div><div class="pref-val" id="pref-role">--</div></div>
-        <div class="pref-item"><div class="pref-label">Experience</div><div class="pref-val" id="pref-exp">--</div></div>
-        <div class="pref-item"><div class="pref-label">Location</div><div class="pref-val" id="pref-loc">--</div></div>
-        <div class="pref-item"><div class="pref-label">Notice Period</div><div class="pref-val" id="pref-notice">--</div></div>
-        <div class="pref-item"><div class="pref-label">Field</div><div class="pref-val" id="pref-field">--</div></div>
-        <div class="pref-item"><div class="pref-label">Profile Type</div><div class="pref-val" id="pref-type">--</div></div>
+      <div class="pref-g">
+        <div class="pref-it"><div class="pref-lbl">Preferred Role</div><div class="pref-val" id="pref-role">--</div></div>
+        <div class="pref-it"><div class="pref-lbl">Experience</div><div class="pref-val" id="pref-exp">--</div></div>
+        <div class="pref-it"><div class="pref-lbl">Location</div><div class="pref-val" id="pref-loc">--</div></div>
+        <div class="pref-it"><div class="pref-lbl">Notice Period</div><div class="pref-val" id="pref-notice">--</div></div>
+        <div class="pref-it"><div class="pref-lbl">Field</div><div class="pref-val" id="pref-field">--</div></div>
+        <div class="pref-it"><div class="pref-lbl">Profile Type</div><div class="pref-val" id="pref-type">--</div></div>
       </div>
     </div>
 
     <!-- Personal Details -->
-    <div class="port-section">
-      <div class="port-sec-head">
-        <div class="port-sec-title">&#128100; Personal Details</div>
-        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">Edit</button>
+    <div class="psec">
+      <div class="psec-head">
+        <div class="psec-title">&#128100; Personal Details</div>
+        <button class="psec-btn" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">Edit</button>
       </div>
-      <div class="personal-grid">
-        <div class="personal-item"><div class="personal-lbl">Full Name</div><div class="personal-val" id="pd-name">--</div></div>
-        <div class="personal-item"><div class="personal-lbl">Email</div><div class="personal-val" id="pd-email" style="font-size:11px;word-break:break-all">--</div></div>
-        <div class="personal-item"><div class="personal-lbl">City</div><div class="personal-val" id="pd-city">--</div></div>
-        <div class="personal-item"><div class="personal-lbl">Company</div><div class="personal-val" id="pd-company">--</div></div>
+      <div class="pd-g">
+        <div class="pd-it"><div class="pd-lbl">Full Name</div><div class="pd-val" id="pd-name">--</div></div>
+        <div class="pd-it"><div class="pd-lbl">Email</div><div class="pd-val" id="pd-email">--</div></div>
+        <div class="pd-it"><div class="pd-lbl">City</div><div class="pd-val" id="pd-city">--</div></div>
+        <div class="pd-it"><div class="pd-lbl">Company</div><div class="pd-val" id="pd-company">--</div></div>
       </div>
     </div>
 
     <!-- LinkedIn -->
-    <div class="port-section">
-      <div class="port-sec-head">
-        <div class="port-sec-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="#0077B5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> LinkedIn</div>
-        <button class="port-sec-edit" onclick="saveLinkedIn()">Save</button>
+    <div class="psec">
+      <div class="psec-head">
+        <div class="psec-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="#0077B5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> LinkedIn</div>
+        <a id="li-link" href="#" target="_blank" style="font-size:12px;color:#0077B5;font-weight:500;display:none">View Profile &#8599;</a>
       </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <input id="ov-linkedin" class="pfin" style="flex:1;padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;font-family:inherit;outline:none" placeholder="https://linkedin.com/in/yourname"/>
-        <a id="ov-linkedin-link" href="#" target="_blank" style="font-size:12px;color:#0077B5;font-weight:600;white-space:nowrap;display:none">View &#8599;</a>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input class="pfin" id="li-inp" placeholder="https://linkedin.com/in/yourname" style="flex:1;margin-top:0"/>
+        <button class="port-save-btn" style="margin-top:0;white-space:nowrap" onclick="saveLinkedIn()">Save</button>
       </div>
     </div>
 
     <!-- Courses & Certifications -->
-    <div class="port-section">
-      <div class="port-sec-head">
-        <div class="port-sec-title">&#127942; Courses & Certifications</div>
-        <button class="port-sec-edit" onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))">Browse Courses</button>
+    <div class="psec">
+      <div class="psec-head">
+        <div class="psec-title">&#127942; Courses & Certifications</div>
+        <button class="psec-btn" onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))">Browse Courses</button>
       </div>
-      <div id="ov-certs">
-        <div class="cert-item">
-          <div class="cert-badge">&#127891;</div>
-          <div>
-            <div class="cert-name">Upskilling Hub — 48+ courses available</div>
-            <div class="cert-issuer">Google, AWS, Coursera, Kaggle, NPTEL &amp; more</div>
-          </div>
-          <button onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))" style="margin-left:auto;background:#1447E6;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Start Learning</button>
-        </div>
+      <div class="cert-it">
+        <div class="cert-ic">&#127891;</div>
+        <div><div class="cert-name">48+ Courses Available — Upskilling Hub</div><div class="cert-iss">Google, AWS, Kaggle, Coursera, Scaler, NPTEL & more</div></div>
+        <button onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))" style="margin-left:auto;background:#1447E6;color:white;border:none;border-radius:7px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">Start &#8250;</button>
       </div>
     </div>
 
     <!-- Resume -->
-    <div class="port-section">
-      <div class="port-sec-head">
-        <div class="port-sec-title">&#128196; Resume</div>
+    <div class="psec">
+      <div class="psec-head"><div class="psec-title">&#128196; Resume</div></div>
+      <div id="resume-drop" class="resume-drop" onclick="document.getElementById('res-file').click()">
+        <div style="font-size:28px;margin-bottom:6px">&#128196;</div>
+        <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:3px">Upload Resume</div>
+        <div style="font-size:11px;color:#9CA3AF">PDF, DOC, DOCX — Max 5MB</div>
+        <input type="file" id="res-file" accept=".pdf,.doc,.docx" style="display:none" onchange="uploadResume(this)"/>
       </div>
-      <div id="ov-resume-box" class="resume-box" onclick="document.getElementById('resume-file').click()">
-        <div style="font-size:32px;margin-bottom:8px">&#128196;</div>
-        <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:4px">Upload your Resume</div>
-        <div style="font-size:12px;color:#9CA3AF">PDF, DOC, DOCX — Max 5MB. Click to upload</div>
-        <input type="file" id="resume-file" accept=".pdf,.doc,.docx" style="display:none" onchange="uploadResume(this)"/>
-      </div>
-      <div id="ov-resume-uploaded" style="display:none" class="resume-uploaded">
-        <span style="font-size:24px">&#128196;</span>
-        <div style="flex:1">
-          <div style="font-size:13px;font-weight:600;color:#15803D" id="resume-filename">resume.pdf</div>
-          <div style="font-size:11px;color:#6B7280">Uploaded successfully</div>
-        </div>
-        <button onclick="document.getElementById('resume-file').click()" style="font-size:12px;color:#1447E6;border:none;background:none;cursor:pointer;font-family:inherit">Replace</button>
+      <div id="resume-done" style="display:none" class="resume-done">
+        <span style="font-size:22px">&#128196;</span>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600;color:#15803D" id="res-name">resume.pdf</div><div style="font-size:11px;color:#6B7280">Uploaded</div></div>
+        <button onclick="document.getElementById('res-file').click()" style="font-size:11px;color:#1447E6;border:none;background:none;cursor:pointer;font-family:inherit">Replace</button>
       </div>
     </div>
 
@@ -993,29 +965,23 @@ async function init() {
 }
 
 async function loadUserData() {
-  var r = await supaClient.from("profiles").select("*").eq("id", currentUser.id).single();
-  var d = r.data || {};
-  var name = d.full_name || currentUser.email.split("@")[0];
-  var initials = name.split(" ").map(function(w){ return w[0]; }).join("").toUpperCase().slice(0,2) || "U";
-
-  document.getElementById("sb-name").textContent = name;
-  document.getElementById("sb-role").textContent = d.role || (d.experience || "Member");
-  document.getElementById("sb-avatar").textContent = initials;
-  document.getElementById("overview-sub").textContent = "Welcome back, " + name + "! Here's your career progress.";
-  document.getElementById("prof-name").textContent = name;
-  document.getElementById("prof-email-display").textContent = currentUser.email;
-  document.getElementById("prof-avatar").textContent = initials;
-  document.getElementById("settings-email").textContent = currentUser.email;
-
-  document.getElementById("pf-name").value = d.full_name || "";
-  document.getElementById("pf-role").value = d.role || "";
-  document.getElementById("pf-exp").value = d.experience || "";
-  document.getElementById("pf-city").value = d.city || "";
-  document.getElementById("pf-skills").value = d.skills || "";
-  document.getElementById("pf-about").value = d.about || "";
-  document.getElementById("pf-usertype").value = d.user_type || "";
-
-  calcScore(d);
+  var r = await supaClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
+  var p = r.data || {};
+  var name = p.full_name || currentUser.email.split("@")[0];
+  var initials = name.split(" ").map(function(w){return w[0]||"";}).join("").toUpperCase().slice(0,2)||"U";
+  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"";}
+  function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||"";}
+  st("sb-name",name);st("sb-role",p.role||p.experience||"Member");st("sb-avatar",initials);
+  st("overview-sub","Welcome back, "+name+"!");
+  st("prof-name",name);st("prof-email-display",currentUser.email);
+  st("prof-avatar",initials);st("settings-email",currentUser.email);
+  sv("pf-name",p.full_name);sv("pf-role",p.role);sv("pf-exp",p.experience);
+  sv("pf-city",p.city);sv("pf-skills",p.skills);sv("pf-about",p.bio||p.about);
+  sv("pf-usertype",p.user_type);sv("pf-field",p.field);
+  sv("pf-company",p.company);sv("pf-notice",p.notice_period);
+  calcScore(p);
+  populateProfileCard(p);
+  loadPortfolio(p);
 }
 
 function calcScore(d) {
@@ -1043,22 +1009,26 @@ function calcScore(d) {
 }
 
 async function saveProfile() {
-  var updates = {
-    id: currentUser.id,
-    full_name: document.getElementById("pf-name").value,
-    role: document.getElementById("pf-role").value,
-    experience: document.getElementById("pf-exp").value,
-    city: document.getElementById("pf-city").value,
-    skills: document.getElementById("pf-skills").value,
-    about: document.getElementById("pf-about").value,
-    user_type: document.getElementById("pf-usertype").value,
-    email: currentUser.email
-  };
-  await supaClient.from("profiles").upsert(updates);
-  document.getElementById("save-msg").style.display = "block";
-  setTimeout(function(){ document.getElementById("save-msg").style.display = "none"; }, 3000);
-  loadUserData();
-  showToast("Profile saved!");
+  if(!currentUser){showToast("Please sign in");return;}
+  function gv(id){var el=document.getElementById(id);return el?(el.value||"").trim():"";}
+  var updates={id:currentUser.id,email:currentUser.email,
+    full_name:gv("pf-name")||null,city:gv("pf-city")||null,user_type:gv("pf-usertype")||null,
+    role:gv("pf-role")||null,experience:gv("pf-exp")||null,skills:gv("pf-skills")||null,
+    bio:gv("pf-about")||null,field:gv("pf-field")||null,company:gv("pf-company")||null,
+    notice_period:gv("pf-notice")||null};
+  var sf=["full_name","city","user_type","role","experience","skills","bio"];
+  updates.career_score=Math.min(30+sf.filter(function(k){return updates[k]&&updates[k].trim();}).length*10,95);
+  var btn=document.getElementById("prof-save-btn");
+  if(btn){btn.disabled=true;btn.textContent="Saving...";}
+  try{
+    var res=await supaClient.from("profiles").upsert([updates],{onConflict:"id"});
+    if(res.error)throw res.error;
+    showToast("Profile saved! Score: "+updates.career_score);
+    var sbN=document.getElementById("sb-name");if(sbN&&updates.full_name)sbN.textContent=updates.full_name.split(" ")[0];
+    var sbR=document.getElementById("sb-role");if(sbR)sbR.textContent=updates.role||updates.experience||"Member";
+    calcScore(updates);populateProfileCard(updates);loadPortfolio(updates);
+  }catch(e){console.error(e);showToast("Save failed: "+e.message);}
+  finally{if(btn){btn.disabled=false;btn.textContent="Save Profile";}}
 }
 
 async function signOut() {
@@ -1201,144 +1171,218 @@ function showToast(msg) {
 document.getElementById("job-search").addEventListener("keypress", function(e){ if (e.key === "Enter") { jobsLoaded = false; searchJobs(); } });
 
 
-// -- PORTFOLIO --
-function loadPortfolioData(p) {
-  if (!p) return;
-  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||'';}
-  function sh(id,v){var el=document.getElementById(id);if(el)el.style.display=v?'block':'none';}
-
-  var name = p.full_name || (currentUser&&currentUser.email?currentUser.email.split('@')[0]:'User');
+// -- PORTFOLIO FUNCTIONS --
+function loadPortfolio(p) {
+  if(!p) return;
+  var name=p.full_name||(currentUser&&currentUser.email?currentUser.email.split("@")[0]:"User");
+  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"";}
+  function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||"";}
+  var sc=p.career_score||30;
   // Left card
-  st('ov-name', name);
-  st('ov-title', (p.role?p.role+(p.company?' at '+p.company:''):'Add your role'));
-  st('ov-loc', p.city||'India');
-  st('ov-score-badge', p.career_score||30);
-  st('ov-score-center', p.career_score||30);
-
+  st("ov-name",name);
+  st("ov-jobtitle",p.role?(p.role+(p.company?" at "+p.company:"")):"Add your role");
+  st("ov-loc",p.city||"India");
+  st("ov-score-badge",sc);st("ov-score-c",sc);
+  var lv=sc<40?"Getting Started":sc<70?"Building Momentum":sc<90?"Career Ready":"Top Performer";
+  st("ov-level",lv);
+  var ring=document.getElementById("ov-ring");
+  if(ring){var c=113.1;ring.style.strokeDashoffset=c-(c*sc/100);}
+  var flds=["full_name","city","user_type","role","experience","skills","bio"];
+  var pct=Math.round(flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length/7*100);
+  st("ov-pct",pct+"%");
   // Avatar
-  var av = document.getElementById('ov-avatar');
-  if (av) {
-    av.textContent = name.substring(0,2).toUpperCase();
-    var avatarKey = 'bx_avatar_' + (currentUser?currentUser.id:'local');
-    var saved = p.avatar_url || localStorage.getItem(avatarKey);
-    if (saved) {
-      av.style.backgroundImage = 'url('+saved+')';
-      av.style.backgroundSize = 'cover';
-      av.style.backgroundPosition = 'center';
-      av.style.backgroundColor = 'transparent';
-      av.textContent = '';
-    }
+  var av=document.getElementById("ov-avatar");
+  if(av){
+    var avKey="bx_avatar_"+(currentUser?currentUser.id:"x");
+    var avUrl=p.avatar_url||localStorage.getItem(avKey);
+    if(avUrl){av.style.backgroundImage="url("+avUrl+")";av.style.backgroundSize="cover";av.style.backgroundPosition="center";av.textContent="";}
+    else{av.textContent=name.substring(0,2).toUpperCase();}
   }
-
-  // Score ring
-  var score = p.career_score || 30;
-  var ring = document.getElementById('ov-ring');
-  if (ring) { var c=131.95; ring.style.strokeDashoffset=c-(c*score/100); }
-  var lvl = score<40?'Getting Started':score<70?'Building Momentum':score<90?'Career Ready':'Top Performer';
-  st('ov-score-level', lvl);
-
-  // Stats
-  var flds=['full_name','city','user_type','role','experience','skills','bio'];
-  var filled=flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length;
-  st('ov-pct', Math.round((filled/7)*100)+'%');
-
-  // Profile Summary
-  var bioEl = document.getElementById('ov-bio');
-  if (bioEl) {
-    if (p.bio||p.about) {
-      bioEl.textContent = p.bio||p.about;
-      bioEl.classList.remove('port-empty');
-    } else {
-      bioEl.textContent = 'No summary added yet. Click Edit to add your professional summary.';
-      bioEl.classList.add('port-empty');
-    }
+  // Bio
+  var bioEl=document.getElementById("ov-bio");
+  if(bioEl){if(p.bio||p.about){bioEl.textContent=p.bio||p.about;bioEl.classList.remove("port-empty");}else{bioEl.textContent="No summary added yet. Click + Edit to add.";bioEl.classList.add("port-empty");}}
+  sv("bio-inp",p.bio||p.about);
+  // Work
+  var workEl=document.getElementById("ov-work");
+  if(workEl){
+    if(p.role){workEl.innerHTML='<div class="work-it"><div class="work-logo">&#127970;</div><div><div class="wt">'+(p.role||"")+'</div><div class="wc">'+(p.company||"Not specified")+'</div><div class="wp">'+(p.experience||"")+(p.notice_period?" &bull; Notice: "+p.notice_period:"")+'</div></div></div>';}
+    else{workEl.innerHTML='<div class="port-empty">No experience added yet. Click + Add/Edit.</div>';}
   }
-
-  // Work Experience
-  var workEl = document.getElementById('ov-work-section');
-  if (workEl && p.role) {
-    workEl.innerHTML = '<div class="work-item">' +
-      '<div class="work-logo">&#127970;</div>' +
-      '<div>' +
-        '<div class="work-title">'+(p.role||'')+'</div>' +
-        '<div class="work-company">'+(p.company||'Company not added')+'</div>' +
-        '<div class="work-period">'+(p.experience||'')+(p.notice_period?' &bull; Notice: '+p.notice_period:'')+'</div>' +
-      '</div></div>';
-  } else if (workEl) {
-    workEl.innerHTML = '<div class="port-empty">No experience added yet.</div>';
-  }
-
+  sv("we-role",p.role);sv("we-company",p.company);sv("we-exp",p.experience);sv("we-notice",p.notice_period);
   // Skills
-  var skillsEl = document.getElementById('ov-skills-section');
-  if (skillsEl) {
-    if (p.skills) {
-      var chips = p.skills.split(',').filter(function(s){return s.trim();}).map(function(s){
-        return '<span class="skill-chip">'+s.trim()+'</span>';
-      }).join('');
-      skillsEl.innerHTML = chips || '<div class="port-empty">No skills added yet.</div>';
-    } else {
-      skillsEl.innerHTML = '<div class="port-empty">No skills added yet.</div>';
-    }
+  var sklEl=document.getElementById("ov-skills");
+  if(sklEl){
+    if(p.skills){sklEl.innerHTML=p.skills.split(",").filter(function(s){return s.trim();}).map(function(s){return'<span class="sk">'+s.trim()+'</span>';}).join("");}
+    else{sklEl.innerHTML='<div class="port-empty">No skills added. Click + Add/Edit.</div>';}
   }
-
-  // Job Preferences
-  var tm={college_student:'College Student',fresher:'Fresh Graduate',junior_prof:'Junior Professional',mid_prof:'Mid-level Professional',senior_prof:'Senior Professional',career_changer:'Career Changer'};
-  st('pref-role', p.role||'--');
-  st('pref-exp', p.experience||'--');
-  st('pref-loc', p.city||'--');
-  st('pref-notice', p.notice_period||'--');
-  st('pref-field', p.field||'--');
-  st('pref-type', tm[p.user_type]||p.user_type||'--');
-
-  // Personal Details
-  st('pd-name', p.full_name||'--');
-  st('pd-email', currentUser?currentUser.email:'--');
-  st('pd-city', p.city||'--');
-  st('pd-company', p.company||'--');
-
+  sv("skills-inp",p.skills);
+  // Education from localStorage
+  var eduData=null;try{eduData=JSON.parse(localStorage.getItem("bx_edu_"+(currentUser?currentUser.id:"x")));}catch(e){}
+  var eduEl=document.getElementById("ov-edu");
+  if(eduEl){
+    if(eduData&&eduData.degree){
+      eduEl.innerHTML='<div class="edu-it"><div class="edu-ic">&#127979;</div><div><div class="wt">'+eduData.degree+'</div><div class="wc">'+eduData.college+'</div><div class="wp">'+eduData.year+(eduData.grade?" &bull; "+eduData.grade:"")+'</div></div></div>';
+      if(eduData.degree)sv("edu-degree",eduData.degree);
+      if(eduData.college)sv("edu-college",eduData.college);
+      if(eduData.year)sv("edu-year",eduData.year);
+      if(eduData.grade)sv("edu-grade",eduData.grade);
+    }else{eduEl.innerHTML='<div class="port-empty">No education added. Click + Add.</div>';}
+  }
+  // Prefs
+  var tm={college_student:"College Student",fresher:"Fresh Graduate",junior_prof:"Junior Professional",mid_prof:"Mid-level",senior_prof:"Senior Professional",career_changer:"Career Changer"};
+  st("pref-role",p.role||"--");st("pref-exp",p.experience||"--");st("pref-loc",p.city||"--");
+  st("pref-notice",p.notice_period||"--");st("pref-field",p.field||"--");st("pref-type",tm[p.user_type]||p.user_type||"--");
+  // Personal
+  st("pd-name",p.full_name||"--");st("pd-email",currentUser?currentUser.email:"--");st("pd-city",p.city||"--");st("pd-company",p.company||"--");
   // LinkedIn
-  if (p.linkedin) {
-    var liInp = document.getElementById('ov-linkedin');
-    var liLink = document.getElementById('ov-linkedin-link');
-    if (liInp) liInp.value = p.linkedin;
-    if (liLink) { liLink.href = p.linkedin; liLink.style.display = 'inline'; }
+  if(p.linkedin){sv("li-inp",p.linkedin);var ll=document.getElementById("li-link");if(ll){ll.href=p.linkedin;ll.style.display="inline";}}
+}
+
+function toggleEdit(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  el.style.display=el.style.display==="none"?"block":"none";
+}
+
+async function saveField(field){
+  if(!currentUser)return;
+  var updates={id:currentUser.id,email:currentUser.email};
+  if(field==="bio"){
+    var v=(document.getElementById("bio-inp")||{}).value||"";
+    updates.bio=v;
+    var bioEl=document.getElementById("ov-bio");
+    if(bioEl){bioEl.textContent=v||"No summary yet.";bioEl.classList[v?"remove":"add"]("port-empty");}
+    document.getElementById("bio-edit").style.display="none";
+  } else if(field==="skills"){
+    var v=(document.getElementById("skills-inp")||{}).value||"";
+    updates.skills=v;
+    var sklEl=document.getElementById("ov-skills");
+    if(sklEl)sklEl.innerHTML=v?v.split(",").filter(function(s){return s.trim();}).map(function(s){return'<span class="sk">'+s.trim()+'</span>';}).join(""):'<div class="port-empty">No skills.</div>';
+    document.getElementById("skills-edit").style.display="none";
+  } else if(field==="work"){
+    updates.role=(document.getElementById("we-role")||{}).value||null;
+    updates.company=(document.getElementById("we-company")||{}).value||null;
+    updates.experience=(document.getElementById("we-exp")||{}).value||null;
+    updates.notice_period=(document.getElementById("we-notice")||{}).value||null;
+    var workEl=document.getElementById("ov-work");
+    if(workEl&&updates.role)workEl.innerHTML='<div class="work-it"><div class="work-logo">&#127970;</div><div><div class="wt">'+(updates.role||"")+'</div><div class="wc">'+(updates.company||"")+'</div><div class="wp">'+(updates.experience||"")+'</div></div></div>';
+    document.getElementById("work-edit").style.display="none";
+  } else if(field==="edu"){
+    var edu={degree:(document.getElementById("edu-degree")||{}).value||"",college:(document.getElementById("edu-college")||{}).value||"",year:(document.getElementById("edu-year")||{}).value||"",grade:(document.getElementById("edu-grade")||{}).value||""};
+    try{localStorage.setItem("bx_edu_"+currentUser.id,JSON.stringify(edu));}catch(e){}
+    var eduEl=document.getElementById("ov-edu");
+    if(eduEl&&edu.degree)eduEl.innerHTML='<div class="edu-it"><div class="edu-ic">&#127979;</div><div><div class="wt">'+edu.degree+'</div><div class="wc">'+edu.college+'</div><div class="wp">'+edu.year+(edu.grade?" &bull; "+edu.grade:"")+'</div></div></div>';
+    document.getElementById("edu-edit").style.display="none";
+    showToast("Education saved!");return;
   }
+  try{
+    var res=await supaClient.from("profiles").upsert([updates],{onConflict:"id"});
+    if(res.error)throw res.error;
+    showToast("Saved successfully!");
+  }catch(e){showToast("Save failed: "+e.message);console.error(e);}
 }
 
-async function saveLinkedIn() {
-  var val = (document.getElementById('ov-linkedin')||{}).value||'';
-  if (!val||!currentUser) return;
-  try {
-    await supaClient.from('profiles').update({linkedin:val}).eq('id',currentUser.id);
-    var liLink = document.getElementById('ov-linkedin-link');
-    if (liLink) { liLink.href=val; liLink.style.display='inline'; }
-    showToast('LinkedIn saved!');
-  } catch(e) { showToast('Save failed: '+e.message); }
+async function saveLinkedIn(){
+  var v=(document.getElementById("li-inp")||{}).value||"";
+  if(!v||!currentUser)return;
+  try{
+    await supaClient.from("profiles").update({linkedin:v}).eq("id",currentUser.id);
+    var ll=document.getElementById("li-link");if(ll){ll.href=v;ll.style.display="inline";}
+    showToast("LinkedIn saved!");
+  }catch(e){showToast("Save failed: "+e.message);}
 }
 
-function uploadResume(input) {
-  var file = input.files[0];
-  if (!file) return;
-  if (file.size > 5*1024*1024) { showToast('Max 5MB for resume'); return; }
-  document.getElementById('ov-resume-box').style.display = 'none';
-  document.getElementById('ov-resume-uploaded').style.display = 'flex';
-  document.getElementById('resume-filename').textContent = file.name;
-  showToast('Resume uploaded locally! Cloud storage coming soon.');
+function uploadResume(input){
+  var file=input.files[0];if(!file)return;
+  if(file.size>5*1024*1024){showToast("Max 5MB");return;}
+  document.getElementById("resume-drop").style.display="none";
+  document.getElementById("resume-done").style.display="flex";
+  document.getElementById("res-name").textContent=file.name;
+  showToast("Resume saved locally!");
 }
 
-function shareProfile() {
-  var name = (document.getElementById('ov-name')||{}).textContent||'User';
-  var url = 'https://belongix.in/dashboard.html';
-  if (navigator.share) {
-    navigator.share({title:name+' on Belongix',text:'Check out my professional profile on Belongix',url:url});
-  } else {
-    navigator.clipboard.writeText(url).then(function(){ showToast('Profile link copied!'); });
-  }
+function uploadAvatar(input){
+  var file=input.files[0];if(!file)return;
+  if(file.size>800*1024){showToast("Use image under 800KB");return;}
+  var img=new Image();var obj=URL.createObjectURL(file);
+  img.onload=async function(){
+    URL.revokeObjectURL(obj);
+    var MAX=150;var canvas=document.createElement("canvas");
+    var ratio=Math.min(MAX/img.width,MAX/img.height,1);
+    canvas.width=Math.round(img.width*ratio);canvas.height=Math.round(img.height*ratio);
+    canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+    var b64=canvas.toDataURL("image/jpeg",0.6);
+    // Apply to both avatar circles
+    function applyAv(id){var av=document.getElementById(id);if(!av)return;av.style.backgroundImage="url("+b64+")";av.style.backgroundSize="cover";av.style.backgroundPosition="center";av.textContent="";}
+    applyAv("ov-avatar");applyAv("pav-el");
+    var avKey="bx_avatar_"+(currentUser?currentUser.id:"x");
+    try{localStorage.setItem(avKey,b64);}catch(e){}
+    showToast("Saving photo...");
+    if(!currentUser)return;
+    try{
+      var res=await supaClient.from("profiles").update({avatar_url:b64}).eq("id",currentUser.id);
+      if(res.error)console.warn("Avatar Supabase:",res.error.message);
+      else showToast("Photo saved!");
+    }catch(e){console.warn(e);}
+  };
+  img.src=obj;
+}
+
+function populateProfileCard(p){
+  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"";}
+  function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||"";}
+  var name=p.full_name||(currentUser&&currentUser.email?currentUser.email.split("@")[0]:"User");
+  var init=name.substring(0,2).toUpperCase();
+  st("pav-txt",init);st("pcard-name",name);st("pcard-role",p.role||"Add your role");st("pcard-co",p.company||"");
+  st("ps-exp",p.experience||"--");st("ps-city",(p.city||"--").substring(0,9));st("ps-score",p.career_score||30);
+  st("pc-email",currentUser?currentUser.email:"");st("pc-city",p.city||"--");
+  var tm={college_student:"College Student",fresher:"Fresh Graduate",junior_prof:"Junior Pro",mid_prof:"Mid-level",senior_prof:"Senior Pro",career_changer:"Career Changer"};
+  st("pc-type",tm[p.user_type]||p.user_type||"--");
+  sv("pf-name",p.full_name);sv("pf-city",p.city);sv("pf-usertype",p.user_type);
+  sv("pf-field",p.field);sv("pf-role",p.role);sv("pf-company",p.company);
+  sv("pf-exp",p.experience);sv("pf-notice",p.notice_period);sv("pf-skills",p.skills);sv("pf-about",p.bio||p.about);
+  var flds=["full_name","city","user_type","role","experience","skills","bio"];
+  var pct=Math.round(flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length/7*100);
+  st("ppct-val",pct+"%");var bar=document.getElementById("ppct-fill");if(bar)bar.style.width=pct+"%";
+  var tip=document.getElementById("ppct-tip");if(tip)tip.textContent=pct>=100?"Profile complete!":(7-Math.round(pct*7/100))+" fields left";
+  var sbAv=document.getElementById("sb-avatar");if(sbAv)sbAv.textContent=init;
+  // Load avatar in profile card too
+  var avKey="bx_avatar_"+(currentUser?currentUser.id:"x");
+  var avUrl=p.avatar_url||localStorage.getItem(avKey);
+  var pavEl=document.getElementById("pav-el");
+  if(pavEl&&avUrl){pavEl.style.backgroundImage="url("+avUrl+")";pavEl.style.backgroundSize="cover";pavEl.style.backgroundPosition="center";pavEl.textContent="";}
+}
+
+function shareProfile(){
+  var nm=(document.getElementById("ov-name")||{}).textContent||"User";
+  var url="https://belongix.in";
+  if(navigator.share){navigator.share({title:nm+" on Belongix",text:"Check out my career profile",url:url});}
+  else{navigator.clipboard.writeText(url).then(function(){showToast("Link copied!");});}
+}
+
+// Razorpay
+var RZP_KEY="rzp_live_SiouVVDYQu9HTt";
+function startPayment(plan){
+  if(!currentUser){showToast("Please sign in");return;}
+  var am={monthly:49900,yearly:499900,premium:99900};
+  var ds={monthly:"Belongix Pro - Rs.499/mo",yearly:"Belongix Pro Annual - Rs.4,999/yr",premium:"Belongix Premium - Rs.999/mo"};
+  try{
+    var nm=document.getElementById("sb-name");
+    var rzp=new Razorpay({key:RZP_KEY,amount:am[plan]||49900,currency:"INR",name:"Belongix",description:ds[plan]||"Belongix Pro",prefill:{name:nm?nm.textContent:"",email:currentUser.email||""},theme:{color:"#1447E6"},handler:function(r){onPaySuccess(r,plan);}});
+    rzp.on("payment.failed",function(){showToast("Payment failed. Try again.");});
+    rzp.open();
+  }catch(e){showToast("Razorpay error: "+e.message);console.error(e);}
+}
+async function onPaySuccess(r,plan){
+  try{await supaClient.from("profiles").update({plan:plan==="premium"?"premium":"pro",payment_id:r.razorpay_payment_id}).eq("id",currentUser.id);}catch(e){}
+  var el=document.getElementById("paySuccess");if(el){el.style.display="block";}
+  showToast("Welcome to Belongix "+(plan==="premium"?"Premium":"Pro")+"!");
 }
 
 // -- INIT --
 init();
 </script>
-  <script src="belongix-ai.js"></script>
+  
+<script src="bexi.js"></script>
 </body>
 </html>
