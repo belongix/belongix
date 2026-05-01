@@ -508,9 +508,9 @@
     <div class="psec">
       <div class="psec-head">
         <div class="psec-title">&#127919; Job Preferences</div>
-        <button class="psec-btn" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">Edit</button>
+        <button class="psec-btn" onclick="toggleEdit('prefs-edit')">Edit</button>
       </div>
-      <div class="pref-g">
+      <div id="prefs-view" class="pref-g">
         <div class="pref-it"><div class="pref-lbl">Preferred Role</div><div class="pref-val" id="pref-role">--</div></div>
         <div class="pref-it"><div class="pref-lbl">Experience</div><div class="pref-val" id="pref-exp">--</div></div>
         <div class="pref-it"><div class="pref-lbl">Location</div><div class="pref-val" id="pref-loc">--</div></div>
@@ -518,19 +518,55 @@
         <div class="pref-it"><div class="pref-lbl">Field</div><div class="pref-val" id="pref-field">--</div></div>
         <div class="pref-it"><div class="pref-lbl">Profile Type</div><div class="pref-val" id="pref-type">--</div></div>
       </div>
+      <div id="prefs-edit" style="display:none;margin-top:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label style="font-size:11px;color:#374151;font-weight:600;display:block;margin-bottom:3px">Preferred Role</label><input class="pfin" id="pref-inp-role" placeholder="e.g. Software Engineer"/></div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600;display:block;margin-bottom:3px">City / Location</label>
+            <select class="pfin" id="pref-inp-loc"><option value="">Select</option><option>Bangalore</option><option>Hyderabad</option><option>Chennai</option><option>Mumbai</option><option>Pune</option><option>Delhi NCR</option><option>Kolkata</option><option>Remote</option><option>Other</option></select>
+          </div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600;display:block;margin-bottom:3px">Experience</label>
+            <select class="pfin" id="pref-inp-exp"><option value="">Select</option><option value="Fresher">Fresher (0-1 yr)</option><option value="1-3 yrs">1-3 years</option><option value="3-5 yrs">3-5 years</option><option value="5-10 yrs">5-10 years</option><option value="10+ yrs">10+ years</option></select>
+          </div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600;display:block;margin-bottom:3px">Notice Period</label>
+            <select class="pfin" id="pref-inp-notice"><option value="">Select</option><option>Immediate</option><option>15 days</option><option>30 days</option><option>60 days</option><option>90 days</option></select>
+          </div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600;display:block;margin-bottom:3px">Field / Domain</label>
+            <select class="pfin" id="pref-inp-field"><option value="">Select</option><option>Technology / Software</option><option>Data &amp; Analytics</option><option>Design / UX</option><option>Marketing</option><option>Finance</option><option>Product Management</option><option>HR</option><option>Other</option></select>
+          </div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600;display:block;margin-bottom:3px">Profile Type</label>
+            <select class="pfin" id="pref-inp-type"><option value="">Select</option><option value="college_student">College Student</option><option value="fresher">Fresh Graduate</option><option value="junior_prof">Junior Professional</option><option value="mid_prof">Mid-level Professional</option><option value="senior_prof">Senior Professional</option><option value="career_changer">Career Changer</option></select>
+          </div>
+        </div>
+        <button class="port-save-btn" onclick="saveField('prefs')">Save Preferences</button>
+        <button onclick="toggleEdit('prefs-edit')" style="background:none;border:1px solid #E5E7EB;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;margin-top:8px;margin-left:8px;font-family:inherit">Cancel</button>
+      </div>
     </div>
 
     <!-- Personal Details -->
     <div class="psec">
       <div class="psec-head">
         <div class="psec-title">&#128100; Personal Details</div>
-        <button class="psec-btn" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">Edit</button>
+        <button class="psec-btn" onclick="toggleEdit('personal-edit')">Edit</button>
       </div>
-      <div class="pd-g">
+      <div id="personal-view" class="pd-g">
         <div class="pd-it"><div class="pd-lbl">Full Name</div><div class="pd-val" id="pd-name">--</div></div>
-        <div class="pd-it"><div class="pd-lbl">Email</div><div class="pd-val" id="pd-email">--</div></div>
+        <div class="pd-it"><div class="pd-lbl">Email</div><div class="pd-val" id="pd-email" style="font-size:11px;word-break:break-all">--</div></div>
+        <div class="pd-it"><div class="pd-lbl">Phone</div><div class="pd-val" id="pd-phone">--</div></div>
         <div class="pd-it"><div class="pd-lbl">City</div><div class="pd-val" id="pd-city">--</div></div>
         <div class="pd-it"><div class="pd-lbl">Company</div><div class="pd-val" id="pd-company">--</div></div>
+        <div class="pd-it"><div class="pd-lbl">Address</div><div class="pd-val" id="pd-address" style="font-size:11px">--</div></div>
+      </div>
+      <div id="personal-edit" style="display:none;margin-top:12px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><label style="font-size:11px;color:#374151;font-weight:600;display:block;margin-bottom:3px">Phone Number</label><input class="pfin" id="pd-inp-phone" type="tel" placeholder="+91 98765 43210"/></div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600;display:block;margin-bottom:3px">City</label>
+            <select class="pfin" id="pd-inp-city"><option value="">Select</option><option>Bangalore</option><option>Hyderabad</option><option>Chennai</option><option>Mumbai</option><option>Pune</option><option>Delhi NCR</option><option>Kolkata</option><option>Remote</option><option>Other</option></select>
+          </div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600;display:block;margin-bottom:3px">Company</label><input class="pfin" id="pd-inp-company" placeholder="e.g. Google, TCS, Razorpay"/></div>
+          <div><label style="font-size:11px;color:#374151;font-weight:600;display:block;margin-bottom:3px">Address</label><input class="pfin" id="pd-inp-address" placeholder="Street, Area, PIN code"/></div>
+        </div>
+        <button class="port-save-btn" onclick="saveField('personal')">Save Details</button>
+        <button onclick="toggleEdit('personal-edit')" style="background:none;border:1px solid #E5E7EB;border-radius:8px;padding:7px 14px;font-size:12px;cursor:pointer;margin-top:8px;margin-left:8px;font-family:inherit">Cancel</button>
       </div>
     </div>
 
@@ -859,9 +895,11 @@
           </div>
           <div class="form-group"><label>Skills (comma separated)</label><input type="text" id="pf-skills" placeholder="e.g. Python, React, AWS, SQL"></div>
         </div>
+        <div class="form-group"><label>Phone Number</label><input type="tel" id="pf-phone" placeholder="+91 98765 43210"></div>
+        <div class="form-group"><label>Address</label><input type="text" id="pf-address" placeholder="Street, Area, City, PIN code"></div>
         <div class="form-group"><label>About You</label><textarea id="pf-about" placeholder="Brief intro about your career goals..."></textarea></div>
-        <button class="btn-save" onclick="saveProfile()">Save Profile</button>
-        <div class="save-msg" id="save-msg">✓ Profile saved! Career score updated.</div>
+        <button class="btn-save" id="prof-save-btn" onclick="saveProfile()">Save Profile</button>
+        <div class="save-msg" id="save-msg">&#10003; Profile saved! Career score updated.</div>
       </div>
     </div>
 
@@ -979,6 +1017,7 @@ async function loadUserData() {
   sv("pf-city",p.city);sv("pf-skills",p.skills);sv("pf-about",p.bio||p.about);
   sv("pf-usertype",p.user_type);sv("pf-field",p.field);
   sv("pf-company",p.company);sv("pf-notice",p.notice_period);
+  sv("pf-phone",p.phone);sv("pf-address",p.address);sv("pf-email-show",currentUser?currentUser.email:"");
   calcScore(p);
   populateProfileCard(p);
   loadPortfolio(p);
@@ -1023,11 +1062,11 @@ async function saveProfile() {
   var updates={id:currentUser.id,email:currentUser.email,
     full_name:gv("pf-name")||null,city:gv("pf-city")||null,user_type:gv("pf-usertype")||null,
     role:gv("pf-role")||null,experience:gv("pf-exp")||null,skills:gv("pf-skills")||null,
-    bio:gv("pf-about")||null,field:gv("pf-field")||null,company:gv("pf-company")||null,
+    bio:gv("pf-about")||null,field:gv("pf-field")||null,company:gv("pf-company")||null,phone:gv("pf-phone")||null,address:gv("pf-address")||null,
     notice_period:gv("pf-notice")||null};
   var sf=["full_name","city","user_type","role","experience","skills","bio"];
   updates.career_score=Math.min(30+sf.filter(function(k){return updates[k]&&updates[k].trim();}).length*10,95);
-  var btn=document.getElementById("prof-save-btn");
+  var btn=document.getElementById("prof-save-btn")||document.querySelector(".btn-save");
   if(btn){btn.disabled=true;btn.textContent="Saving...";}
   try{
     var res=await supaClient.from("profiles").upsert([updates],{onConflict:"id"});
@@ -1248,8 +1287,20 @@ function loadPortfolio(p) {
   var tm={college_student:"College Student",fresher:"Fresh Graduate",junior_prof:"Junior Professional",mid_prof:"Mid-level",senior_prof:"Senior Professional",career_changer:"Career Changer"};
   st("pref-role",p.role||"--");st("pref-exp",p.experience||"--");st("pref-loc",p.city||"--");
   st("pref-notice",p.notice_period||"--");st("pref-field",p.field||"--");st("pref-type",tm[p.user_type]||p.user_type||"--");
+  // Prefs edit form values
+  sv("pref-inp-role",p.role);sv("pref-inp-loc",p.city);sv("pref-inp-exp",p.experience);
+  sv("pref-inp-notice",p.notice_period);sv("pref-inp-field",p.field);sv("pref-inp-type",p.user_type);
   // Personal
-  st("pd-name",p.full_name||"--");st("pd-email",currentUser?currentUser.email:"--");st("pd-city",p.city||"--");st("pd-company",p.company||"--");
+  st("pd-name",p.full_name||"--");
+  st("pd-email",currentUser?currentUser.email:"--");
+  st("pd-phone",p.phone||"--");
+  st("pd-city",p.city||"--");
+  st("pd-company",p.company||"--");
+  st("pd-address",p.address||"--");
+  // Personal edit form
+  sv("pd-inp-phone",p.phone);sv("pd-inp-city",p.city);sv("pd-inp-company",p.company);sv("pd-inp-address",p.address);
+  // Resume
+  loadSavedResume();
   // LinkedIn
   if(p.linkedin){sv("li-inp",p.linkedin);var ll=document.getElementById("li-link");if(ll){ll.href=p.linkedin;ll.style.display="inline";}}
 }
@@ -1288,6 +1339,20 @@ async function saveField(field){
     var workEl=document.getElementById("ov-work");
     if(workEl&&updates.role)workEl.innerHTML='<div class="work-it"><div class="work-logo">&#127970;</div><div><div class="wt">'+(updates.role||"")+'</div><div class="wc">'+(updates.company||"")+'</div><div class="wp">'+(updates.experience||"")+'</div></div></div>';
     document.getElementById("work-edit").style.display="none";
+  } else if(field==="prefs"){
+    updates.role=(document.getElementById("pref-inp-role")||{}).value||null;
+    updates.city=(document.getElementById("pref-inp-loc")||{}).value||null;
+    updates.experience=(document.getElementById("pref-inp-exp")||{}).value||null;
+    updates.notice_period=(document.getElementById("pref-inp-notice")||{}).value||null;
+    updates.field=(document.getElementById("pref-inp-field")||{}).value||null;
+    updates.user_type=(document.getElementById("pref-inp-type")||{}).value||null;
+    document.getElementById("prefs-edit").style.display="none";
+  } else if(field==="personal"){
+    updates.phone=(document.getElementById("pd-inp-phone")||{}).value||null;
+    updates.city=(document.getElementById("pd-inp-city")||{}).value||null;
+    updates.company=(document.getElementById("pd-inp-company")||{}).value||null;
+    updates.address=(document.getElementById("pd-inp-address")||{}).value||null;
+    document.getElementById("personal-edit").style.display="none";
   } else if(field==="edu"){
     var edu={degree:(document.getElementById("edu-degree")||{}).value||"",college:(document.getElementById("edu-college")||{}).value||"",year:(document.getElementById("edu-year")||{}).value||"",grade:(document.getElementById("edu-grade")||{}).value||""};
     try{localStorage.setItem("bx_edu_"+currentUser.id,JSON.stringify(edu));}catch(e){}
@@ -1322,11 +1387,35 @@ async function saveLinkedIn(){
 
 function uploadResume(input){
   var file=input.files[0];if(!file)return;
-  if(file.size>5*1024*1024){showToast("Max 5MB");return;}
-  document.getElementById("resume-drop").style.display="none";
-  document.getElementById("resume-done").style.display="flex";
-  document.getElementById("res-name").textContent=file.name;
-  showToast("Resume saved locally!");
+  if(file.size>5*1024*1024){showToast("Max 5MB for resume");return;}
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var key="bx_resume_"+(currentUser?currentUser.id:"x");
+    var meta=JSON.stringify({name:file.name,size:file.size,type:file.type});
+    try{
+      localStorage.setItem(key+"_name",file.name);
+      localStorage.setItem(key+"_meta",meta);
+    }catch(err){}
+    showResumeUploaded(file.name);
+    showToast("Resume saved!");
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function showResumeUploaded(filename){
+  var drop=document.getElementById("resume-drop");
+  var done=document.getElementById("resume-done");
+  var nm=document.getElementById("res-name");
+  if(drop)drop.style.display="none";
+  if(done)done.style.display="flex";
+  if(nm)nm.textContent=filename;
+}
+
+function loadSavedResume(){
+  if(!currentUser)return;
+  var key="bx_resume_"+currentUser.id+"_name";
+  var savedName=localStorage.getItem(key);
+  if(savedName)showResumeUploaded(savedName);
 }
 
 function uploadAvatar(input){
@@ -1363,7 +1452,7 @@ function populateProfileCard(p){
   var init=name.substring(0,2).toUpperCase();
   st("pav-txt",init);st("pcard-name",name);st("pcard-role",p.role||"Add your role");st("pcard-co",p.company||"");
   st("ps-exp",p.experience||"--");st("ps-city",(p.city||"--").substring(0,9));st("ps-score",p.career_score||30);
-  st("pc-email",currentUser?currentUser.email:"");st("pc-city",p.city||"--");
+  st("pc-email",currentUser?currentUser.email:"");st("pc-city",p.city||"--");st("pc-phone",p.phone||"--");
   var tm={college_student:"College Student",fresher:"Fresh Graduate",junior_prof:"Junior Pro",mid_prof:"Mid-level",senior_prof:"Senior Pro",career_changer:"Career Changer"};
   st("pc-type",tm[p.user_type]||p.user_type||"--");
   sv("pf-name",p.full_name);sv("pf-city",p.city);sv("pf-usertype",p.user_type);
