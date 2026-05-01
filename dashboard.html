@@ -998,7 +998,31 @@ async function init() {
   if (!res.data.session) { window.location.href = "index.html"; return; }
   currentUser = res.data.session.user;
   loadUserData();
-  setTimeout(function(){ document.getElementById("loading-screen").style.display = "none"; }, 800);
+  setTimeout(function(){
+    var ls = document.getElementById("loading-screen");
+    if (ls) ls.style.display = "none";
+    // Handle ?page= URL parameter — navigate to correct section
+    var urlPage = new URLSearchParams(window.location.search).get("page");
+    if (urlPage) {
+      var pageMap = {
+        overview:"overview", jobs:"jobs", salary:"salary",
+        upskill:"upskill", network:"network", profile:"profile",
+        settings:"settings", upgrade:"upgrade"
+      };
+      var target = pageMap[urlPage];
+      if (target) {
+        // Find sidebar button for this page and click it
+        var found = false;
+        document.querySelectorAll(".sb-link").forEach(function(btn) {
+          var oc = btn.getAttribute("onclick") || "";
+          if (!found && oc.indexOf("'" + target + "'") !== -1) {
+            showPage(target, btn);
+            found = true;
+          }
+        });
+      }
+    }
+  }, 900);
   loadJobs();
 }
 
