@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -614,66 +614,55 @@
 
     <div class="page-section" id="page-profile">
 <style>
-.pw{display:grid;grid-template-columns:290px 1fr;gap:18px;align-items:start}
+.pw{display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start}
 .pl{display:flex;flex-direction:column;gap:12px}
 .pcard{background:white;border:1px solid #E5E7EB;border-radius:14px;overflow:hidden}
-.pbanner{height:52px;background:linear-gradient(135deg,#EEF3FF,#C7D7FD)}
-.pident{padding:0 16px 16px;margin-top:-24px}
+.pbanner{height:50px;background:linear-gradient(135deg,#EEF3FF,#C7D7FD)}
+.pident{padding:0 14px 14px;margin-top:-22px}
 .pavwrap{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px}
-.pav{width:50px;height:50px;border-radius:50%;background:#1447E6;color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #fff;cursor:pointer;position:relative;overflow:hidden;flex-shrink:0}
-.pav input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
-.pav img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;border-radius:50%}
-.pedit{font-size:12px;color:#6B7280;border:1px solid #E5E7EB;border-radius:8px;padding:4px 10px;background:#fff;cursor:pointer}
-.pname{font-size:15px;font-weight:700;color:#0A1628;margin-bottom:1px}
-.prole{font-size:12px;color:#6B7280}
-.pco{font-size:12px;color:#1447E6;font-weight:600}
+.pav{width:48px;height:48px;border-radius:50%;background:#1447E6;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #fff;cursor:pointer;position:relative;overflow:hidden;flex-shrink:0;background-size:cover;background-position:center}
+.pedit{font-size:11px;color:#6B7280;border:1px solid #E5E7EB;border-radius:7px;padding:3px 10px;background:#fff;cursor:pointer}
+.pname{font-size:14px;font-weight:700;color:#0A1628;margin-bottom:1px}
+.prole{font-size:12px;color:#6B7280}.pco{font-size:12px;color:#1447E6;font-weight:600}
 .pstats{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:10px;padding-top:10px;border-top:1px solid #F3F4F6;text-align:center}
-.pstat{padding:3px}
-.pstat:not(:last-child){border-right:1px solid #F3F4F6}
-.psv{font-size:12px;font-weight:700;color:#0A1628;word-break:break-word}
-.psl{font-size:10px;color:#9CA3AF;margin-top:1px}
-.pcontact{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:13px}
-.pctitle{font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.pcrow{display:flex;align-items:center;gap:7px;font-size:12px;color:#374151;margin-bottom:6px}
-.pcrow:last-child{margin-bottom:0}
-.pscore{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:13px}
+.pstat{padding:3px}.pstat:not(:last-child){border-right:1px solid #F3F4F6}
+.psv{font-size:12px;font-weight:700;color:#0A1628}.psl{font-size:10px;color:#9CA3AF;margin-top:1px}
+.pcontact{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:12px}
+.pctitle{font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.pcrow{display:flex;align-items:center;gap:7px;font-size:12px;color:#374151;margin-bottom:6px}.pcrow:last-child{margin-bottom:0}
+.pscore{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:12px}
 .pshead{display:flex;justify-content:space-between;margin-bottom:7px}
-.pstlt{font-size:12px;font-weight:700;color:#0A1628}
-.pspct{font-size:12px;font-weight:700;color:#1447E6}
-.psbar{height:6px;background:#F3F4F6;border-radius:6px;overflow:hidden}
-.psfill{height:100%;background:#1447E6;border-radius:6px;transition:width .4s}
+.pstlt{font-size:12px;font-weight:700;color:#0A1628}.pspct{font-size:12px;font-weight:700;color:#1447E6}
+.psbar{height:5px;background:#F3F4F6;border-radius:5px;overflow:hidden}
+.psfill{height:100%;background:#1447E6;border-radius:5px;transition:width .4s}
 .pstip{font-size:11px;color:#9CA3AF;margin-top:5px}
 .pr{display:flex;flex-direction:column;gap:12px}
-.psec{background:#fff;border:1px solid #E5E7EB;border-radius:14px;padding:18px}
-.psect{font-size:14px;font-weight:700;color:#0A1628;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #F3F4F6}
+.psec{background:#fff;border:1px solid #E5E7EB;border-radius:14px;padding:16px}
+.psect{font-size:13px;font-weight:700;color:#0A1628;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #F3F4F6}
 .pfg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pfl{display:flex;flex-direction:column}
-.pfl label{font-size:12px;font-weight:600;color:#374151;margin-bottom:4px}
-.pfin{width:100%;padding:9px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;font-family:inherit;outline:none;color:#0A1628;background:#fff;transition:.15s}
+.pfl{display:flex;flex-direction:column}.pfl label{font-size:11px;font-weight:600;color:#374151;margin-bottom:4px}
+.pfin{width:100%;padding:8px 11px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:13px;font-family:inherit;outline:none;color:#0A1628;background:#fff;transition:.15s}
 .pfin:focus{border-color:#1447E6;box-shadow:0 0 0 3px rgba(20,71,230,.07)}
-textarea.pfin{resize:vertical;min-height:80px;line-height:1.6}
+textarea.pfin{resize:vertical;min-height:75px;line-height:1.6}
 .psave-row{display:flex;gap:10px}
 .psave-btn{flex:1;background:#1447E6;color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-.psave-btn:hover{background:#0f3bc4}
 .psave-btn:disabled{opacity:.6;cursor:not-allowed}
-.pcancel-btn{background:#fff;color:#6B7280;border:1px solid #E5E7EB;border-radius:10px;padding:12px 18px;font-size:13px;cursor:pointer;font-family:inherit}
+.pcancel-btn{background:#fff;color:#6B7280;border:1px solid #E5E7EB;border-radius:10px;padding:12px 16px;font-size:13px;cursor:pointer;font-family:inherit}
 @media(max-width:900px){.pw{grid-template-columns:1fr}.pfg2{grid-template-columns:1fr}}
 </style>
-
 <div class="pw">
-  <!-- LEFT -->
   <div class="pl">
     <div class="pcard">
       <div class="pbanner"></div>
       <div class="pident">
         <div class="pavwrap">
-          <div class="pav" id="pav-circle" title="Click to upload photo" onclick="document.getElementById('av-file-input').click()">
-            <span id="pav-initials">?</span>
+          <div class="pav" id="pav-el" onclick="document.getElementById('pav-file').click()" title="Click to change photo">
+            <span id="pav-txt">?</span>
           </div>
-          <input type="file" id="av-file-input" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/>
-          <button class="pedit" onclick="document.getElementById('pf-name').focus()">Edit</button>
+          <input type="file" id="pav-file" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/>
+          <button class="pedit" onclick="document.getElementById('pf-name').focus()">Edit profile</button>
         </div>
-        <div class="pname" id="pcard-name">Loading...</div>
+        <div class="pname" id="pcard-name"></div>
         <div class="prole" id="pcard-role"></div>
         <div class="pco" id="pcard-co"></div>
         <div class="pstats">
@@ -683,111 +672,49 @@ textarea.pfin{resize:vertical;min-height:80px;line-height:1.6}
         </div>
       </div>
     </div>
-
     <div class="pcontact">
       <div class="pctitle">Contact</div>
-      <div class="pcrow">
-        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-        <span id="pc-email" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:210px"></span>
-      </div>
-      <div class="pcrow">
-        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
-        <span id="pc-city">--</span>
-      </div>
-      <div class="pcrow">
-        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
-        <span id="pc-type">--</span>
-      </div>
+      <div class="pcrow"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><span id="pc-email" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px"></span></div>
+      <div class="pcrow"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg><span id="pc-city">--</span></div>
+      <div class="pcrow"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg><span id="pc-type">--</span></div>
     </div>
-
     <div class="pscore">
-      <div class="pshead">
-        <div class="pstlt">Profile Completeness</div>
-        <div class="pspct" id="ppct-val">0%</div>
-      </div>
+      <div class="pshead"><div class="pstlt">Profile Completeness</div><div class="pspct" id="ppct-val">0%</div></div>
       <div class="psbar"><div class="psfill" id="ppct-fill" style="width:0%"></div></div>
       <div class="pstip" id="ppct-tip">Fill your profile to boost Career Score</div>
     </div>
   </div>
-
-  <!-- RIGHT -->
   <div class="pr">
-    <div class="psec">
-      <div class="psect">Profile Summary</div>
-      <div class="pfl"><label>About You</label>
-        <textarea class="pfin" id="pf-about" placeholder="Describe your experience, skills, and career goals..."></textarea>
-      </div>
+    <div class="psec"><div class="psect">Profile Summary</div>
+      <div class="pfl"><label>About You</label><textarea class="pfin" id="pf-about" placeholder="Describe your experience, skills and career goals..."></textarea></div>
     </div>
-
-    <div class="psec">
-      <div class="psect">Personal Details</div>
+    <div class="psec"><div class="psect">Personal Details</div>
       <div class="pfg2">
         <div class="pfl"><label>Full Name *</label><input class="pfin" type="text" id="pf-name" placeholder="Your full name"/></div>
-        <div class="pfl"><label>City</label>
-          <select class="pfin" id="pf-city">
-            <option value="">Select city</option>
-            <option>Bangalore</option><option>Hyderabad</option><option>Chennai</option>
-            <option>Mumbai</option><option>Pune</option><option>Delhi NCR</option>
-            <option>Kolkata</option><option>Remote</option><option>Other</option>
-          </select>
-        </div>
-        <div class="pfl"><label>Profile Type</label>
-          <select class="pfin" id="pf-usertype">
-            <option value="">Select type</option>
-            <option value="college_student">College Student</option>
-            <option value="fresher">Fresh Graduate</option>
-            <option value="junior_prof">Junior Professional (1-3 yrs)</option>
-            <option value="mid_prof">Mid-level Professional (3-7 yrs)</option>
-            <option value="senior_prof">Senior Professional (7+ yrs)</option>
-            <option value="career_changer">Career Changer</option>
-          </select>
-        </div>
-        <div class="pfl"><label>Field / Domain</label>
-          <select class="pfin" id="pf-field">
-            <option value="">Select field</option>
-            <option>Technology / Software</option><option>Data &amp; Analytics</option>
-            <option>Design / UX</option><option>Marketing / Growth</option>
-            <option>Finance</option><option>Product Management</option><option>Other</option>
-          </select>
-        </div>
+        <div class="pfl"><label>City</label><select class="pfin" id="pf-city"><option value="">Select</option><option>Bangalore</option><option>Hyderabad</option><option>Chennai</option><option>Mumbai</option><option>Pune</option><option>Delhi NCR</option><option>Kolkata</option><option>Remote</option><option>Other</option></select></div>
+        <div class="pfl"><label>Profile Type</label><select class="pfin" id="pf-usertype"><option value="">Select</option><option value="college_student">College Student</option><option value="fresher">Fresh Graduate</option><option value="junior_prof">Junior Professional (1-3 yrs)</option><option value="mid_prof">Mid-level Professional (3-7 yrs)</option><option value="senior_prof">Senior Professional (7+ yrs)</option><option value="career_changer">Career Changer</option></select></div>
+        <div class="pfl"><label>Field</label><select class="pfin" id="pf-field"><option value="">Select</option><option>Technology / Software</option><option>Data &amp; Analytics</option><option>Design / UX</option><option>Marketing</option><option>Finance</option><option>Product Management</option><option>HR</option><option>Other</option></select></div>
       </div>
     </div>
-
-    <div class="psec">
-      <div class="psect">Work Experience</div>
+    <div class="psec"><div class="psect">Work Experience</div>
       <div class="pfg2">
         <div class="pfl"><label>Current Role</label><input class="pfin" type="text" id="pf-role" placeholder="e.g. Software Engineer"/></div>
         <div class="pfl"><label>Company</label><input class="pfin" type="text" id="pf-company" placeholder="e.g. Google, TCS"/></div>
-        <div class="pfl"><label>Total Experience</label>
-          <select class="pfin" id="pf-exp">
-            <option value="">Select</option>
-            <option value="Fresher">Fresher (0-1 yr)</option>
-            <option value="1-3 yrs">1-3 years</option>
-            <option value="3-5 yrs">3-5 years</option>
-            <option value="5-10 yrs">5-10 years</option>
-            <option value="10+ yrs">10+ years</option>
-          </select>
-        </div>
-        <div class="pfl"><label>Notice Period</label>
-          <select class="pfin" id="pf-notice">
-            <option value="">Select</option>
-            <option>Immediate</option><option>15 days</option>
-            <option>30 days</option><option>60 days</option><option>90 days</option>
-          </select>
-        </div>
+        <div class="pfl"><label>Experience</label><select class="pfin" id="pf-exp"><option value="">Select</option><option value="Fresher">Fresher (0-1 yr)</option><option value="1-3 yrs">1-3 years</option><option value="3-5 yrs">3-5 years</option><option value="5-10 yrs">5-10 years</option><option value="10+ yrs">10+ years</option></select></div>
+        <div class="pfl"><label>Notice Period</label><select class="pfin" id="pf-notice"><option value="">Select</option><option>Immediate</option><option>15 days</option><option>30 days</option><option>60 days</option><option>90 days</option></select></div>
       </div>
     </div>
-
-    <div class="psec">
-      <div class="psect">Skills</div>
-      <div class="pfl"><label>Key Skills (comma separated)</label>
-        <input class="pfin" type="text" id="pf-skills" placeholder="e.g. Python, React, SQL, AWS..."/>
-      </div>
+    <div class="psec"><div class="psect">Skills</div>
+      <div class="pfl"><label>Key Skills (comma separated)</label><input class="pfin" type="text" id="pf-skills" placeholder="e.g. Python, React, SQL, AWS..."/></div>
     </div>
-
     <div class="psave-row">
       <button class="psave-btn" id="prof-save-btn" onclick="saveProfile()">Save Profile</button>
       <button class="pcancel-btn" onclick="showPage('overview',document.querySelector('[onclick*=overview]'))">Cancel</button>
+    </div>
+    <div id="paySuccess" style="display:none;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:14px;padding:20px;text-align:center;margin-top:8px">
+      <div style="font-size:32px;margin-bottom:6px">&#127881;</div>
+      <div style="font-size:16px;font-weight:700;color:#15803D;margin-bottom:4px">Welcome to Belongix Pro!</div>
+      <button onclick="showPage('overview',document.querySelector('[onclick*=overview]'))" style="background:#15803D;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px">Go to Dashboard</button>
     </div>
   </div>
 </div>
@@ -893,54 +820,36 @@ async function init() {
 }
 
 async function loadUserData() {
-  // Use maybeSingle to avoid error if no row yet
   var r = await supaClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
   var p = r.data || {};
   var name = p.full_name || currentUser.email.split("@")[0];
-  var initials = name.split(" ").map(function(w){ return w[0]||""; }).join("").toUpperCase().slice(0,2) || "U";
-
-  // Safe setter — never crashes on missing element
-  function st(id,v){ var el=document.getElementById(id); if(el) el.textContent=v||""; }
-  function sv(id,v){ var el=document.getElementById(id); if(el&&el.value!==undefined) el.value=v||""; }
-
-  // Sidebar
-  st("sb-name", name);
-  st("sb-role", p.role || p.experience || "Member");
-  st("sb-avatar", initials);
-  st("overview-sub", "Welcome back, " + name + "! Here's your career progress.");
-
-  // Old profile IDs (may or may not exist — safe)
-  st("prof-name", name);
-  st("prof-email-display", currentUser.email);
-  st("prof-avatar", initials);
-  st("settings-email", currentUser.email);
-
-  // Profile form fields (new IDs)
-  sv("pf-name",    p.full_name);
-  sv("pf-role",    p.role);
-  sv("pf-exp",     p.experience);
-  sv("pf-city",    p.city);
-  sv("pf-skills",  p.skills);
-  sv("pf-about",   p.bio || p.about);
-  sv("pf-usertype",p.user_type);
-  sv("pf-field",   p.field);
-  sv("pf-company", p.company);
-  sv("pf-notice",  p.notice_period);
-
+  var initials = name.split(" ").map(function(w){return w[0]||"";}).join("").toUpperCase().slice(0,2)||"U";
+  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"";}
+  function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||"";}
+  st("sb-name",name); st("sb-role",p.role||p.experience||"Member"); st("sb-avatar",initials);
+  st("overview-sub","Welcome back, "+name+"! Here's your career progress.");
+  st("prof-name",name); st("prof-email-display",currentUser.email);
+  st("prof-avatar",initials); st("settings-email",currentUser.email);
+  sv("pf-name",p.full_name); sv("pf-role",p.role); sv("pf-exp",p.experience);
+  sv("pf-city",p.city); sv("pf-skills",p.skills); sv("pf-about",p.bio||p.about);
+  sv("pf-usertype",p.user_type); sv("pf-field",p.field);
+  sv("pf-company",p.company); sv("pf-notice",p.notice_period);
   calcScore(p);
-  updateProfileCard(p);
-  if(p.avatar_url) showAvatarImage(p.avatar_url);
+  populateProfileCard(p);
+  if(p.avatar_url) setAvatar(p.avatar_url);
 }
 
 function calcScore(d) {
   var score = 30;
   if (currentUser.email_confirmed_at) {
     score += 10;
-    var se=document.getElementById("step-email"); if(se&&se.querySelector(".step-dot")){se.querySelector(".step-dot").className="step-dot done";se.querySelector(".step-dot").textContent="&#10003;";}
+    document.getElementById("step-email").querySelector(".step-dot").className = "step-dot done";
+    document.getElementById("step-email").querySelector(".step-dot").textContent = "&#10003;";
   }
   if (d && d.full_name && d.role && d.city && d.experience) {
     score += 30;
-    var sp=document.getElementById("step-profile"); if(sp&&sp.querySelector(".step-dot")){sp.querySelector(".step-dot").className="step-dot done";sp.querySelector(".step-dot").textContent="&#10003;";}
+    document.getElementById("step-profile").querySelector(".step-dot").className = "step-dot done";
+    document.getElementById("step-profile").querySelector(".step-dot").textContent = "&#10003;";
   }
   score = Math.min(score, 100);
   document.getElementById("score-display").textContent = score;
@@ -955,139 +864,90 @@ function calcScore(d) {
 }
 
 async function saveProfile() {
-  if (!currentUser) { showToast('Please sign in'); return; }
-  function gv(id){ var el=document.getElementById(id); return el?(el.value||'').trim():''; }
-  
-  // Only save columns that definitely exist in Supabase
-  var base = {
-    id: currentUser.id,
-    full_name: gv('pf-name') || null,
-    city: gv('pf-city') || null,
-    user_type: gv('pf-usertype') || null,
-    role: gv('pf-role') || null,
-    experience: gv('pf-exp') || null,
-    skills: gv('pf-skills') || null,
-    bio: gv('pf-about') || null,
-    email: currentUser.email
-  };
-  
-  // Try to also save extra columns (may not exist yet)
-  var extra = { field: gv('pf-field')||null, company: gv('pf-company')||null, notice_period: gv('pf-notice')||null };
-  
-  var scoreFields = ['full_name','city','user_type','role','experience','skills','bio'];
-  var filled = scoreFields.filter(function(k){ return base[k]&&base[k].trim(); }).length;
-  base.career_score = Math.min(30 + filled * 10, 95);
-  
-  var btn = document.getElementById('prof-save-btn');
-  if (btn) { btn.disabled=true; btn.textContent='Saving...'; }
-  
-  try {
-    // Try with all fields first
-    var payload = Object.assign({}, base, extra);
-    var res = await supaClient.from('profiles').upsert([payload], {onConflict:'id'});
-    
-    if (res.error) {
-      // Fallback: save only base columns
-      console.warn('Full save failed, trying base columns:', res.error.message);
-      var res2 = await supaClient.from('profiles').upsert([base], {onConflict:'id'});
-      if (res2.error) throw res2.error;
+  if(!currentUser){showToast("Please sign in");return;}
+  function gv(id){var el=document.getElementById(id);return el?(el.value||"").trim():"";}
+  var base={id:currentUser.id,email:currentUser.email,
+    full_name:gv("pf-name")||null,city:gv("pf-city")||null,user_type:gv("pf-usertype")||null,
+    role:gv("pf-role")||null,experience:gv("pf-exp")||null,skills:gv("pf-skills")||null,
+    bio:gv("pf-about")||null,about:gv("pf-about")||null};
+  var extra={field:gv("pf-field")||null,company:gv("pf-company")||null,notice_period:gv("pf-notice")||null};
+  var scoreF=["full_name","city","user_type","role","experience","skills","bio"];
+  var filled=scoreF.filter(function(k){return base[k]&&base[k].trim();}).length;
+  base.career_score=Math.min(30+filled*10,95);
+  var btn=document.getElementById("prof-save-btn");
+  if(btn){btn.disabled=true;btn.textContent="Saving...";}
+  try{
+    var payload=Object.assign({},base,extra);
+    var res=await supaClient.from("profiles").upsert([payload],{onConflict:"id"});
+    if(res.error){
+      var res2=await supaClient.from("profiles").upsert([base],{onConflict:"id"});
+      if(res2.error)throw res2.error;
     }
-    
-    showToast('Profile saved! Score: ' + base.career_score);
-    
-    // Update left card immediately
-    updateProfileCard(Object.assign({}, payload, {career_score: base.career_score}));
-    
-    // Update sidebar
-    var nm = base.full_name || currentUser.email.split('@')[0];
-    var sbN = document.getElementById('sb-name'); if(sbN) sbN.textContent = nm.split(' ')[0];
-    var sbR = document.getElementById('sb-role'); if(sbR) sbR.textContent = base.role||base.experience||'Member';
-    var sbAv = document.getElementById('sb-avatar'); if(sbAv) sbAv.textContent = nm.substring(0,2).toUpperCase();
-    
-    // Update score display
-    calcScore(Object.assign({}, base, {career_score: base.career_score}));
-    
-  } catch(e) {
-    console.error('saveProfile error:', e);
-    showToast('Error saving: ' + e.message);
-  } finally {
-    if(btn){btn.disabled=false;btn.textContent='Save Profile';}
-  }
+    showToast("Profile saved! Score: "+base.career_score);
+    populateProfileCard(Object.assign({},payload,{career_score:base.career_score}));
+    var sbN=document.getElementById("sb-name");if(sbN&&base.full_name)sbN.textContent=base.full_name.split(" ")[0];
+    var sbR=document.getElementById("sb-role");if(sbR)sbR.textContent=base.role||base.experience||"Member";
+    var sbAv=document.getElementById("sb-avatar");if(sbAv)sbAv.textContent=(base.full_name||"U").substring(0,2).toUpperCase();
+    calcScore(base);
+  }catch(e){console.error("saveProfile:",e);showToast("Save failed: "+e.message);}
+  finally{if(btn){btn.disabled=false;btn.textContent="Save Profile";}}
 }
 
-function updateProfileCard(p) {
-  // Load saved avatar photo
-  if (p.avatar_url) { showAvatarImage(p.avatar_url); }
-  
-  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||'';}
-  function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||'';}
-  var name = p.full_name || (currentUser&&currentUser.email?currentUser.email.split('@')[0]:'User');
-  var init = name.substring(0,2).toUpperCase();
-  st('pav-initials',init);
-  st('pcard-name',name);
-  st('pcard-role',p.role||'Add your role');
-  st('pcard-co',p.company||'');
-  st('ps-exp',p.experience||'--');
-  st('ps-city',(p.city||'--').substring(0,8));
-  st('ps-score',p.career_score||30);
-  st('pc-email',currentUser?currentUser.email:'');
-  st('pc-city',p.city||'--');
-  var tm={college_student:'College Student',fresher:'Fresh Graduate',junior_prof:'Junior Pro',mid_prof:'Mid-level',senior_prof:'Senior Pro',career_changer:'Career Changer'};
-  st('pc-type',tm[p.user_type]||p.user_type||'--');
-  // Completeness
-  var flds=['full_name','city','user_type','role','experience','skills','bio'];
+function populateProfileCard(p) {
+  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"";}
+  function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||"";}
+  var name=p.full_name||(currentUser&&currentUser.email?currentUser.email.split("@")[0]:"User");
+  var init=name.substring(0,2).toUpperCase();
+  st("pav-txt",init);
+  st("pcard-name",name); st("pcard-role",p.role||"Add your role"); st("pcard-co",p.company||"");
+  st("ps-exp",p.experience||"--"); st("ps-city",(p.city||"--").substring(0,9)); st("ps-score",p.career_score||30);
+  st("pc-email",currentUser?currentUser.email:""); st("pc-city",p.city||"--");
+  var tm={college_student:"College Student",fresher:"Fresh Graduate",junior_prof:"Junior Pro",mid_prof:"Mid-level",senior_prof:"Senior Pro",career_changer:"Career Changer"};
+  st("pc-type",tm[p.user_type]||p.user_type||"--");
+  sv("pf-name",p.full_name); sv("pf-city",p.city); sv("pf-usertype",p.user_type);
+  sv("pf-field",p.field); sv("pf-role",p.role); sv("pf-company",p.company);
+  sv("pf-exp",p.experience); sv("pf-notice",p.notice_period);
+  sv("pf-skills",p.skills); sv("pf-about",p.bio||p.about);
+  var flds=["full_name","city","user_type","role","experience","skills","bio"];
   var filled=flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length;
   var pct=Math.round((filled/7)*100);
-  st('ppct-val',pct+'%');
-  var bar=document.getElementById('ppct-fill');if(bar)bar.style.width=pct+'%';
-  var tip=document.getElementById('ppct-tip');
-  if(tip)tip.textContent=pct>=100?'Profile complete!':(7-filled)+' fields left';
-  // Also populate form
-  sv('pf-name',p.full_name);sv('pf-city',p.city);sv('pf-usertype',p.user_type);
-  sv('pf-field',p.field);sv('pf-role',p.role);sv('pf-company',p.company);
-  sv('pf-exp',p.experience);sv('pf-notice',p.notice_period);
-  sv('pf-skills',p.skills);sv('pf-about',p.bio||p.about);
-  // Update sidebar avatar
-  var sbAv=document.getElementById('sb-avatar');if(sbAv)sbAv.textContent=init;
+  st("ppct-val",pct+"%"); var bar=document.getElementById("ppct-fill");if(bar)bar.style.width=pct+"%";
+  var tip=document.getElementById("ppct-tip");if(tip)tip.textContent=pct>=100?"Profile complete!":(7-filled)+" fields left";
+  var sbAv=document.getElementById("sb-avatar");if(sbAv)sbAv.textContent=init;
+}
+
+function setAvatar(url) {
+  if(!url)return;
+  var av=document.getElementById("pav-el");
+  var txt=document.getElementById("pav-txt");
+  if(!av)return;
+  av.style.backgroundImage="url("+url+")";
+  av.style.backgroundSize="cover";
+  av.style.backgroundPosition="center";
+  av.style.backgroundRepeat="no-repeat";
+  if(txt)txt.style.opacity="0";
 }
 
 function uploadAvatar(input) {
-  var file = input.files[0];
-  if (!file) return;
-  if (file.size > 1 * 1024 * 1024) { showToast('Max 1MB for photo'); return; }
-  var reader = new FileReader();
-  reader.onload = async function(e) {
-    var base64 = e.target.result;
-    // Show preview immediately
-    showAvatarImage(base64);
-    showToast('Saving photo...');
-    // Save to Supabase
-    try {
-      var res = await supaClient.from('profiles').upsert([{
-        id: currentUser.id,
-        email: currentUser.email,
-        avatar_url: base64
-      }], {onConflict:'id'});
-      if (res.error) throw res.error;
-      showToast('Profile photo saved!');
-    } catch(e) {
-      console.error('Avatar save error:', e);
-      showToast('Photo shown but not saved: run SQL first');
+  var file=input.files[0];
+  if(!file)return;
+  if(file.size>800*1024){showToast("Please use image under 800KB");return;}
+  var reader=new FileReader();
+  reader.onload=async function(e){
+    var b64=e.target.result;
+    setAvatar(b64);
+    showToast("Saving photo...");
+    if(!currentUser)return;
+    try{
+      var res=await supaClient.from("profiles").update({avatar_url:b64}).eq("id",currentUser.id);
+      if(res.error)throw res.error;
+      showToast("Photo saved successfully!");
+    }catch(err){
+      console.error("Avatar save:",err);
+      showToast("Photo error: "+err.message);
     }
   };
   reader.readAsDataURL(file);
-}
-
-function showAvatarImage(url) {
-  var av = document.getElementById('pav-circle');
-  var ini = document.getElementById('pav-initials');
-  if (!av || !url) return;
-  av.style.backgroundImage = 'url(' + url + ')';
-  av.style.backgroundSize = 'cover';
-  av.style.backgroundPosition = 'center';
-  av.style.backgroundRepeat = 'no-repeat';
-  av.style.backgroundColor = 'transparent';
-  if (ini) ini.style.opacity = '0';
 }
 
 async function signOut() {
@@ -1230,28 +1090,102 @@ function showToast(msg) {
 document.getElementById("job-search").addEventListener("keypress", function(e){ if (e.key === "Enter") { jobsLoaded = false; searchJobs(); } });
 
 
-// -- RAZORPAY --
+// ── PROFILE CARD ──
+function updateProfileCard(p) {
+  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"";}
+  function sv(id,v){var el=document.getElementById(id);if(el&&"value" in el)el.value=v||"";}
+  var name=p.full_name||(currentUser?currentUser.email.split("@")[0]:"User");
+  var ini=name.substring(0,2).toUpperCase();
+  st("pav-ini",ini); st("pcard-name",name); st("pcard-role",p.role||"Add your role");
+  st("pcard-co",p.company||""); st("ps-exp",p.experience||"--");
+  st("ps-city",(p.city||"--").substring(0,9)); st("ps-score",p.career_score||30);
+  st("pc-email",currentUser?currentUser.email:""); st("pc-city",p.city||"--");
+  var tm={college_student:"College Student",fresher:"Fresh Graduate",junior_prof:"Junior Pro",mid_prof:"Mid-level",senior_prof:"Senior Pro",career_changer:"Career Changer"};
+  st("pc-type",tm[p.user_type]||p.user_type||"--");
+  sv("pf-name",p.full_name); sv("pf-city",p.city); sv("pf-usertype",p.user_type);
+  sv("pf-field",p.field); sv("pf-role",p.role); sv("pf-company",p.company);
+  sv("pf-exp",p.experience); sv("pf-notice",p.notice_period);
+  sv("pf-skills",p.skills); sv("pf-about",p.bio||p.about);
+  var flds=["full_name","city","user_type","role","experience","skills","bio"];
+  var filled=flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length;
+  var pct=Math.round((filled/7)*100);
+  st("ppct-val",pct+"%");
+  var bar=document.getElementById("ppct-fill");if(bar)bar.style.width=pct+"%";
+  var tip=document.getElementById("ppct-tip");
+  if(tip)tip.textContent=pct>=100?"Profile complete!":(7-filled)+" fields left";
+  var sbAv=document.getElementById("sb-avatar");if(sbAv)sbAv.textContent=ini;
+  if(p.avatar_url) setAvatar(p.avatar_url);
+}
+
+function setAvatar(url) {
+  var av=document.getElementById("pav-circle");
+  var ini=document.getElementById("pav-ini");
+  if(!av||!url)return;
+  av.style.backgroundImage="url("+url+")";
+  av.style.backgroundSize="cover";
+  av.style.backgroundPosition="center";
+  av.style.backgroundRepeat="no-repeat";
+  av.style.backgroundColor="transparent";
+  if(ini)ini.style.opacity="0";
+  // Also update sidebar avatar with photo
+  var sbAv=document.getElementById("sb-avatar");
+  if(sbAv){
+    sbAv.style.backgroundImage="url("+url+")";
+    sbAv.style.backgroundSize="cover";
+    sbAv.style.backgroundPosition="center";
+    sbAv.style.backgroundRepeat="no-repeat";
+    sbAv.style.backgroundColor="transparent";
+    sbAv.textContent="";
+  }
+}
+
+function uploadAvatar(input) {
+  var file=input.files[0];
+  if(!file)return;
+  if(file.size>1.5*1024*1024){showToast("Max 1.5MB for photo");return;}
+  var reader=new FileReader();
+  reader.onload=async function(e){
+    var b64=e.target.result;
+    setAvatar(b64);
+    showToast("Saving photo...");
+    try{
+      var res=await supaClient.from("profiles").upsert([{
+        id:currentUser.id, email:currentUser.email, avatar_url:b64
+      }],{onConflict:"id"});
+      if(res.error)throw res.error;
+      showToast("Photo saved!");
+    }catch(err){
+      console.error("Avatar save:",err);
+      showToast("Photo shown but not saved to DB");
+    }
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── RAZORPAY ──
 var RZP_KEY="rzp_live_SiouVVDYQu9HTt";
 function startPayment(plan){
-  if(!currentUser){showToast('Please sign in first');return;}
+  if(!currentUser){showToast("Please sign in");return;}
   var amounts={monthly:49900,yearly:499900,premium:99900};
-  var descs={monthly:"Belongix Pro - Rs.499/month",yearly:"Belongix Pro Annual - Rs.4,999/year",premium:"Belongix Premium - Rs.999/month"};
+  var descs={monthly:"Belongix Pro - Rs.499/month",yearly:"Belongix Pro Annual - Rs.4,999/yr",premium:"Belongix Premium - Rs.999/month"};
   try{
-    var nm=document.getElementById('sb-name');
-    var rzp=new Razorpay({key:RZP_KEY,amount:amounts[plan]||49900,currency:"INR",name:"Belongix",description:descs[plan]||"Belongix Pro",prefill:{name:nm?nm.textContent:'',email:currentUser.email||''},theme:{color:"#1447E6"},handler:function(resp){onPaySuccess(resp,plan);}});
-    rzp.on('payment.failed',function(r){showToast('Payment failed');});
+    var nm=document.getElementById("sb-name");
+    var rzp=new Razorpay({key:RZP_KEY,amount:amounts[plan]||49900,currency:"INR",name:"Belongix",description:descs[plan]||"Belongix Pro",prefill:{name:nm?nm.textContent:"",email:currentUser.email||""},theme:{color:"#1447E6"},handler:function(resp){onPaySuccess(resp,plan);}});
+    rzp.on("payment.failed",function(){showToast("Payment failed. Try again.");});
     rzp.open();
-  }catch(e){showToast('Razorpay error: '+e.message);}
+  }catch(e){showToast("Error: "+e.message);}
 }
 async function onPaySuccess(resp,plan){
-  try{await supaClient.from('profiles').update({plan:plan==='premium'?'premium':'pro',payment_id:resp.razorpay_payment_id}).eq('id',currentUser.id);}catch(e){}
-  var el=document.getElementById('paySuccess');if(el){el.style.display='block';}
-  showToast('Welcome to Belongix '+(plan==='premium'?'Premium':'Pro')+'!');
+  try{await supaClient.from("profiles").update({plan:plan==="premium"?"premium":"pro",payment_id:resp.razorpay_payment_id}).eq("id",currentUser.id);}catch(e){}
+  var el=document.getElementById("paySuccess");if(el){el.style.display="block";}
+  showToast("Welcome to Belongix "+(plan==="premium"?"Premium":"Pro")+"!");
 }
+
 // -- INIT --
 init();
 </script>
   
+
 <script src="bexi.js"></script>
 </body>
 </html>
