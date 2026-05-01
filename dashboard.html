@@ -1078,48 +1078,84 @@ document.getElementById("job-search").addEventListener("keypress", function(e){ 
 // -- PROFILE FUNCTIONS --
 async function loadProfile() {
   if (!currentUser) return;
+  var setF = function(id,v){ var el=document.getElementById(id); if(el){ if(el.tagName==='SELECT'||el.tagName==='INPUT'||el.tagName==='TEXTAREA') el.value=v||''; } };
+  var setT = function(id,v){ var el=document.getElementById(id); if(el) el.textContent=v||''; };
   try {
-    var res = await supaClient.from('profiles').select('*').eq('id', currentUser.id).single();
+    var res = await supaClient.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
+    if (res.error) throw res.error;
     var p = res.data || {};
     var fn = (p.full_name||'').split(' ')[0]||'';
     var ln = (p.full_name||'').split(' ').slice(1).join(' ')||'';
-    var setF=function(id,v){var el=document.getElementById(id);if(el)el.value=v;};
-    setF('p-fn',fn);setF('p-ln',ln);setF('p-city',p.city||'');setF('p-type',p.user_type||'');
-    setF('p-role',p.role||'');setF('p-company',p.company||'');setF('p-field',p.field||'');
-    setF('p-exp',p.experience||'');setF('p-skills',p.skills||'');setF('p-bio',p.bio||'');
-    var name=p.full_name||currentUser.email.split('@')[0];
-    var setT=function(id,v){var el=document.getElementById(id);if(el)el.textContent=v;};
-    setT('prof-av-big',name.substring(0,2).toUpperCase());
-    setT('prof-name-big',name);
-    setT('prof-title-big',p.role||'Add your role');
-    setT('prof-company-big',p.company||'');
-    setT('prof-email-disp',currentUser.email);
-    setT('prof-city-disp',p.city||'--');
-    setT('prof-city-disp2',p.city||'--');
-    setT('prof-exp-disp',p.experience||'--');
-    setT('prof-score-disp',p.career_score||30);
-    var tm={college_student:'College Student',fresher:'Fresh Graduate',junior_prof:'Junior Pro',mid_prof:'Mid-level',senior_prof:'Senior',career_changer:'Career Changer'};
-    setT('prof-type-disp',tm[p.user_type]||p.user_type||'--');
-    var fields=[p.full_name,p.city,p.user_type,p.role,p.company,p.field,p.experience,p.skills,p.bio];
-    var filled=fields.filter(function(x){return x&&String(x).trim();}).length;
-    var pct=Math.round((filled/9)*100);
-    setT('prof-pct',pct+'%');
-    var bar=document.getElementById('prof-pct-bar');if(bar)bar.style.width=pct+'%';
-  } catch(e){console.log('loadProfile err:',e);}
+    setF('p-fn', fn); setF('p-ln', ln);
+    setF('p-city', p.city); setF('p-type', p.user_type);
+    setF('p-role', p.role); setF('p-company', p.company);
+    setF('p-field', p.field); setF('p-exp', p.experience);
+    setF('p-skills', p.skills); setF('p-bio', p.bio);
+    var name = p.full_name || currentUser.email.split('@')[0] || 'User';
+    setT('prof-av-big', name.substring(0,2).toUpperCase());
+    setT('prof-name-big', name);
+    setT('prof-title-big', p.role || 'Add your role');
+    setT('prof-company-big', p.company || '');
+    setT('prof-email-disp', currentUser.email || '');
+    setT('prof-city-disp', p.city || '--');
+    setT('prof-city-disp2', p.city || '--');
+    setT('prof-exp-disp', p.experience || '--');
+    setT('prof-score-disp', p.career_score || 30);
+    var tm = {college_student:'College Student',fresher:'Fresh Graduate',junior_prof:'Junior Professional',mid_prof:'Mid-level Professional',senior_prof:'Senior Professional',career_changer:'Career Changer'};
+    setT('prof-type-disp', tm[p.user_type] || p.user_type || '--');
+    var fields = [p.full_name,p.city,p.user_type,p.role,p.company,p.field,p.experience,p.skills,p.bio];
+    var filled = fields.filter(function(x){ return x && String(x).trim(); }).length;
+    var pct = Math.round((filled/9)*100);
+    setT('prof-pct', pct+'%');
+    var bar = document.getElementById('prof-pct-bar');
+    if (bar) bar.style.width = pct+'%';
+    var tip = document.getElementById('prof-pct-tip');
+    if (tip) tip.textContent = pct >= 100 ? 'Profile complete! Great work.' : (9-filled)+' fields left to boost your Career Score';
+  } catch(e) {
+    console.error('loadProfile err:', e);
+  }
 }
 async function saveProfile() {
   if (!currentUser) { showToast('Please sign in'); return; }
-  var g=function(id){return(document.getElementById(id)||{}).value||'';};
-  var fullName=(g('p-fn')+' '+g('p-ln')).trim();
-  var updates={id:currentUser.id,full_name:fullName,city:g('p-city'),user_type:g('p-type'),role:g('p-role'),company:g('p-company'),field:g('p-field'),experience:g('p-exp'),skills:g('p-skills'),bio:g('p-bio'),updated_at:new Date().toISOString()};
-  var filled=Object.entries(updates).filter(function(e){return e[0]!=='id'&&e[0]!=='updated_at'&&e[1]&&String(e[1]).trim();}).length;
-  updates.career_score=Math.min(30+(filled*8),95);
+  var g = function(id){ var el=document.getElementById(id); return el ? el.value || '' : ''; };
+  var fn = g('p-fn').trim();
+  var ln = g('p-ln').trim();
+  var fullName = (fn + ' ' + ln).trim() || fn || ln;
+  var updates = {
+    id: currentUser.id,
+    full_name: fullName || null,
+    city: g('p-city') || null,
+    user_type: g('p-type') || null,
+    role: g('p-role') || null,
+    company: g('p-company') || null,
+    field: g('p-field') || null,
+    experience: g('p-exp') || null,
+    skills: g('p-skills') || null,
+    bio: g('p-bio') || null,
+    updated_at: new Date().toISOString()
+  };
+  // Score calc
+  var filled = ['full_name','city','user_type','role','company','field','experience','skills','bio'].filter(function(k){ return updates[k] && updates[k].trim(); }).length;
+  updates.career_score = Math.min(30 + (filled * 8), 95);
+  
+  var saveBtn = document.querySelector('[onclick="saveProfile()"]');
+  if (saveBtn) { saveBtn.textContent = 'Saving...'; saveBtn.disabled = true; }
+  
   try {
-    await supaClient.from('profiles').upsert(updates);
-    showToast('Profile saved! Score updated.');
-    loadProfile();
-    var sb=document.getElementById('sb-name');if(sb&&fullName)sb.textContent=fullName;
-  } catch(e){showToast('Save failed: '+e.message);}
+    var res = await supaClient.from('profiles').upsert([updates], { onConflict: 'id' });
+    if (res.error) throw res.error;
+    showToast('Profile saved! Career Score: ' + updates.career_score);
+    await loadProfile();
+    var sbName = document.getElementById('sb-name');
+    if (sbName && fullName) sbName.textContent = fullName.split(' ')[0];
+    var sbScore = document.getElementById('sb-score');
+    if (sbScore) sbScore.textContent = 'Score: ' + updates.career_score;
+  } catch(e) {
+    console.error('Save error:', e);
+    showToast('Save failed: ' + (e.message || 'Check Supabase columns'));
+  } finally {
+    if (saveBtn) { saveBtn.textContent = 'Save Profile'; saveBtn.disabled = false; }
+  }
 }
 
 // -- INIT --
