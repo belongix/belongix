@@ -15,7 +15,7 @@
   --blue:#1447E6;--blue-dark:#0f3bc4;--blue-mid:#3B82F6;--blue-light:#EEF3FF;
   --sky:#0EA5E9;--teal:#06B6D4;
   --ink:#0A1628;--ink2:#1E293B;--muted:#64748B;--subtle:#94A3B8;
-  --bg:#FFFFFF;--off:#F8FAFC;--off2:#F1F5F9;
+  --bg:#FFFFFF;--off:#FFFFFF;--off2:#F8FAFC;
   --border:#E2E8F0;--border2:#CBD5E1;
   --green:#22C55E;--amber:#F59E0B;--red:#EF4444;
   --ff:'Figtree',sans-serif;
@@ -74,13 +74,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:900;height:62px;display:flex;ali
 .ud-divider{height:1px;background:var(--off2);margin:4px 0}
 
 /* HERO */
-.hero{min-height:100vh;padding:120px 5% 80px;position:relative;overflow:hidden;background:linear-gradient(160deg,#f8faff 0%,#eef3ff 40%,#f0f8ff 100%);display:flex;align-items:center}
-.hero-noise{position:absolute;inset:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px}
-.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
-.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(20,71,230,.07),transparent 70%);top:-200px;right:-200px}
-.hero-orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(14,165,233,.06),transparent 70%);bottom:-100px;left:-100px}
-.hero-orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(34,197,94,.05),transparent 70%);top:30%;right:20%}
-.hero-in{max-width:800px;margin:0 auto;width:100%;display:block;position:relative;z-index:2;text-align:left}
+.hero{min-height:100vh;padding:120px 5% 80px;position:relative;overflow:hidden;background:#ffffff;display:flex;align-items:center}
+
+
+
+
+
+.hero-in{max-width:1200px;margin:0 auto;width:100%;display:block;position:relative;z-index:2;text-align:left}
 .hero-badge{display:inline-flex;align-items:center;gap:7px;background:var(--blue-light);border:1px solid #C7D7FD;border-radius:100px;padding:5px 14px 5px 8px;font-size:12px;font-weight:700;color:var(--blue);margin-bottom:28px;letter-spacing:.2px}
 .badge-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
@@ -143,7 +143,7 @@ h1 .hl::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:
 h2{font-family:var(--ff);font-size:clamp(28px,3.5vw,44px);font-weight:800;color:var(--ink);line-height:1.1;letter-spacing:-1px}
 h2 span{color:var(--blue)}
 .sec-sub{font-size:17px;color:var(--muted);line-height:1.7;margin-top:14px}
-.off-bg{background:var(--off)}
+.off-bg{background:#ffffff}
 
 /* WHO GRID */
 .who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
@@ -218,7 +218,7 @@ h2 span{color:var(--blue)}
 
 .mentor-strip h2{color:#ffffff !important;letter-spacing:-1px;font-size:clamp(26px,3vw,40px);position:relative;z-index:2}
 .mentor-strip p{color:rgba(255,255,255,.85) !important;font-size:15px;line-height:1.7;max-width:520px;margin:14px auto 36px;position:relative;z-index:2}
-.mentor-perks{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;position:relative;z-index:1}
+.mentor-perks{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;position:relative;z-index:3}
 .mentor-perk{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:6px 16px;font-size:12.5px;color:rgba(255,255,255,.85);font-weight:500;display:flex;align-items:center;gap:5px}
 .mentor-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
 .btn-white{padding:13px 26px;border-radius:10px;background:#fff;color:var(--blue);border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s}
@@ -404,10 +404,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 
 <!-- HERO -->
 <section class="hero" id="home">
-  <div class="hero-noise"></div>
-  <div class="hero-orb hero-orb-1"></div>
-  <div class="hero-orb hero-orb-2"></div>
-  <div class="hero-orb hero-orb-3"></div>
+  
   <div class="hero-in">
     <div class="hero-left">
       <div class="hero-badge"><span class="badge-pulse"></span>Your Career, Upgraded</div>
@@ -480,7 +477,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   </div>
 </section>
 <!-- WHO IT'S FOR -->
-<section class="sec" id="for-who">
+<section style="padding:80px 5%;background:#fff" id="for-who">
   <div class="sec-in">
     <div class="sec-center rv">
       <div class="sec-tag">Who It's For</div>
@@ -517,7 +514,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 </section>
 
 <!-- SIX FEATURES -->
-<section class="sec off-bg" id="features">
+<section style="padding:80px 5%;background:#F8FAFC" id="features">
   <div class="sec-in">
     <div class="sec-center rv">
       <div class="sec-tag">Everything You Need</div>
@@ -576,7 +573,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 
 
 <!-- COURSES FROM -->
-<section class="sec off-bg" id="courses">
+<section style="padding:80px 5%;background:#fff" id="courses">
   <div class="sec-in">
     <div class="sec-center rv">
       <div class="sec-tag">Upskilling Hub</div>
@@ -705,30 +702,32 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 </style>
 
 <!-- MENTOR STRIP -->
-<section class="sec off-bg">
-  <div class="sec-in">
-    <div class="mentor-strip">
-      <div class="sec-tag" style="background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3);color:#fff;position:relative;z-index:2;font-weight:700">Mentor Network</div>
-      <h2 style="margin-top:12px;position:relative;z-index:2;color:#ffffff !important">Learn from professionals<br/>who've <span style="color:#7DD3FC">been there</span></h2>
-      <p style="position:relative;z-index:2;color:rgba(255,255,255,.85)!important">Connect 1-on-1 with verified professionals for interview prep, salary negotiation, career switch guidance and more.</p>
-      <div class="mentor-perks">
-        <div class="mentor-perk">✓ Verified mentors only</div>
-        <div class="mentor-perk">✓ Resume reviews</div>
-        <div class="mentor-perk">✓ Mock interviews</div>
-        <div class="mentor-perk">✓ Salary coaching</div>
-        <div class="mentor-perk">✓ Career switch support</div>
-      </div>
-      <div class="mentor-btns">
-        <button class="btn-white" onclick="window.location.href='mentors.html'">Find a Mentor →</button>
-        <button class="btn-white-ghost" onclick="window.location.href='mentors.html'">Become a Mentor</button>
+<section style="padding:60px 5%;background:#ffffff">
+  <div style="max-width:1200px;margin:0 auto">
+    <div style="background:linear-gradient(135deg,#0A1628 0%,#1E3A8A 55%,#1447E6 100%);border-radius:24px;padding:60px 40px;text-align:center;position:relative;overflow:hidden">
+      <div style="position:relative;z-index:3">
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px;text-transform:uppercase;margin-bottom:18px">Mentor Network</div>
+        <h2 style="font-family:'Figtree',sans-serif;font-size:clamp(28px,3.5vw,44px);font-weight:800;color:#ffffff;letter-spacing:-1px;line-height:1.1;margin-bottom:14px">Learn from professionals<br/>who've <span style="color:#7DD3FC">been there</span></h2>
+        <p style="font-size:16px;color:rgba(255,255,255,.8);max-width:520px;margin:0 auto 32px;line-height:1.7">Connect 1-on-1 with verified professionals for interview prep, salary negotiation, career switch guidance and more.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:36px">
+          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.9);font-weight:500">&#10003; Verified mentors only</div>
+          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.9);font-weight:500">&#10003; Resume reviews</div>
+          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.9);font-weight:500">&#10003; Mock interviews</div>
+          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.9);font-weight:500">&#10003; Salary coaching</div>
+          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.9);font-weight:500">&#10003; Career switch support</div>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <a href="mentors.html" style="padding:14px 28px;background:#ffffff;color:#1447E6;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;font-family:'Plus Jakarta Sans',sans-serif;transition:.2s">Find a Mentor &rarr;</a>
+          <a href="mentors.html" style="padding:14px 28px;background:transparent;color:#ffffff;border:2px solid rgba(255,255,255,.35);border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;font-family:'Plus Jakarta Sans',sans-serif">Become a Mentor</a>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- FAQ -->
-<section class="sec off-bg">
-  <div class="sec-in">
+<section style="padding:80px 5%;background:#ffffff">
+  <div style="max-width:1200px;margin:0 auto">
     <div class="sec-center rv">
       <div class="sec-tag">FAQ</div>
       <h2>Frequently asked <span>questions</span></h2>
