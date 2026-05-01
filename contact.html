@@ -19,11 +19,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;ali
 .nghost{padding:0.45rem 1rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-size:0.84rem;font-weight:600;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;}
 .nghost:hover{border-color:var(--blue);color:var(--blue);}
 .nfill{padding:0.45rem 1.2rem;border-radius:8px;background:var(--blue);border:none;font-size:0.84rem;font-weight:600;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.nav-user{display:none;align-items:center;gap:0.6rem;}
-.nav-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue3));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.78rem;color:#fff;}
-.nav-nm{font-size:0.84rem;font-weight:600;color:var(--text);}
-.nav-dash{padding:0.42rem 0.9rem;border-radius:8px;background:var(--blue);border:none;font-size:0.8rem;font-weight:600;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;}
-.nav-sign-out{padding:0.42rem 0.85rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-size:0.8rem;font-weight:600;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;}
+
+
+
+
+
 
 .hero{padding:9rem 5% 5rem;background:linear-gradient(160deg,var(--white),var(--off),var(--sky));text-align:center;}
 .tag{display:inline-block;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);background:var(--sky);border:1px solid var(--sky2);border-radius:100px;padding:0.25rem 0.8rem;margin-bottom:0.85rem;}
@@ -85,6 +85,46 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
 .rv.on{opacity:1;transform:translateY(0);}
 @media(max-width:1024px){.layout{grid-template-columns:1fr;gap:2.5rem;}}
 @media(max-width:768px){.nlinks{display:none;}.fr{grid-template-columns:1fr;}.flinks{display:none;}}
+
+/* -- User dropdown nav -- */
+.nav-user-wrap{position:relative;display:none}
+.nav-user-btn{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:24px;border:1px solid var(--border);background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif}
+.nav-user-btn:hover{border-color:#C7D7FD;background:#EEF3FF}
+.nav-av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-nm{font-size:13px;font-weight:500;color:var(--text,#111827);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nav-user-btn svg{color:#9CA3AF;transition:transform .2s}
+.nav-user-btn.dd-open svg{transform:rotate(180deg)}
+.user-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.12);min-width:200px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
+.user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.ud-header{padding:10px 12px 8px;border-bottom:1px solid var(--border);margin-bottom:4px}
+.ud-name{font-size:13px;font-weight:600;color:var(--navy,#0A1628)}
+.ud-email{font-size:11px;color:#9CA3AF;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--text,#111827);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:'DM Sans',sans-serif;text-align:left}
+.ud-item:hover{background:#F3F4F6;color:var(--blue)}
+.ud-item svg{width:15px;height:15px;color:#9CA3AF;flex-shrink:0}
+.ud-divider{height:1px;background:var(--border);margin:4px 0}
+/* Bexi */
+.bexi-fab{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;align-items:center;gap:8px;background:var(--blue,#1447E6);color:#fff;border:none;border-radius:28px;padding:11px 18px 11px 14px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 20px rgba(20,71,230,.4);transition:.2s}
+.bexi-fab:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(20,71,230,.5)}
+.bexi-dot{width:8px;height:8px;border-radius:50%;background:#22C55E;flex-shrink:0}
+.bexi-win{position:fixed;bottom:80px;right:24px;width:340px;max-height:480px;background:#fff;border-radius:16px;border:1px solid #E5E7EB;box-shadow:0 16px 48px rgba(0,0,0,.15);z-index:9997;display:none;flex-direction:column;overflow:hidden;font-family:'DM Sans',sans-serif}
+.bexi-win.open{display:flex}
+.bexi-head{background:var(--blue,#1447E6);padding:14px 16px;display:flex;align-items:center;gap:10px}
+.bexi-hav{width:34px;height:34px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.bexi-hinfo{flex:1}.bexi-hname{font-size:14px;font-weight:700;color:#fff}.bexi-hsub{font-size:11px;color:rgba(255,255,255,.75)}
+.bexi-x{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;opacity:.8;padding:2px}.bexi-x:hover{opacity:1}
+.bexi-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
+.bmsg{max-width:85%;padding:9px 12px;border-radius:12px;font-size:13px;line-height:1.5}
+.bmsg.bot{background:#F9FAFB;color:#111827;align-self:flex-start;border-radius:4px 12px 12px 12px}
+.bmsg.user{background:var(--blue,#1447E6);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px}
+.bexi-chips{padding:8px 14px;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid #E5E7EB}
+.bchip{background:#EEF3FF;color:var(--blue,#1447E6);border:1px solid #C7D7FD;border-radius:16px;padding:5px 11px;font-size:11.5px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.bchip:hover{background:var(--blue,#1447E6);color:#fff}
+.bexi-irow{padding:10px 14px;border-top:1px solid #E5E7EB;display:flex;gap:8px}
+.bexi-inp{flex:1;border:1.5px solid #E5E7EB;border-radius:10px;padding:8px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;color:#111827}
+.bexi-inp:focus{border-color:var(--blue,#1447E6)}
+.bexi-snd{background:var(--blue,#1447E6);border:none;border-radius:8px;padding:8px 12px;color:#fff;cursor:pointer;font-size:14px}
+
 </style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#2563EB">
@@ -96,19 +136,30 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
   <a href="index.html" class="nlogo">Belong<span>ix</span></a>
   <ul class="nlinks">
     <li><a href="index.html">Home</a></li>
-    <li><a href="about.html">About</a></li>
+    <li><a href="mentors.html">Mentors</a></li>
     <li><a href="contact.html" class="active">Contact</a></li>
-    <li><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="about.html" class="">About</a></li>
   </ul>
   <div class="nbtns" id="nav-out">
     <button class="nghost" onclick="window.location.href='index.html'">Sign In</button>
-    <button class="nfill" onclick="window.location.href='index.html'">Join Free →</button>
+    <button class="nfill" onclick="window.location.href='index.html'">Join Free</button>
   </div>
-  <div class="nav-user" id="nav-in">
-    <div class="nav-av" id="nav-av">?</div>
-    <div class="nav-nm" id="nav-nm"></div>
-    <button class="nav-dash" onclick="window.location.href='dashboard.html'">Dashboard</button>
-    <button class="nav-sign-out" onclick="signOut()">Sign Out</button>
+  <div class="nav-user-wrap" id="nav-in">
+    <button class="nav-user-btn" id="nav-user-btn">
+      <div class="nav-av" id="nav-av">?</div>
+      <span class="nav-nm" id="nav-nm">Hi...</span>
+      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+    </button>
+    <div class="user-dropdown" id="user-dd">
+      <div class="ud-header"><div class="ud-name" id="ud-name">User</div><div class="ud-email" id="ud-email"></div></div>
+      <a class="ud-item" href="dashboard.html">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+      <a class="ud-item" href="dashboard.html?page=profile">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>My Profile</a>
+      <div class="ud-divider"></div>
+      <button class="ud-item" onclick="doSignOut()" style="color:#DC2626">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" style="color:#DC2626"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>Sign Out</button>
+    </div>
   </div>
 </nav>
 
@@ -191,53 +242,75 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
   <p>© 2026 Belongix · teambelongix@gmail.com · belongix.in</p>
   <div class="flinks">
     <a href="index.html">Home</a><a href="about.html">About</a>
-    <a href="contact.html">Contact</a><a href="dashboard.html">Dashboard</a>
+    <a href="contact.html">Contact</a>
   </div>
 </footer>
 
+
+
+
+
+
+
+
+
+  
+<!-- BEXI -->
+<button class="bexi-fab" onclick="bexiToggle()"><div class="bexi-dot"></div><span style="font-size:18px">&#129302;</span> Chat with Bexi AI</button>
+<div class="bexi-win" id="bexiWin">
+  <div class="bexi-head"><div class="bexi-hav">&#129302;</div><div class="bexi-hinfo"><div class="bexi-hname">Bexi AI</div><div class="bexi-hsub">Belongix Career Guide</div></div><button class="bexi-x" onclick="bexiToggle()">&#x2715;</button></div>
+  <div class="bexi-msgs" id="bexiMsgs"><div class="bmsg bot">Hi! I'm Bexi &#128075; Ask me about salaries, interview tips or upskilling!</div></div>
+  <div class="bexi-chips">
+    <button class="bchip" onclick="bexiAsk('Fresher salary in India?')">Fresher salary</button>
+    <button class="bchip" onclick="bexiAsk('Interview preparation tips?')">Interview prep</button>
+    <button class="bchip" onclick="bexiAsk('Top skills in demand 2026?')">Top skills</button>
+  </div>
+  <div class="bexi-irow"><input class="bexi-inp" id="bexiInp" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')bexiSend()"/><button class="bexi-snd" onclick="bexiSend()">&#10148;</button></div>
+</div>
 <script>
-const SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
-const sb=supabase.createClient(SB_URL,SB_KEY);
-async function checkAuth(){
-  const{data:{session}}=await sb.auth.getSession();
-  if(session){
-    const name=session.user.user_metadata?.full_name||session.user.email.split('@')[0];
-    document.getElementById('nav-out').style.display='none';
-    document.getElementById('nav-in').style.display='flex';
-    document.getElementById('nav-av').textContent=name.substring(0,2).toUpperCase();
-    document.getElementById('nav-nm').textContent=name.split(' ')[0];
-    document.getElementById('f-email').value=session.user.email;
-  }
+(function(){
+var SU='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb2=supabase.createClient(SU,SK);
+sb2.auth.getSession().then(function(r){var s=r&&r.data&&r.data.session;if(s&&s.user)showU(s.user);});
+sb2.auth.onAuthStateChange(function(_,s){s?showU(s.user):showO();});
+function showU(u){
+  var name=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];
+  document.getElementById('nav-out').style.display='none';
+  document.getElementById('nav-in').style.display='block';
+  document.getElementById('nav-av').textContent=name.substring(0,2).toUpperCase();
+  document.getElementById('nav-nm').textContent='Hi, '+name.split(' ')[0];
+  document.getElementById('ud-name').textContent=name;
+  document.getElementById('ud-email').textContent=u.email||'';
 }
-checkAuth();
-async function signOut(){await sb.auth.signOut();window.location.href='index.html';}
-function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.transform='translateX(-50%) translateY(0)';t.style.opacity='1';setTimeout(()=>{t.style.transform='translateX(-50%) translateY(100px)';t.style.opacity='0';},3000);}
-function submitForm(){
-  const fn=document.getElementById('f-fname').value.trim();
-  const email=document.getElementById('f-email').value.trim();
-  const reason=document.getElementById('f-reason').value;
-  const msg=document.getElementById('f-msg').value.trim();
-  const err=document.getElementById('form-err');err.style.display='none';
-  if(!fn){err.textContent='Please enter your first name';err.style.display='block';return;}
-  if(!email||!email.includes('@')){err.textContent='Please enter a valid email';err.style.display='block';return;}
-  if(!reason){err.textContent='Please select a reason';err.style.display='block';return;}
-  if(!msg){err.textContent='Please write your message';err.style.display='block';return;}
-  document.getElementById('success-box').style.display='block';
-  toast('Message sent! We reply within 24 hours ✓');
-  document.getElementById('f-fname').value='';document.getElementById('f-lname').value='';
-  document.getElementById('f-email').value='';document.getElementById('f-msg').value='';document.getElementById('f-reason').value='';
+function showO(){document.getElementById('nav-out').style.display='flex';document.getElementById('nav-in').style.display='none';}
+window.doSignOut=function(){sb2.auth.signOut().then(function(){window.location.href='index.html';});};
+var btn=document.getElementById('nav-user-btn');
+var dd=document.getElementById('user-dd');
+if(btn&&dd){
+  btn.addEventListener('click',function(e){e.stopPropagation();var o=dd.classList.contains('open');dd.classList[o?'remove':'add']('open');btn.classList[o?'remove':'add']('dd-open');});
+  document.addEventListener('click',function(){dd.classList.remove('open');btn.classList.remove('dd-open');});
 }
-const obs=new IntersectionObserver(e=>{e.forEach((el,i)=>{if(el.isIntersecting){setTimeout(()=>el.target.classList.add('on'),i*80);obs.unobserve(el.target);}});},{threshold:0.08});
-document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+// Bexi
+var BR={
+  sal:'Fresher salaries India 2026:\n- SWE: Rs.3.5-8 LPA\n- Data Analyst: Rs.3-6 LPA\n- Full Stack: Rs.4-10 LPA\n\nTop startups pay 20-40% above market!',
+  int:'Interview tips:\n1. DSA - LeetCode 75\n2. System Design - ByteByteGo\n3. STAR method for behavioral\n4. Research company before round\n5. Pramp for free mock interviews',
+  sk:'Top skills 2026:\n- Agentic AI & LangChain\n- Cloud AWS/Azure/GCP\n- Data Engineering (dbt, Kafka)\n- Full Stack React+Node\n- Cybersecurity\n\nAll free in Belongix Upskilling Hub!',
+  df:'Ask me about salaries, interview prep, or skills!\n\nSign up on Belongix for your full career dashboard.'
+};
+window.bexiToggle=function(){var w=document.getElementById('bexiWin');w.classList.toggle('open');if(w.classList.contains('open'))document.getElementById('bexiInp').focus();};
+window.bexiSend=function(){var i=document.getElementById('bexiInp');var q=i.value.trim();if(!q)return;i.value='';window.bexiAsk(q);};
+window.bexiAsk=function(q){
+  bexiAdd(q,'user');
+  setTimeout(function(){
+    var l=q.toLowerCase();
+    var r=l.includes('salary')||l.includes('fresher')||l.includes('lpa')?BR.sal:l.includes('interview')||l.includes('prep')?BR.int:l.includes('skill')||l.includes('demand')?BR.sk:BR.df;
+    bexiAdd(r,'bot');
+  },600);
+};
+function bexiAdd(t,type){var m=document.getElementById('bexiMsgs');var d=document.createElement('div');d.className='bmsg '+type;d.innerHTML=t.replace(/\n/g,'<br>');m.appendChild(d);m.scrollTop=m.scrollHeight;}
+})();
 </script>
-
-
-
-
-
-
-
-  <script src="belongix-ai.js"></script>
+<script src="pwa-install.js"></script>
 </body>
 </html>
