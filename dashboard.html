@@ -929,6 +929,7 @@ async function loadUserData() {
 
   calcScore(p);
   updateProfileCard(p);
+  if(p.avatar_url) showAvatarImage(p.avatar_url);
 }
 
 function calcScore(d) {
@@ -1015,6 +1016,9 @@ async function saveProfile() {
 }
 
 function updateProfileCard(p) {
+  // Load saved avatar photo
+  if (p.avatar_url) { showAvatarImage(p.avatar_url); }
+  
   function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||'';}
   function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||'';}
   var name = p.full_name || (currentUser&&currentUser.email?currentUser.email.split('@')[0]:'User');
@@ -1048,16 +1052,47 @@ function updateProfileCard(p) {
 }
 
 function uploadAvatar(input) {
-  var file=input.files[0];if(!file)return;
-  if(file.size>2*1024*1024){showToast('Max 2MB');return;}
-  var r=new FileReader();
-  r.onload=function(e){
-    var av=document.getElementById('pav-circle');
-    if(av){av.style.background='none';av.style.backgroundImage='url('+e.target.result+')';av.style.backgroundSize='cover';}
-    var ini=document.getElementById('pav-initials');if(ini)ini.style.display='none';
-    showToast('Photo updated locally');
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 1 * 1024 * 1024) { showToast('Max 1MB for photo'); return; }
+  var reader = new FileReader();
+  reader.onload = async function(e) {
+    var base64 = e.target.result;
+    // Show preview immediately
+    showAvatarImage(base64);
+    showToast('Saving photo...');
+    // Save to Supabase
+    try {
+      var res = await supaClient.from('profiles').upsert([{
+        id: currentUser.id,
+        email: currentUser.email,
+        avatar_url: base64
+      }], {onConflict:'id'});
+      if (res.error) throw res.error;
+      showToast('Profile photo saved!');
+    } catch(e) {
+      console.error('Avatar save error:', e);
+      showToast('Photo shown but not saved: run SQL first');
+    }
   };
-  r.readAsDataURL(file);
+  reader.readAsDataURL(file);
+}
+
+function showAvatarImage(url) {
+  var av = document.getElementById('pav-circle');
+  var ini = document.getElementById('pav-initials');
+  if (!av) return;
+  // Remove old background
+  av.style.backgroundImage = 'none';
+  // Add image inside
+  var existing = av.querySelector('img.av-photo');
+  if (existing) existing.remove();
+  var img = document.createElement('img');
+  img.className = 'av-photo';
+  img.src = url;
+  img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;z-index:1';
+  av.appendChild(img);
+  if (ini) ini.style.display = 'none';
 }
 
 async function signOut() {
