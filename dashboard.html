@@ -247,7 +247,7 @@
       <div class="sb-label">Main</div>
       <button class="sb-link active" onclick="showPage('overview',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-        <span>Overview</span>
+        <span>Portfolio</span>
       </button>
       <button class="sb-link" onclick="showPage('jobs',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
@@ -297,7 +297,7 @@
 <!-- Main Content -->
 <main class="main">
   <div class="topbar">
-    <div class="topbar-title" id="topbar-title">Overview</div>
+    <div class="topbar-title" id="topbar-title">Portfolio</div>
     <div class="topbar-right">
       <div class="topbar-chip" id="score-chip">Score: —</div>
       <a href="index.html" style="font-size:13px;color:var(--gray-500);text-decoration:none;">← Home</a>
@@ -308,83 +308,306 @@
 
     <!-- ── OVERVIEW ── -->
     <div class="page-section active" id="page-overview">
-      <div class="page-title">Welcome back! 👋</div>
-      <div class="page-subtitle" id="overview-sub">Here's your career progress at a glance.</div>
-      <div class="grid-4" style="margin-bottom:28px">
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#EFF6FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-          <div class="stat-val" id="stat-score">—</div>
-          <div class="stat-lbl">Career Score</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#F0FDF4"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
-          <div class="stat-val">0</div>
-          <div class="stat-lbl">Jobs Applied</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#F5F3FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7C3AED" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
-          <div class="stat-val">0</div>
-          <div class="stat-lbl">Skills Added</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#FEF9C3"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A16207" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          <div class="stat-val">0</div>
-          <div class="stat-lbl">Connections</div>
-        </div>
-      </div>
+<style>
+/* Portfolio styles */
+.port-wrap{display:grid;grid-template-columns:300px 1fr;gap:20px;align-items:start}
+.port-left{display:flex;flex-direction:column;gap:14px;position:sticky;top:80px}
+/* Hero card */
+.port-hero{background:white;border-radius:16px;border:1px solid #E5E7EB;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.port-cover{height:80px;background:linear-gradient(135deg,#1447E6 0%,#0EA5E9 100%);position:relative}
+.port-cover-score{position:absolute;top:10px;right:12px;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:white}
+.port-hero-body{padding:0 16px 16px;margin-top:-28px}
+.port-av-wrap{position:relative;width:56px;margin-bottom:8px}
+.port-av{width:56px;height:56px;border-radius:50%;background:#1447E6;color:white;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid white;cursor:pointer;background-size:cover;background-position:center}
+.port-online{position:absolute;bottom:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#22C55E;border:2px solid white}
+.port-name{font-size:16px;font-weight:700;color:#0A1628;margin-bottom:2px}
+.port-title{font-size:12px;color:#6B7280;margin-bottom:6px}
+.port-loc{display:flex;align-items:center;gap:4px;font-size:11px;color:#9CA3AF;margin-bottom:12px}
+.port-actions{display:flex;gap:8px}
+.btn-edit-profile{flex:1;background:#1447E6;color:white;border:none;border-radius:8px;padding:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.btn-share-profile{background:white;color:#374151;border:1px solid #E5E7EB;border-radius:8px;padding:8px 12px;font-size:12px;cursor:pointer;font-family:inherit}
+/* Score ring mini */
+.port-score-mini{background:white;border:1px solid #E5E7EB;border-radius:14px;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.score-ring-mini{width:52px;height:52px;flex-shrink:0;position:relative}
+.score-ring-mini svg{transform:rotate(-90deg)}
+.score-ring-mini .score-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#1447E6;font-family:inherit}
+.port-score-info{flex:1}
+.port-score-label{font-size:13px;font-weight:700;color:#0A1628;margin-bottom:2px}
+.port-score-sub{font-size:11px;color:#9CA3AF}
+/* Quick stats */
+.port-stats{background:white;border:1px solid #E5E7EB;border-radius:14px;padding:14px}
+.port-stats-title{font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.port-stat-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid #F9FAFB}
+.port-stat-row:last-child{border-bottom:none;padding-bottom:0}
+.port-stat-name{font-size:12px;color:#374151;display:flex;align-items:center;gap:6px}
+.port-stat-val{font-size:12px;font-weight:700;color:#0A1628}
+/* Quick links */
+.port-links{background:white;border:1px solid #E5E7EB;border-radius:14px;padding:14px}
+.port-link-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F9FAFB;cursor:pointer;transition:.15s;text-decoration:none}
+.port-link-item:last-child{border-bottom:none;padding-bottom:0}
+.port-link-item:hover .port-link-name{color:#1447E6}
+.port-link-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.port-link-name{font-size:13px;font-weight:500;color:#374151}
+.port-link-arrow{margin-left:auto;color:#D1D5DB;font-size:14px}
+/* Right column sections */
+.port-right{display:flex;flex-direction:column;gap:14px}
+.port-section{background:white;border:1px solid #E5E7EB;border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.04);transition:.2s}
+.port-section:hover{border-color:#C7D7FD}
+.port-sec-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.port-sec-title{font-size:14px;font-weight:700;color:#0A1628;display:flex;align-items:center;gap:8px}
+.port-sec-edit{font-size:12px;color:#1447E6;cursor:pointer;border:none;background:none;font-family:inherit;padding:0}
+.port-sec-edit:hover{text-decoration:underline}
+.port-empty{font-size:13px;color:#9CA3AF;font-style:italic}
+.port-bio-text{font-size:13.5px;color:#374151;line-height:1.7}
+/* Skills chips */
+.skills-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.skill-chip{background:#EEF3FF;color:#1447E6;border:1px solid #C7D7FD;border-radius:20px;padding:5px 13px;font-size:12.5px;font-weight:500}
+/* Work exp */
+.work-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #F9FAFB}
+.work-item:last-child{border-bottom:none;padding-bottom:0}
+.work-logo{width:40px;height:40px;border-radius:9px;background:#EEF3FF;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.work-title{font-size:13px;font-weight:700;color:#0A1628}
+.work-company{font-size:12px;color:#6B7280;margin-top:1px}
+.work-period{font-size:11px;color:#9CA3AF;margin-top:2px}
+/* Education */
+.edu-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #F9FAFB}
+.edu-item:last-child{border-bottom:none;padding-bottom:0}
+.edu-icon{width:36px;height:36px;border-radius:8px;background:#FEF9C3;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+/* Job prefs */
+.pref-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pref-item{background:#F9FAFB;border-radius:10px;padding:10px 12px}
+.pref-label{font-size:11px;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+.pref-val{font-size:13px;font-weight:600;color:#0A1628}
+/* Cert */
+.cert-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #F9FAFB}
+.cert-item:last-child{border-bottom:none;padding-bottom:0}
+.cert-badge{width:36px;height:36px;border-radius:8px;background:#F0FDF4;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.cert-name{font-size:13px;font-weight:600;color:#0A1628}
+.cert-issuer{font-size:11px;color:#9CA3AF;margin-top:1px}
+/* Resume upload */
+.resume-box{border:2px dashed #E5E7EB;border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:.2s}
+.resume-box:hover{border-color:#1447E6;background:#EEF3FF}
+.resume-uploaded{display:flex;align-items:center;gap:12px;background:#F0FDF4;border:1px solid #86EFAC;border-radius:10px;padding:12px}
+/* Personal grid */
+.personal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.personal-item{padding:10px 12px;background:#F9FAFB;border-radius:10px}
+.personal-lbl{font-size:11px;color:#9CA3AF;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.personal-val{font-size:13px;font-weight:600;color:#0A1628}
+@media(max-width:900px){.port-wrap{grid-template-columns:1fr}.port-left{position:static}.pref-grid,.personal-grid{grid-template-columns:1fr}}
+</style>
 
-      <div class="card" style="margin-bottom:20px">
-        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;margin-bottom:20px">Career Score</h3>
-        <div class="score-ring-wrap">
-          <div class="score-ring">
-            <svg width="140" height="140" viewBox="0 0 140 140">
-              <circle cx="70" cy="70" r="56" fill="none" stroke="#E2E8F0" stroke-width="12"/>
-              <circle cx="70" cy="70" r="56" fill="none" stroke="#2563EB" stroke-width="12" stroke-linecap="round"
-                stroke-dasharray="351.86" id="score-circle" stroke-dashoffset="351.86"/>
-            </svg>
-            <div class="score-ring-label">
-              <div class="score-num" id="score-display">30</div>
-              <div class="score-txt">out of 100</div>
-            </div>
-          </div>
-          <div class="score-info">
-            <h3 id="score-level">Getting Started</h3>
-            <p id="score-desc">Complete your profile to boost your career score and get better job matches.</p>
-            <div class="score-steps">
-              <div class="score-step"><div class="step-dot done">✓</div><span>Account created</span><span class="step-pts">+30 pts</span></div>
-              <div class="score-step" id="step-email"><div class="step-dot pending">○</div><span>Email verified</span><span class="step-pts">+10 pts</span></div>
-              <div class="score-step" id="step-profile"><div class="step-dot pending">○</div><span>Profile completed</span><span class="step-pts">+30 pts</span></div>
-              <div class="score-step"><div class="step-dot pending">○</div><span>First job applied</span><span class="step-pts">+15 pts</span></div>
-              <div class="score-step"><div class="step-dot pending">○</div><span>Skills added (3+)</span><span class="step-pts">+15 pts</span></div>
-            </div>
-          </div>
-        </div>
+<div class="port-wrap">
+  <!-- LEFT SIDEBAR -->
+  <div class="port-left">
+    <!-- Hero Card -->
+    <div class="port-hero">
+      <div class="port-cover">
+        <div class="port-cover-score">Career Score: <span id="ov-score-badge">--</span></div>
       </div>
-
-      <div class="card">
-        <h3 style="font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;margin-bottom:16px">Quick Actions</h3>
-        <div class="grid-4">
-          <button onclick="showPage('jobs',document.querySelector('[onclick*=jobs]'))" style="border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:var(--white);transition:.2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.borderColor='#2563EB';this.style.background='#EFF6FF'" onmouseout="this.style.borderColor='#E2E8F0';this.style.background='white'">
-            <div style="font-size:24px;margin-bottom:8px">💼</div>
-            <div style="font-size:13px;font-weight:600;color:var(--gray-900)">Find Jobs</div>
-          </button>
-          <button onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))" style="border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:var(--white);transition:.2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.borderColor='#2563EB';this.style.background='#EFF6FF'" onmouseout="this.style.borderColor='#E2E8F0';this.style.background='white'">
-            <div style="font-size:24px;margin-bottom:8px">🚀</div>
-            <div style="font-size:13px;font-weight:600;color:var(--gray-900)">Upskill</div>
-          </button>
-          <button onclick="showPage('salary',document.querySelector('[onclick*=salary]'))" style="border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:var(--white);transition:.2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.borderColor='#2563EB';this.style.background='#EFF6FF'" onmouseout="this.style.borderColor='#E2E8F0';this.style.background='white'">
-            <div style="font-size:24px;margin-bottom:8px">💰</div>
-            <div style="font-size:13px;font-weight:600;color:var(--gray-900)">Check Salary</div>
-          </button>
-          <button onclick="showPage('profile',document.querySelector('[onclick*=profile]'))" style="border:1.5px solid var(--gray-200);border-radius:12px;padding:16px;text-align:center;cursor:pointer;background:var(--white);transition:.2s;font-family:'DM Sans',sans-serif" onmouseover="this.style.borderColor='#2563EB';this.style.background='#EFF6FF'" onmouseout="this.style.borderColor='#E2E8F0';this.style.background='white'">
-            <div style="font-size:24px;margin-bottom:8px">👤</div>
-            <div style="font-size:13px;font-weight:600;color:var(--gray-900)">Edit Profile</div>
-          </button>
+      <div class="port-hero-body">
+        <div class="port-av-wrap">
+          <div class="port-av" id="ov-avatar" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">?</div>
+          <div class="port-online"></div>
+        </div>
+        <div class="port-name" id="ov-name">Loading...</div>
+        <div class="port-title" id="ov-title">Add your role</div>
+        <div class="port-loc"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg><span id="ov-loc">India</span></div>
+        <div class="port-actions">
+          <button class="btn-edit-profile" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">&#9998; Edit Profile</button>
+          <button class="btn-share-profile" onclick="shareProfile()">&#8679; Share</button>
         </div>
       </div>
     </div>
 
-    <!-- ── JOBS ── -->
+    <!-- Score ring -->
+    <div class="port-score-mini">
+      <div class="score-ring-mini">
+        <svg width="52" height="52" viewBox="0 0 52 52">
+          <circle cx="26" cy="26" r="21" fill="none" stroke="#E5E7EB" stroke-width="5"/>
+          <circle cx="26" cy="26" r="21" fill="none" stroke="#1447E6" stroke-width="5" stroke-linecap="round"
+            stroke-dasharray="131.95" id="ov-ring" stroke-dashoffset="131.95"/>
+        </svg>
+        <div class="score-center" id="ov-score-center">30</div>
+      </div>
+      <div class="port-score-info">
+        <div class="port-score-label" id="ov-score-level">Getting Started</div>
+        <div class="port-score-sub">Complete profile to reach 100</div>
+      </div>
+    </div>
+
+    <!-- Quick stats -->
+    <div class="port-stats">
+      <div class="port-stats-title">Activity</div>
+      <div class="port-stat-row"><div class="port-stat-name">&#128188; Jobs Applied</div><div class="port-stat-val" id="ov-jobs-applied">0</div></div>
+      <div class="port-stat-row"><div class="port-stat-name">&#128218; Courses</div><div class="port-stat-val" id="ov-courses">48+</div></div>
+      <div class="port-stat-row"><div class="port-stat-name">&#129504; AI Sessions</div><div class="port-stat-val">Active</div></div>
+      <div class="port-stat-row"><div class="port-stat-name">&#127891; Profile</div><div class="port-stat-val" id="ov-pct">0%</div></div>
+    </div>
+
+    <!-- Quick links -->
+    <div class="port-links">
+      <div class="port-stats-title" style="margin-bottom:8px">Quick Access</div>
+      <a class="port-link-item" onclick="showPage('jobs',document.querySelector('[onclick*=jobs]'))">
+        <div class="port-link-icon" style="background:#EEF3FF">&#128188;</div>
+        <span class="port-link-name">Find Jobs</span>
+        <span class="port-link-arrow">&#8250;</span>
+      </a>
+      <a class="port-link-item" onclick="showPage('salary',document.querySelector('[onclick*=salary]'))">
+        <div class="port-link-icon" style="background:#F0FDF4">&#128176;</div>
+        <span class="port-link-name">Salary Insights</span>
+        <span class="port-link-arrow">&#8250;</span>
+      </a>
+      <a class="port-link-item" onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))">
+        <div class="port-link-icon" style="background:#FEF9C3">&#127891;</div>
+        <span class="port-link-name">Upskilling Hub</span>
+        <span class="port-link-arrow">&#8250;</span>
+      </a>
+      <a class="port-link-item" href="mentors.html">
+        <div class="port-link-icon" style="background:#FFF1F2">&#129309;</div>
+        <span class="port-link-name">Find a Mentor</span>
+        <span class="port-link-arrow">&#8250;</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="port-right">
+
+    <!-- Profile Summary -->
+    <div class="port-section">
+      <div class="port-sec-head">
+        <div class="port-sec-title">&#128203; Profile Summary</div>
+        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">+ Add / Edit</button>
+      </div>
+      <div id="ov-bio" class="port-bio-text port-empty">No summary added yet. Click Edit to add your professional summary.</div>
+    </div>
+
+    <!-- Work Experience -->
+    <div class="port-section">
+      <div class="port-sec-head">
+        <div class="port-sec-title">&#128188; Work Experience</div>
+        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">+ Add</button>
+      </div>
+      <div id="ov-work-section">
+        <div class="port-empty">No experience added yet.</div>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="port-section">
+      <div class="port-sec-head">
+        <div class="port-sec-title">&#9889; Skills</div>
+        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">+ Add</button>
+      </div>
+      <div id="ov-skills-section" class="skills-wrap">
+        <div class="port-empty">No skills added yet.</div>
+      </div>
+    </div>
+
+    <!-- Education -->
+    <div class="port-section">
+      <div class="port-sec-head">
+        <div class="port-sec-title">&#127891; Education</div>
+        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">+ Add</button>
+      </div>
+      <div id="ov-edu-section">
+        <div class="edu-item">
+          <div class="edu-icon">&#127979;</div>
+          <div>
+            <div class="work-title" id="ov-edu-degree">Add your education</div>
+            <div class="work-company">University / College name</div>
+            <div class="work-period">Year of graduation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Preferences -->
+    <div class="port-section">
+      <div class="port-sec-head">
+        <div class="port-sec-title">&#127919; Job Preferences</div>
+        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">Edit</button>
+      </div>
+      <div class="pref-grid">
+        <div class="pref-item"><div class="pref-label">Preferred Role</div><div class="pref-val" id="pref-role">--</div></div>
+        <div class="pref-item"><div class="pref-label">Experience</div><div class="pref-val" id="pref-exp">--</div></div>
+        <div class="pref-item"><div class="pref-label">Location</div><div class="pref-val" id="pref-loc">--</div></div>
+        <div class="pref-item"><div class="pref-label">Notice Period</div><div class="pref-val" id="pref-notice">--</div></div>
+        <div class="pref-item"><div class="pref-label">Field</div><div class="pref-val" id="pref-field">--</div></div>
+        <div class="pref-item"><div class="pref-label">Profile Type</div><div class="pref-val" id="pref-type">--</div></div>
+      </div>
+    </div>
+
+    <!-- Personal Details -->
+    <div class="port-section">
+      <div class="port-sec-head">
+        <div class="port-sec-title">&#128100; Personal Details</div>
+        <button class="port-sec-edit" onclick="showPage('profile',document.querySelector('[onclick*=profile]'))">Edit</button>
+      </div>
+      <div class="personal-grid">
+        <div class="personal-item"><div class="personal-lbl">Full Name</div><div class="personal-val" id="pd-name">--</div></div>
+        <div class="personal-item"><div class="personal-lbl">Email</div><div class="personal-val" id="pd-email" style="font-size:11px;word-break:break-all">--</div></div>
+        <div class="personal-item"><div class="personal-lbl">City</div><div class="personal-val" id="pd-city">--</div></div>
+        <div class="personal-item"><div class="personal-lbl">Company</div><div class="personal-val" id="pd-company">--</div></div>
+      </div>
+    </div>
+
+    <!-- LinkedIn -->
+    <div class="port-section">
+      <div class="port-sec-head">
+        <div class="port-sec-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="#0077B5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> LinkedIn</div>
+        <button class="port-sec-edit" onclick="saveLinkedIn()">Save</button>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <input id="ov-linkedin" class="pfin" style="flex:1;padding:8px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13px;font-family:inherit;outline:none" placeholder="https://linkedin.com/in/yourname"/>
+        <a id="ov-linkedin-link" href="#" target="_blank" style="font-size:12px;color:#0077B5;font-weight:600;white-space:nowrap;display:none">View &#8599;</a>
+      </div>
+    </div>
+
+    <!-- Courses & Certifications -->
+    <div class="port-section">
+      <div class="port-sec-head">
+        <div class="port-sec-title">&#127942; Courses & Certifications</div>
+        <button class="port-sec-edit" onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))">Browse Courses</button>
+      </div>
+      <div id="ov-certs">
+        <div class="cert-item">
+          <div class="cert-badge">&#127891;</div>
+          <div>
+            <div class="cert-name">Upskilling Hub — 48+ courses available</div>
+            <div class="cert-issuer">Google, AWS, Coursera, Kaggle, NPTEL &amp; more</div>
+          </div>
+          <button onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))" style="margin-left:auto;background:#1447E6;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap">Start Learning</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resume -->
+    <div class="port-section">
+      <div class="port-sec-head">
+        <div class="port-sec-title">&#128196; Resume</div>
+      </div>
+      <div id="ov-resume-box" class="resume-box" onclick="document.getElementById('resume-file').click()">
+        <div style="font-size:32px;margin-bottom:8px">&#128196;</div>
+        <div style="font-size:13px;font-weight:600;color:#374151;margin-bottom:4px">Upload your Resume</div>
+        <div style="font-size:12px;color:#9CA3AF">PDF, DOC, DOCX — Max 5MB. Click to upload</div>
+        <input type="file" id="resume-file" accept=".pdf,.doc,.docx" style="display:none" onchange="uploadResume(this)"/>
+      </div>
+      <div id="ov-resume-uploaded" style="display:none" class="resume-uploaded">
+        <span style="font-size:24px">&#128196;</span>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:#15803D" id="resume-filename">resume.pdf</div>
+          <div style="font-size:11px;color:#6B7280">Uploaded successfully</div>
+        </div>
+        <button onclick="document.getElementById('resume-file').click()" style="font-size:12px;color:#1447E6;border:none;background:none;cursor:pointer;font-family:inherit">Replace</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ── JOBS ── -->
     <div class="page-section" id="page-jobs">
       <div class="page-title">Jobs & Internships</div>
       <div class="page-subtitle">Real opportunities matched to your profile — updated live</div>
@@ -613,114 +836,64 @@
     </div>
 
     <div class="page-section" id="page-profile">
-<style>
-.pw{display:grid;grid-template-columns:280px 1fr;gap:16px;align-items:start}
-.pl{display:flex;flex-direction:column;gap:12px}
-.pcard{background:white;border:1px solid #E5E7EB;border-radius:14px;overflow:hidden}
-.pbanner{height:50px;background:linear-gradient(135deg,#EEF3FF,#C7D7FD)}
-.pident{padding:0 14px 14px;margin-top:-22px}
-.pavwrap{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px}
-.pav{width:50px;height:50px;border-radius:50%;background:#1447E6;color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #fff;cursor:pointer;flex-shrink:0;background-size:cover;background-position:center;background-repeat:no-repeat;position:relative}
-.pedit{font-size:11px;color:#6B7280;border:1px solid #E5E7EB;border-radius:7px;padding:3px 10px;background:#fff;cursor:pointer}
-.pname{font-size:14px;font-weight:700;color:#0A1628;margin-bottom:1px}
-.prole{font-size:12px;color:#6B7280}.pco{font-size:12px;color:#1447E6;font-weight:600}
-.pstats{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:10px;padding-top:10px;border-top:1px solid #F3F4F6;text-align:center}
-.pstat:not(:last-child){border-right:1px solid #F3F4F6}
-.psv{font-size:12px;font-weight:700;color:#0A1628}.psl{font-size:10px;color:#9CA3AF;margin-top:1px}
-.pcontact{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:12px}
-.pctitle{font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.pcrow{display:flex;align-items:center;gap:7px;font-size:12px;color:#374151;margin-bottom:6px}
-.pscore{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:12px}
-.pshead{display:flex;justify-content:space-between;margin-bottom:7px}
-.pstlt{font-size:12px;font-weight:700;color:#0A1628}.pspct{font-size:12px;font-weight:700;color:#1447E6}
-.psbar{height:5px;background:#F3F4F6;border-radius:5px;overflow:hidden}
-.psfill{height:100%;background:#1447E6;border-radius:5px;transition:width .4s}
-.pstip{font-size:11px;color:#9CA3AF;margin-top:5px}
-.pr{display:flex;flex-direction:column;gap:12px}
-.psec{background:#fff;border:1px solid #E5E7EB;border-radius:14px;padding:16px}
-.psect{font-size:13px;font-weight:700;color:#0A1628;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #F3F4F6}
-.pfg2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.pfl{display:flex;flex-direction:column}.pfl label{font-size:11px;font-weight:600;color:#374151;margin-bottom:4px}
-.pfin{width:100%;padding:8px 11px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:13px;font-family:inherit;outline:none;color:#0A1628;background:#fff;transition:.15s}
-.pfin:focus{border-color:#1447E6;box-shadow:0 0 0 3px rgba(20,71,230,.07)}
-textarea.pfin{resize:vertical;min-height:75px;line-height:1.6}
-.psave-row{display:flex;gap:10px}
-.psave-btn{flex:1;background:#1447E6;color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
-.psave-btn:disabled{opacity:.6;cursor:not-allowed}
-.pcancel-btn{background:#fff;color:#6B7280;border:1px solid #E5E7EB;border-radius:10px;padding:12px 16px;font-size:13px;cursor:pointer;font-family:inherit}
-@media(max-width:900px){.pw{grid-template-columns:1fr}.pfg2{grid-template-columns:1fr}}
-</style>
-<div class="pw">
-  <div class="pl">
-    <div class="pcard">
-      <div class="pbanner"></div>
-      <div class="pident">
-        <div class="pavwrap">
-          <div class="pav" id="pav-el" onclick="document.getElementById('pav-file').click()" title="Click to change photo">
-            <span id="pav-txt">?</span>
+      <div class="page-title">My Profile</div>
+      <div class="page-subtitle">Complete your profile to improve your career score</div>
+      <div class="card">
+        <div class="profile-pic-area">
+          <div class="profile-avatar" id="prof-avatar">?</div>
+          <div class="profile-avatar-info">
+            <h3 id="prof-name">Your Name</h3>
+            <p id="prof-email-display">Loading...</p>
           </div>
-          <input type="file" id="pav-file" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/>
-          <button class="pedit" onclick="document.getElementById('pf-name').focus()">Edit profile</button>
         </div>
-        <div class="pname" id="pcard-name"></div>
-        <div class="prole" id="pcard-role"></div>
-        <div class="pco" id="pcard-co"></div>
-        <div class="pstats">
-          <div class="pstat"><div class="psv" id="ps-exp">--</div><div class="psl">Experience</div></div>
-          <div class="pstat"><div class="psv" id="ps-city">--</div><div class="psl">City</div></div>
-          <div class="pstat"><div class="psv" id="ps-score" style="color:#1447E6">30</div><div class="psl">Score</div></div>
+        <div class="form-row">
+          <div class="form-group"><label>Full Name</label><input type="text" id="pf-name" placeholder="Enter your full name"></div>
+          <div class="form-group"><label>User Type</label>
+            <select id="pf-usertype">
+              <option value="">Select type</option>
+              <option value="Student">Student</option>
+              <option value="Fresher">Fresher (0–1 yr)</option>
+              <option value="Professional">Working Professional</option>
+              <option value="Career Changer">Career Changer</option>
+            </select>
+          </div>
         </div>
+        <div class="form-row">
+          <div class="form-group"><label>Current Role / Field</label><input type="text" id="pf-role" placeholder="e.g. Software Engineer, Data Analyst"></div>
+          <div class="form-group"><label>Experience Level</label>
+            <select id="pf-exp">
+              <option value="">Select experience</option>
+              <option value="0-1 years">0–1 years</option>
+              <option value="1-3 years">1–3 years</option>
+              <option value="3-5 years">3–5 years</option>
+              <option value="5-10 years">5–10 years</option>
+              <option value="10+ years">10+ years</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>City</label>
+            <select id="pf-city">
+              <option value="">Select city</option>
+              <option value="Bangalore">Bangalore</option>
+              <option value="Hyderabad">Hyderabad</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Pune">Pune</option>
+              <option value="Chennai">Chennai</option>
+              <option value="Delhi NCR">Delhi NCR</option>
+              <option value="Kolkata">Kolkata</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group"><label>Skills (comma separated)</label><input type="text" id="pf-skills" placeholder="e.g. Python, React, AWS, SQL"></div>
+        </div>
+        <div class="form-group"><label>About You</label><textarea id="pf-about" placeholder="Brief intro about your career goals..."></textarea></div>
+        <button class="btn-save" onclick="saveProfile()">Save Profile</button>
+        <div class="save-msg" id="save-msg">✓ Profile saved! Career score updated.</div>
       </div>
     </div>
-    <div class="pcontact">
-      <div class="pctitle">Contact</div>
-      <div class="pcrow"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg><span id="pc-email" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:200px"></span></div>
-      <div class="pcrow"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg><span id="pc-city">--</span></div>
-      <div class="pcrow"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg><span id="pc-type">--</span></div>
-    </div>
-    <div class="pscore">
-      <div class="pshead"><div class="pstlt">Profile Completeness</div><div class="pspct" id="ppct-val">0%</div></div>
-      <div class="psbar"><div class="psfill" id="ppct-fill" style="width:0%"></div></div>
-      <div class="pstip" id="ppct-tip">Fill your profile to boost Career Score</div>
-    </div>
-  </div>
-  <div class="pr">
-    <div class="psec"><div class="psect">Profile Summary</div>
-      <div class="pfl"><label>About You</label><textarea class="pfin" id="pf-about" placeholder="Describe your experience, skills and career goals..."></textarea></div>
-    </div>
-    <div class="psec"><div class="psect">Personal Details</div>
-      <div class="pfg2">
-        <div class="pfl"><label>Full Name *</label><input class="pfin" type="text" id="pf-name" placeholder="Your full name"/></div>
-        <div class="pfl"><label>City</label><select class="pfin" id="pf-city"><option value="">Select</option><option>Bangalore</option><option>Hyderabad</option><option>Chennai</option><option>Mumbai</option><option>Pune</option><option>Delhi NCR</option><option>Kolkata</option><option>Remote</option><option>Other</option></select></div>
-        <div class="pfl"><label>Profile Type</label><select class="pfin" id="pf-usertype"><option value="">Select</option><option value="college_student">College Student</option><option value="fresher">Fresh Graduate</option><option value="junior_prof">Junior Professional (1-3 yrs)</option><option value="mid_prof">Mid-level Professional (3-7 yrs)</option><option value="senior_prof">Senior Professional (7+ yrs)</option><option value="career_changer">Career Changer</option></select></div>
-        <div class="pfl"><label>Field</label><select class="pfin" id="pf-field"><option value="">Select</option><option>Technology / Software</option><option>Data &amp; Analytics</option><option>Design / UX</option><option>Marketing</option><option>Finance</option><option>Product Management</option><option>HR</option><option>Other</option></select></div>
-      </div>
-    </div>
-    <div class="psec"><div class="psect">Work Experience</div>
-      <div class="pfg2">
-        <div class="pfl"><label>Current Role</label><input class="pfin" type="text" id="pf-role" placeholder="e.g. Software Engineer"/></div>
-        <div class="pfl"><label>Company</label><input class="pfin" type="text" id="pf-company" placeholder="e.g. Google, TCS"/></div>
-        <div class="pfl"><label>Experience</label><select class="pfin" id="pf-exp"><option value="">Select</option><option value="Fresher">Fresher (0-1 yr)</option><option value="1-3 yrs">1-3 years</option><option value="3-5 yrs">3-5 years</option><option value="5-10 yrs">5-10 years</option><option value="10+ yrs">10+ years</option></select></div>
-        <div class="pfl"><label>Notice Period</label><select class="pfin" id="pf-notice"><option value="">Select</option><option>Immediate</option><option>15 days</option><option>30 days</option><option>60 days</option><option>90 days</option></select></div>
-      </div>
-    </div>
-    <div class="psec"><div class="psect">Skills</div>
-      <div class="pfl"><label>Key Skills (comma separated)</label><input class="pfin" type="text" id="pf-skills" placeholder="e.g. Python, React, SQL, AWS..."/></div>
-    </div>
-    <div class="psave-row">
-      <button class="psave-btn" id="prof-save-btn" onclick="saveProfile()">Save Profile</button>
-      <button class="pcancel-btn" onclick="showPage('overview',document.querySelector('[onclick*=overview]'))">Cancel</button>
-    </div>
-    <div id="paySuccess" style="display:none;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:14px;padding:20px;text-align:center;margin-top:8px">
-      <div style="font-size:32px;margin-bottom:6px">&#127881;</div>
-      <div style="font-size:16px;font-weight:700;color:#15803D;margin-bottom:4px">Welcome to Belongix Pro!</div>
-      <button onclick="showPage('overview',document.querySelector('[onclick*=overview]'))" style="background:#15803D;color:#fff;border:none;border-radius:8px;padding:8px 20px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px">Go to Dashboard</button>
-    </div>
-  </div>
-</div>
-</div>
 
-<!-- ── SETTINGS ── -->
+    <!-- ── SETTINGS ── -->
     <div class="page-section" id="page-settings">
       <div class="page-title">Settings</div>
       <div class="page-subtitle">Manage your Belongix preferences</div>
@@ -820,31 +993,29 @@ async function init() {
 }
 
 async function loadUserData() {
-  var r = await supaClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
-  var p = r.data || {};
-  var name = p.full_name || currentUser.email.split("@")[0];
-  var initials = name.split(" ").map(function(w){return w[0]||"";}).join("").toUpperCase().slice(0,2)||"U";
-  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"";}
-  function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||"";}
-  st("sb-name",name);st("sb-role",p.role||p.experience||"Member");st("sb-avatar",initials);
-  st("overview-sub","Welcome back, "+name+"! Here's your career progress.");
-  st("prof-name",name);st("prof-email-display",currentUser.email);
-  st("prof-avatar",initials);st("settings-email",currentUser.email);
-  sv("pf-name",p.full_name);sv("pf-role",p.role);sv("pf-exp",p.experience);
-  sv("pf-city",p.city);sv("pf-skills",p.skills);sv("pf-about",p.bio||p.about);
-  sv("pf-usertype",p.user_type);sv("pf-field",p.field);
-  sv("pf-company",p.company);sv("pf-notice",p.notice_period);
-  calcScore(p);
-  populateProfileCard(p);
-  // Load avatar: Supabase first, then localStorage fallback
-  var avatarKey = "bx_avatar_" + currentUser.id;
-  if (p.avatar_url) {
-    setAvatar(p.avatar_url);
-    localStorage.setItem(avatarKey, p.avatar_url);
-  } else {
-    var local = localStorage.getItem(avatarKey);
-    if (local) setAvatar(local);
-  }
+  var r = await supaClient.from("profiles").select("*").eq("id", currentUser.id).single();
+  var d = r.data || {};
+  var name = d.full_name || currentUser.email.split("@")[0];
+  var initials = name.split(" ").map(function(w){ return w[0]; }).join("").toUpperCase().slice(0,2) || "U";
+
+  document.getElementById("sb-name").textContent = name;
+  document.getElementById("sb-role").textContent = d.role || (d.experience || "Member");
+  document.getElementById("sb-avatar").textContent = initials;
+  document.getElementById("overview-sub").textContent = "Welcome back, " + name + "! Here's your career progress.";
+  document.getElementById("prof-name").textContent = name;
+  document.getElementById("prof-email-display").textContent = currentUser.email;
+  document.getElementById("prof-avatar").textContent = initials;
+  document.getElementById("settings-email").textContent = currentUser.email;
+
+  document.getElementById("pf-name").value = d.full_name || "";
+  document.getElementById("pf-role").value = d.role || "";
+  document.getElementById("pf-exp").value = d.experience || "";
+  document.getElementById("pf-city").value = d.city || "";
+  document.getElementById("pf-skills").value = d.skills || "";
+  document.getElementById("pf-about").value = d.about || "";
+  document.getElementById("pf-usertype").value = d.user_type || "";
+
+  calcScore(d);
 }
 
 function calcScore(d) {
@@ -872,97 +1043,22 @@ function calcScore(d) {
 }
 
 async function saveProfile() {
-  if(!currentUser){showToast("Please sign in");return;}
-  function gv(id){var el=document.getElementById(id);return el?(el.value||"").trim():"";}
-  var base={id:currentUser.id,email:currentUser.email,
-    full_name:gv("pf-name")||null,city:gv("pf-city")||null,user_type:gv("pf-usertype")||null,
-    role:gv("pf-role")||null,experience:gv("pf-exp")||null,skills:gv("pf-skills")||null,
-    bio:gv("pf-about")||null};
-  var extra={field:gv("pf-field")||null,company:gv("pf-company")||null,notice_period:gv("pf-notice")||null};
-  var scoreF=["full_name","city","user_type","role","experience","skills","bio"];
-  var filled=scoreF.filter(function(k){return base[k]&&base[k].trim();}).length;
-  base.career_score=Math.min(30+filled*10,95);
-  var btn=document.getElementById("prof-save-btn");
-  if(btn){btn.disabled=true;btn.textContent="Saving...";}
-  try{
-    var payload=Object.assign({},base,extra);
-    var res=await supaClient.from("profiles").upsert([payload],{onConflict:"id"});
-    if(res.error){var res2=await supaClient.from("profiles").upsert([base],{onConflict:"id"});if(res2.error)throw res2.error;}
-    showToast("Profile saved! Score: "+base.career_score);
-    populateProfileCard(Object.assign({},payload,{career_score:base.career_score}));
-    var sbN=document.getElementById("sb-name");if(sbN&&base.full_name)sbN.textContent=base.full_name.split(" ")[0];
-    var sbR=document.getElementById("sb-role");if(sbR)sbR.textContent=base.role||base.experience||"Member";
-    var sbAv=document.getElementById("sb-avatar");if(sbAv)sbAv.textContent=(base.full_name||"U").substring(0,2).toUpperCase();
-    calcScore(base);
-  }catch(e){console.error("saveProfile:",e);showToast("Save failed: "+e.message);}
-  finally{if(btn){btn.disabled=false;btn.textContent="Save Profile";}}
-}
-
-function populateProfileCard(p) {
-  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"";}
-  function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||"";}
-  var name=p.full_name||(currentUser&&currentUser.email?currentUser.email.split("@")[0]:"User");
-  var init=name.substring(0,2).toUpperCase();
-  st("pav-txt",init);st("pcard-name",name);st("pcard-role",p.role||"Add your role");st("pcard-co",p.company||"");
-  st("ps-exp",p.experience||"--");st("ps-city",(p.city||"--").substring(0,9));st("ps-score",p.career_score||30);
-  st("pc-email",currentUser?currentUser.email:"");st("pc-city",p.city||"--");
-  var tm={college_student:"College Student",fresher:"Fresh Graduate",junior_prof:"Junior Pro",mid_prof:"Mid-level",senior_prof:"Senior Pro",career_changer:"Career Changer"};
-  st("pc-type",tm[p.user_type]||p.user_type||"--");
-  sv("pf-name",p.full_name);sv("pf-city",p.city);sv("pf-usertype",p.user_type);
-  sv("pf-field",p.field);sv("pf-role",p.role);sv("pf-company",p.company);
-  sv("pf-exp",p.experience);sv("pf-notice",p.notice_period);
-  sv("pf-skills",p.skills);sv("pf-about",p.bio||p.about);
-  var flds=["full_name","city","user_type","role","experience","skills","bio"];
-  var pct=Math.round(flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length/7*100);
-  st("ppct-val",pct+"%");var bar=document.getElementById("ppct-fill");if(bar)bar.style.width=pct+"%";
-  var tip=document.getElementById("ppct-tip");if(tip)tip.textContent=pct>=100?"Profile complete!":(7-Math.round(pct*7/100))+" fields left";
-  var sbAv=document.getElementById("sb-avatar");if(sbAv)sbAv.textContent=init;
-}
-
-function setAvatar(url) {
-  if(!url)return;
-  var av=document.getElementById("pav-el");
-  var txt=document.getElementById("pav-txt");
-  if(!av)return;
-  av.style.backgroundImage="url("+url+")";
-  av.style.backgroundSize="cover";
-  av.style.backgroundPosition="center";
-  av.style.backgroundRepeat="no-repeat";
-  av.style.backgroundColor="transparent";
-  if(txt)txt.style.visibility="hidden";
-}
-
-function uploadAvatar(input) {
-  var file=input.files[0];
-  if(!file)return;
-  var img=new Image();
-  var objUrl=URL.createObjectURL(file);
-  img.onload=async function(){
-    URL.revokeObjectURL(objUrl);
-    // Compress to 150x150 JPEG
-    var MAX=150;
-    var canvas=document.createElement("canvas");
-    var ratio=Math.min(MAX/img.width,MAX/img.height,1);
-    canvas.width=Math.round(img.width*ratio);
-    canvas.height=Math.round(img.height*ratio);
-    canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
-    var b64=canvas.toDataURL("image/jpeg",0.6);
-    // Show preview immediately
-    setAvatar(b64);
-    // Save to localStorage FIRST - works 100% reliably
-    var avatarKey="bx_avatar_"+(currentUser?currentUser.id:"local");
-    try{ localStorage.setItem(avatarKey,b64); }catch(e){}
-    showToast("Photo saved locally!");
-    // Also try Supabase
-    if(!currentUser)return;
-    try{
-      var res=await supaClient.from("profiles").update({avatar_url:b64}).eq("id",currentUser.id);
-      if(res.error){console.warn("Supabase avatar warn:",res.error.message);}
-      else{showToast("Photo saved to your account!");}
-    }catch(e){console.warn("Supabase avatar exception:",e.message);}
+  var updates = {
+    id: currentUser.id,
+    full_name: document.getElementById("pf-name").value,
+    role: document.getElementById("pf-role").value,
+    experience: document.getElementById("pf-exp").value,
+    city: document.getElementById("pf-city").value,
+    skills: document.getElementById("pf-skills").value,
+    about: document.getElementById("pf-about").value,
+    user_type: document.getElementById("pf-usertype").value,
+    email: currentUser.email
   };
-  img.onerror=function(){showToast("Cannot read image file");};
-  img.src=objUrl;
+  await supaClient.from("profiles").upsert(updates);
+  document.getElementById("save-msg").style.display = "block";
+  setTimeout(function(){ document.getElementById("save-msg").style.display = "none"; }, 3000);
+  loadUserData();
+  showToast("Profile saved!");
 }
 
 async function signOut() {
@@ -1104,25 +1200,145 @@ function showToast(msg) {
 // -- ENTER KEY --
 document.getElementById("job-search").addEventListener("keypress", function(e){ if (e.key === "Enter") { jobsLoaded = false; searchJobs(); } });
 
-var RZP_KEY="rzp_live_SiouVVDYQu9HTt";
-function startPayment(plan){
-  if(!currentUser){showToast("Please sign in");return;}
-  var am={monthly:49900,yearly:499900,premium:99900};
-  var ds={monthly:"Belongix Pro - Rs.499/mo",yearly:"Belongix Pro Annual",premium:"Belongix Premium - Rs.999/mo"};
-  try{var nm=document.getElementById("sb-name");
-    var rzp=new Razorpay({key:RZP_KEY,amount:am[plan]||49900,currency:"INR",name:"Belongix",description:ds[plan]||"Belongix Pro",prefill:{name:nm?nm.textContent:"",email:currentUser.email||""},theme:{color:"#1447E6"},handler:function(r){onPaySuccess(r,plan);}});
-    rzp.on("payment.failed",function(){showToast("Payment failed.");});rzp.open();
-  }catch(e){showToast("Razorpay: "+e.message);}
+
+// -- PORTFOLIO --
+function loadPortfolioData(p) {
+  if (!p) return;
+  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||'';}
+  function sh(id,v){var el=document.getElementById(id);if(el)el.style.display=v?'block':'none';}
+
+  var name = p.full_name || (currentUser&&currentUser.email?currentUser.email.split('@')[0]:'User');
+  // Left card
+  st('ov-name', name);
+  st('ov-title', (p.role?p.role+(p.company?' at '+p.company:''):'Add your role'));
+  st('ov-loc', p.city||'India');
+  st('ov-score-badge', p.career_score||30);
+  st('ov-score-center', p.career_score||30);
+
+  // Avatar
+  var av = document.getElementById('ov-avatar');
+  if (av) {
+    av.textContent = name.substring(0,2).toUpperCase();
+    var avatarKey = 'bx_avatar_' + (currentUser?currentUser.id:'local');
+    var saved = p.avatar_url || localStorage.getItem(avatarKey);
+    if (saved) {
+      av.style.backgroundImage = 'url('+saved+')';
+      av.style.backgroundSize = 'cover';
+      av.style.backgroundPosition = 'center';
+      av.style.backgroundColor = 'transparent';
+      av.textContent = '';
+    }
+  }
+
+  // Score ring
+  var score = p.career_score || 30;
+  var ring = document.getElementById('ov-ring');
+  if (ring) { var c=131.95; ring.style.strokeDashoffset=c-(c*score/100); }
+  var lvl = score<40?'Getting Started':score<70?'Building Momentum':score<90?'Career Ready':'Top Performer';
+  st('ov-score-level', lvl);
+
+  // Stats
+  var flds=['full_name','city','user_type','role','experience','skills','bio'];
+  var filled=flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length;
+  st('ov-pct', Math.round((filled/7)*100)+'%');
+
+  // Profile Summary
+  var bioEl = document.getElementById('ov-bio');
+  if (bioEl) {
+    if (p.bio||p.about) {
+      bioEl.textContent = p.bio||p.about;
+      bioEl.classList.remove('port-empty');
+    } else {
+      bioEl.textContent = 'No summary added yet. Click Edit to add your professional summary.';
+      bioEl.classList.add('port-empty');
+    }
+  }
+
+  // Work Experience
+  var workEl = document.getElementById('ov-work-section');
+  if (workEl && p.role) {
+    workEl.innerHTML = '<div class="work-item">' +
+      '<div class="work-logo">&#127970;</div>' +
+      '<div>' +
+        '<div class="work-title">'+(p.role||'')+'</div>' +
+        '<div class="work-company">'+(p.company||'Company not added')+'</div>' +
+        '<div class="work-period">'+(p.experience||'')+(p.notice_period?' &bull; Notice: '+p.notice_period:'')+'</div>' +
+      '</div></div>';
+  } else if (workEl) {
+    workEl.innerHTML = '<div class="port-empty">No experience added yet.</div>';
+  }
+
+  // Skills
+  var skillsEl = document.getElementById('ov-skills-section');
+  if (skillsEl) {
+    if (p.skills) {
+      var chips = p.skills.split(',').filter(function(s){return s.trim();}).map(function(s){
+        return '<span class="skill-chip">'+s.trim()+'</span>';
+      }).join('');
+      skillsEl.innerHTML = chips || '<div class="port-empty">No skills added yet.</div>';
+    } else {
+      skillsEl.innerHTML = '<div class="port-empty">No skills added yet.</div>';
+    }
+  }
+
+  // Job Preferences
+  var tm={college_student:'College Student',fresher:'Fresh Graduate',junior_prof:'Junior Professional',mid_prof:'Mid-level Professional',senior_prof:'Senior Professional',career_changer:'Career Changer'};
+  st('pref-role', p.role||'--');
+  st('pref-exp', p.experience||'--');
+  st('pref-loc', p.city||'--');
+  st('pref-notice', p.notice_period||'--');
+  st('pref-field', p.field||'--');
+  st('pref-type', tm[p.user_type]||p.user_type||'--');
+
+  // Personal Details
+  st('pd-name', p.full_name||'--');
+  st('pd-email', currentUser?currentUser.email:'--');
+  st('pd-city', p.city||'--');
+  st('pd-company', p.company||'--');
+
+  // LinkedIn
+  if (p.linkedin) {
+    var liInp = document.getElementById('ov-linkedin');
+    var liLink = document.getElementById('ov-linkedin-link');
+    if (liInp) liInp.value = p.linkedin;
+    if (liLink) { liLink.href = p.linkedin; liLink.style.display = 'inline'; }
+  }
 }
-async function onPaySuccess(r,plan){
-  try{await supaClient.from("profiles").update({plan:plan==="premium"?"premium":"pro",payment_id:r.razorpay_payment_id}).eq("id",currentUser.id);}catch(e){}
-  var el=document.getElementById("paySuccess");if(el)el.style.display="block";
-  showToast("Welcome to Belongix "+(plan==="premium"?"Premium":"Pro")+"!");
+
+async function saveLinkedIn() {
+  var val = (document.getElementById('ov-linkedin')||{}).value||'';
+  if (!val||!currentUser) return;
+  try {
+    await supaClient.from('profiles').update({linkedin:val}).eq('id',currentUser.id);
+    var liLink = document.getElementById('ov-linkedin-link');
+    if (liLink) { liLink.href=val; liLink.style.display='inline'; }
+    showToast('LinkedIn saved!');
+  } catch(e) { showToast('Save failed: '+e.message); }
 }
+
+function uploadResume(input) {
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 5*1024*1024) { showToast('Max 5MB for resume'); return; }
+  document.getElementById('ov-resume-box').style.display = 'none';
+  document.getElementById('ov-resume-uploaded').style.display = 'flex';
+  document.getElementById('resume-filename').textContent = file.name;
+  showToast('Resume uploaded locally! Cloud storage coming soon.');
+}
+
+function shareProfile() {
+  var name = (document.getElementById('ov-name')||{}).textContent||'User';
+  var url = 'https://belongix.in/dashboard.html';
+  if (navigator.share) {
+    navigator.share({title:name+' on Belongix',text:'Check out my professional profile on Belongix',url:url});
+  } else {
+    navigator.clipboard.writeText(url).then(function(){ showToast('Profile link copied!'); });
+  }
+}
+
 // -- INIT --
 init();
 </script>
-  
-<script src="bexi.js"></script>
+  <script src="belongix-ai.js"></script>
 </body>
 </html>
