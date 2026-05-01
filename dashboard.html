@@ -613,64 +613,212 @@
     </div>
 
     <div class="page-section" id="page-profile">
-      <div class="page-title">My Profile</div>
-      <div class="page-subtitle">Complete your profile to improve your career score</div>
-      <div class="card">
-        <div class="profile-pic-area">
-          <div class="profile-avatar" id="prof-avatar">?</div>
-          <div class="profile-avatar-info">
-            <h3 id="prof-name">Your Name</h3>
-            <p id="prof-email-display">Loading...</p>
+      <style>
+        .prof-wrap{display:grid;grid-template-columns:320px 1fr;gap:20px;align-items:start}
+        .prof-left{display:flex;flex-direction:column;gap:14px}
+        .prof-card{background:white;border:1px solid #E5E7EB;border-radius:14px;overflow:hidden}
+        .prof-banner{height:56px;background:linear-gradient(135deg,#EEF3FF,#C7D7FD)}
+        .prof-identity{padding:0 18px 18px;margin-top:-26px}
+        .prof-av-wrap{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:10px}
+        .prof-big-av{width:52px;height:52px;border-radius:50%;background:#1447E6;color:white;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid white;font-family:inherit}
+        .prof-edit-btn{font-size:12px;color:#6B7280;border:1px solid #E5E7EB;border-radius:8px;padding:4px 12px;background:white;cursor:pointer}
+        .prof-name{font-size:16px;font-weight:700;color:#0A1628}
+        .prof-role-line{font-size:13px;color:#6B7280;margin-top:2px}
+        .prof-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;margin-top:14px;padding-top:14px;border-top:1px solid #F3F4F6;text-align:center}
+        .prof-stat{padding:4px}
+        .prof-stat-val{font-size:13px;font-weight:700;color:#0A1628}
+        .prof-stat-lbl{font-size:10px;color:#9CA3AF;margin-top:1px}
+        .prof-stat:not(:last-child){border-right:1px solid #F3F4F6}
+        .prof-contact-card{background:white;border:1px solid #E5E7EB;border-radius:14px;padding:16px}
+        .prof-contact-title{font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+        .prof-contact-row{display:flex;align-items:center;gap:9px;font-size:13px;color:#374151;margin-bottom:10px}
+        .prof-contact-row:last-child{margin-bottom:0}
+        .prof-score-card{background:white;border:1px solid #E5E7EB;border-radius:14px;padding:16px}
+        .prof-score-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+        .prof-score-title{font-size:13px;font-weight:700;color:#0A1628}
+        .prof-score-pct{font-size:13px;font-weight:700;color:#1447E6}
+        .prof-score-bar-bg{height:6px;background:#F3F4F6;border-radius:6px;overflow:hidden}
+        .prof-score-bar-fill{height:100%;background:#1447E6;border-radius:6px;transition:width .4s}
+        .prof-score-tip{font-size:11px;color:#9CA3AF;margin-top:7px}
+        /* Right panel */
+        .prof-right{display:flex;flex-direction:column;gap:14px}
+        .prof-section{background:white;border:1px solid #E5E7EB;border-radius:14px;padding:20px}
+        .prof-section-title{font-size:15px;font-weight:700;color:#0A1628;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid #F3F4F6}
+        .prof-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .prof-form-group label{display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:5px}
+        .prof-inp{width:100%;padding:9px 12px;border:1.5px solid #E5E7EB;border-radius:9px;font-size:13.5px;font-family:inherit;outline:none;color:#0A1628;transition:.15s;background:white}
+        .prof-inp:focus{border-color:#1447E6;box-shadow:0 0 0 3px rgba(20,71,230,.08)}
+        textarea.prof-inp{resize:vertical;min-height:90px;line-height:1.6}
+        .prof-save-row{display:flex;gap:10px;padding-top:4px}
+        .prof-save-btn{flex:1;background:#1447E6;color:white;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s}
+        .prof-save-btn:hover{background:#0f3bc4}
+        .prof-save-btn:disabled{opacity:.6;cursor:not-allowed}
+        .prof-cancel-btn{background:white;color:#6B7280;border:1px solid #E5E7EB;border-radius:10px;padding:12px 20px;font-size:14px;cursor:pointer;font-family:inherit}
+        @media(max-width:900px){.prof-wrap{grid-template-columns:1fr}.prof-form-grid{grid-template-columns:1fr}}
+      </style>
+
+      <div class="prof-wrap">
+        <!-- LEFT -->
+        <div class="prof-left">
+          <div class="prof-card">
+            <div class="prof-banner"></div>
+            <div class="prof-identity">
+              <div class="prof-av-wrap">
+                <div class="prof-big-av" id="prof-big-av">?</div>
+                <button class="prof-edit-btn" onclick="document.getElementById('pf-name').focus()">Edit</button>
+              </div>
+              <div class="prof-name" id="prof-big-name"></div>
+              <div class="prof-role-line" id="prof-big-role">Add your role</div>
+              <div class="prof-role-line" id="prof-big-company" style="color:#1447E6;font-weight:500"></div>
+              <div class="prof-stats-row">
+                <div class="prof-stat">
+                  <div class="prof-stat-val" id="prof-stat-exp">--</div>
+                  <div class="prof-stat-lbl">Experience</div>
+                </div>
+                <div class="prof-stat">
+                  <div class="prof-stat-val" id="prof-stat-city">--</div>
+                  <div class="prof-stat-lbl">City</div>
+                </div>
+                <div class="prof-stat">
+                  <div class="prof-stat-val" id="prof-stat-score" style="color:#1447E6">30</div>
+                  <div class="prof-stat-lbl">Score</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="prof-contact-card">
+            <div class="prof-contact-title">Contact</div>
+            <div class="prof-contact-row">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              <span id="prof-email-show" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:230px"></span>
+            </div>
+            <div class="prof-contact-row">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
+              <span id="prof-city-show">--</span>
+            </div>
+            <div class="prof-contact-row">
+              <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="#9CA3AF" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
+              <span id="prof-type-show">--</span>
+            </div>
+          </div>
+
+          <div class="prof-score-card">
+            <div class="prof-score-head">
+              <div class="prof-score-title">Profile Completeness</div>
+              <div class="prof-score-pct" id="prof-pct">0%</div>
+            </div>
+            <div class="prof-score-bar-bg">
+              <div class="prof-score-bar-fill" id="prof-pct-bar" style="width:0%"></div>
+            </div>
+            <div class="prof-score-tip" id="prof-pct-tip">Complete your profile to boost your Career Score</div>
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Full Name</label><input type="text" id="pf-name" placeholder="Enter your full name"></div>
-          <div class="form-group"><label>User Type</label>
-            <select id="pf-usertype">
-              <option value="">Select type</option>
-              <option value="Student">Student</option>
-              <option value="Fresher">Fresher (0–1 yr)</option>
-              <option value="Professional">Working Professional</option>
-              <option value="Career Changer">Career Changer</option>
-            </select>
+
+        <!-- RIGHT -->
+        <div class="prof-right">
+          <div class="prof-section">
+            <div class="prof-section-title">Profile Summary</div>
+            <textarea class="prof-inp" id="pf-about" placeholder="Write a short summary about your experience, skills and career goals..." rows="4"></textarea>
+          </div>
+
+          <div class="prof-section">
+            <div class="prof-section-title">Personal Details</div>
+            <div class="prof-form-grid">
+              <div class="prof-form-group">
+                <label>Full Name *</label>
+                <input class="prof-inp" type="text" id="pf-name" placeholder="Keerthi Reddy"/>
+              </div>
+              <div class="prof-form-group">
+                <label>City</label>
+                <select class="prof-inp" id="pf-city">
+                  <option value="">Select city</option>
+                  <option>Bangalore</option><option>Hyderabad</option><option>Chennai</option>
+                  <option>Mumbai</option><option>Pune</option><option>Delhi / NCR</option>
+                  <option>Kolkata</option><option>Remote</option><option>Other</option>
+                </select>
+              </div>
+              <div class="prof-form-group">
+                <label>Profile Type</label>
+                <select class="prof-inp" id="pf-usertype">
+                  <option value="">Select type</option>
+                  <option value="college_student">College Student</option>
+                  <option value="fresher">Fresh Graduate</option>
+                  <option value="junior_prof">Junior Professional (1-3 yrs)</option>
+                  <option value="mid_prof">Mid-level Professional (3-7 yrs)</option>
+                  <option value="senior_prof">Senior Professional (7+ yrs)</option>
+                  <option value="career_changer">Career Changer</option>
+                </select>
+              </div>
+              <div class="prof-form-group">
+                <label>Field / Domain</label>
+                <select class="prof-inp" id="pf-field">
+                  <option value="">Select field</option>
+                  <option>Technology / Software</option><option>Data &amp; Analytics</option>
+                  <option>Design / UX</option><option>Marketing / Growth</option>
+                  <option>Finance</option><option>Product Management</option>
+                  <option>HR</option><option>Operations</option><option>Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="prof-section">
+            <div class="prof-section-title">Work Experience</div>
+            <div class="prof-form-grid">
+              <div class="prof-form-group">
+                <label>Current Role</label>
+                <input class="prof-inp" type="text" id="pf-role" placeholder="Software Engineer"/>
+              </div>
+              <div class="prof-form-group">
+                <label>Company</label>
+                <input class="prof-inp" type="text" id="pf-company" placeholder="Google, Razorpay, TCS..."/>
+              </div>
+              <div class="prof-form-group">
+                <label>Total Experience</label>
+                <select class="prof-inp" id="pf-exp">
+                  <option value="">Select experience</option>
+                  <option value="Fresher">Fresher (0-1 yr)</option>
+                  <option value="1-3 yrs">1-3 years</option>
+                  <option value="3-5 yrs">3-5 years</option>
+                  <option value="5-10 yrs">5-10 years</option>
+                  <option value="10+ yrs">10+ years</option>
+                </select>
+              </div>
+              <div class="prof-form-group">
+                <label>Notice Period</label>
+                <select class="prof-inp" id="pf-notice">
+                  <option value="">Select</option>
+                  <option>Immediate</option><option>15 days</option><option>30 days</option>
+                  <option>60 days</option><option>90 days</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="prof-section">
+            <div class="prof-section-title">Skills</div>
+            <div class="prof-form-group">
+              <label>Key Skills (comma separated)</label>
+              <input class="prof-inp" type="text" id="pf-skills" placeholder="Python, React, SQL, AWS, Docker, Java..."/>
+            </div>
+          </div>
+
+          <div class="prof-save-row">
+            <button class="prof-save-btn" id="prof-save-btn" onclick="saveProfile()">Save Profile</button>
+            <button class="prof-cancel-btn" onclick="showPage('overview', document.querySelector('[onclick*=overview]'))">Cancel</button>
+          </div>
+
+          <div id="paySuccess" style="display:none;background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:14px;padding:24px;text-align:center">
+            <div style="font-size:36px;margin-bottom:8px">&#127881;</div>
+            <div style="font-size:18px;font-weight:700;color:#15803D;margin-bottom:6px">Welcome to Belongix Pro!</div>
+            <div style="font-size:13px;color:#166534;margin-bottom:16px">All Pro features are now unlocked.</div>
+            <button onclick="showPage('overview',document.querySelector('[onclick*=overview]'))" style="background:#15803D;color:white;border:none;border-radius:8px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer">Go to Dashboard</button>
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Current Role / Field</label><input type="text" id="pf-role" placeholder="e.g. Software Engineer, Data Analyst"></div>
-          <div class="form-group"><label>Experience Level</label>
-            <select id="pf-exp">
-              <option value="">Select experience</option>
-              <option value="0-1 years">0–1 years</option>
-              <option value="1-3 years">1–3 years</option>
-              <option value="3-5 years">3–5 years</option>
-              <option value="5-10 years">5–10 years</option>
-              <option value="10+ years">10+ years</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-row">
-          <div class="form-group"><label>City</label>
-            <select id="pf-city">
-              <option value="">Select city</option>
-              <option value="Bangalore">Bangalore</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Mumbai">Mumbai</option>
-              <option value="Pune">Pune</option>
-              <option value="Chennai">Chennai</option>
-              <option value="Delhi NCR">Delhi NCR</option>
-              <option value="Kolkata">Kolkata</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div class="form-group"><label>Skills (comma separated)</label><input type="text" id="pf-skills" placeholder="e.g. Python, React, AWS, SQL"></div>
-        </div>
-        <div class="form-group"><label>About You</label><textarea id="pf-about" placeholder="Brief intro about your career goals..."></textarea></div>
-        <button class="btn-save" onclick="saveProfile()">Save Profile</button>
-        <div class="save-msg" id="save-msg">✓ Profile saved! Career score updated.</div>
       </div>
     </div>
 
-    <!-- ── SETTINGS ── -->
     <div class="page-section" id="page-settings">
       <div class="page-title">Settings</div>
       <div class="page-subtitle">Manage your Belongix preferences</div>
@@ -793,6 +941,7 @@ async function loadUserData() {
   document.getElementById("pf-usertype").value = d.user_type || "";
 
   calcScore(d);
+  loadAndPopulateProfile();
 }
 
 function calcScore(d) {
@@ -820,22 +969,45 @@ function calcScore(d) {
 }
 
 async function saveProfile() {
+  if (!currentUser) { showToast('Please sign in first'); return; }
+  function gv(id){ var el=document.getElementById(id); return el?(el.value||'').trim():''; }
   var updates = {
     id: currentUser.id,
-    full_name: document.getElementById("pf-name").value,
-    role: document.getElementById("pf-role").value,
-    experience: document.getElementById("pf-exp").value,
-    city: document.getElementById("pf-city").value,
-    skills: document.getElementById("pf-skills").value,
-    about: document.getElementById("pf-about").value,
-    user_type: document.getElementById("pf-usertype").value,
-    email: currentUser.email
+    email: currentUser.email,
+    full_name: gv('pf-name') || null,
+    city: gv('pf-city') || null,
+    user_type: gv('pf-usertype') || null,
+    field: gv('pf-field') || null,
+    role: gv('pf-role') || null,
+    company: gv('pf-company') || null,
+    experience: gv('pf-exp') || null,
+    notice_period: gv('pf-notice') || null,
+    skills: gv('pf-skills') || null,
+    bio: gv('pf-about') || null,
+    updated_at: new Date().toISOString()
   };
-  await supaClient.from("profiles").upsert(updates);
-  document.getElementById("save-msg").style.display = "block";
-  setTimeout(function(){ document.getElementById("save-msg").style.display = "none"; }, 3000);
-  loadUserData();
-  showToast("Profile saved!");
+  var scoreFields = ['full_name','city','user_type','role','company','field','experience','skills','bio'];
+  var filled = scoreFields.filter(function(k){ return updates[k] && updates[k].trim(); }).length;
+  updates.career_score = Math.min(30 + filled * 8, 95);
+
+  var btn = document.getElementById('prof-save-btn');
+  if (btn) { btn.disabled=true; btn.textContent='Saving...'; }
+
+  try {
+    var res = await supaClient.from('profiles').upsert([updates], {onConflict:'id'});
+    if (res.error) throw res.error;
+    showToast('Profile saved! Score: ' + updates.career_score);
+    await loadAndPopulateProfile();
+    var sbName = document.getElementById('sb-name');
+    if (sbName && updates.full_name) sbName.textContent = updates.full_name.split(' ')[0];
+    var sbRole = document.getElementById('sb-role');
+    if (sbRole) sbRole.textContent = updates.role || updates.experience || 'Member';
+  } catch(e) {
+    console.error('saveProfile:', e);
+    showToast('Save failed: ' + (e.message||'Check Supabase columns'));
+  } finally {
+    if (btn) { btn.disabled=false; btn.textContent='Save Profile'; }
+  }
 }
 
 async function signOut() {
@@ -977,6 +1149,39 @@ function showToast(msg) {
 // -- ENTER KEY --
 document.getElementById("job-search").addEventListener("keypress", function(e){ if (e.key === "Enter") { jobsLoaded = false; searchJobs(); } });
 
+
+// -- RAZORPAY --
+var RZP_KEY = "rzp_live_SiouVVDYQu9HTt";
+function startPayment(plan){
+  if(!currentUser){showToast('Please sign in first');return;}
+  var amounts={monthly:49900,yearly:499900,premium:99900};
+  var descs={monthly:"Belongix Pro - Rs.499/month",yearly:"Belongix Pro Annual - Rs.4,999/year",premium:"Belongix Premium - Rs.999/month"};
+  var nm=document.getElementById('sb-name');
+  try{
+    var rzp=new Razorpay({
+      key:RZP_KEY,amount:amounts[plan]||49900,currency:"INR",
+      name:"Belongix",description:descs[plan]||"Belongix Pro",
+      prefill:{name:nm?nm.textContent:'',email:currentUser.email||''},
+      theme:{color:"#1447E6"},
+      handler:function(resp){onPaySuccess(resp,plan);}
+    });
+    rzp.on('payment.failed',function(r){showToast('Payment failed: '+((r.error&&r.error.description)||'Try again'));});
+    rzp.open();
+  }catch(e){showToast('Payment error: '+e.message);console.error(e);}
+}
+async function onPaySuccess(resp,plan){
+  try{
+    await supaClient.from('profiles').update({
+      plan:plan==='premium'?'premium':'pro',
+      plan_type:plan,
+      plan_activated:new Date().toISOString(),
+      payment_id:resp.razorpay_payment_id
+    }).eq('id',currentUser.id);
+  }catch(e){console.error(e);}
+  var el=document.getElementById('paySuccess');
+  if(el){el.style.display='block';el.scrollIntoView({behavior:'smooth'});}
+  showToast('Welcome to Belongix '+(plan==='premium'?'Premium':'Pro')+'!');
+}
 // -- INIT --
 init();
 </script>
