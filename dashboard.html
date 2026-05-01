@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -929,22 +929,31 @@ function setAvatar(url) {
 }
 
 function uploadAvatar(input) {
-  var file=input.files[0];
-  if(!file)return;
-  if(file.size>800*1024){showToast("Please use image under 800KB");return;}
-  var reader=new FileReader();
-  reader.onload=async function(e){
-    var b64=e.target.result;
+  var file = input.files[0];
+  if (!file) return;
+  if (file.size > 500 * 1024) { showToast("Use image under 500KB for best results"); return; }
+  var reader = new FileReader();
+  reader.onload = async function(e) {
+    var b64 = e.target.result;
     setAvatar(b64);
     showToast("Saving photo...");
-    if(!currentUser)return;
-    try{
-      var res=await supaClient.from("profiles").update({avatar_url:b64}).eq("id",currentUser.id);
-      if(res.error)throw res.error;
-      showToast("Photo saved successfully!");
-    }catch(err){
-      console.error("Avatar save:",err);
-      showToast("Photo error: "+err.message);
+    if (!currentUser) { showToast("Not signed in"); return; }
+    try {
+      // upsert works even if row doesn't exist yet
+      var res = await supaClient.from("profiles").upsert([{
+        id: currentUser.id,
+        email: currentUser.email,
+        avatar_url: b64
+      }], { onConflict: "id" });
+      if (res.error) {
+        console.error("Avatar upsert error:", res.error);
+        showToast("DB error: " + res.error.message);
+      } else {
+        showToast("Photo saved successfully!");
+      }
+    } catch(err) {
+      console.error("Avatar exception:", err);
+      showToast("Error: " + err.message);
     }
   };
   reader.readAsDataURL(file);
