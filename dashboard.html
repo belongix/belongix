@@ -879,7 +879,29 @@ async function init() {
   if (!res.data.session) { window.location.href = "index.html"; return; }
   currentUser = res.data.session.user;
   loadUserData();
-  setTimeout(function(){ document.getElementById("loading-screen").style.display = "none"; }, 800);
+  setTimeout(function(){
+    document.getElementById("loading-screen").style.display = "none";
+    // Handle ?page= URL param — navigate to correct section
+    var urlPage = new URLSearchParams(window.location.search).get('page');
+    if (urlPage) {
+      var pageMap = {
+        'jobs': 'jobs', 'salary': 'salary', 'upskill': 'upskill',
+        'network': 'network', 'profile': 'profile', 'settings': 'settings',
+        'upgrade': 'upgrade', 'overview': 'overview'
+      };
+      var target = pageMap[urlPage];
+      if (target) {
+        var btn = document.querySelector('[onclick*="showPage('' + target + ''"]');
+        if (btn) { showPage(target, btn); }
+        else {
+          // fallback: find sidebar link
+          document.querySelectorAll('.sb-link').forEach(function(b){
+            if(b.getAttribute('onclick') && b.getAttribute('onclick').includes(target)) showPage(target, b);
+          });
+        }
+      }
+    }
+  }, 900);
   loadJobs();
 }
 
@@ -898,13 +920,27 @@ async function loadUserData() {
   document.getElementById("prof-avatar").textContent = initials;
   document.getElementById("settings-email").textContent = currentUser.email;
 
-  document.getElementById("pf-name").value = d.full_name || "";
-  document.getElementById("pf-role").value = d.role || "";
-  document.getElementById("pf-exp").value = d.experience || "";
-  document.getElementById("pf-city").value = d.city || "";
-  document.getElementById("pf-skills").value = d.skills || "";
-  document.getElementById("pf-about").value = d.about || "";
-  document.getElementById("pf-usertype").value = d.user_type || "";
+  // Old profile fields (overview)
+  var safeSet = function(id, val) { var el = document.getElementById(id); if(el) el.value = val || ""; };
+  safeSet("pf-name", d.full_name);
+  safeSet("pf-role", d.role);
+  safeSet("pf-exp", d.experience);
+  safeSet("pf-city", d.city);
+  safeSet("pf-skills", d.skills);
+  safeSet("pf-about", d.about || d.bio);
+  safeSet("pf-usertype", d.user_type);
+  // New profile form fields
+  var parts = (d.full_name || "").split(" ");
+  safeSet("p-fn", parts[0] || "");
+  safeSet("p-ln", parts.slice(1).join(" ") || "");
+  safeSet("p-city", d.city);
+  safeSet("p-type", d.user_type);
+  safeSet("p-role", d.role);
+  safeSet("p-company", d.company);
+  safeSet("p-field", d.field);
+  safeSet("p-exp", d.experience);
+  safeSet("p-skills", d.skills);
+  safeSet("p-bio", d.bio || d.about);
 
   calcScore(d);
 }
@@ -947,8 +983,9 @@ function showPage(page, btn) {
   document.getElementById("page-" + page).classList.add("active");
   if (btn) btn.classList.add("active");
   var titles={overview:"Overview",jobs:"Jobs & Internships",upskill:"Upskilling",salary:"Salary Insights",network:"Find a Mentor",profile:"My Profile",settings:"Settings",upgrade:"Upgrade Plan"};
-  if(page==="network")setTimeout(loadDashMentors,100);
-  document.getElementById("topbar-title").textContent = titles[page] || "Dashboard";
+  if(page==="network") setTimeout(loadDashMentors,100);
+  if(page==="profile") setTimeout(loadProfile,200);
+    document.getElementById("topbar-title").textContent = titles[page] || "Dashboard";
   if (page === "jobs") loadJobs();
 }
 
@@ -1217,6 +1254,63 @@ async function saveProfile() {
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = 'Save Profile'; }
   }
+}
+
+
+// ── RAZORPAY PAYMENTS ──
+var RZP_KEY = "rzp_live_SiouVVDYQu9HTt";
+
+function startPayment(plan) {
+  if (!currentUser) { showToast("Please sign in first"); return; }
+  var amounts = { monthly: 49900, yearly: 499900, premium: 99900 };
+  var descs = {
+    monthly: "Belongix Pro - Rs.499/month",
+    yearly: "Belongix Pro Annual - Rs.4,999/year",
+    premium: "Belongix Premium - Rs.999/month"
+  };
+  var amount = amounts[plan] || 49900;
+  var desc = descs[plan] || "Belongix Pro";
+
+  var nameEl = document.getElementById("sb-name");
+  var userName = nameEl ? nameEl.textContent : "";
+  var userEmail = currentUser ? currentUser.email : "";
+
+  try {
+    var rzp = new Razorpay({
+      key: RZP_KEY,
+      amount: amount,
+      currency: "INR",
+      name: "Belongix",
+      description: desc,
+      prefill: { name: userName, email: userEmail },
+      theme: { color: "#1447E6" },
+      handler: function(response) {
+        onPaySuccess(response, plan);
+      }
+    });
+    rzp.on("payment.failed", function(r) {
+      showToast("Payment failed: " + ((r.error && r.error.description) || "Please try again"));
+    });
+    rzp.open();
+  } catch(e) {
+    showToast("Payment error: " + e.message);
+    console.error("Razorpay error:", e);
+  }
+}
+
+async function onPaySuccess(response, plan) {
+  try {
+    await supaClient.from("profiles").update({
+      plan: plan === "premium" ? "premium" : "pro",
+      plan_type: plan,
+      plan_activated: new Date().toISOString(),
+      payment_id: response.razorpay_payment_id
+    }).eq("id", currentUser.id);
+  } catch(e) { console.error("Plan update error:", e); }
+
+  var el = document.getElementById("paySuccess");
+  if (el) { el.style.display = "block"; el.scrollIntoView({ behavior: "smooth" }); }
+  showToast("Welcome to Belongix " + (plan === "premium" ? "Premium" : "Pro") + "! All features unlocked.");
 }
 
 // -- INIT --
