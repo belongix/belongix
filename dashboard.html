@@ -667,10 +667,10 @@ textarea.pfin{resize:vertical;min-height:80px;line-height:1.6}
       <div class="pbanner"></div>
       <div class="pident">
         <div class="pavwrap">
-          <div class="pav" id="pav-circle" title="Click to change photo">
-            <input type="file" accept="image/*" onchange="uploadAvatar(this)"/>
+          <div class="pav" id="pav-circle" title="Click to upload photo" onclick="document.getElementById('av-file-input').click()">
             <span id="pav-initials">?</span>
           </div>
+          <input type="file" id="av-file-input" accept="image/*" style="display:none" onchange="uploadAvatar(this)"/>
           <button class="pedit" onclick="document.getElementById('pf-name').focus()">Edit</button>
         </div>
         <div class="pname" id="pcard-name">Loading...</div>
@@ -1081,18 +1081,13 @@ function uploadAvatar(input) {
 function showAvatarImage(url) {
   var av = document.getElementById('pav-circle');
   var ini = document.getElementById('pav-initials');
-  if (!av) return;
-  // Remove old background
-  av.style.backgroundImage = 'none';
-  // Add image inside
-  var existing = av.querySelector('img.av-photo');
-  if (existing) existing.remove();
-  var img = document.createElement('img');
-  img.className = 'av-photo';
-  img.src = url;
-  img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%;z-index:1';
-  av.appendChild(img);
-  if (ini) ini.style.display = 'none';
+  if (!av || !url) return;
+  av.style.backgroundImage = 'url(' + url + ')';
+  av.style.backgroundSize = 'cover';
+  av.style.backgroundPosition = 'center';
+  av.style.backgroundRepeat = 'no-repeat';
+  av.style.backgroundColor = 'transparent';
+  if (ini) ini.style.opacity = '0';
 }
 
 async function signOut() {
