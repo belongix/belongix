@@ -893,43 +893,53 @@ async function init() {
 }
 
 async function loadUserData() {
-  var r = await supaClient.from("profiles").select("*").eq("id", currentUser.id).single();
-  var d = r.data || {};
-  var name = d.full_name || currentUser.email.split("@")[0];
-  var initials = name.split(" ").map(function(w){ return w[0]; }).join("").toUpperCase().slice(0,2) || "U";
+  // Use maybeSingle to avoid error if no row yet
+  var r = await supaClient.from("profiles").select("*").eq("id", currentUser.id).maybeSingle();
+  var p = r.data || {};
+  var name = p.full_name || currentUser.email.split("@")[0];
+  var initials = name.split(" ").map(function(w){ return w[0]||""; }).join("").toUpperCase().slice(0,2) || "U";
 
-  document.getElementById("sb-name").textContent = name;
-  document.getElementById("sb-role").textContent = d.role || (d.experience || "Member");
-  document.getElementById("sb-avatar").textContent = initials;
-  document.getElementById("overview-sub").textContent = "Welcome back, " + name + "! Here's your career progress.";
-  document.getElementById("prof-name").textContent = name;
-  document.getElementById("prof-email-display").textContent = currentUser.email;
-  document.getElementById("prof-avatar").textContent = initials;
-  document.getElementById("settings-email").textContent = currentUser.email;
+  // Safe setter — never crashes on missing element
+  function st(id,v){ var el=document.getElementById(id); if(el) el.textContent=v||""; }
+  function sv(id,v){ var el=document.getElementById(id); if(el&&el.value!==undefined) el.value=v||""; }
 
-  document.getElementById("pf-name").value = d.full_name || "";
-  document.getElementById("pf-role").value = d.role || "";
-  document.getElementById("pf-exp").value = d.experience || "";
-  document.getElementById("pf-city").value = d.city || "";
-  document.getElementById("pf-skills").value = d.skills || "";
-  document.getElementById("pf-about").value = d.bio || d.about || "";
-  document.getElementById("pf-usertype").value = d.user_type || "";
+  // Sidebar
+  st("sb-name", name);
+  st("sb-role", p.role || p.experience || "Member");
+  st("sb-avatar", initials);
+  st("overview-sub", "Welcome back, " + name + "! Here's your career progress.");
 
-  calcScore(d);
-  updateProfileCard(d);
+  // Old profile IDs (may or may not exist — safe)
+  st("prof-name", name);
+  st("prof-email-display", currentUser.email);
+  st("prof-avatar", initials);
+  st("settings-email", currentUser.email);
+
+  // Profile form fields (new IDs)
+  sv("pf-name",    p.full_name);
+  sv("pf-role",    p.role);
+  sv("pf-exp",     p.experience);
+  sv("pf-city",    p.city);
+  sv("pf-skills",  p.skills);
+  sv("pf-about",   p.bio || p.about);
+  sv("pf-usertype",p.user_type);
+  sv("pf-field",   p.field);
+  sv("pf-company", p.company);
+  sv("pf-notice",  p.notice_period);
+
+  calcScore(p);
+  updateProfileCard(p);
 }
 
 function calcScore(d) {
   var score = 30;
   if (currentUser.email_confirmed_at) {
     score += 10;
-    document.getElementById("step-email").querySelector(".step-dot").className = "step-dot done";
-    document.getElementById("step-email").querySelector(".step-dot").textContent = "&#10003;";
+    var se=document.getElementById("step-email"); if(se&&se.querySelector(".step-dot")){se.querySelector(".step-dot").className="step-dot done";se.querySelector(".step-dot").textContent="&#10003;";}
   }
   if (d && d.full_name && d.role && d.city && d.experience) {
     score += 30;
-    document.getElementById("step-profile").querySelector(".step-dot").className = "step-dot done";
-    document.getElementById("step-profile").querySelector(".step-dot").textContent = "&#10003;";
+    var sp=document.getElementById("step-profile"); if(sp&&sp.querySelector(".step-dot")){sp.querySelector(".step-dot").className="step-dot done";sp.querySelector(".step-dot").textContent="&#10003;";}
   }
   score = Math.min(score, 100);
   document.getElementById("score-display").textContent = score;
