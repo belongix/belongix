@@ -107,6 +107,28 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
 .ud-item svg{width:15px;height:15px;flex-shrink:0;color:#6B7280}
 .ud-divider{height:1px;background:#F3F4F6;margin:4px 0}
 
+
+/* Section layout */
+.sec{padding:4rem 5%;background:var(--white,#fff);}
+.faq-sec{padding:4rem 5%;background:var(--off,#F9FAFB);}
+.sec-in{max-width:1100px;margin:0 auto;}
+/* Force all content visible - no animation hiding */
+.rv{opacity:1 !important;transform:none !important;}
+.rv.on{opacity:1 !important;}
+/* Three col cards */
+.fr{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2rem;}
+/* FAQ grid */
+.faq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:1.5rem;}
+.faq-card{background:var(--white,#fff);border:1px solid var(--border,#E5E7EB);border-radius:12px;padding:1.4rem;}
+.faq-card h4{font-size:0.9rem;font-weight:700;color:var(--navy,#0A1628);margin-bottom:0.5rem;}
+.faq-card p{font-size:0.82rem;color:var(--muted,#6B7280);line-height:1.65;}
+/* Before/After grid */
+@media(max-width:768px){
+  .fr{grid-template-columns:1fr 1fr;}
+  .before-after-grid{grid-template-columns:1fr !important;}
+}
+@media(max-width:480px){.fr{grid-template-columns:1fr;}}
+
 </style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#2563EB">
@@ -199,7 +221,7 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
   <div class="sec-in">
     <div class="stag">The Gap We Fill</div>
     <h2 class="sh">Before Belongix <span>vs After</span></h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem">
+    <div class="before-after-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem">
       <div style="background:#FEF2F2;border:1.5px solid #FECDD3;border-radius:16px;padding:1.8rem">
         <div style="font-size:1rem;font-weight:700;color:#BE123C;margin-bottom:1.2rem">&#10060; Without Belongix</div>
         <div style="display:flex;flex-direction:column;gap:.8rem;font-size:.85rem;color:#6B7280;line-height:1.5">
