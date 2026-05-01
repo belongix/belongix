@@ -777,7 +777,7 @@
 
       <!-- Save button -->
       <div style="display:flex;gap:10px">
-        <button onclick="saveProfile()" style="flex:1;background:#1447E6;color:white;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s" onmouseover="this.style.background='#0f3bc4'" onmouseout="this.style.background='#1447E6'">Save Profile</button>
+        <button id="prof-save-btn" onclick="saveProfile()" style="flex:1;background:#1447E6;color:white;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s" onmouseover="this.style.background='#0f3bc4'" onmouseout="this.style.background='#1447E6'">Save Profile</button>
         <button onclick="showPage('overview',document.querySelector('[onclick*=overview]'))" style="background:white;color:#374151;border:1px solid #E5E7EB;border-radius:10px;padding:12px 20px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif">Cancel</button>
       </div>
 
@@ -1078,21 +1078,45 @@ document.getElementById("job-search").addEventListener("keypress", function(e){ 
 // -- PROFILE FUNCTIONS --
 async function loadProfile() {
   if (!currentUser) return;
-  var setF = function(id,v){ var el=document.getElementById(id); if(el){ if(el.tagName==='SELECT'||el.tagName==='INPUT'||el.tagName==='TEXTAREA') el.value=v||''; } };
-  var setT = function(id,v){ var el=document.getElementById(id); if(el) el.textContent=v||''; };
+  
+  function setF(id, val) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'SELECT' || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.value = val || '';
+    }
+  }
+  function setT(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = val || '';
+  }
+  
   try {
-    var res = await supaClient.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
+    var res = await supaClient
+      .from('profiles')
+      .select('*')
+      .eq('id', currentUser.id)
+      .maybeSingle();
+    
     if (res.error) throw res.error;
     var p = res.data || {};
-    var fn = (p.full_name||'').split(' ')[0]||'';
-    var ln = (p.full_name||'').split(' ').slice(1).join(' ')||'';
-    setF('p-fn', fn); setF('p-ln', ln);
-    setF('p-city', p.city); setF('p-type', p.user_type);
-    setF('p-role', p.role); setF('p-company', p.company);
-    setF('p-field', p.field); setF('p-exp', p.experience);
-    setF('p-skills', p.skills); setF('p-bio', p.bio);
+    
+    // Fill form fields
+    var parts = (p.full_name || '').split(' ');
+    setF('p-fn', parts[0] || '');
+    setF('p-ln', parts.slice(1).join(' ') || '');
+    setF('p-city', p.city);
+    setF('p-type', p.user_type);
+    setF('p-role', p.role);
+    setF('p-company', p.company);
+    setF('p-field', p.field);
+    setF('p-exp', p.experience);
+    setF('p-skills', p.skills);
+    setF('p-bio', p.bio);
+    
+    // Update left profile card
     var name = p.full_name || currentUser.email.split('@')[0] || 'User';
-    setT('prof-av-big', name.substring(0,2).toUpperCase());
+    setT('prof-av-big', name.substring(0, 2).toUpperCase());
     setT('prof-name-big', name);
     setT('prof-title-big', p.role || 'Add your role');
     setT('prof-company-big', p.company || '');
@@ -1101,67 +1125,105 @@ async function loadProfile() {
     setT('prof-city-disp2', p.city || '--');
     setT('prof-exp-disp', p.experience || '--');
     setT('prof-score-disp', p.career_score || 30);
-    var tm = {college_student:'College Student',fresher:'Fresh Graduate',junior_prof:'Junior Professional',mid_prof:'Mid-level Professional',senior_prof:'Senior Professional',career_changer:'Career Changer'};
-    setT('prof-type-disp', tm[p.user_type] || p.user_type || '--');
-    var fields = [p.full_name,p.city,p.user_type,p.role,p.company,p.field,p.experience,p.skills,p.bio];
-    var filled = fields.filter(function(x){ return x && String(x).trim(); }).length;
-    var pct = Math.round((filled/9)*100);
-    setT('prof-pct', pct+'%');
+    
+    var typeMap = {
+      college_student: 'College Student', fresher: 'Fresh Graduate',
+      junior_prof: 'Junior Professional', mid_prof: 'Mid-level Professional',
+      senior_prof: 'Senior Professional', career_changer: 'Career Changer',
+      intern: 'Intern', manager: 'Manager'
+    };
+    setT('prof-type-disp', typeMap[p.user_type] || p.user_type || '--');
+    
+    // Completeness
+    var fields = ['full_name','city','user_type','role','company','field','experience','skills','bio'];
+    var filled = fields.filter(function(k) { return p[k] && String(p[k]).trim(); }).length;
+    var pct = Math.round((filled / 9) * 100);
+    setT('prof-pct', pct + '%');
     var bar = document.getElementById('prof-pct-bar');
-    if (bar) bar.style.width = pct+'%';
+    if (bar) bar.style.width = pct + '%';
     var tip = document.getElementById('prof-pct-tip');
-    if (tip) tip.textContent = pct >= 100 ? 'Profile complete! Great work.' : (9-filled)+' fields left to boost your Career Score';
+    if (tip) tip.textContent = pct >= 100 ? 'Profile complete!' : (9 - filled) + ' fields left to boost your score';
+    
+    // Update career score in header
+    var scoreEl = document.querySelector('.score-num');
+    if (scoreEl && p.career_score) scoreEl.textContent = p.career_score;
+    
   } catch(e) {
-    console.error('loadProfile err:', e);
+    console.error('loadProfile error:', e);
   }
 }
 async function saveProfile() {
-  if (!currentUser) { showToast('Please sign in'); return; }
-  var g = function(id){ var el=document.getElementById(id); return el ? el.value || '' : ''; };
-  var fn = g('p-fn').trim();
-  var ln = g('p-ln').trim();
+  if (!currentUser) { showToast('Please sign in first'); return; }
+  
+  function gv(id) {
+    var el = document.getElementById(id);
+    return el ? (el.value || '').trim() : '';
+  }
+  
+  var fn = gv('p-fn');
+  var ln = gv('p-ln');
   var fullName = (fn + ' ' + ln).trim() || fn || ln;
-  var updates = {
+  
+  var payload = {
     id: currentUser.id,
     full_name: fullName || null,
-    city: g('p-city') || null,
-    user_type: g('p-type') || null,
-    role: g('p-role') || null,
-    company: g('p-company') || null,
-    field: g('p-field') || null,
-    experience: g('p-exp') || null,
-    skills: g('p-skills') || null,
-    bio: g('p-bio') || null,
+    email: currentUser.email,
+    city: gv('p-city') || null,
+    user_type: gv('p-type') || null,
+    role: gv('p-role') || null,
+    company: gv('p-company') || null,
+    field: gv('p-field') || null,
+    experience: gv('p-exp') || null,
+    skills: gv('p-skills') || null,
+    bio: gv('p-bio') || null,
     updated_at: new Date().toISOString()
   };
-  // Score calc
-  var filled = ['full_name','city','user_type','role','company','field','experience','skills','bio'].filter(function(k){ return updates[k] && updates[k].trim(); }).length;
-  updates.career_score = Math.min(30 + (filled * 8), 95);
   
-  var saveBtn = document.querySelector('[onclick="saveProfile()"]');
-  if (saveBtn) { saveBtn.textContent = 'Saving...'; saveBtn.disabled = true; }
+  // Score: 30 base + 8 per filled field
+  var scoreFields = ['full_name','city','user_type','role','company','field','experience','skills','bio'];
+  var filled = scoreFields.filter(function(k) { return payload[k] && payload[k].trim(); }).length;
+  payload.career_score = Math.min(30 + filled * 8, 95);
+  
+  var btn = document.getElementById('prof-save-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Saving...'; }
   
   try {
-    var res = await supaClient.from('profiles').upsert([updates], { onConflict: 'id' });
-    if (res.error) throw res.error;
-    showToast('Profile saved! Career Score: ' + updates.career_score);
-    await loadProfile();
+    var result = await supaClient
+      .from('profiles')
+      .upsert(payload, { onConflict: 'id' });
+    
+    if (result.error) throw result.error;
+    
+    showToast('Profile saved! Career Score: ' + payload.career_score);
+    
+    // Update sidebar
     var sbName = document.getElementById('sb-name');
     if (sbName && fullName) sbName.textContent = fullName.split(' ')[0];
-    var sbScore = document.getElementById('sb-score');
-    if (sbScore) sbScore.textContent = 'Score: ' + updates.career_score;
+    
+    // Update score display
+    var scoreEl = document.querySelector('.score-num');
+    if (scoreEl) scoreEl.textContent = payload.career_score;
+    
+    // Reload profile to confirm save
+    setTimeout(loadProfile, 500);
+    
   } catch(e) {
-    console.error('Save error:', e);
-    showToast('Save failed: ' + (e.message || 'Check Supabase columns'));
+    console.error('saveProfile error:', e);
+    var msg = e.message || 'Save failed';
+    if (msg.includes('column')) {
+      msg = 'DB setup needed. Run SQL in Supabase console. See instructions.';
+    }
+    showToast('Error: ' + msg);
   } finally {
-    if (saveBtn) { saveBtn.textContent = 'Save Profile'; saveBtn.disabled = false; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Save Profile'; }
   }
 }
 
 // -- INIT --
 init();
 </script>
-  <script src="belongix-ai.js"></script>
+  
+
 <script src="bexi.js"></script>
 </body>
 </html>

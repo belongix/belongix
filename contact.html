@@ -81,8 +81,8 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
 .flinks a{font-size:0.8rem;color:rgba(255,255,255,0.35);text-decoration:none;cursor:pointer;transition:color 0.2s;}.flinks a:hover{color:var(--sky3);}
 
 #toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--navy);color:#fff;padding:0.65rem 1.4rem;border-radius:10px;font-size:0.84rem;font-weight:500;z-index:9999;transition:transform 0.3s,opacity 0.3s;opacity:0;box-shadow:0 8px 28px rgba(0,0,0,0.2);}
-.rv{opacity:0;transform:translateY(18px);transition:opacity 0.65s ease,transform 0.65s ease;}
-.rv.on{opacity:1;transform:translateY(0);}
+.rv{opacity:1;}
+
 @media(max-width:1024px){.layout{grid-template-columns:1fr;gap:2.5rem;}}
 @media(max-width:768px){.nlinks{display:none;}.fr{grid-template-columns:1fr;}.flinks{display:none;}}
 
@@ -330,5 +330,13 @@ function submitForm(){
     },3000);
   },1500);
 }
+</script>
+<script>
+(function(){
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('on'); });
+  }, {threshold:0.05});
+  document.querySelectorAll('.rv').forEach(function(el){ obs.observe(el); });
+})();
 </script>
 </body>
