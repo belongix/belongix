@@ -938,7 +938,7 @@
         <div style="font-size:44px;margin-bottom:12px">&#127881;</div>
         <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;color:#15803D;margin-bottom:8px">Welcome to Belongix Pro!</div>
         <div style="font-size:14px;color:#166534;margin-bottom:16px">All features are now unlocked!</div>
-        <button onclick="showPage('overview',document.querySelector('[onclick*=overview]'))" style="background:#15803D;color:white;border:none;border-radius:10px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Go to Dashboard &#8594;</button>
+        <button onclick="showPage('overview',(document.querySelector('[onclick*=overview]') || document.querySelector('.sb-link')))" style="background:#15803D;color:white;border:none;border-radius:10px;padding:11px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Go to Dashboard &#8594;</button>
       </div>
     </div>
   </div><!-- /content -->
@@ -1027,6 +1027,11 @@ async function saveProfile() {
     var sbN=document.getElementById("sb-name");if(sbN&&updates.full_name)sbN.textContent=updates.full_name.split(" ")[0];
     var sbR=document.getElementById("sb-role");if(sbR)sbR.textContent=updates.role||updates.experience||"Member";
     calcScore(updates);populateProfileCard(updates);loadPortfolio(updates);
+    // Auto-switch to portfolio after save
+    setTimeout(function(){
+      var ovBtn = document.querySelector('[onclick*=overview]') || document.querySelector('.sb-link.active');
+      showPage('overview', ovBtn);
+    }, 800);
   }catch(e){console.error(e);showToast("Save failed: "+e.message);}
   finally{if(btn){btn.disabled=false;btn.textContent="Save Profile";}}
 }
@@ -1246,7 +1251,12 @@ function toggleEdit(id){
 
 async function saveField(field){
   if(!currentUser)return;
-  var updates={id:currentUser.id,email:currentUser.email};
+  // Always include full_name to satisfy NOT NULL constraint
+  var existingName = (document.getElementById("pcard-name")||{}).textContent || 
+                     (document.getElementById("sb-name")||{}).textContent || 
+                     currentUser.email.split("@")[0];
+  var existingSkills = (document.getElementById("skills-inp")||{}).value || "";
+  var updates={id:currentUser.id, email:currentUser.email, full_name: existingName || currentUser.email.split("@")[0]};
   if(field==="bio"){
     var v=(document.getElementById("bio-inp")||{}).value||"";
     updates.bio=v;
@@ -1277,8 +1287,15 @@ async function saveField(field){
   }
   try{
     var res=await supaClient.from("profiles").upsert([updates],{onConflict:"id"});
-    if(res.error)throw res.error;
-    showToast("Saved successfully!");
+    if(res.error){
+      // If still failing due to NOT NULL, try with minimal payload
+      var min={id:currentUser.id,email:currentUser.email,full_name:existingName};
+      Object.assign(min, updates);
+      var res2=await supaClient.from("profiles").upsert([min],{onConflict:"id"});
+      if(res2.error)throw res2.error;
+    }
+    showToast("Saved!");
+    loadUserData();
   }catch(e){showToast("Save failed: "+e.message);console.error(e);}
 }
 
