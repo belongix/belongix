@@ -912,7 +912,7 @@ async function loadUserData() {
   document.getElementById("pf-exp").value = d.experience || "";
   document.getElementById("pf-city").value = d.city || "";
   document.getElementById("pf-skills").value = d.skills || "";
-  document.getElementById("pf-about").value = d.about || "";
+  document.getElementById("pf-about").value = d.bio || d.about || "";
   document.getElementById("pf-usertype").value = d.user_type || "";
 
   calcScore(d);
@@ -956,14 +956,14 @@ async function saveProfile() {
     role: gv('pf-role') || null,
     experience: gv('pf-exp') || null,
     skills: gv('pf-skills') || null,
-    about: gv('pf-about') || null,
+    bio: gv('pf-about') || null,
     email: currentUser.email
   };
   
   // Try to also save extra columns (may not exist yet)
   var extra = { field: gv('pf-field')||null, company: gv('pf-company')||null, notice_period: gv('pf-notice')||null };
   
-  var scoreFields = ['full_name','city','user_type','role','experience','skills','about'];
+  var scoreFields = ['full_name','city','user_type','role','experience','skills','bio'];
   var filled = scoreFields.filter(function(k){ return base[k]&&base[k].trim(); }).length;
   base.career_score = Math.min(30 + filled * 10, 95);
   
@@ -1021,7 +1021,7 @@ function updateProfileCard(p) {
   var tm={college_student:'College Student',fresher:'Fresh Graduate',junior_prof:'Junior Pro',mid_prof:'Mid-level',senior_prof:'Senior Pro',career_changer:'Career Changer'};
   st('pc-type',tm[p.user_type]||p.user_type||'--');
   // Completeness
-  var flds=['full_name','city','user_type','role','experience','skills','about'];
+  var flds=['full_name','city','user_type','role','experience','skills','bio'];
   var filled=flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length;
   var pct=Math.round((filled/7)*100);
   st('ppct-val',pct+'%');
@@ -1032,7 +1032,7 @@ function updateProfileCard(p) {
   sv('pf-name',p.full_name);sv('pf-city',p.city);sv('pf-usertype',p.user_type);
   sv('pf-field',p.field);sv('pf-role',p.role);sv('pf-company',p.company);
   sv('pf-exp',p.experience);sv('pf-notice',p.notice_period);
-  sv('pf-skills',p.skills);sv('pf-about',p.about||p.bio);
+  sv('pf-skills',p.skills);sv('pf-about',p.bio||p.about);
   // Update sidebar avatar
   var sbAv=document.getElementById('sb-avatar');if(sbAv)sbAv.textContent=init;
 }
