@@ -931,37 +931,52 @@ function setAvatar(url) {
 function uploadAvatar(input) {
   var file = input.files[0];
   if (!file) return;
-  if (file.size > 500 * 1024) { showToast("Use image under 500KB"); return; }
-  var reader = new FileReader();
-  reader.onload = async function(e) {
-    var b64 = e.target.result;
+
+  // Compress image using canvas before saving
+  var img = new Image();
+  var objectUrl = URL.createObjectURL(file);
+  img.onload = async function() {
+    URL.revokeObjectURL(objectUrl);
+
+    // Resize to max 200x200 to keep base64 small
+    var MAX = 200;
+    var canvas = document.createElement('canvas');
+    var ratio = Math.min(MAX / img.width, MAX / img.height, 1);
+    canvas.width  = Math.round(img.width  * ratio);
+    canvas.height = Math.round(img.height * ratio);
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    // Compress to JPEG quality 0.7 — keeps it under 30KB
+    var b64 = canvas.toDataURL('image/jpeg', 0.7);
+    console.log('Compressed size (chars):', b64.length, '~', Math.round(b64.length * 0.75 / 1024), 'KB');
+
+    // Show preview
     setAvatar(b64);
-    if (!currentUser) { showToast("Not signed in"); return; }
-    showToast("Saving photo...");
+    showToast('Saving photo...');
+
+    if (!currentUser) { showToast('Not signed in'); return; }
+
     try {
-      // Use direct UPDATE — row confirmed exists
       var res = await supaClient
-        .from("profiles")
+        .from('profiles')
         .update({ avatar_url: b64 })
-        .eq("id", currentUser.id)
+        .eq('id', currentUser.id)
         .select();
 
       if (res.error) {
-        // Log full error for debugging
-        console.error("Avatar save full error:", JSON.stringify(res.error));
-        showToast("DB error: " + (res.error.message || res.error.code || JSON.stringify(res.error)));
-      } else if (!res.data || res.data.length === 0) {
-        console.warn("Update matched 0 rows. ID:", currentUser.id);
-        showToast("No row updated. Check your profile ID in Supabase.");
+        console.error('Avatar error:', res.error);
+        showToast('Save failed: ' + (res.error.message || res.error.code));
       } else {
-        showToast("Photo saved!");
+        showToast('Photo saved!');
       }
     } catch(err) {
-      console.error("Avatar exception:", err);
-      showToast("Error: " + err.message);
+      console.error('Avatar exception:', err);
+      showToast('Error: ' + err.message);
     }
   };
-  reader.readAsDataURL(file);
+  img.onerror = function() { showToast('Could not load image'); };
+  img.src = objectUrl;
 }
 
 async function signOut() {
