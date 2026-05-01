@@ -263,7 +263,7 @@ footer{background:var(--navy);padding:40px 5vw;display:flex;align-items:center;j
 
 <!-- ── NAV ── -->
 <nav>
-  <a href="/" class="nav-logo">Be<span>longix</span></a>
+  <a href="index.html" class="nav-logo">Be<span>longix</span></a>
 
   <div class="nav-center">
     <!-- Platform dropdown -->
@@ -689,7 +689,7 @@ footer{background:var(--navy);padding:40px 5vw;display:flex;align-items:center;j
 
 <div id="toast"></div>
 <a href="dashboard.html" class="chat-ai-btn"><div class="chat-ai-dot"></div>Chat with Bexi AI</a>
-<script src="pwa-install.js"></script>
+
 
 <script>
 const SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
@@ -867,51 +867,6 @@ document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
 
 
 // ── BEXI AI ──
-var BEXI_RESPONSES = {
-  salary: "For freshers in India (2026):\n• Software Engineer: ₹3.5–8 LPA\n• Data Analyst: ₹3–6 LPA\n• Full Stack Dev: ₹4–10 LPA\n\nTop companies like Razorpay, Zepto, Swiggy pay 20-40% above market. Tip: always negotiate!",
-  interview: "Top interview tips:\n1. Master DSA — LeetCode 75 is enough to start\n2. System Design — study ByteByteGo on YouTube\n3. Behavioral — use STAR method\n4. Research the company before every round\n5. Mock interviews on Pramp (free)\n\nWant company-specific tips?",
-  skills: "Most in-demand skills in 2026:\n🔥 Agentic AI & LangChain\n🔥 Cloud (AWS/Azure/GCP)\n🔥 Data Engineering (dbt, Kafka)\n💻 Full Stack (React + Node)\n🔒 Cybersecurity\n📊 SQL & Analytics\n\nAll available free in Belongix's Upskilling Hub!",
-  default: "Great question! I'm here to help with career advice, salary benchmarks, interview tips, upskilling paths and more.\n\nFor detailed guidance, sign up on Belongix and access your full career dashboard. Would you like me to explain any specific topic?"
-};
-
-function toggleBexi(){
-  var w = document.getElementById('bexiWindow');
-  w.classList.toggle('open');
-  if(w.classList.contains('open')){
-    document.getElementById('bexiInput').focus();
-  }
-}
-
-function bexiAsk(q){
-  addBexiMsg(q, 'user');
-  setTimeout(function(){
-    var lower = q.toLowerCase();
-    var resp;
-    if(lower.includes('salary') || lower.includes('pay') || lower.includes('lpa') || lower.includes('ctc') || lower.includes('fresher')) resp = BEXI_RESPONSES.salary;
-    else if(lower.includes('interview') || lower.includes('prep') || lower.includes('dsa') || lower.includes('leetcode')) resp = BEXI_RESPONSES.interview;
-    else if(lower.includes('skill') || lower.includes('learn') || lower.includes('demand') || lower.includes('course')) resp = BEXI_RESPONSES.skills;
-    else resp = BEXI_RESPONSES.default;
-    addBexiMsg(resp, 'bot');
-  }, 600);
-}
-
-function bexiSend(){
-  var inp = document.getElementById('bexiInput');
-  var q = inp.value.trim();
-  if(!q) return;
-  inp.value = '';
-  bexiAsk(q);
-}
-
-function addBexiMsg(text, type){
-  var msgs = document.getElementById('bexiMsgs');
-  var div = document.createElement('div');
-  div.className = 'bexi-msg ' + type;
-  div.innerHTML = text.replace(/\n/g, '<br>');
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
 // ── CLICK-BASED DROPDOWNS ──
 function initDropdowns(){
   // Nav item dropdowns
@@ -970,5 +925,7 @@ function openRazorpay(plan,user){
   rzp.open();
 }
 </script>
+<script src="bexi.js"></script>
+<script src="pwa-install.js"></script>
 </body>
 </html>

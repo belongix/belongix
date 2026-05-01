@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>About Us — Belongix</title>
+<title>About Belongix — Belongix</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -87,22 +87,22 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
 @media(max-width:768px){.nlinks{display:none;}.fr{grid-template-columns:1fr;}.flinks{display:none;}}
 
 /* -- User dropdown nav -- */
-.nav-user-wrap{position:relative;display:none}
-.nav-user-btn{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:24px;border:1px solid var(--border);background:#fff;cursor:pointer;font-family:'DM Sans',sans-serif}
-.nav-user-btn:hover{border-color:#C7D7FD;background:#EEF3FF}
-.nav-av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nav-nm{font-size:13px;font-weight:500;color:var(--text,#111827);max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nav-user-btn svg{color:#9CA3AF;transition:transform .2s}
-.nav-user-btn.dd-open svg{transform:rotate(180deg)}
-.user-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.12);min-width:200px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
-.user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
-.ud-header{padding:10px 12px 8px;border-bottom:1px solid var(--border);margin-bottom:4px}
-.ud-name{font-size:13px;font-weight:600;color:var(--navy,#0A1628)}
-.ud-email{font-size:11px;color:#9CA3AF;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--text,#111827);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:'DM Sans',sans-serif;text-align:left}
+
+
+
+
+
+
+
+
+
+
+
+
+
 .ud-item:hover{background:#F3F4F6;color:var(--blue)}
 .ud-item svg{width:15px;height:15px;color:#9CA3AF;flex-shrink:0}
-.ud-divider{height:1px;background:var(--border);margin:4px 0}
+
 /* Bexi */
 .bexi-fab{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;align-items:center;gap:8px;background:var(--blue,#1447E6);color:#fff;border:none;border-radius:28px;padding:11px 18px 11px 14px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 4px 20px rgba(20,71,230,.4);transition:.2s}
 .bexi-fab:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(20,71,230,.5)}
@@ -125,6 +125,22 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
 .bexi-inp:focus{border-color:var(--blue,#1447E6)}
 .bexi-snd{background:var(--blue,#1447E6);border:none;border-radius:8px;padding:8px 12px;color:#fff;cursor:pointer;font-size:14px}
 
+
+.nav-user-wrap{position:relative;display:none}
+.nav-user-btn{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:24px;border:1px solid var(--border,#E5E7EB);background:#fff;cursor:pointer;font-family:inherit;transition:.15s}
+.nav-user-btn:hover{border-color:#C7D7FD;background:#EEF3FF}
+.nav-user-btn svg{color:#9CA3AF;transition:transform .2s}
+.nav-user-btn.dd-open svg{transform:rotate(180deg)}
+.user-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:#fff;border:1px solid #E5E7EB;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.12);min-width:200px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
+.user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.ud-header{padding:10px 12px 8px;border-bottom:1px solid #F3F4F6;margin-bottom:4px}
+.ud-name{font-size:13px;font-weight:600;color:#0A1628}
+.ud-email{font-size:11px;color:#9CA3AF;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:#111827;cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:inherit;text-align:left}
+.ud-item:hover{background:#F9FAFB;color:#1447E6}
+.ud-item svg{width:15px;height:15px;flex-shrink:0}
+.ud-divider{height:1px;background:#F3F4F6;margin:4px 0}
+
 </style>
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#2563EB">
@@ -134,109 +150,125 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
 <div id="toast"></div>
 <nav>
   <a href="index.html" class="nlogo">Belong<span>ix</span></a>
-  <ul class="nlinks">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="mentors.html">Mentors</a></li>
-    <li><a href="contact.html" class="">Contact</a></li>
-    <li><a href="about.html" class="active">About</a></li>
-  </ul>
+  <ul class="nlinks"><li><a href="index.html">Home</a></li><li><a href="mentors.html">Mentors</a></li><li><a href="contact.html" class="">Contact</a></li><li><a href="about.html">About</a></li></ul>
   <div class="nbtns" id="nav-out">
-    <button class="nghost" onclick="window.location.href='index.html'">Sign In</button>
-    <button class="nfill" onclick="window.location.href='index.html'">Join Free</button>
+    <button class="nghost" onclick="location.href='index.html'">Sign In</button>
+    <button class="nfill" onclick="location.href='index.html'">Join Free</button>
   </div>
   <div class="nav-user-wrap" id="nav-in">
     <button class="nav-user-btn" id="nav-user-btn">
       <div class="nav-av" id="nav-av">?</div>
       <span class="nav-nm" id="nav-nm">Hi...</span>
-      <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+      <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
     </button>
     <div class="user-dropdown" id="user-dd">
       <div class="ud-header"><div class="ud-name" id="ud-name">User</div><div class="ud-email" id="ud-email"></div></div>
-      <a class="ud-item" href="dashboard.html">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
-      <a class="ud-item" href="dashboard.html?page=profile">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>My Profile</a>
+      <a class="ud-item" href="dashboard.html"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+      <a class="ud-item" href="dashboard.html?page=profile"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>My Profile</a>
       <div class="ud-divider"></div>
-      <button class="ud-item" onclick="doSignOut()" style="color:#DC2626">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" style="color:#DC2626"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>Sign Out</button>
+      <button class="ud-item" onclick="doSignOut()" style="color:#DC2626"><svg fill="none" viewBox="0 0 24 24" stroke="#DC2626" stroke-width="1.8"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>Sign Out</button>
     </div>
   </div>
 </nav>
-
 <div class="hero">
-  <div class="tag">Contact Us</div>
-  <h1>We'd love to <span>hear from you</span></h1>
-  <p class="sub">Have a question, partnership idea, or want to become a mentor? We read every message personally and respond within 24 hours.</p>
+  <div class="tag">About Us</div>
+  <h1 class="ht">About <span>Belongix</span></h1>
+  <p class="sub">India's most complete professional career platform — built for students, freshers, and working professionals at every stage of their journey.</p>
 </div>
 
-<div class="layout">
-  <div class="rv">
-    <div class="stag">Get in Touch</div>
-    <h2 class="sh">We're <span>here for you</span></h2>
-    <p class="sp">Reach out through any channel below. We respond to every message within 24 hours.</p>
-    <a class="ccard" href="mailto:teambelongix@gmail.com"><div class="cc-icon">📧</div><div><div class="cc-label">Email</div><div class="cc-val">teambelongix@gmail.com</div></div></a>
-    <a class="ccard" href="https://linkedin.com/company/belongix" target="_blank"><div class="cc-icon">💼</div><div><div class="cc-label">LinkedIn</div><div class="cc-val">linkedin.com/company/belongix</div></div></a>
-    <a class="ccard" href="https://instagram.com/belongix" target="_blank"><div class="cc-icon">📸</div><div><div class="cc-label">Instagram</div><div class="cc-val">@belongix</div></div></a>
-    <a class="ccard" href="https://twitter.com/belongix" target="_blank"><div class="cc-icon">𝕏</div><div><div class="cc-label">Twitter / X</div><div class="cc-val">@belongix</div></div></a>
-    <div class="for-section">
-      <h4>What can we help you with?</h4>
-      <div class="for-item"><span class="for-icon">🤝</span><div class="for-text"><strong>Become a Mentor</strong><span>Apply to join as a verified senior mentor</span></div></div>
-      <div class="for-item"><span class="for-icon">🏢</span><div class="for-text"><strong>Corporate Plans</strong><span>Upskilling packages for IT teams</span></div></div>
-      <div class="for-item"><span class="for-icon">💡</span><div class="for-text"><strong>Partnerships</strong><span>Collaborate with Belongix</span></div></div>
-      <div class="for-item"><span class="for-icon">💰</span><div class="for-text"><strong>Investor Enquiries</strong><span>Interested in investing in Belongix?</span></div></div>
-      <div class="for-item"><span class="for-icon">🐛</span><div class="for-text"><strong>Bug Reports</strong><span>Found something broken? Let us know!</span></div></div>
+<section class="sec rv">
+  <div class="sec-in">
+    <div class="stag">Our Mission</div>
+    <h2 class="sh">Why <span>Belongix exists</span></h2>
+    <p class="sp">India has millions of talented professionals — yet most lack the right tools, data and guidance to grow. LinkedIn is too generic. Job boards show too much noise. Salary data is hidden. Career guidance is expensive. Belongix fixes all of this in one free platform.</p>
+    <div class="fr" style="margin-top:2rem;gap:1.5rem">
+      <div style="background:#EEF3FF;border-radius:14px;padding:1.5rem;border:1px solid #C7D7FD">
+        <div style="font-size:2rem;margin-bottom:.75rem">🎯</div>
+        <h4 style="font-size:.95rem;font-weight:700;color:#0A1628;margin-bottom:.4rem">Career Intelligence</h4>
+        <p style="font-size:.82rem;color:#6B7280;line-height:1.6">Real salary data, live job listings, and AI career guidance — built specifically for the Indian market in 2026.</p>
+      </div>
+      <div style="background:#EEF3FF;border-radius:14px;padding:1.5rem;border:1px solid #C7D7FD">
+        <div style="font-size:2rem;margin-bottom:.75rem">🤝</div>
+        <h4 style="font-size:.95rem;font-weight:700;color:#0A1628;margin-bottom:.4rem">Real Mentors</h4>
+        <p style="font-size:.82rem;color:#6B7280;line-height:1.6">Connect with verified professionals for interview prep, salary negotiation, career switches and growth sessions.</p>
+      </div>
+      <div style="background:#EEF3FF;border-radius:14px;padding:1.5rem;border:1px solid #C7D7FD">
+        <div style="font-size:2rem;margin-bottom:.75rem">📈</div>
+        <h4 style="font-size:.95rem;font-weight:700;color:#0A1628;margin-bottom:.4rem">Skill Growth</h4>
+        <p style="font-size:.82rem;color:#6B7280;line-height:1.6">48+ curated courses from Google, AWS, Coursera, Kaggle, Scaler and NPTEL — free and paid tracks for every level.</p>
+      </div>
     </div>
-  </div>
-  <div class="form-wrap rv">
-    <div class="form-title">Send us a message</div>
-    <div class="form-sub">We'll get back to you within 24 hours.</div>
-    <div class="err-box" id="form-err"></div>
-    <div class="fr">
-      <div class="fg"><label class="fl">First Name *</label><input class="fi" type="text" id="f-fname" placeholder="First name"/></div>
-      <div class="fg"><label class="fl">Last Name</label><input class="fi" type="text" id="f-lname" placeholder="Last name"/></div>
-    </div>
-    <div class="fg"><label class="fl">Email Address *</label><input class="fi" type="email" id="f-email" placeholder="your@email.com"/></div>
-    <div class="fg"><label class="fl">Your Role</label>
-      <select class="fsel" id="f-role">
-        <option value="">Select your role (optional)</option>
-        <option>College Student</option><option>Fresh Graduate</option>
-        <option>Working Professional</option><option>Career Changer</option>
-        <option>Entrepreneur / Founder</option><option>Other</option>
-      </select>
-    </div>
-    <div class="fg"><label class="fl">Reason for Contact *</label>
-      <select class="fsel" id="f-reason">
-        <option value="">Select a reason</option>
-        <option>General Enquiry</option><option>Become a Mentor</option>
-        <option>Corporate / Team Plans</option><option>Partnership Opportunity</option>
-        <option>Investor Enquiry</option><option>Bug Report / Technical Issue</option>
-        <option>Press / Media</option><option>Other</option>
-      </select>
-    </div>
-    <div class="fg"><label class="fl">Message *</label><textarea class="fta" id="f-msg" placeholder="Tell us what's on your mind..."></textarea></div>
-    <button class="submit-btn" onclick="submitForm()">Send Message →</button>
-    <div class="success-box" id="success-box">
-      <h4>✓ Message sent!</h4>
-      <p>We'll get back to you within 24 hours.</p>
-    </div>
-  </div>
-</div>
-
-<section class="faq-sec">
-  <div class="rv" style="text-align:center;">
-    <div class="stag">Quick Answers</div>
-    <h2 class="sh" style="font-size:1.6rem;">Common <span>questions</span></h2>
-  </div>
-  <div class="faq-grid rv">
-    <div class="faq-card"><h4>How quickly do you respond?</h4><p>We respond to every message within 24 hours on business days. Email us directly at teambelongix@gmail.com for urgent matters.</p></div>
-    <div class="faq-card"><h4>How do I become a mentor?</h4><p>If you have 6+ years of experience, fill the form and select "Become a Mentor". We'll review your profile within 48 hours.</p></div>
-    <div class="faq-card"><h4>Do you offer corporate plans?</h4><p>Yes! We offer custom upskilling packages for teams. Select "Corporate / Team Plans" and we'll send you our enterprise details.</p></div>
-    <div class="faq-card"><h4>Are you open to partnerships?</h4><p>Yes! We welcome partnerships with colleges, bootcamps, hiring platforms, and EdTech companies. Tell us your idea.</p></div>
-    <div class="faq-card"><h4>How do I report a bug?</h4><p>Select "Bug Report" in the form and describe what you found. Screenshots are very helpful and we take every report seriously.</p></div>
-    <div class="faq-card"><h4>Where is Belongix based?</h4><p>Belongix is based in India, building specifically for India's professional community. Our team operates remotely across Indian cities.</p></div>
   </div>
 </section>
 
+<section class="faq-sec rv">
+  <div class="sec-in">
+    <div class="stag">What We Build</div>
+    <h2 class="sh">Six tools, <span>one platform</span></h2>
+    <div class="faq-grid" style="margin-top:1.5rem">
+      <div class="faq-card"><h4>🤖 Bexi AI Career Guide</h4><p>24/7 AI assistant for salary questions, interview prep, skill advice and career path guidance — free for everyone.</p></div>
+      <div class="faq-card"><h4>💼 Live Job Board</h4><p>Real-time listings from top Indian companies filtered to your skills, location and experience level.</p></div>
+      <div class="faq-card"><h4>💰 Salary Intelligence</h4><p>Real market salary data for 15+ tech roles across Bangalore, Hyderabad, Mumbai, Pune and remote.</p></div>
+      <div class="faq-card"><h4>📊 Career Score</h4><p>A dynamic score that tracks your professional growth based on your profile, skills and platform activity.</p></div>
+      <div class="faq-card"><h4>🎓 Mentor Network</h4><p>Connect with verified professionals for 1-on-1 sessions — resume reviews, mock interviews, negotiation coaching.</p></div>
+      <div class="faq-card"><h4>🛠️ Upskilling Hub</h4><p>48+ handpicked courses from Google, AWS, Meta, Scaler, NPTEL — with filters for free, cert, beginner and advanced.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec rv">
+  <div class="sec-in">
+    <div class="stag">Our Values</div>
+    <h2 class="sh"><span>What we stand for</span></h2>
+    <div class="fr" style="margin-top:2rem;gap:1.2rem">
+      <div style="background:white;border:1px solid #E5E7EB;border-radius:12px;padding:1.3rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:.6rem">🌟</div><h4 style="font-size:.875rem;font-weight:700;color:#0A1628;margin-bottom:.3rem">Honesty</h4><p style="font-size:.8rem;color:#6B7280;line-height:1.5">No fake numbers. Real data, real jobs, real mentors only.</p></div>
+      <div style="background:white;border:1px solid #E5E7EB;border-radius:12px;padding:1.3rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:.6rem">🇮🇳</div><h4 style="font-size:.875rem;font-weight:700;color:#0A1628;margin-bottom:.3rem">India First</h4><p style="font-size:.8rem;color:#6B7280;line-height:1.5">Built for Indian professionals — salary data, jobs and mentors all India-focused.</p></div>
+      <div style="background:white;border:1px solid #E5E7EB;border-radius:12px;padding:1.3rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:.6rem">🆓</div><h4 style="font-size:.875rem;font-weight:700;color:#0A1628;margin-bottom:.3rem">Access for All</h4><p style="font-size:.8rem;color:#6B7280;line-height:1.5">Core features are always free. Career guidance should not be a privilege.</p></div>
+      <div style="background:white;border:1px solid #E5E7EB;border-radius:12px;padding:1.3rem;text-align:center"><div style="font-size:1.8rem;margin-bottom:.6rem">🔒</div><h4 style="font-size:.875rem;font-weight:700;color:#0A1628;margin-bottom:.3rem">Privacy First</h4><p style="font-size:.8rem;color:#6B7280;line-height:1.5">Your data belongs to you. We never sell user data to advertisers.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec rv">
+  <div class="sec-in">
+    <div class="stag">The Gap We Fill</div>
+    <h2 class="sh">Before Belongix <span>vs After</span></h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem">
+      <div style="background:#FEF2F2;border:1.5px solid #FECDD3;border-radius:16px;padding:1.8rem">
+        <div style="font-size:1rem;font-weight:700;color:#BE123C;margin-bottom:1.2rem">&#10060; Without Belongix</div>
+        <div style="display:flex;flex-direction:column;gap:.8rem;font-size:.85rem;color:#6B7280;line-height:1.5">
+          <div><span style="color:#BE123C;font-weight:700;margin-right:.5rem">&#10007;</span>Searching 5 different websites for jobs</div>
+          <div><span style="color:#BE123C;font-weight:700;margin-right:.5rem">&#10007;</span>No idea if your salary is fair</div>
+          <div><span style="color:#BE123C;font-weight:700;margin-right:.5rem">&#10007;</span>Random YouTube videos, no structure</div>
+          <div><span style="color:#BE123C;font-weight:700;margin-right:.5rem">&#10007;</span>No mentor to guide career decisions</div>
+          <div><span style="color:#BE123C;font-weight:700;margin-right:.5rem">&#10007;</span>Preparing for interviews alone</div>
+        </div>
+      </div>
+      <div style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:16px;padding:1.8rem">
+        <div style="font-size:1rem;font-weight:700;color:#15803D;margin-bottom:1.2rem">&#9989; With Belongix</div>
+        <div style="display:flex;flex-direction:column;gap:.8rem;font-size:.85rem;color:#6B7280;line-height:1.5">
+          <div><span style="color:#15803D;font-weight:700;margin-right:.5rem">&#10003;</span>AI-matched jobs personalised to your skills</div>
+          <div><span style="color:#15803D;font-weight:700;margin-right:.5rem">&#10003;</span>Real salary benchmarks for your role and city</div>
+          <div><span style="color:#15803D;font-weight:700;margin-right:.5rem">&#10003;</span>Structured learning paths from top platforms</div>
+          <div><span style="color:#15803D;font-weight:700;margin-right:.5rem">&#10003;</span>1-on-1 mentor sessions with verified professionals</div>
+          <div><span style="color:#15803D;font-weight:700;margin-right:.5rem">&#10003;</span>Career Score to track and improve your growth</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec rv" style="text-align:center">
+  <div class="sec-in">
+    <div class="stag">Join Us</div>
+    <h2 class="sh">Ready to <span>start your journey?</span></h2>
+    <p class="sp" style="margin:0 auto 2rem">Belongix is free to join. Get your career score, live job matches and AI guidance today.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
+      <button onclick="location.href='index.html'" style="background:#1447E6;color:white;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">Get Started Free &rarr;</button>
+      <button onclick="location.href='contact.html'" style="background:white;color:#111827;border:1.5px solid #E5E7EB;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">Contact Us</button>
+    </div>
+  </div>
+</section>
 <footer>
   <div class="flogo">Belong<span>ix</span></div>
   <p>© 2026 Belongix · teambelongix@gmail.com · belongix.in</p>
@@ -245,72 +277,52 @@ footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
     <a href="contact.html">Contact</a>
   </div>
 </footer>
-
-
-
-
-
-
-
-
-
-  
-<!-- BEXI -->
-<button class="bexi-fab" onclick="bexiToggle()"><div class="bexi-dot"></div><span style="font-size:18px">&#129302;</span> Chat with Bexi AI</button>
-<div class="bexi-win" id="bexiWin">
-  <div class="bexi-head"><div class="bexi-hav">&#129302;</div><div class="bexi-hinfo"><div class="bexi-hname">Bexi AI</div><div class="bexi-hsub">Belongix Career Guide</div></div><button class="bexi-x" onclick="bexiToggle()">&#x2715;</button></div>
-  <div class="bexi-msgs" id="bexiMsgs"><div class="bmsg bot">Hi! I'm Bexi &#128075; Ask me about salaries, interview tips or upskilling!</div></div>
-  <div class="bexi-chips">
-    <button class="bchip" onclick="bexiAsk('Fresher salary in India?')">Fresher salary</button>
-    <button class="bchip" onclick="bexiAsk('Interview preparation tips?')">Interview prep</button>
-    <button class="bchip" onclick="bexiAsk('Top skills in demand 2026?')">Top skills</button>
-  </div>
-  <div class="bexi-irow"><input class="bexi-inp" id="bexiInp" placeholder="Ask anything..." onkeydown="if(event.key==='Enter')bexiSend()"/><button class="bexi-snd" onclick="bexiSend()">&#10148;</button></div>
-</div>
 <script>
 (function(){
-var SU='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
-var SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
-var sb2=supabase.createClient(SU,SK);
-sb2.auth.getSession().then(function(r){var s=r&&r.data&&r.data.session;if(s&&s.user)showU(s.user);});
-sb2.auth.onAuthStateChange(function(_,s){s?showU(s.user):showO();});
-function showU(u){
-  var name=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];
-  document.getElementById('nav-out').style.display='none';
-  document.getElementById('nav-in').style.display='block';
-  document.getElementById('nav-av').textContent=name.substring(0,2).toUpperCase();
-  document.getElementById('nav-nm').textContent='Hi, '+name.split(' ')[0];
-  document.getElementById('ud-name').textContent=name;
-  document.getElementById('ud-email').textContent=u.email||'';
-}
-function showO(){document.getElementById('nav-out').style.display='flex';document.getElementById('nav-in').style.display='none';}
-window.doSignOut=function(){sb2.auth.signOut().then(function(){window.location.href='index.html';});};
-var btn=document.getElementById('nav-user-btn');
-var dd=document.getElementById('user-dd');
-if(btn&&dd){
-  btn.addEventListener('click',function(e){e.stopPropagation();var o=dd.classList.contains('open');dd.classList[o?'remove':'add']('open');btn.classList[o?'remove':'add']('dd-open');});
-  document.addEventListener('click',function(){dd.classList.remove('open');btn.classList.remove('dd-open');});
-}
-// Bexi
-var BR={
-  sal:'Fresher salaries India 2026:\n- SWE: Rs.3.5-8 LPA\n- Data Analyst: Rs.3-6 LPA\n- Full Stack: Rs.4-10 LPA\n\nTop startups pay 20-40% above market!',
-  int:'Interview tips:\n1. DSA - LeetCode 75\n2. System Design - ByteByteGo\n3. STAR method for behavioral\n4. Research company before round\n5. Pramp for free mock interviews',
-  sk:'Top skills 2026:\n- Agentic AI & LangChain\n- Cloud AWS/Azure/GCP\n- Data Engineering (dbt, Kafka)\n- Full Stack React+Node\n- Cybersecurity\n\nAll free in Belongix Upskilling Hub!',
-  df:'Ask me about salaries, interview prep, or skills!\n\nSign up on Belongix for your full career dashboard.'
-};
-window.bexiToggle=function(){var w=document.getElementById('bexiWin');w.classList.toggle('open');if(w.classList.contains('open'))document.getElementById('bexiInp').focus();};
-window.bexiSend=function(){var i=document.getElementById('bexiInp');var q=i.value.trim();if(!q)return;i.value='';window.bexiAsk(q);};
-window.bexiAsk=function(q){
-  bexiAdd(q,'user');
-  setTimeout(function(){
-    var l=q.toLowerCase();
-    var r=l.includes('salary')||l.includes('fresher')||l.includes('lpa')?BR.sal:l.includes('interview')||l.includes('prep')?BR.int:l.includes('skill')||l.includes('demand')?BR.sk:BR.df;
-    bexiAdd(r,'bot');
-  },600);
-};
-function bexiAdd(t,type){var m=document.getElementById('bexiMsgs');var d=document.createElement('div');d.className='bmsg '+type;d.innerHTML=t.replace(/\n/g,'<br>');m.appendChild(d);m.scrollTop=m.scrollHeight;}
+  var SU='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+  var SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+  var sb=window._bxSb||(window._bxSb=supabase.createClient(SU,SK));
+  function showU(u){
+    var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];
+    var no=document.getElementById('nav-out');
+    var ni=document.getElementById('nav-in');
+    if(no)no.style.display='none';
+    if(ni)ni.style.display='block';
+    ['nav-av','nav-nm','ud-name'].forEach(function(id,i){
+      var el=document.getElementById(id);
+      if(el)el.textContent=i===1?'Hi, '+nm.split(' ')[0]:i===0?nm.substring(0,2).toUpperCase():nm;
+    });
+    var em=document.getElementById('ud-email');
+    if(em)em.textContent=u.email||'';
+  }
+  function showO(){
+    var no=document.getElementById('nav-out');
+    var ni=document.getElementById('nav-in');
+    if(no)no.style.display='flex';
+    if(ni)ni.style.display='none';
+  }
+  window.doSignOut=function(){sb.auth.signOut().then(function(){location.href='index.html';});};
+  sb.auth.getSession().then(function(r){
+    var s=r&&r.data&&r.data.session;
+    if(s&&s.user)showU(s.user); else showO();
+  });
+  sb.auth.onAuthStateChange(function(_,s){s?showU(s.user):showO();});
+  var btn=document.getElementById('nav-user-btn');
+  var dd=document.getElementById('user-dd');
+  if(btn&&dd){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var o=dd.classList.contains('open');
+      dd.classList[o?'remove':'add']('open');
+      btn.classList[o?'remove':'add']('dd-open');
+    });
+    document.addEventListener('click',function(){
+      dd.classList.remove('open');
+      btn.classList.remove('dd-open');
+    });
+  }
 })();
 </script>
+<script src="bexi.js"></script>
 <script src="pwa-install.js"></script>
 </body>
-</html>
