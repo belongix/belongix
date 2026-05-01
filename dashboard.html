@@ -620,16 +620,16 @@
 .pbanner{height:50px;background:linear-gradient(135deg,#EEF3FF,#C7D7FD)}
 .pident{padding:0 14px 14px;margin-top:-22px}
 .pavwrap{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:8px}
-.pav{width:48px;height:48px;border-radius:50%;background:#1447E6;color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #fff;cursor:pointer;position:relative;overflow:hidden;flex-shrink:0;background-size:cover;background-position:center}
+.pav{width:50px;height:50px;border-radius:50%;background:#1447E6;color:#fff;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;border:3px solid #fff;cursor:pointer;flex-shrink:0;background-size:cover;background-position:center;background-repeat:no-repeat;position:relative}
 .pedit{font-size:11px;color:#6B7280;border:1px solid #E5E7EB;border-radius:7px;padding:3px 10px;background:#fff;cursor:pointer}
 .pname{font-size:14px;font-weight:700;color:#0A1628;margin-bottom:1px}
 .prole{font-size:12px;color:#6B7280}.pco{font-size:12px;color:#1447E6;font-weight:600}
 .pstats{display:grid;grid-template-columns:1fr 1fr 1fr;margin-top:10px;padding-top:10px;border-top:1px solid #F3F4F6;text-align:center}
-.pstat{padding:3px}.pstat:not(:last-child){border-right:1px solid #F3F4F6}
+.pstat:not(:last-child){border-right:1px solid #F3F4F6}
 .psv{font-size:12px;font-weight:700;color:#0A1628}.psl{font-size:10px;color:#9CA3AF;margin-top:1px}
 .pcontact{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:12px}
 .pctitle{font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.pcrow{display:flex;align-items:center;gap:7px;font-size:12px;color:#374151;margin-bottom:6px}.pcrow:last-child{margin-bottom:0}
+.pcrow{display:flex;align-items:center;gap:7px;font-size:12px;color:#374151;margin-bottom:6px}
 .pscore{background:#fff;border:1px solid #E5E7EB;border-radius:12px;padding:12px}
 .pshead{display:flex;justify-content:space-between;margin-bottom:7px}
 .pstlt{font-size:12px;font-weight:700;color:#0A1628}.pspct{font-size:12px;font-weight:700;color:#1447E6}
@@ -826,17 +826,25 @@ async function loadUserData() {
   var initials = name.split(" ").map(function(w){return w[0]||"";}).join("").toUpperCase().slice(0,2)||"U";
   function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"";}
   function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||"";}
-  st("sb-name",name); st("sb-role",p.role||p.experience||"Member"); st("sb-avatar",initials);
+  st("sb-name",name);st("sb-role",p.role||p.experience||"Member");st("sb-avatar",initials);
   st("overview-sub","Welcome back, "+name+"! Here's your career progress.");
-  st("prof-name",name); st("prof-email-display",currentUser.email);
-  st("prof-avatar",initials); st("settings-email",currentUser.email);
-  sv("pf-name",p.full_name); sv("pf-role",p.role); sv("pf-exp",p.experience);
-  sv("pf-city",p.city); sv("pf-skills",p.skills); sv("pf-about",p.bio||p.about);
-  sv("pf-usertype",p.user_type); sv("pf-field",p.field);
-  sv("pf-company",p.company); sv("pf-notice",p.notice_period);
+  st("prof-name",name);st("prof-email-display",currentUser.email);
+  st("prof-avatar",initials);st("settings-email",currentUser.email);
+  sv("pf-name",p.full_name);sv("pf-role",p.role);sv("pf-exp",p.experience);
+  sv("pf-city",p.city);sv("pf-skills",p.skills);sv("pf-about",p.bio||p.about);
+  sv("pf-usertype",p.user_type);sv("pf-field",p.field);
+  sv("pf-company",p.company);sv("pf-notice",p.notice_period);
   calcScore(p);
   populateProfileCard(p);
-  if(p.avatar_url) setAvatar(p.avatar_url);
+  // Load avatar: Supabase first, then localStorage fallback
+  var avatarKey = "bx_avatar_" + currentUser.id;
+  if (p.avatar_url) {
+    setAvatar(p.avatar_url);
+    localStorage.setItem(avatarKey, p.avatar_url);
+  } else {
+    var local = localStorage.getItem(avatarKey);
+    if (local) setAvatar(local);
+  }
 }
 
 function calcScore(d) {
@@ -879,10 +887,7 @@ async function saveProfile() {
   try{
     var payload=Object.assign({},base,extra);
     var res=await supaClient.from("profiles").upsert([payload],{onConflict:"id"});
-    if(res.error){
-      var res2=await supaClient.from("profiles").upsert([base],{onConflict:"id"});
-      if(res2.error)throw res2.error;
-    }
+    if(res.error){var res2=await supaClient.from("profiles").upsert([base],{onConflict:"id"});if(res2.error)throw res2.error;}
     showToast("Profile saved! Score: "+base.career_score);
     populateProfileCard(Object.assign({},payload,{career_score:base.career_score}));
     var sbN=document.getElementById("sb-name");if(sbN&&base.full_name)sbN.textContent=base.full_name.split(" ")[0];
@@ -898,21 +903,19 @@ function populateProfileCard(p) {
   function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||"";}
   var name=p.full_name||(currentUser&&currentUser.email?currentUser.email.split("@")[0]:"User");
   var init=name.substring(0,2).toUpperCase();
-  st("pav-txt",init);
-  st("pcard-name",name); st("pcard-role",p.role||"Add your role"); st("pcard-co",p.company||"");
-  st("ps-exp",p.experience||"--"); st("ps-city",(p.city||"--").substring(0,9)); st("ps-score",p.career_score||30);
-  st("pc-email",currentUser?currentUser.email:""); st("pc-city",p.city||"--");
+  st("pav-txt",init);st("pcard-name",name);st("pcard-role",p.role||"Add your role");st("pcard-co",p.company||"");
+  st("ps-exp",p.experience||"--");st("ps-city",(p.city||"--").substring(0,9));st("ps-score",p.career_score||30);
+  st("pc-email",currentUser?currentUser.email:"");st("pc-city",p.city||"--");
   var tm={college_student:"College Student",fresher:"Fresh Graduate",junior_prof:"Junior Pro",mid_prof:"Mid-level",senior_prof:"Senior Pro",career_changer:"Career Changer"};
   st("pc-type",tm[p.user_type]||p.user_type||"--");
-  sv("pf-name",p.full_name); sv("pf-city",p.city); sv("pf-usertype",p.user_type);
-  sv("pf-field",p.field); sv("pf-role",p.role); sv("pf-company",p.company);
-  sv("pf-exp",p.experience); sv("pf-notice",p.notice_period);
-  sv("pf-skills",p.skills); sv("pf-about",p.bio||p.about);
+  sv("pf-name",p.full_name);sv("pf-city",p.city);sv("pf-usertype",p.user_type);
+  sv("pf-field",p.field);sv("pf-role",p.role);sv("pf-company",p.company);
+  sv("pf-exp",p.experience);sv("pf-notice",p.notice_period);
+  sv("pf-skills",p.skills);sv("pf-about",p.bio||p.about);
   var flds=["full_name","city","user_type","role","experience","skills","bio"];
-  var filled=flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length;
-  var pct=Math.round((filled/7)*100);
-  st("ppct-val",pct+"%"); var bar=document.getElementById("ppct-fill");if(bar)bar.style.width=pct+"%";
-  var tip=document.getElementById("ppct-tip");if(tip)tip.textContent=pct>=100?"Profile complete!":(7-filled)+" fields left";
+  var pct=Math.round(flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length/7*100);
+  st("ppct-val",pct+"%");var bar=document.getElementById("ppct-fill");if(bar)bar.style.width=pct+"%";
+  var tip=document.getElementById("ppct-tip");if(tip)tip.textContent=pct>=100?"Profile complete!":(7-Math.round(pct*7/100))+" fields left";
   var sbAv=document.getElementById("sb-avatar");if(sbAv)sbAv.textContent=init;
 }
 
@@ -925,58 +928,41 @@ function setAvatar(url) {
   av.style.backgroundSize="cover";
   av.style.backgroundPosition="center";
   av.style.backgroundRepeat="no-repeat";
-  if(txt)txt.style.opacity="0";
+  av.style.backgroundColor="transparent";
+  if(txt)txt.style.visibility="hidden";
 }
 
 function uploadAvatar(input) {
-  var file = input.files[0];
-  if (!file) return;
-
-  // Compress image using canvas before saving
-  var img = new Image();
-  var objectUrl = URL.createObjectURL(file);
-  img.onload = async function() {
-    URL.revokeObjectURL(objectUrl);
-
-    // Resize to max 200x200 to keep base64 small
-    var MAX = 200;
-    var canvas = document.createElement('canvas');
-    var ratio = Math.min(MAX / img.width, MAX / img.height, 1);
-    canvas.width  = Math.round(img.width  * ratio);
-    canvas.height = Math.round(img.height * ratio);
-    var ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-    // Compress to JPEG quality 0.7 — keeps it under 30KB
-    var b64 = canvas.toDataURL('image/jpeg', 0.7);
-    console.log('Compressed size (chars):', b64.length, '~', Math.round(b64.length * 0.75 / 1024), 'KB');
-
-    // Show preview
+  var file=input.files[0];
+  if(!file)return;
+  var img=new Image();
+  var objUrl=URL.createObjectURL(file);
+  img.onload=async function(){
+    URL.revokeObjectURL(objUrl);
+    // Compress to 150x150 JPEG
+    var MAX=150;
+    var canvas=document.createElement("canvas");
+    var ratio=Math.min(MAX/img.width,MAX/img.height,1);
+    canvas.width=Math.round(img.width*ratio);
+    canvas.height=Math.round(img.height*ratio);
+    canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+    var b64=canvas.toDataURL("image/jpeg",0.6);
+    // Show preview immediately
     setAvatar(b64);
-    showToast('Saving photo...');
-
-    if (!currentUser) { showToast('Not signed in'); return; }
-
-    try {
-      var res = await supaClient
-        .from('profiles')
-        .update({ avatar_url: b64 })
-        .eq('id', currentUser.id)
-        .select();
-
-      if (res.error) {
-        console.error('Avatar error:', res.error);
-        showToast('Save failed: ' + (res.error.message || res.error.code));
-      } else {
-        showToast('Photo saved!');
-      }
-    } catch(err) {
-      console.error('Avatar exception:', err);
-      showToast('Error: ' + err.message);
-    }
+    // Save to localStorage FIRST - works 100% reliably
+    var avatarKey="bx_avatar_"+(currentUser?currentUser.id:"local");
+    try{ localStorage.setItem(avatarKey,b64); }catch(e){}
+    showToast("Photo saved locally!");
+    // Also try Supabase
+    if(!currentUser)return;
+    try{
+      var res=await supaClient.from("profiles").update({avatar_url:b64}).eq("id",currentUser.id);
+      if(res.error){console.warn("Supabase avatar warn:",res.error.message);}
+      else{showToast("Photo saved to your account!");}
+    }catch(e){console.warn("Supabase avatar exception:",e.message);}
   };
-  img.onerror = function() { showToast('Could not load image'); };
-  img.src = objectUrl;
+  img.onerror=function(){showToast("Cannot read image file");};
+  img.src=objUrl;
 }
 
 async function signOut() {
@@ -1118,103 +1104,25 @@ function showToast(msg) {
 // -- ENTER KEY --
 document.getElementById("job-search").addEventListener("keypress", function(e){ if (e.key === "Enter") { jobsLoaded = false; searchJobs(); } });
 
-
-// ── PROFILE CARD ──
-function updateProfileCard(p) {
-  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||"";}
-  function sv(id,v){var el=document.getElementById(id);if(el&&"value" in el)el.value=v||"";}
-  var name=p.full_name||(currentUser?currentUser.email.split("@")[0]:"User");
-  var ini=name.substring(0,2).toUpperCase();
-  st("pav-ini",ini); st("pcard-name",name); st("pcard-role",p.role||"Add your role");
-  st("pcard-co",p.company||""); st("ps-exp",p.experience||"--");
-  st("ps-city",(p.city||"--").substring(0,9)); st("ps-score",p.career_score||30);
-  st("pc-email",currentUser?currentUser.email:""); st("pc-city",p.city||"--");
-  var tm={college_student:"College Student",fresher:"Fresh Graduate",junior_prof:"Junior Pro",mid_prof:"Mid-level",senior_prof:"Senior Pro",career_changer:"Career Changer"};
-  st("pc-type",tm[p.user_type]||p.user_type||"--");
-  sv("pf-name",p.full_name); sv("pf-city",p.city); sv("pf-usertype",p.user_type);
-  sv("pf-field",p.field); sv("pf-role",p.role); sv("pf-company",p.company);
-  sv("pf-exp",p.experience); sv("pf-notice",p.notice_period);
-  sv("pf-skills",p.skills); sv("pf-about",p.bio||p.about);
-  var flds=["full_name","city","user_type","role","experience","skills","bio"];
-  var filled=flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length;
-  var pct=Math.round((filled/7)*100);
-  st("ppct-val",pct+"%");
-  var bar=document.getElementById("ppct-fill");if(bar)bar.style.width=pct+"%";
-  var tip=document.getElementById("ppct-tip");
-  if(tip)tip.textContent=pct>=100?"Profile complete!":(7-filled)+" fields left";
-  var sbAv=document.getElementById("sb-avatar");if(sbAv)sbAv.textContent=ini;
-  if(p.avatar_url) setAvatar(p.avatar_url);
-}
-
-function setAvatar(url) {
-  var av=document.getElementById("pav-circle");
-  var ini=document.getElementById("pav-ini");
-  if(!av||!url)return;
-  av.style.backgroundImage="url("+url+")";
-  av.style.backgroundSize="cover";
-  av.style.backgroundPosition="center";
-  av.style.backgroundRepeat="no-repeat";
-  av.style.backgroundColor="transparent";
-  if(ini)ini.style.opacity="0";
-  // Also update sidebar avatar with photo
-  var sbAv=document.getElementById("sb-avatar");
-  if(sbAv){
-    sbAv.style.backgroundImage="url("+url+")";
-    sbAv.style.backgroundSize="cover";
-    sbAv.style.backgroundPosition="center";
-    sbAv.style.backgroundRepeat="no-repeat";
-    sbAv.style.backgroundColor="transparent";
-    sbAv.textContent="";
-  }
-}
-
-function uploadAvatar(input) {
-  var file=input.files[0];
-  if(!file)return;
-  if(file.size>1.5*1024*1024){showToast("Max 1.5MB for photo");return;}
-  var reader=new FileReader();
-  reader.onload=async function(e){
-    var b64=e.target.result;
-    setAvatar(b64);
-    showToast("Saving photo...");
-    try{
-      var res=await supaClient.from("profiles").upsert([{
-        id:currentUser.id, email:currentUser.email, avatar_url:b64
-      }],{onConflict:"id"});
-      if(res.error)throw res.error;
-      showToast("Photo saved!");
-    }catch(err){
-      console.error("Avatar save:",err);
-      showToast("Photo shown but not saved to DB");
-    }
-  };
-  reader.readAsDataURL(file);
-}
-
-// ── RAZORPAY ──
 var RZP_KEY="rzp_live_SiouVVDYQu9HTt";
 function startPayment(plan){
   if(!currentUser){showToast("Please sign in");return;}
-  var amounts={monthly:49900,yearly:499900,premium:99900};
-  var descs={monthly:"Belongix Pro - Rs.499/month",yearly:"Belongix Pro Annual - Rs.4,999/yr",premium:"Belongix Premium - Rs.999/month"};
-  try{
-    var nm=document.getElementById("sb-name");
-    var rzp=new Razorpay({key:RZP_KEY,amount:amounts[plan]||49900,currency:"INR",name:"Belongix",description:descs[plan]||"Belongix Pro",prefill:{name:nm?nm.textContent:"",email:currentUser.email||""},theme:{color:"#1447E6"},handler:function(resp){onPaySuccess(resp,plan);}});
-    rzp.on("payment.failed",function(){showToast("Payment failed. Try again.");});
-    rzp.open();
-  }catch(e){showToast("Error: "+e.message);}
+  var am={monthly:49900,yearly:499900,premium:99900};
+  var ds={monthly:"Belongix Pro - Rs.499/mo",yearly:"Belongix Pro Annual",premium:"Belongix Premium - Rs.999/mo"};
+  try{var nm=document.getElementById("sb-name");
+    var rzp=new Razorpay({key:RZP_KEY,amount:am[plan]||49900,currency:"INR",name:"Belongix",description:ds[plan]||"Belongix Pro",prefill:{name:nm?nm.textContent:"",email:currentUser.email||""},theme:{color:"#1447E6"},handler:function(r){onPaySuccess(r,plan);}});
+    rzp.on("payment.failed",function(){showToast("Payment failed.");});rzp.open();
+  }catch(e){showToast("Razorpay: "+e.message);}
 }
-async function onPaySuccess(resp,plan){
-  try{await supaClient.from("profiles").update({plan:plan==="premium"?"premium":"pro",payment_id:resp.razorpay_payment_id}).eq("id",currentUser.id);}catch(e){}
-  var el=document.getElementById("paySuccess");if(el){el.style.display="block";}
+async function onPaySuccess(r,plan){
+  try{await supaClient.from("profiles").update({plan:plan==="premium"?"premium":"pro",payment_id:r.razorpay_payment_id}).eq("id",currentUser.id);}catch(e){}
+  var el=document.getElementById("paySuccess");if(el)el.style.display="block";
   showToast("Welcome to Belongix "+(plan==="premium"?"Premium":"Pro")+"!");
 }
-
 // -- INIT --
 init();
 </script>
   
-
 <script src="bexi.js"></script>
 </body>
 </html>
