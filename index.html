@@ -3,929 +3,1071 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Belongix — India's Professional Career Platform</title>
-<meta name="description" content="Find jobs, check salaries, upskill and connect with mentors — India's most complete career platform for students and professionals."/>
+<title>Belongix — India's #1 Professional Career Platform</title>
+<meta name="description" content="Jobs, salary insights, AI career guidance, upskilling and mentors — everything your career needs, in one place."/>
+<link rel="manifest" href="manifest.json"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<link rel="manifest" href="/manifest.json"/>
-<meta name="theme-color" content="#1447E6"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-title" content="Belongix"/>
-<link rel="apple-touch-icon" href="/icons/icon-192.png"/>
+<link rel="icon" href="icons/icon-32.png"/>
 <style>
 :root{
-  --blue:#1447E6;--blue-dark:#0f3bc4;--blue-light:#EEF3FF;
-  --navy:#0A1628;--ink:#111827;--muted:#6B7280;--border:#E5E7EB;
-  --bg:#F9FAFB;--white:#fff;
-  --ff-head:'Figtree',sans-serif;
-  --ff-body:'Figtree',sans-serif;
-  --radius:12px;--shadow:0 1px 2px rgba(0,0,0,.06),0 4px 16px rgba(0,0,0,.06);
+  --blue:#1447E6;--blue-dark:#0f3bc4;--blue-mid:#3B82F6;--blue-light:#EEF3FF;
+  --sky:#0EA5E9;--teal:#06B6D4;
+  --ink:#0A1628;--ink2:#1E293B;--muted:#64748B;--subtle:#94A3B8;
+  --bg:#FFFFFF;--off:#F8FAFC;--off2:#F1F5F9;
+  --border:#E2E8F0;--border2:#CBD5E1;
+  --green:#22C55E;--amber:#F59E0B;--red:#EF4444;
+  --ff:'Bricolage Grotesque',sans-serif;
+  --ffb:'DM Sans',sans-serif;
+  --r:16px;--r2:12px;--r3:24px;
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
+  --shadow-lg:0 8px 32px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);
+  --shadow-xl:0 20px 60px rgba(0,0,0,.15);
+  --max:1200px;
 }
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{font-family:var(--ff-body);background:var(--white);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--ffb);color:var(--ink);background:var(--bg);overflow-x:hidden}
 
-/* ── NAV ── */
-nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 5vw;height:60px;display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-family:var(--ff-head);font-size:19px;font-weight:600;color:var(--navy);text-decoration:none;letter-spacing:-.2px}
-.nav-logo span{color:var(--blue)}
-.nav-center{display:flex;align-items:center;gap:2px}
-.nav-item{position:relative}
-.nav-link{display:flex;align-items:center;gap:4px;padding:6px 12px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);text-decoration:none;cursor:pointer;border:none;background:none;font-family:var(--ff-body);transition:.15s;white-space:nowrap}
-.nav-link:hover,.nav-link.active{color:var(--ink);background:var(--bg)}
-.nav-link svg{width:12px;height:12px;transition:transform .2s}
-.nav-link svg{transition:transform .2s}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;height:62px;display:flex;align-items:center;padding:0 5%;background:rgba(255,255,255,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:.3s}
+.nav-in{max-width:var(--max);width:100%;margin:0 auto;display:flex;align-items:center;gap:0}
+.nlogo{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--ink);text-decoration:none;letter-spacing:-.5px;margin-right:40px;flex-shrink:0}
+.nlogo span{color:var(--blue)}
+.nlinks{display:flex;align-items:center;gap:2px;flex:1;list-style:none}
+.nlinks li{position:relative}
+.nav-link{padding:7px 14px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;text-decoration:none;background:none;border:none;font-family:var(--ffb);display:flex;align-items:center;gap:4px;transition:.15s}
+.nav-link:hover{color:var(--ink);background:var(--off)}
+.nav-link svg{width:11px;height:11px;transition:transform .2s}
 .nav-link.dd-open svg{transform:rotate(180deg)}
-/* Dropdown */
-.dropdown{position:absolute;top:calc(100% + 4px);left:50%;transform:translateX(-50%) translateY(-6px);background:var(--white);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 8px 32px rgba(0,0,0,.12);min-width:220px;padding:6px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:300}
-.dropdown.open{opacity:1;pointer-events:all;transform:translateX(-50%) translateY(0)}
-.dd-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;text-decoration:none;color:var(--ink);font-size:13px;transition:.15s}
-.dd-item:hover{background:var(--blue-light)}
-.dd-icon{width:30px;height:30px;border-radius:7px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
-.dd-text strong{display:block;font-size:13px;font-weight:600;line-height:1.3}
-.dd-text span{font-size:11px;color:var(--muted)}
-.dd-divider{height:1px;background:var(--border);margin:4px 0}
+/* Dropdowns */
+.dd-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);padding:8px;min-width:240px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:200}
+.dd-panel.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.dd-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;text-decoration:none;transition:.15s;color:var(--ink2)}
+.dd-item:hover{background:var(--off)}
+.dd-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.dd-text strong{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:1px}
+.dd-text span{font-size:11.5px;color:var(--muted)}
 /* Nav right */
-.nav-right{display:flex;align-items:center;gap:8px}
-.btn-ghost{padding:6px 16px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--ink);border:1px solid var(--border);background:var(--white);cursor:pointer;font-family:var(--ff-body);transition:.15s;text-decoration:none}
-.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
-.btn-fill{padding:7px 18px;border-radius:8px;font-size:13.5px;font-weight:600;color:var(--white);border:none;background:var(--blue);cursor:pointer;font-family:var(--ff-body);transition:.15s;text-decoration:none}
-.btn-fill:hover{background:var(--blue-dark)}
-/* Logged in nav */
-.nav-user{display:none;align-items:center;gap:10px}
-.nav-user-wrap{position:relative}
-.nav-user-btn{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 6px;border-radius:24px;border:1px solid var(--border);background:var(--white);cursor:pointer;transition:.15s;font-family:var(--ff-body)}
+.nbtns{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nghost{padding:7px 16px;border-radius:8px;border:1.5px solid var(--border2);background:transparent;color:var(--ink2);font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.nghost:hover{border-color:var(--blue);color:var(--blue)}
+.nfill{padding:8px 18px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.nfill:hover{background:var(--blue-dark)}
+/* User nav */
+.nav-user-wrap{position:relative;display:none;margin-left:auto}
+.nav-user-btn{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:24px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:var(--ffb);transition:.15s;font-size:13px;font-weight:500}
 .nav-user-btn:hover{border-color:#C7D7FD;background:var(--blue-light)}
-.nav-av{width:30px;height:30px;border-radius:50%;background:var(--blue);color:white;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nav-nm{font-size:13px;font-weight:500;color:var(--ink);max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nav-user-btn svg{color:var(--muted);transition:transform .2s}
-.nav-user-btn svg{transition:transform .2s}
-.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:var(--white);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.12);min-width:200px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:300}
+.nav-av{width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-nm{font-size:13px;font-weight:500;color:var(--ink)}
+.nav-user-btn svg{width:11px;height:11px;color:var(--subtle);transition:transform .2s}
+.nav-user-btn.dd-open svg{transform:rotate(180deg)}
+.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
 .user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
-.ud-header{padding:10px 12px 8px;border-bottom:1px solid var(--border);margin-bottom:4px}
-.ud-name{font-size:13px;font-weight:600;color:var(--navy)}
-.ud-email{font-size:11px;color:var(--muted);margin-top:1px}
-.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--ink);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:var(--ff-body);text-align:left}
-.ud-item:hover{background:var(--bg);color:var(--blue)}
-.ud-item svg{width:15px;height:15px;color:var(--muted)}
-.ud-divider{height:1px;background:var(--border);margin:4px 0}
+.ud-header{padding:10px 12px 10px;border-bottom:1px solid var(--off2);margin-bottom:4px}
+.ud-name{font-size:13px;font-weight:700;color:var(--ink)}
+.ud-email{font-size:11px;color:var(--subtle);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--ink2);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left}
+.ud-item:hover{background:var(--off);color:var(--blue)}
+.ud-item svg{width:14px;height:14px;flex-shrink:0;color:var(--subtle)}
+.ud-divider{height:1px;background:var(--off2);margin:4px 0}
 
-/* ── HERO ── */
-.hero{padding:72px 5vw 64px;background:linear-gradient(160deg,#F0F6FF 0%,#F8FAFF 50%,#ffffff 100%);text-align:center;position:relative;overflow:hidden}
+/* HERO */
+.hero{min-height:100vh;padding:140px 5% 80px;position:relative;overflow:hidden;background:#fff;display:flex;align-items:center}
+.hero-noise{position:absolute;inset:0;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none}
+.hero-orb-1{width:700px;height:700px;background:radial-gradient(circle,rgba(20,71,230,.07),transparent 70%);top:-200px;right:-200px}
+.hero-orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(14,165,233,.06),transparent 70%);bottom:-100px;left:-100px}
+.hero-orb-3{width:300px;height:300px;background:radial-gradient(circle,rgba(34,197,94,.05),transparent 70%);top:30%;right:20%}
+.hero-in{max-width:var(--max);margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 480px;gap:60px;align-items:center;position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:var(--blue-light);border:1px solid #C7D7FD;border-radius:100px;padding:5px 14px 5px 8px;font-size:12px;font-weight:700;color:var(--blue);margin-bottom:28px;letter-spacing:.2px}
+.badge-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+h1{font-family:var(--ff);font-size:clamp(38px,4.5vw,62px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink)}
+h1 .hl{color:var(--blue);position:relative;display:inline-block}
+h1 .hl::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--blue),var(--sky));border-radius:2px;opacity:.4}
+.hero-desc{font-size:17px;color:var(--muted);line-height:1.75;margin-top:22px;max-width:520px;font-weight:400}
+.hero-cta{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;align-items:center}
+.btn-primary{padding:14px 28px;border-radius:10px;background:var(--blue);color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--blue-dark);transform:translateY(-1px);box-shadow:0 8px 24px rgba(20,71,230,.3)}
+.btn-ghost{padding:14px 24px;border-radius:10px;background:transparent;color:var(--ink2);border:1.5px solid var(--border2);font-size:15px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
+.hero-note{font-size:12.5px;color:var(--subtle);margin-top:14px;display:flex;align-items:center;gap:6px}
+.hero-avatars{display:flex}
+.hero-av{width:24px;height:24px;border-radius:50%;border:2px solid #fff;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;margin-left:-7px}
+.hero-av:first-child{margin-left:0}
+/* Hero stats */
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--off);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-top:36px}
+.hstat{text-align:center;padding:8px 0}
+.hstat:not(:last-child){border-right:1px solid var(--border)}
+.hstat-n{font-family:var(--ff);font-size:24px;font-weight:800;color:var(--blue);letter-spacing:-1px}
+.hstat-l{font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:500}
+/* Hero right card */
+.hero-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:var(--shadow-xl);position:relative}
+.hero-card::before{content:'';position:absolute;top:-1px;left:24px;right:24px;height:3px;background:linear-gradient(90deg,var(--blue),var(--sky));border-radius:0 0 3px 3px}
+.hc-title{font-family:var(--ff);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:18px}
+.hc-form-row{margin-bottom:14px}
+.hc-label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.hc-input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s;background:#FAFCFF}
+.hc-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(20,71,230,.08)}
+.hc-btn{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);margin-top:4px;transition:.2s}
+.hc-btn:hover{background:var(--blue-dark)}
+.hc-or{text-align:center;font-size:12px;color:var(--subtle);margin:14px 0;position:relative}
+.hc-or::before,.hc-or::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
+.hc-or::before{left:0}.hc-or::after{right:0}
+.hc-google{width:100%;padding:10px;background:#fff;border:1.5px solid var(--border);border-radius:9px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;color:var(--ink2)}
+.hc-google:hover{border-color:var(--border2);background:var(--off)}
+.hc-ok{display:none;background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#15803D;font-weight:600;margin-top:10px}
+.hc-fine{font-size:11px;color:var(--subtle);text-align:center;margin-top:12px}
+.hc-trust{display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--off2)}
+.hc-trust-av{display:flex}
+.hc-av{width:22px;height:22px;border-radius:50%;background:var(--blue-light);border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--blue);margin-left:-6px}
+.hc-av:first-child{margin-left:0}
+.hc-trust-txt{font-size:11.5px;color:var(--muted)}
+.hc-trust-txt strong{color:var(--ink);font-weight:600}
 
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--blue-light);color:var(--blue);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;margin-bottom:20px;letter-spacing:.2px}
-.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0}
-.hero h1{font-family:var(--ff-head);font-size:clamp(32px,5vw,56px);font-weight:700;color:var(--navy);line-height:1.12;letter-spacing:-1px;margin-bottom:18px}
-.hero h1 em{color:var(--blue);font-style:normal}
-.hero-sub{font-size:clamp(15px,2vw,18px);color:var(--muted);max-width:520px;margin:0 auto 36px;line-height:1.65;font-weight:300}
+/* LOGOS */
+.logos-sec{background:var(--off);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:24px 5%}
+.logos-in{max-width:var(--max);margin:0 auto;display:flex;align-items:center;gap:48px;flex-wrap:wrap}
+.logos-lbl{font-size:12px;font-weight:600;color:var(--subtle);letter-spacing:.5px;text-transform:uppercase;white-space:nowrap}
+.logos-track{display:flex;align-items:center;gap:40px;flex-wrap:wrap}
+.logo-item{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--subtle);letter-spacing:-.3px;opacity:.7;transition:.2s;white-space:nowrap}
+.logo-item:hover{opacity:1;color:var(--ink2)}
 
-/* Hero cards */
-.hero-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:780px;margin:0 auto}
-.hcard{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:18px;text-align:left;box-shadow:var(--shadow);transition:.2s}
-.hcard:hover{border-color:#C7D7FD;transform:translateY(-2px)}
-.hcard-icon{font-size:22px;margin-bottom:10px}
-.hcard-label{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-.hcard-val{font-family:var(--ff-head);font-size:22px;font-weight:700;color:var(--navy);letter-spacing:-.5px}
-.hcard-sub{font-size:12px;color:var(--muted);margin-top:3px}
+/* SECTION */
+.sec{padding:80px 5%}
+.sec-in{max-width:var(--max);margin:0 auto}
+.sec-center{text-align:center;max-width:620px;margin:0 auto 56px}
+.sec-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--blue);background:var(--blue-light);border:1px solid #C7D7FD;border-radius:100px;padding:4px 14px;margin-bottom:14px;letter-spacing:.3px;text-transform:uppercase}
+h2{font-family:var(--ff);font-size:clamp(28px,3.5vw,44px);font-weight:800;color:var(--ink);line-height:1.1;letter-spacing:-1px}
+h2 span{color:var(--blue)}
+.sec-sub{font-size:17px;color:var(--muted);line-height:1.7;margin-top:14px}
+.off-bg{background:var(--off)}
 
-/* ── SECTION COMMON ── */
-section{padding:64px 5vw}
-.sec-tag{display:inline-block;font-size:12px;font-weight:600;color:var(--blue);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
-.sec-h{font-family:var(--ff-head);font-size:clamp(22px,3vw,32px);font-weight:600;color:var(--navy);letter-spacing:-.3px;line-height:1.2;margin-bottom:12px}
-.sec-h em{color:var(--blue);font-style:normal}
-.sec-sub{font-size:15.5px;color:var(--muted);max-width:520px;line-height:1.65}
-.sec-head{margin-bottom:36px}
+/* WHO GRID */
+.who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.who-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px 20px;transition:.2s;cursor:pointer;position:relative;overflow:hidden}
+.who-card::after{content:'';position:absolute;inset:0;border-radius:16px;border:2px solid var(--blue);opacity:0;transition:.2s}
+.who-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.who-card:hover::after{opacity:1}
+.who-icon{font-size:32px;margin-bottom:14px;display:block}
+.who-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.who-desc{font-size:13px;color:var(--muted);line-height:1.65}
+.who-tag{display:inline-flex;margin-top:14px;font-size:11px;font-weight:600;color:var(--blue);background:var(--blue-light);border-radius:20px;padding:3px 10px}
 
-/* ── WHO IT'S FOR ── */
-.who{background:var(--bg)}
-.who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.who-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px;cursor:pointer;transition:.2s;position:relative;overflow:hidden}
-.who-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--blue);opacity:0;transition:.2s}
-.who-card:hover{border-color:#C7D7FD;transform:translateY(-3px);box-shadow:0 8px 24px rgba(20,71,230,.1)}
-.who-card:hover::before{opacity:1}
-.who-emoji{font-size:28px;margin-bottom:12px}
-.who-title{font-family:var(--ff-head);font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px}
-.who-desc{font-size:13px;color:var(--muted);line-height:1.55}
+/* FEATURES */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;transition:.2s;cursor:pointer;text-decoration:none;display:block}
+.feat-card:hover{border-color:var(--blue);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.feat-num{font-size:11px;font-weight:700;color:var(--subtle);letter-spacing:.5px;margin-bottom:14px;font-family:var(--ff)}
+.feat-icon-wrap{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+.feat-title{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.feat-desc{font-size:13px;color:var(--muted);line-height:1.65}
+.feat-link{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:600;color:var(--blue);margin-top:14px}
+.feat-link svg{width:13px;height:13px;transition:transform .2s}
+.feat-card:hover .feat-link svg{transform:translateX(3px)}
 
-/* ── FEATURES ── */
-.features{background:var(--white)}
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.feat-card{border:1px solid var(--border);border-radius:14px;padding:24px;transition:.2s;position:relative}
-.feat-card:hover{border-color:#C7D7FD;box-shadow:0 4px 20px rgba(20,71,230,.08)}
-.feat-num{position:absolute;top:20px;right:20px;font-family:var(--ff-head);font-size:11px;font-weight:700;color:#D1D5DB}
-.feat-icon{width:44px;height:44px;border-radius:10px;background:var(--blue-light);display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:20px}
-.feat-title{font-family:var(--ff-head);font-size:16px;font-weight:700;color:var(--navy);margin-bottom:6px}
-.feat-desc{font-size:13.5px;color:var(--muted);line-height:1.6}
-.feat-link{display:inline-flex;align-items:center;gap:4px;margin-top:12px;font-size:13px;font-weight:600;color:var(--blue);text-decoration:none;cursor:pointer}
-.feat-link:hover{gap:7px}
+/* SALARY SECTION */
+.salary-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.salary-left .sec-tag{margin-bottom:14px}
+.sal-table{background:#fff;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:28px}
+.sal-head{background:var(--off);padding:12px 20px;display:grid;grid-template-columns:1fr auto auto;gap:16px;font-size:11.5px;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
+.sal-row{padding:14px 20px;display:grid;grid-template-columns:1fr auto auto;gap:16px;align-items:center;border-bottom:1px solid var(--off2);transition:.15s}
+.sal-row:last-child{border-bottom:none}
+.sal-row:hover{background:var(--off)}
+.sal-role{font-size:14px;font-weight:600;color:var(--ink)}
+.sal-range{font-size:13px;font-weight:700;color:var(--blue)}
+.sal-bar-wrap{width:100px;height:6px;background:var(--off2);border-radius:6px;overflow:hidden}
+.sal-bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--sky));border-radius:6px}
 
-/* ── AUDIENCE PILLS ── */
-.for-whom{background:var(--bg)}
-.pills-row{display:flex;flex-wrap:wrap;gap:10px}
-.pill{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--border);border-radius:40px;padding:10px 18px;cursor:pointer;transition:.2s;font-size:14px;font-weight:500;color:var(--ink)}
-.pill:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-light)}
-.pill span{font-size:18px}
+/* SCORE SECTION */
+.score-wrap{background:#fff;border:1px solid var(--border);border-radius:20px;padding:36px;display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:center}
+.score-ring-wrap{position:relative;width:180px;height:180px;flex-shrink:0}
+.score-ring-wrap svg{transform:rotate(-90deg)}
+.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-num{font-family:var(--ff);font-size:46px;font-weight:800;color:var(--blue);line-height:1}
+.score-label{font-size:12px;color:var(--muted);font-weight:500;margin-top:4px}
+.score-steps{display:flex;flex-direction:column;gap:12px}
+.score-step{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--off);border-radius:10px}
+.step-dot{width:22px;height:22px;border-radius:50%;background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #C7D7FD}
+.step-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.step-name{flex:1;font-size:13px;font-weight:500;color:var(--ink2)}
+.step-pts{font-size:12px;font-weight:700;color:var(--blue)}
 
-/* ── MENTOR CTA ── */
-.mentor-cta{background:#EEF3FF;padding:64px 5vw;text-align:center;border-top:1px solid #C7D7FD;border-bottom:1px solid #C7D7FD}
-.mentor-cta .sec-tag{color:var(--blue)}
-.mentor-cta .sec-h{color:var(--navy)}
-.mentor-cta .sec-sub{color:var(--muted);margin:0 auto 28px}
-.mcta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.mcta-white{padding:11px 26px;border-radius:10px;font-size:14px;font-weight:600;background:var(--blue);color:white;border:none;cursor:pointer;font-family:var(--ff-body);transition:.2s}
-.mcta-white:hover{background:var(--blue-dark)}
-.mcta-outline{padding:11px 26px;border-radius:10px;font-size:14px;font-weight:500;background:white;color:var(--ink);border:1.5px solid var(--border);cursor:pointer;font-family:var(--ff-body);transition:.2s}
-.mcta-outline:hover{border-color:var(--blue);color:var(--blue)}
+/* TESTIMONIALS */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.testi-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:16px;transition:.2s}
+.testi-card:hover{border-color:var(--blue-light);box-shadow:var(--shadow-lg)}
+.testi-stars{display:flex;gap:2px;color:#F59E0B;font-size:14px}
+.testi-text{font-size:14px;color:var(--ink2);line-height:1.7;flex:1}
+.testi-quote{font-size:36px;color:var(--blue-light);font-family:Georgia,serif;line-height:1;margin-bottom:-10px}
+.testi-author{display:flex;align-items:center;gap:10px}
+.testi-av{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--sky));color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--ff)}
+.testi-name{font-size:13px;font-weight:700;color:var(--ink)}
+.testi-role{font-size:11.5px;color:var(--muted);margin-top:1px}
+.testi-highlight{background:linear-gradient(135deg,var(--blue),#1d4ed8);color:#fff;border-color:transparent}
+.testi-highlight .testi-text{color:rgba(255,255,255,.9)}
+.testi-highlight .testi-name{color:#fff}
+.testi-highlight .testi-role{color:rgba(255,255,255,.7)}
+.testi-highlight .testi-quote{color:rgba(255,255,255,.2)}
 
-/* ── FAQ ── */
-.faq{background:var(--bg)}
-.faq-list{max-width:680px}
-.faq-item{border:1px solid var(--border);border-radius:12px;margin-bottom:8px;overflow:hidden;background:var(--white)}
-.faq-q{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;font-size:14.5px;font-weight:600;color:var(--navy);gap:12px}
-.faq-q svg{width:16px;height:16px;flex-shrink:0;color:var(--muted);transition:transform .25s}
-.faq-item.open .faq-q svg{transform:rotate(45deg)}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s}
-.faq-item.open .faq-a{max-height:200px;padding:0 20px 16px}
-.faq-a p{font-size:14px;color:var(--muted);line-height:1.65}
+/* MENTOR STRIP */
+.mentor-strip{background:linear-gradient(135deg,var(--ink) 0%,#1E3A8A 50%,var(--blue) 100%);border-radius:24px;padding:52px;position:relative;overflow:hidden;text-align:center}
+.mentor-strip::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:rgba(255,255,255,.04)}
+.mentor-strip::after{content:'';position:absolute;bottom:-60px;left:-60px;width:300px;height:300px;border-radius:50%;background:rgba(14,165,233,.08)}
+.mentor-strip h2{color:#fff;letter-spacing:-1px;font-size:clamp(26px,3vw,40px)}
+.mentor-strip p{color:rgba(255,255,255,.7);font-size:15px;line-height:1.7;max-width:520px;margin:14px auto 36px}
+.mentor-perks{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;position:relative;z-index:1}
+.mentor-perk{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:6px 16px;font-size:12.5px;color:rgba(255,255,255,.85);font-weight:500;display:flex;align-items:center;gap:5px}
+.mentor-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.btn-white{padding:13px 26px;border-radius:10px;background:#fff;color:var(--blue);border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.btn-white-ghost{padding:13px 26px;border-radius:10px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,.3);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s}
+.btn-white-ghost:hover{border-color:rgba(255,255,255,.7);background:rgba(255,255,255,.08)}
 
-/* ── FOOTER ── */
-footer{background:var(--navy);padding:40px 5vw;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
-.foot-logo{font-family:var(--ff-head);font-size:18px;font-weight:700;color:white}
-.foot-logo span{color:#93BBFC}
-.foot-links{display:flex;gap:20px;flex-wrap:wrap}
-.foot-links a{font-size:13px;color:rgba(255,255,255,.55);text-decoration:none;transition:.15s}
-.foot-links a:hover{color:white}
-.foot-copy{font-size:12px;color:rgba(255,255,255,.35)}
+/* PRICING */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.price-card{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:28px;position:relative;transition:.2s}
+.price-card.pop{border-color:var(--blue);box-shadow:0 0 0 4px rgba(20,71,230,.06)}
+.pop-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:11px;font-weight:700;padding:3px 14px;border-radius:100px;white-space:nowrap}
+.price-tier{font-family:var(--ff);font-size:13px;font-weight:700;color:var(--blue);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.price-amt{font-family:var(--ff);font-size:38px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:4px;letter-spacing:-1px}
+.price-amt sup{font-size:20px;vertical-align:top;margin-top:8px;font-weight:700}
+.price-period{font-size:12px;color:var(--muted);margin-bottom:20px;font-weight:500}
+.price-divider{height:1px;background:var(--off2);margin-bottom:20px}
+.price-feat{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.pf-item{display:flex;align-items:flex-start;gap:9px;font-size:13.5px;color:var(--ink2)}
+.pf-check{width:18px;height:18px;border-radius:50%;background:var(--blue-light);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;flex-shrink:0;margin-top:1px}
+.pf-check.no{background:var(--off2);color:var(--subtle)}
+.price-btn{width:100%;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;border:1.5px solid var(--border);background:#fff;color:var(--ink2)}
+.price-card.pop .price-btn{background:var(--blue);color:#fff;border-color:var(--blue)}
+.price-card.pop .price-btn:hover{background:var(--blue-dark)}
+.price-btn:hover{border-color:var(--blue);color:var(--blue)}
 
-/* ── MODALS ── */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.2s}
-.overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--white);border-radius:18px;width:100%;max-width:440px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.2);transform:translateY(12px);transition:.25s}
-.overlay.open .modal{transform:translateY(0)}
-.modal-top{padding:24px 24px 0;position:relative}
-.modal-brand{font-family:var(--ff-head);font-size:13px;font-weight:700;color:var(--blue);margin-bottom:8px}
-.modal-title{font-family:var(--ff-head);font-size:22px;font-weight:700;color:var(--navy);margin-bottom:4px}
-.modal-sub{font-size:13px;color:var(--muted)}
-.modal-x{position:absolute;top:20px;right:20px;background:var(--bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--muted)}
-.modal-x:hover{color:var(--ink)}
-.modal-body{padding:20px 24px 24px}
-.tabs{display:flex;gap:4px;background:var(--bg);border-radius:8px;padding:3px;margin-bottom:20px}
-.tab{flex:1;text-align:center;padding:7px;border-radius:6px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:.15s}
-.tab.on{background:var(--white);color:var(--ink);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.1)}
-.soc-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.soc{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px;border:1.5px solid var(--border);border-radius:9px;background:var(--white);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--ff-body);color:var(--ink);transition:.15s}
-.soc:hover{border-color:var(--blue);background:var(--blue-light)}
-.or-row{text-align:center;font-size:12px;color:var(--muted);margin:12px 0;position:relative}
-.or-row::before,.or-row::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border)}
-.or-row::before{left:0}.or-row::after{right:0}
-.fg{margin-bottom:12px}
-.fl{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:5px}
-.fi{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13.5px;font-family:var(--ff-body);color:var(--ink);transition:.15s;background:var(--white)}
-.fi:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(20,71,230,.1)}
-.fsel{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13.5px;font-family:var(--ff-body);color:var(--ink);background:var(--white);cursor:pointer}
-.fsel:focus{outline:none;border-color:var(--blue)}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fgt{text-align:right;margin:-6px 0 10px;font-size:12px}
-.fgt a{color:var(--blue);cursor:pointer;font-weight:500}
-.mbtn{width:100%;padding:11px;border-radius:9px;background:var(--blue);color:white;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ff-body);margin-top:4px;transition:.2s}
-.mbtn:hover{background:var(--blue-dark)}
-.mbtn:disabled{opacity:.6;cursor:not-allowed}
-.mbtn-ghost{width:100%;padding:9px;border-radius:9px;background:none;color:var(--muted);border:1px solid var(--border);font-size:13px;cursor:pointer;font-family:var(--ff-body);margin-top:6px}
-.msw{text-align:center;font-size:13px;color:var(--muted);margin-top:14px}
-.msw a{color:var(--blue);cursor:pointer;font-weight:600}
-.err-box{background:#FEF2F2;color:#991B1B;border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:10px;display:none}
-.ok-box{background:#F0FDF4;color:#166534;border-radius:8px;padding:9px 12px;font-size:13px;margin-bottom:10px;display:none}
-.tiny{font-size:11px;color:#9CA3AF;text-align:center;margin-top:12px;line-height:1.5}
-.step{display:none}.step.active{display:block}
-.fi-otp{letter-spacing:6px;font-size:20px;text-align:center}
+/* FAQ */
+.faq-wrap{max-width:720px;margin:0 auto}
+.fi{border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;transition:.2s}
+.fi.open{border-color:var(--blue)}
+.fiq{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:16px}
+.fi-ic{width:24px;height:24px;border-radius:50%;background:var(--off2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;color:var(--muted);flex-shrink:0;transition:.2s}
+.fi.open .fi-ic{background:var(--blue);color:#fff;transform:rotate(45deg)}
+.fia{display:none;padding:0 20px 18px;font-size:14px;color:var(--muted);line-height:1.7}
+.fi.open .fia{display:block}
 
-/* ── TOAST ── */
+/* CTA */
+.cta-sec{background:linear-gradient(160deg,#0A1628 0%,#1E3A8A 60%,var(--blue) 100%);padding:96px 5%;text-align:center;position:relative;overflow:hidden}
+.cta-sec::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background-image:radial-gradient(circle at 20% 80%,rgba(14,165,233,.15) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(20,71,230,.2) 0%,transparent 50%)}
+.cta-sec h2{color:#fff;position:relative;z-index:1;max-width:600px;margin:0 auto 16px}
+.cta-sec p{color:rgba(255,255,255,.7);font-size:16px;max-width:480px;margin:0 auto 40px;position:relative;z-index:1}
+.cta-form{display:flex;gap:10px;max-width:440px;margin:0 auto;position:relative;z-index:1}
+.c-inp{flex:1;padding:14px 18px;border-radius:10px;border:none;font-size:14px;font-family:var(--ffb);outline:none;color:var(--ink)}
+.c-btn{padding:14px 24px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);white-space:nowrap;transition:.2s}
+.c-btn:hover{background:#16a34a;transform:translateY(-1px)}
+.c-ok{display:none;color:#86EFAC;font-size:14px;font-weight:600;margin-top:14px;position:relative;z-index:1}
+.c-fine{font-size:12px;color:rgba(255,255,255,.4);margin-top:14px;position:relative;z-index:1}
+.trust-row{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:36px;flex-wrap:wrap;position:relative;z-index:1}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:rgba(255,255,255,.5);font-weight:500}
+.trust-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2)}
 
-/* Chat with AI button */
-.chat-ai-btn{position:fixed;bottom:24px;right:24px;display:flex;align-items:center;gap:8px;background:var(--blue);color:white;border:none;border-radius:24px;padding:11px 18px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ff-body);box-shadow:0 4px 20px rgba(20,71,230,.35);transition:.2s;z-index:999;text-decoration:none}
-.chat-ai-btn:hover{background:var(--blue-dark);transform:translateY(-2px);box-shadow:0 8px 28px rgba(20,71,230,.4)}
-.chat-ai-dot{width:7px;height:7px;border-radius:50%;background:#22C55E;flex-shrink:0}
+/* FOOTER */
+footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,255,255,.06)}
+.footer-g{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.footer-brand p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;margin-top:14px;max-width:280px}
+.footer-logo{font-family:var(--ff);font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.footer-logo span{color:var(--sky)}
+.footer-col h4{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px}
+.footer-col a{display:block;font-size:13.5px;color:rgba(255,255,255,.45);text-decoration:none;margin-bottom:10px;transition:.15s}
+.footer-col a:hover{color:#fff}
+.footer-social{display:flex;gap:10px;margin-top:20px}
+.fsoc{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;text-decoration:none}
+.fsoc:hover{background:rgba(255,255,255,.12)}
+.footer-bottom{max-width:var(--max);margin:0 auto;padding-top:28px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-bottom p{font-size:12.5px;color:rgba(255,255,255,.3)}
+.footer-chips{display:flex;gap:8px;flex-wrap:wrap}
+.fc{font-size:11px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);border-radius:6px;padding:4px 10px;font-weight:500}
 
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--navy);color:white;padding:11px 20px;border-radius:10px;font-size:13.5px;font-weight:500;z-index:999;opacity:0;transition:.3s;white-space:nowrap;font-family:var(--ff-body)}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:20px;padding:36px;width:100%;max-width:420px;margin:20px;position:relative;animation:popIn .25s ease}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.modal-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;background:var(--off2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted)}
+.modal-close:hover{background:var(--border2)}
+.modal h3{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--ink);margin-bottom:6px}
+.modal-sub{font-size:13.5px;color:var(--muted);margin-bottom:24px}
+.m-inp{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;margin-bottom:12px;transition:.15s}
+.m-inp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(20,71,230,.08)}
+.m-btn{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;margin-bottom:10px}
+.m-btn:hover{background:var(--blue-dark)}
+.m-google{width:100%;padding:11px;background:#fff;border:1.5px solid var(--border);border-radius:9px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;color:var(--ink2)}
+.m-google:hover{border-color:var(--border2);background:var(--off)}
+.m-fine{font-size:11.5px;color:var(--subtle);text-align:center;margin-top:12px}
+.m-ok{display:none;background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#15803D;font-weight:600;margin-top:10px}
+.m-tabs{display:flex;gap:2px;background:var(--off);border-radius:10px;padding:3px;margin-bottom:22px}
+.m-tab{flex:1;padding:8px;text-align:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:.15s;border:none;background:none;font-family:var(--ffb)}
+.m-tab.active{background:#fff;color:var(--blue);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 
+/* NAV USER CSS */
+.nav-user-wrap{position:relative;display:none;margin-left:auto}
+.nav-user-btn{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:24px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:var(--ffb);transition:.15s;font-size:13px;font-weight:500}
+.nav-user-btn:hover{border-color:#C7D7FD;background:var(--blue-light)}
+.nav-av{width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-nm{font-size:13px;font-weight:500;color:var(--ink)}
+.nav-user-btn svg{width:11px;height:11px;color:var(--subtle);transition:transform .2s}
+.nav-user-btn.dd-open svg{transform:rotate(180deg)}
+.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
+.user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.ud-header{padding:10px 12px 10px;border-bottom:1px solid var(--off2);margin-bottom:4px}
+.ud-name{font-size:13px;font-weight:700;color:var(--ink)}
+.ud-email{font-size:11px;color:var(--subtle);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--ink2);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left}
+.ud-item:hover{background:var(--off);color:var(--blue)}
+.ud-item svg{width:14px;height:14px;flex-shrink:0;color:var(--subtle)}
+.ud-divider{height:1px;background:var(--off2);margin:4px 0}
 
-/* ── BEXI CHAT BUTTON ── */
-.bexi-btn{position:fixed;bottom:24px;right:24px;z-index:9998;display:flex;align-items:center;gap:8px;background:var(--blue);color:white;border:none;border-radius:28px;padding:11px 18px 11px 14px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ff-body);box-shadow:0 4px 20px rgba(20,71,230,.4);transition:.2s}
-.bexi-btn:hover{background:var(--blue-dark);transform:translateY(-2px);box-shadow:0 8px 28px rgba(20,71,230,.5)}
-.bexi-btn .bexi-dot{width:8px;height:8px;border-radius:50%;background:#22C55E;flex-shrink:0}
-.bexi-btn .bexi-icon{font-size:18px;line-height:1}
-/* Bexi chat window */
-.bexi-window{position:fixed;bottom:80px;right:24px;width:340px;max-height:480px;background:white;border-radius:16px;border:1px solid var(--border);box-shadow:0 16px 48px rgba(0,0,0,.15);z-index:9997;display:none;flex-direction:column;overflow:hidden}
-.bexi-window.open{display:flex}
-.bexi-head{background:var(--blue);padding:14px 16px;display:flex;align-items:center;gap:10px}
-.bexi-head-av{width:34px;height:34px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.bexi-head-info{flex:1}
-.bexi-head-name{font-size:14px;font-weight:700;color:white}
-.bexi-head-sub{font-size:11px;color:rgba(255,255,255,.75)}
-.bexi-close{background:none;border:none;color:white;font-size:20px;cursor:pointer;opacity:.8;padding:2px}
-.bexi-close:hover{opacity:1}
-.bexi-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}
-.bexi-msg{max-width:85%;padding:9px 12px;border-radius:12px;font-size:13px;line-height:1.5}
-.bexi-msg.bot{background:var(--bg);color:var(--ink);align-self:flex-start;border-radius:4px 12px 12px 12px}
-.bexi-msg.user{background:var(--blue);color:white;align-self:flex-end;border-radius:12px 4px 12px 12px}
-.bexi-chips{padding:8px 14px;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid var(--border)}
-.bexi-chip{background:var(--blue-light);color:var(--blue);border:1px solid #C7D7FD;border-radius:16px;padding:5px 11px;font-size:11.5px;font-weight:500;cursor:pointer;font-family:var(--ff-body);white-space:nowrap}
-.bexi-chip:hover{background:var(--blue);color:white}
-.bexi-input-row{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px}
-.bexi-input{flex:1;border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;font-size:13px;font-family:var(--ff-body);outline:none;color:var(--ink)}
-.bexi-input:focus{border-color:var(--blue)}
-.bexi-send{background:var(--blue);border:none;border-radius:8px;padding:8px 12px;color:white;cursor:pointer;font-size:14px}
-.bexi-send:hover{background:var(--blue-dark)}
+/* ANIMATIONS */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.rv.on{opacity:1;transform:translateY(0)}
 
-/* ── ANIMATIONS ── */
-.fade-up{opacity:0;transform:translateY(20px);transition:opacity .5s ease,transform .5s ease}
-.fade-up.on{opacity:1;transform:translateY(0)}
-
-@media(max-width:768px){
-  nav{padding:0 16px}
-  .nav-center{display:none}
-  .hero{padding:48px 16px 40px}
-  .hero-cards{grid-template-columns:1fr 1fr;gap:10px}
-  .hero-cards .hcard:last-child{grid-column:1/-1}
-  section{padding:48px 16px}
-  .who-grid{grid-template-columns:1fr 1fr}
-  .feat-grid{grid-template-columns:1fr}
-  .pills-row .pill{font-size:13px}
-  .fr{grid-template-columns:1fr}
-  footer{flex-direction:column;align-items:flex-start;gap:16px}
-}
+/* RESPONSIVE */
+@media(max-width:1024px){.hero-in{grid-template-columns:1fr}.hero-card{display:none}.who-grid{grid-template-columns:repeat(2,1fr)}.feat-grid{grid-template-columns:repeat(2,1fr)}.price-grid{grid-template-columns:1fr}.testi-grid{grid-template-columns:1fr}.salary-grid{grid-template-columns:1fr}.score-wrap{grid-template-columns:1fr}.footer-g{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.nlinks{display:none}.hstat{padding:6px 0}.hero-stats{grid-template-columns:repeat(2,1fr)}.mentor-strip{padding:36px 24px}.cta-form{flex-direction:column}.who-grid{grid-template-columns:1fr}.footer-g{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- ── NAV ── -->
-<nav>
-  <a href="index.html" class="nav-logo">Be<span>longix</span></a>
-
-  <div class="nav-center">
-    <!-- Platform dropdown -->
-    <div class="nav-item">
-      <button class="nav-link">
-        Platform
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
-      </button>
-      <div class="dropdown">
-        <a class="dd-item" href="dashboard.html?page=jobs">
-          <div class="dd-icon">💼</div>
-          <div class="dd-text"><strong>Job Board</strong><span>Live listings, apply instantly</span></div>
-        </a>
-        <a class="dd-item" href="dashboard.html?page=salary">
-          <div class="dd-icon">💰</div>
-          <div class="dd-text"><strong>Salary Intelligence</strong><span>Know your market worth</span></div>
-        </a>
-        <div class="dd-divider"></div>
-        <a class="dd-item" href="dashboard.html?page=overview">
-          <div class="dd-icon">🤖</div>
-          <div class="dd-text"><strong>Bexi AI</strong><span>Your 24/7 career guide</span></div>
-        </a>
-      </div>
-    </div>
-
-    <!-- Who It's For -->
-    <div class="nav-item">
-      <button class="nav-link">
-        Who It's For
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
-      </button>
-      <div class="dropdown">
-        <a class="dd-item" href="index.html#who-section">
-          <div class="dd-icon">🎓</div>
-          <div class="dd-text"><strong>College Students</strong><span>Internship & placement prep</span></div>
-        </a>
-        <a class="dd-item" href="index.html#who-section">
-          <div class="dd-icon">🌱</div>
-          <div class="dd-text"><strong>Fresh Graduates</strong><span>First job roadmap & interview prep</span></div>
-        </a>
-        <a class="dd-item" href="index.html#who-section">
-          <div class="dd-icon">💼</div>
-          <div class="dd-text"><strong>Working Professionals</strong><span>Promotions, salary & growth</span></div>
-        </a>
-        <a class="dd-item" href="index.html#who-section">
-          <div class="dd-icon">🔄</div>
-          <div class="dd-text"><strong>Career Changers</strong><span>Reskilling & transition roadmap</span></div>
-        </a>
-      </div>
-    </div>
-
-    <!-- Learn dropdown -->
-    <div class="nav-item">
-      <button class="nav-link">
-        Learn
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
-      </button>
-      <div class="dropdown">
-        <a class="dd-item" href="dashboard.html?page=upskill">
-          <div class="dd-icon">🎓</div>
-          <div class="dd-text"><strong>Upskilling Hub</strong><span>48+ curated courses</span></div>
-        </a>
-        <a class="dd-item" href="dashboard.html?page=upskill">
-          <div class="dd-icon">🏆</div>
-          <div class="dd-text"><strong>Certifications</strong><span>AWS, Google, Microsoft & more</span></div>
-        </a>
-        <a class="dd-item" href="dashboard.html?page=upskill">
-          <div class="dd-icon">🎯</div>
-          <div class="dd-text"><strong>DSA & Interview Prep</strong><span>Crack FAANG & top startups</span></div>
-        </a>
-      </div>
-    </div>
-
-    <!-- Mentors -->
-    <div class="nav-item">
-      <button class="nav-link">
-        Mentors
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
-      </button>
-      <div class="dropdown">
-        <a class="dd-item" href="mentors.html">
-          <div class="dd-icon">🔍</div>
-          <div class="dd-text"><strong>Find a Mentor</strong><span>Browse verified professionals</span></div>
-        </a>
-        <a class="dd-item" href="mentors.html">
-          <div class="dd-icon">✋</div>
-          <div class="dd-text"><strong>Become a Mentor</strong><span>Guide the next generation</span></div>
-        </a>
-      </div>
-    </div>
-
-    <a class="nav-link" href="contact.html">Contact</a>
-    <a class="nav-link" href="about.html">About</a>
-  </div>
-
-  <div class="nav-right">
-    <div id="nav-loggedout" style="display:flex;align-items:center;gap:8px">
-      <button class="btn-ghost" onclick="openM('mLogin')">Sign In</button>
-      <button class="btn-fill" onclick="openM('mSignup')">Join Free →</button>
-    </div>
-    <div class="nav-user-wrap" id="nav-loggedin" style="display:none">
-      <div class="nav-user-btn">
-        <div class="nav-av" id="nav-av">?</div>
-        <span class="nav-nm" id="nav-nm"></span>
-        <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
-      </div>
-      <div class="user-dropdown">
-        <div class="ud-header">
-          <div class="ud-name" id="ud-name">User</div>
-          <div class="ud-email" id="ud-email"></div>
-        </div>
-        <a class="ud-item" href="dashboard.html">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          Dashboard
-        </a>
-        <a class="ud-item" href="dashboard.html?page=profile">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          My Profile
-        </a>
-        <div class="ud-divider"></div>
-        <button class="ud-item" onclick="doLogout()" style="color:#DC2626">
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" style="color:#DC2626"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>
-          Sign Out
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-in">
+    <a href="index.html" class="nlogo">Belong<span>ix</span></a>
+    <ul class="nlinks">
+      <!-- Platform -->
+      <li>
+        <button class="nav-link" onclick="toggleDD('dd-platform',this)">
+          Platform <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
         </button>
+        <div class="dd-panel" id="dd-platform">
+          <a class="dd-item" href="dashboard.html?page=jobs"><div class="dd-icon" style="background:#EEF3FF">💼</div><div class="dd-text"><strong>Job Board</strong><span>Live listings, apply instantly</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=salary"><div class="dd-icon" style="background:#F0FDF4">💰</div><div class="dd-text"><strong>Salary Intelligence</strong><span>Know your market worth</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FEF9C3">🤖</div><div class="dd-text"><strong>Bexi AI Guide</strong><span>24/7 career guidance</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF1F2">📊</div><div class="dd-text"><strong>Career Score</strong><span>Track your professional growth</span></div></a>
+        </div>
+      </li>
+      <!-- Who It's For -->
+      <li>
+        <button class="nav-link" onclick="toggleDD('dd-who',this)">
+          Who It's For <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="dd-panel" id="dd-who">
+          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#EEF3FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
+          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#F0FDF4">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
+          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#FEF9C3">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
+          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#FFF1F2">🔄</div><div class="dd-text"><strong>Career Changers</strong><span>Switch fields with mentor support</span></div></a>
+        </div>
+      </li>
+      <!-- Learn -->
+      <li>
+        <button class="nav-link" onclick="toggleDD('dd-learn',this)">
+          Learn <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+        </button>
+        <div class="dd-panel" id="dd-learn">
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF3FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>48+ curated courses</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#F5F3FF">🏆</div><div class="dd-text"><strong>Certifications</strong><span>AWS, Google, Microsoft</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#FFF1F2">🎯</div><div class="dd-text"><strong>DSA & Interview Prep</strong><span>Crack FAANG & top startups</span></div></a>
+        </div>
+      </li>
+      <li><a class="nav-link" href="mentors.html">Mentors</a></li>
+      <li><a class="nav-link" href="contact.html">Contact</a></li>
+      <li><a class="nav-link" href="about.html">About</a></li>
+    </ul>
+    <div class="nbtns" id="nav-out">
+      <button class="nghost" onclick="openModal('signin')">Sign In</button>
+      <button class="nfill" onclick="openModal('signup')">Join Free →</button>
+    </div>
+    <div class="nav-user-wrap" id="nav-in">
+      <button class="nav-user-btn" id="nav-user-btn">
+        <div class="nav-av" id="nav-av">?</div>
+        <span class="nav-nm" id="nav-nm">Hi...</span>
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div class="user-dropdown" id="user-dd">
+        <div class="ud-header"><div class="ud-name" id="ud-name">User</div><div class="ud-email" id="ud-email"></div></div>
+        <a class="ud-item" href="dashboard.html"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+        <a class="ud-item" href="dashboard.html?page=profile"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>My Profile</a>
+        <div class="ud-divider"></div>
+        <button class="ud-item" onclick="doSignOut()" style="color:#EF4444"><svg fill="none" viewBox="0 0 24 24" stroke="#EF4444" stroke-width="1.8"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>Sign Out</button>
       </div>
     </div>
   </div>
 </nav>
 
-<!-- ── HERO ── -->
-<section class="hero">
-  <h1>Your Professional<br><em>Career Starts Here</em></h1>
-  <p class="hero-sub">Jobs, salary insights, AI career guidance, upskilling and mentors — everything your career needs, in one place.</p>
-
-  <div class="hero-cards fade-up">
-    <div class="hcard">
-      <div class="hcard-icon">💼</div>
-      <div class="hcard-label">Job Board</div>
-      <div class="hcard-val">Live</div>
-      <div class="hcard-sub">Real listings updated daily</div>
-    </div>
-    <div class="hcard">
-      <div class="hcard-icon">🎓</div>
-      <div class="hcard-label">Courses</div>
-      <div class="hcard-val">48+</div>
-      <div class="hcard-sub">Curated skill tracks</div>
-    </div>
-    <div class="hcard">
-      <div class="hcard-icon">🤖</div>
-      <div class="hcard-label">Bexi AI</div>
-      <div class="hcard-val">24/7</div>
-      <div class="hcard-sub">AI career guidance</div>
-    </div>
-  </div>
-</section>
-
-<!-- ── WHO IT'S FOR ── -->
-<section class="who" id="who-section">
-  <div class="sec-head fade-up">
-    <div class="sec-tag">Who It's For</div>
-    <h2 class="sec-h">Built for <em>every career stage</em></h2>
-    <p class="sec-sub">Whether you're a student, fresher, professional, or changing careers — Belongix has you covered.</p>
-  </div>
-  <div class="who-grid fade-up">
-    <div class="who-card" onclick="openM('mSignup')">
-      <div class="who-emoji">🎓</div>
-      <div class="who-title">College Students</div>
-      <div class="who-desc">Internship guidance, placement prep, skill building and career score from day one.</div>
-    </div>
-    <div class="who-card" onclick="openM('mSignup')">
-      <div class="who-emoji">🌱</div>
-      <div class="who-title">Fresh Graduates</div>
-      <div class="who-desc">First job roadmap, resume tips, interview prep and salary benchmarks for freshers.</div>
-    </div>
-    <div class="who-card" onclick="openM('mSignup')">
-      <div class="who-emoji">💼</div>
-      <div class="who-title">Working Professionals</div>
-      <div class="who-desc">Salary negotiation, promotions, upskilling and mentor sessions for real growth.</div>
-    </div>
-    <div class="who-card" onclick="openM('mSignup')">
-      <div class="who-emoji">🔄</div>
-      <div class="who-title">Career Changers</div>
-      <div class="who-desc">Field transition roadmaps, reskilling paths and mentors who've made the switch.</div>
-    </div>
-  </div>
-</section>
-
-<!-- ── FEATURES ── -->
-<section class="features">
-  <div class="sec-head fade-up">
-    <div class="sec-tag">Everything You Need</div>
-    <h2 class="sec-h">Six powerful tools,<br><em>one platform</em></h2>
-  </div>
-  <div class="feat-grid fade-up">
-    <div class="feat-card">
-      <div class="feat-num">01</div>
-      <div class="feat-icon">💼</div>
-      <div class="feat-title">Live Job Board</div>
-      <div class="feat-desc">Real-time listings from top Indian companies — filtered to your skills, location and experience level.</div>
-      <a class="feat-link" href="dashboard.html?page=jobs">Browse jobs <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-    </div>
-    <div class="feat-card">
-      <div class="feat-num">02</div>
-      <div class="feat-icon">💰</div>
-      <div class="feat-title">Salary Intelligence</div>
-      <div class="feat-desc">Real market salary data for 15+ tech roles across Bangalore, Hyderabad, Mumbai and remote — know your worth before you negotiate.</div>
-      <a class="feat-link" href="dashboard.html?page=salary">Check salaries <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-    </div>
-    <div class="feat-card">
-      <div class="feat-num">03</div>
-      <div class="feat-icon">🤖</div>
-      <div class="feat-title">Bexi AI Career Guide</div>
-      <div class="feat-desc">Your AI assistant trained on Indian career data — answers questions on salary, interviews, skills and career paths 24/7.</div>
-      <a class="feat-link" href="dashboard.html?page=overview">Talk to Bexi <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-    </div>
-    <div class="feat-card">
-      <div class="feat-num">04</div>
-      <div class="feat-icon">📊</div>
-      <div class="feat-title">Career Score</div>
-      <div class="feat-desc">A dynamic score that tracks your professional growth — built on your profile, skills, applications and platform activity.</div>
-      <a class="feat-link" href="dashboard.html?page=overview">Get your score <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-    </div>
-    <div class="feat-card">
-      <div class="feat-num">05</div>
-      <div class="feat-icon">🎓</div>
-      <div class="feat-title">Upskilling Hub</div>
-      <div class="feat-desc">48+ handpicked courses from Google, AWS, Meta, Kaggle, Scaler and NPTEL — free and paid paths for every level.</div>
-      <a class="feat-link" href="dashboard.html?page=upskill">Start learning <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-    </div>
-    <div class="feat-card">
-      <div class="feat-num">06</div>
-      <div class="feat-icon">🤝</div>
-      <div class="feat-title">1-on-1 Mentors</div>
-      <div class="feat-desc">Connect with verified professionals for resume reviews, mock interviews, salary negotiation and career growth sessions.</div>
-      <a class="feat-link" href="mentors.html">Find a mentor <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-    </div>
-  </div>
-</section>
-
-<!-- ── MENTOR CTA ── -->
-<div class="mentor-cta">
-  <div class="sec-tag">Mentor Network</div>
-  <h2 style="font-family:var(--ff-head);font-size:clamp(24px,3.5vw,36px);font-weight:700;color:#0A1628;letter-spacing:-.3px;line-height:1.2;margin-bottom:12px">Find your career guide<br>or become one</h2>
-  <p class="sec-sub">Real professionals. Real guidance. Whether you need help or want to give back — the Belongix mentor network is for you.</p>
-  <div class="mcta-btns">
-    <button class="mcta-white" onclick="location.href='mentors.html'">Find My Mentor →</button>
-    <button class="mcta-outline" onclick="location.href='mentors.html'">Become a Mentor</button>
-  </div>
-</div>
-
-<!-- ── FAQ ── -->
-<section class="faq">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start">
-    <div class="fade-up">
-      <div class="sec-tag">FAQ</div>
-      <h2 class="sec-h">Common questions<br>answered</h2>
-      <p class="sec-sub">Still have questions? <a href="contact.html" style="color:var(--blue);font-weight:600">Contact us</a> anytime.</p>
-    </div>
-    <div class="faq-list fade-up">
-      <div class="faq-item open">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          Is Belongix really free?
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-noise"></div>
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-orb hero-orb-3"></div>
+  <div class="hero-in">
+    <div class="hero-left">
+      <div class="hero-badge"><span class="badge-pulse"></span>India's #1 Professional Career Platform</div>
+      <h1>Your Professional<br/><span class="hl">Career Starts Here</span></h1>
+      <p class="hero-desc">Jobs, salary insights, AI career guidance, upskilling and mentors — everything your career needs, in one place. Built for India's 1 crore+ job seekers.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="openModal('signup')">
+          Get Started Free
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+        </button>
+        <button class="btn-ghost" onclick="window.location.href='dashboard.html'">
+          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="currentColor"/></svg>
+          See Dashboard
+        </button>
+      </div>
+      <div class="hero-note">
+        <div class="hero-avatars">
+          <div class="hero-av">KR</div><div class="hero-av">AS</div><div class="hero-av">PM</div><div class="hero-av">VK</div>
         </div>
-        <div class="faq-a"><p>Yes — the core platform is completely free forever. Jobs, salary insights, Career Score, Bexi AI, and 6 upskilling tracks are free. Pro (₹499/mo) and Premium (₹999/mo) unlock unlimited applications, mentor matching, AI resume review and more.</p></div>
+        50,000+ professionals on waitlist · Free to join · No credit card
       </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          Is Belongix live right now?
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        </div>
-        <div class="faq-a"><p>Yes! Belongix is fully live at belongix.in. Sign up now and immediately access your dashboard, live job listings, salary insights, Bexi AI, and 48+ curated courses.</p></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          How does the mentor system work?
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        </div>
-        <div class="faq-a"><p>Browse verified mentors at belongix.in/mentors.html. Send a session request with your goal — mentors respond within 24–48 hours to confirm. Sessions are free or paid based on the mentor's preference.</p></div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q" onclick="toggleFaq(this)">
-          What's coming next on Belongix?
-          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        </div>
-        <div class="faq-a"><p>AI resume review, salary negotiation coach, mock interview sessions and a mobile app are all being actively built. Pro and Premium members get priority access when they launch.</p></div>
+      <div class="hero-stats rv">
+        <div class="hstat"><div class="hstat-n">Live</div><div class="hstat-l">Job Board</div></div>
+        <div class="hstat"><div class="hstat-n">48+</div><div class="hstat-l">Skill Courses</div></div>
+        <div class="hstat"><div class="hstat-n">15+</div><div class="hstat-l">Salary Roles</div></div>
+        <div class="hstat"><div class="hstat-n">24/7</div><div class="hstat-l">Bexi AI Guide</div></div>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- ── FOOTER ── -->
-<footer>
-  <div class="foot-logo">Be<span>longix</span></div>
-  <div class="foot-links">
-    <a href="dashboard.html">Dashboard</a>
-    <a href="mentors.html">Mentors</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-    <a href="https://linkedin.com/company/belongix" target="_blank">LinkedIn</a>
-    <a href="https://instagram.com/belongix" target="_blank">Instagram</a>
-  </div>
-  <div class="foot-copy">&copy; 2026 Belongix &middot; belongix.in</div>
-</footer>
-
-<!-- ══ LOGIN MODAL ══ -->
-<div class="overlay" id="mLogin">
-  <div class="modal">
-    <div class="modal-top">
-      <div class="modal-brand">Belongix</div>
-      <div class="modal-title">Welcome back 👋</div>
-      <div class="modal-sub">Sign in to continue your career journey</div>
-      <button class="modal-x" onclick="closeM('mLogin')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="tabs">
-        <div class="tab on" id="lt1" onclick="switchLoginTab('email')">Email</div>
-        <div class="tab" id="lt2" onclick="switchLoginTab('phone')">Phone / OTP</div>
+    <!-- Hero signup card -->
+    <div class="hero-card rv">
+      <div class="hc-title">Create your free account</div>
+      <div class="m-tabs">
+        <button class="m-tab active" onclick="switchTab('signup')">Sign Up</button>
+        <button class="m-tab" onclick="switchTab('signin')">Sign In</button>
       </div>
-      <div id="login-email-form">
-        <div class="soc-row">
-          <button class="soc" onclick="googleLogin()">
-            <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            Google
-          </button>
-          <button class="soc" onclick="linkedinLogin()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="#0077B5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-            LinkedIn
-          </button>
+      <div id="hc-signup-form">
+        <div class="hc-form-row">
+          <label class="hc-label">Email Address</label>
+          <input class="hc-input" type="email" id="hc-email" placeholder="you@email.com"/>
         </div>
-        <div class="or-row">or with email</div>
-        <div class="err-box" id="le-err"></div>
-        <div class="ok-box" id="le-ok"></div>
-        <div class="fg"><label class="fl">Email Address</label><input class="fi" type="email" id="le-email" placeholder="you@email.com"/></div>
-        <div class="fg"><label class="fl">Password</label><input class="fi" type="password" id="le-pass" placeholder="••••••••"/></div>
-        <div class="fgt"><a onclick="forgotPass()">Forgot password?</a></div>
-        <button class="mbtn" id="le-btn" onclick="doLogin()">Sign In →</button>
-      </div>
-      <div id="login-phone-form" style="display:none">
-        <div class="err-box" id="lp-err"></div><div class="ok-box" id="lp-ok"></div>
-        <div class="step active" id="lp-step1">
-          <div class="fg"><label class="fl">Mobile Number</label>
-            <div style="display:flex;gap:8px">
-              <input class="fi" style="width:64px;flex-shrink:0" value="+91" readonly/>
-              <input class="fi" type="tel" id="lp-phone" placeholder="9876543210" maxlength="10"/>
-            </div>
-          </div>
-          <button class="mbtn" id="lp-btn1" onclick="sendOTP()">Send OTP →</button>
+        <div class="hc-form-row">
+          <label class="hc-label">Password</label>
+          <input class="hc-input" type="password" id="hc-pass" placeholder="Create a password"/>
         </div>
-        <div class="step" id="lp-step2">
-          <p style="font-size:13px;color:var(--muted);margin-bottom:12px">OTP sent to <strong id="lp-num-display"></strong></p>
-          <div class="fg"><label class="fl">Enter OTP</label><input class="fi fi-otp" type="text" id="lp-otp" placeholder="------" maxlength="6"/></div>
-          <button class="mbtn" id="lp-btn2" onclick="verifyOTP()">Verify & Sign In →</button>
-          <button class="mbtn-ghost" onclick="backToPhone()">← Change Number</button>
-        </div>
-      </div>
-      <div class="msw">No account? <a onclick="swap('mLogin','mSignup')">Create one free</a></div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ SIGNUP MODAL ══ -->
-<div class="overlay" id="mSignup">
-  <div class="modal">
-    <div class="modal-top">
-      <div class="modal-brand">Belongix</div>
-      <div class="modal-title">Create your account</div>
-      <div class="modal-sub">Join India's professional career platform — free</div>
-      <button class="modal-x" onclick="closeM('mSignup')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="tabs">
-        <div class="tab" onclick="swap('mSignup','mLogin')">Sign In</div>
-        <div class="tab on">Create Account</div>
-      </div>
-      <div class="soc-row">
-        <button class="soc" onclick="googleLogin()">
-          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        <button class="hc-btn" onclick="heroAuth('signup')">Create Account →</button>
+        <div class="hc-or">or</div>
+        <button class="hc-google" onclick="googleAuth()">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
           Continue with Google
         </button>
-        <button class="soc" onclick="linkedinLogin()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#0077B5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-          Continue with LinkedIn
+        <div class="hc-ok" id="hc-ok">✓ Check your email to complete signup!</div>
+      </div>
+      <div id="hc-signin-form" style="display:none">
+        <div class="hc-form-row">
+          <label class="hc-label">Email Address</label>
+          <input class="hc-input" type="email" id="hc-si-email" placeholder="you@email.com"/>
+        </div>
+        <div class="hc-form-row">
+          <label class="hc-label">Password</label>
+          <input class="hc-input" type="password" id="hc-si-pass" placeholder="Your password"/>
+        </div>
+        <button class="hc-btn" onclick="heroAuth('signin')">Sign In →</button>
+        <div class="hc-or">or</div>
+        <button class="hc-google" onclick="googleAuth()">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          Continue with Google
         </button>
+        <div class="hc-ok" id="hc-si-ok"></div>
       </div>
-      <div class="or-row">or create with email</div>
-      <div class="err-box" id="su-err"></div><div class="ok-box" id="su-ok"></div>
-      <div class="fr">
-        <div class="fg"><label class="fl">First Name *</label><input class="fi" type="text" id="su-fn" placeholder="Rahul"/></div>
-        <div class="fg"><label class="fl">Last Name</label><input class="fi" type="text" id="su-ln" placeholder="Sharma"/></div>
-      </div>
-      <div class="fg"><label class="fl">Email *</label><input class="fi" type="email" id="su-email" placeholder="you@email.com"/></div>
-      <div class="fg"><label class="fl">Password *</label><input class="fi" type="password" id="su-pass" placeholder="Min 6 characters"/></div>
-      <div class="fg"><label class="fl">I am a...</label>
-        <select class="fsel" id="su-type">
-          <option value="">Select your profile</option>
-          <optgroup label="Students"><option value="college_student">College Student</option><option value="school_student">School Student (Class 10-12)</option></optgroup>
-          <optgroup label="Early Career"><option value="fresher">Fresh Graduate / Fresher</option><option value="intern">Intern / Trainee</option></optgroup>
-          <optgroup label="Professionals"><option value="junior_prof">Junior Professional (1-3 yrs)</option><option value="mid_prof">Mid-level Professional (3-7 yrs)</option><option value="senior_prof">Senior Professional (7+ yrs)</option><option value="manager">Manager / Team Lead</option></optgroup>
-          <optgroup label="Other"><option value="career_changer">Career Changer</option><option value="entrepreneur">Entrepreneur / Founder</option><option value="other">Other</option></optgroup>
-        </select>
-      </div>
-      <div class="fr">
-        <div class="fg"><label class="fl">Field</label>
-          <select class="fsel" id="su-field">
-            <option value="">Your field</option>
-            <option>Technology / Software</option><option>Data & Analytics</option><option>Design / UX</option><option>Marketing / Growth</option><option>Finance / Accounting</option><option>Product Management</option><option>Human Resources</option><option>Operations</option><option>Other</option>
-          </select>
+      <div class="hc-fine">Free plan always available · No credit card needed</div>
+      <div class="hc-trust">
+        <div class="hc-trust-av">
+          <div class="hc-av">KV</div><div class="hc-av">AS</div><div class="hc-av">PM</div>
         </div>
-        <div class="fg"><label class="fl">City</label>
-          <select class="fsel" id="su-city">
-            <option value="">Your city</option>
-            <option>Bangalore</option><option>Hyderabad</option><option>Chennai</option><option>Mumbai</option><option>Pune</option><option>Delhi / NCR</option><option>Kolkata</option><option>Other</option>
-          </select>
-        </div>
+        <div class="hc-trust-txt">Joined by <strong>50,000+</strong> Indian professionals</div>
       </div>
-      <button class="mbtn" id="su-btn" onclick="doSignup()">Create My Account — Free →</button>
-      <div class="msw">Already a member? <a onclick="swap('mSignup','mLogin')">Sign in</a></div>
-      <div class="tiny">By joining you agree to our Terms & Privacy Policy. Your data is secure and never sold.</div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGOS -->
+<div class="logos-sec">
+  <div class="logos-in">
+    <div class="logos-lbl">Courses from</div>
+    <div class="logos-track">
+      <span class="logo-item">Google</span>
+      <span class="logo-item">Amazon AWS</span>
+      <span class="logo-item">Microsoft</span>
+      <span class="logo-item">Coursera</span>
+      <span class="logo-item">Kaggle</span>
+      <span class="logo-item">NPTEL</span>
+      <span class="logo-item">Scaler</span>
+      <span class="logo-item">Meta</span>
     </div>
   </div>
 </div>
 
-<div id="toast"></div>
-<a href="dashboard.html" class="chat-ai-btn"><div class="chat-ai-dot"></div>Chat with Bexi AI</a>
+<!-- WHO IT'S FOR -->
+<section class="sec" id="for-who">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">Who It's For</div>
+      <h2>Built for <span>every career stage</span></h2>
+      <p class="sec-sub">Whether you're a student, fresher, professional, or changing careers — Belongix has you covered.</p>
+    </div>
+    <div class="who-grid rv">
+      <div class="who-card" onclick="openModal('signup')">
+        <span class="who-icon">🎓</span>
+        <div class="who-title">College Students</div>
+        <div class="who-desc">Internship guidance, placement prep, skill building and career score from day one.</div>
+        <span class="who-tag">Internships & Placements</span>
+      </div>
+      <div class="who-card" onclick="openModal('signup')">
+        <span class="who-icon">🌱</span>
+        <div class="who-title">Fresh Graduates</div>
+        <div class="who-desc">First job roadmap, resume tips, interview prep and salary benchmarks for freshers.</div>
+        <span class="who-tag">First Job Ready</span>
+      </div>
+      <div class="who-card" onclick="openModal('signup')">
+        <span class="who-icon">💼</span>
+        <div class="who-title">Working Professionals</div>
+        <div class="who-desc">Salary negotiation, promotions, upskilling and mentor sessions for real growth.</div>
+        <span class="who-tag">Grow Your Career</span>
+      </div>
+      <div class="who-card" onclick="openModal('signup')">
+        <span class="who-icon">🔄</span>
+        <div class="who-title">Career Changers</div>
+        <div class="who-desc">Field transition roadmaps, reskilling paths and mentors who've made the switch.</div>
+        <span class="who-tag">Switch Fields</span>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- SIX FEATURES -->
+<section class="sec off-bg" id="features">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">Everything You Need</div>
+      <h2>Six powerful tools, <span>one platform</span></h2>
+      <p class="sec-sub">No more switching between 5 different apps. Belongix brings everything into one career-first experience.</p>
+    </div>
+    <div class="feat-grid rv">
+      <a class="feat-card" href="dashboard.html?page=jobs">
+        <div class="feat-num">01</div>
+        <div class="feat-icon-wrap" style="background:#EEF3FF">💼</div>
+        <div class="feat-title">Live Job Board</div>
+        <div class="feat-desc">Real-time listings from top Indian companies — filtered to your skills, location and experience level.</div>
+        <div class="feat-link">Browse jobs <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
+      </a>
+      <a class="feat-card" href="dashboard.html?page=salary">
+        <div class="feat-num">02</div>
+        <div class="feat-icon-wrap" style="background:#F0FDF4">💰</div>
+        <div class="feat-title">Salary Intelligence</div>
+        <div class="feat-desc">Real market salary data for 15+ tech roles across Bangalore, Hyderabad, Mumbai, Pune and remote.</div>
+        <div class="feat-link">Check salaries <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
+      </a>
+      <a class="feat-card" href="dashboard.html?page=overview">
+        <div class="feat-num">03</div>
+        <div class="feat-icon-wrap" style="background:#FEF9C3">🤖</div>
+        <div class="feat-title">Bexi AI Career Guide</div>
+        <div class="feat-desc">Your AI assistant trained on Indian career data — answers questions on salary, interviews, skills and paths 24/7.</div>
+        <div class="feat-link">Talk to Bexi <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
+      </a>
+      <a class="feat-card" href="dashboard.html?page=overview">
+        <div class="feat-num">04</div>
+        <div class="feat-icon-wrap" style="background:#FFF1F2">📊</div>
+        <div class="feat-title">Career Score</div>
+        <div class="feat-desc">A dynamic score that tracks your professional growth — built on your profile, skills, applications and platform activity.</div>
+        <div class="feat-link">Get your score <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
+      </a>
+      <a class="feat-card" href="dashboard.html?page=upskill">
+        <div class="feat-num">05</div>
+        <div class="feat-icon-wrap" style="background:#F5F3FF">🎓</div>
+        <div class="feat-title">Upskilling Hub</div>
+        <div class="feat-desc">48+ handpicked courses from Google, AWS, Meta, Scaler, NPTEL — free and paid paths for every level.</div>
+        <div class="feat-link">Start learning <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
+      </a>
+      <a class="feat-card" href="mentors.html">
+        <div class="feat-num">06</div>
+        <div class="feat-icon-wrap" style="background:#FFF7ED">🤝</div>
+        <div class="feat-title">1-on-1 Mentors</div>
+        <div class="feat-desc">Connect with verified professionals for resume reviews, mock interviews, salary negotiation and career growth sessions.</div>
+        <div class="feat-link">Find a mentor <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
+      </a>
+    </div>
+  </div>
+</section>
 
-<script>
-const SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
-const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
-const sb=supabase.createClient(SB_URL,SB_KEY);
+<!-- SALARY SECTION -->
+<section class="sec" id="salary">
+  <div class="sec-in">
+    <div class="salary-grid">
+      <div class="salary-left rv">
+        <div class="sec-tag">Salary Intelligence</div>
+        <h2>Know your <span>market worth</span></h2>
+        <p class="sec-sub" style="margin-top:14px;font-size:15px">Real salary data for Indian tech roles in 2026. No guessing, no negotiating blind.</p>
+        <div style="margin-top:28px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2)"><span style="color:var(--green);font-size:18px">✓</span>Updated monthly with live market data</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2)"><span style="color:var(--green);font-size:18px">✓</span>Broken down by city, experience and company tier</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink2)"><span style="color:var(--green);font-size:18px">✓</span>Hike benchmarks for promotions and job switches</div>
+        </div>
+        <button class="btn-primary" style="margin-top:28px" onclick="window.location.href='dashboard.html?page=salary'">Explore Salary Data →</button>
+      </div>
+      <div class="rv">
+        <div class="sal-table">
+          <div class="sal-head"><span>Role</span><span>Range (LPA)</span><span>Demand</span></div>
+          <div class="sal-row"><div class="sal-role">Software Engineer</div><div class="sal-range">₹4–18</div><div><div class="sal-bar-wrap"><div class="sal-bar" style="width:90%"></div></div></div></div>
+          <div class="sal-row"><div class="sal-role">Data Analyst</div><div class="sal-range">₹3.5–12</div><div><div class="sal-bar-wrap"><div class="sal-bar" style="width:75%"></div></div></div></div>
+          <div class="sal-row"><div class="sal-role">Product Manager</div><div class="sal-range">₹12–45</div><div><div class="sal-bar-wrap"><div class="sal-bar" style="width:80%"></div></div></div></div>
+          <div class="sal-row"><div class="sal-role">DevOps Engineer</div><div class="sal-range">₹6–22</div><div><div class="sal-bar-wrap"><div class="sal-bar" style="width:85%"></div></div></div></div>
+          <div class="sal-row"><div class="sal-role">UI/UX Designer</div><div class="sal-range">₹4–16</div><div><div class="sal-bar-wrap"><div class="sal-bar" style="width:70%"></div></div></div></div>
+          <div class="sal-row"><div class="sal-role">ML Engineer</div><div class="sal-range">₹8–30</div><div><div class="sal-bar-wrap"><div class="sal-bar" style="width:95%"></div></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-async function initAuth(){
-  const{data:{session}}=await sb.auth.getSession();
-  if(session)showLoggedIn(session.user);
-  sb.auth.onAuthStateChange((_,s)=>{s?showLoggedIn(s.user):showLoggedOut();});
-}
-initAuth();
+<!-- TESTIMONIALS -->
+<section class="sec off-bg">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">What People Say</div>
+      <h2>Loved by <span>Indian professionals</span></h2>
+      <p class="sec-sub">Real stories from people at every stage of their career journey.</p>
+    </div>
+    <div class="testi-grid rv">
+      <div class="testi-card testi-highlight">
+        <div class="testi-quote">"</div>
+        <div class="testi-text">Belongix helped me understand my exact market worth before my appraisal. I negotiated a 40% hike using the salary data. No other platform gives this kind of real insight.</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#22C55E,#0EA5E9)">KR</div>
+            <div><div class="testi-name">Keerthi Reddy</div><div class="testi-role">Software Engineer · DXC Technology</div></div>
+          </div>
+          <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote" style="color:var(--blue-light)">"</div>
+        <div class="testi-text">As a fresher, I had no idea how to navigate the job market. The career score kept me motivated, and the Bexi AI answered every question I had at 2am before my interviews.</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,var(--blue),var(--sky))">AS</div>
+            <div><div class="testi-name">Arjun Sharma</div><div class="testi-role">Fresh Graduate · Pune</div></div>
+          </div>
+          <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-quote" style="color:var(--blue-light)">"</div>
+        <div class="testi-text">I was switching from marketing to product management. The mentor sessions and roadmap on Belongix gave me a clear path. Landed my first PM role in 4 months.</div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div class="testi-author">
+            <div class="testi-av" style="background:linear-gradient(135deg,#8B5CF6,#EC4899)">PM</div>
+            <div><div class="testi-name">Priya Mehta</div><div class="testi-role">Product Manager · Bangalore</div></div>
+          </div>
+          <div class="testi-stars">⭐⭐⭐⭐⭐</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-function showLoggedIn(user){
-  const name=user.user_metadata?.full_name||user.email.split('@')[0]||'User';
-  document.getElementById('nav-loggedout').style.display='none';
-  const ni=document.getElementById('nav-loggedin');
-  ni.style.display='block';
-  document.getElementById('nav-av').textContent=name.substring(0,2).toUpperCase();
-  document.getElementById('nav-nm').textContent='Hi, '+name.split(' ')[0];
-  const udName=document.getElementById('ud-name');
-  const udEmail=document.getElementById('ud-email');
-  if(udName)udName.textContent=name;
-  if(udEmail)udEmail.textContent=user.email||'';
-}
-function showLoggedOut(){
-  document.getElementById('nav-loggedout').style.display='flex';
-  document.getElementById('nav-loggedin').style.display='none';
-}
-function openM(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
-function closeM(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
-function swap(c,o){closeM(c);openM(o);}
-document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',function(e){if(e.target===this)closeM(this.id);}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeM('mLogin');closeM('mSignup');}});
+<!-- CAREER SCORE -->
+<section class="sec" id="career-score">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">Career Score</div>
+      <h2>Track your <span>professional growth</span></h2>
+      <p class="sec-sub">Your career score grows as you take real actions — not a fake metric. Recruiters can see it too.</p>
+    </div>
+    <div class="score-wrap rv">
+      <div style="display:flex;justify-content:center">
+        <div class="score-ring-wrap">
+          <svg width="180" height="180" viewBox="0 0 180 180">
+            <circle cx="90" cy="90" r="74" fill="none" stroke="#E2E8F0" stroke-width="14"/>
+            <circle cx="90" cy="90" r="74" fill="none" stroke="url(#scoreGrad)" stroke-width="14" stroke-linecap="round"
+              stroke-dasharray="464.96" stroke-dashoffset="139"/>
+            <defs><linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#1447E6"/><stop offset="100%" stop-color="#0EA5E9"/></linearGradient></defs>
+          </svg>
+          <div class="score-center">
+            <div class="score-num">70</div>
+            <div class="score-label">out of 100</div>
+          </div>
+        </div>
+      </div>
+      <div class="score-steps">
+        <div style="font-family:var(--ff);font-size:18px;font-weight:700;color:var(--ink);margin-bottom:8px">Building Momentum 🚀</div>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:20px;line-height:1.6">Complete each action to boost your Career Score and unlock better job matches, mentor access and salary benchmarks.</p>
+        <div class="score-step"><div class="step-dot done">✓</div><div class="step-name">Account created</div><div class="step-pts">+30 pts</div></div>
+        <div class="score-step"><div class="step-dot done">✓</div><div class="step-name">Email verified</div><div class="step-pts">+10 pts</div></div>
+        <div class="score-step"><div class="step-dot done">✓</div><div class="step-name">Profile completed</div><div class="step-pts">+30 pts</div></div>
+        <div class="score-step"><div class="step-dot" style="background:var(--off2);border-color:var(--border)">○</div><div class="step-name">First job applied</div><div class="step-pts">+15 pts</div></div>
+        <div class="score-step"><div class="step-dot" style="background:var(--off2);border-color:var(--border)">○</div><div class="step-name">Skills added (3+)</div><div class="step-pts">+15 pts</div></div>
+        <button class="btn-primary" style="margin-top:16px;width:100%;justify-content:center" onclick="openModal('signup')">Start Building Your Score →</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-function toast(msg,type=''){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.style.background=type==='ok'?'#052e16':type==='err'?'#7f1d1d':'#0A1628';
-  t.style.transform='translateX(-50%) translateY(0)';t.style.opacity='1';
-  setTimeout(()=>{t.style.transform='translateX(-50%) translateY(80px)';t.style.opacity='0';},3500);
-}
-function showErr(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';document.getElementById(id.replace('err','ok')).style.display='none';}
-function showOk(id,msg){const e=document.getElementById(id);e.textContent=msg;e.style.display='block';document.getElementById(id.replace('ok','err')).style.display='none';}
-function hideAll(id){document.getElementById(id+'-err').style.display='none';document.getElementById(id+'-ok').style.display='none';}
+<!-- MENTOR STRIP -->
+<section class="sec off-bg">
+  <div class="sec-in rv">
+    <div class="mentor-strip">
+      <div class="sec-tag" style="background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.25);color:#fff;position:relative;z-index:1">Mentor Network</div>
+      <h2 style="margin-top:12px;position:relative;z-index:1">Learn from professionals<br/>who've <span style="color:var(--sky)">been there</span></h2>
+      <p style="position:relative;z-index:1">Connect 1-on-1 with verified professionals for interview prep, salary negotiation, career switch guidance and more.</p>
+      <div class="mentor-perks">
+        <div class="mentor-perk">✓ Verified mentors only</div>
+        <div class="mentor-perk">✓ Resume reviews</div>
+        <div class="mentor-perk">✓ Mock interviews</div>
+        <div class="mentor-perk">✓ Salary coaching</div>
+        <div class="mentor-perk">✓ Career switch support</div>
+      </div>
+      <div class="mentor-btns">
+        <button class="btn-white" onclick="window.location.href='mentors.html'">Find a Mentor →</button>
+        <button class="btn-white-ghost" onclick="window.location.href='mentors.html'">Become a Mentor</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-function switchLoginTab(tab){
-  const ef=document.getElementById('login-email-form');
-  const pf=document.getElementById('login-phone-form');
-  if(tab==='email'){ef.style.display='block';pf.style.display='none';document.getElementById('lt1').classList.add('on');document.getElementById('lt2').classList.remove('on');}
-  else{ef.style.display='none';pf.style.display='block';document.getElementById('lt2').classList.add('on');document.getElementById('lt1').classList.remove('on');}
-}
+<!-- PRICING -->
+<section class="sec" id="pricing">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">Pricing</div>
+      <h2>Simple, <span>transparent pricing</span></h2>
+      <p class="sec-sub">Start free, upgrade when you need more. No hidden fees, no contracts.</p>
+    </div>
+    <div class="price-grid rv">
+      <div class="price-card">
+        <div class="price-tier">Starter</div>
+        <div class="price-amt">₹<span>0</span></div>
+        <div class="price-period">Forever free</div>
+        <div class="price-divider"></div>
+        <div class="price-feat">
+          <div class="pf-item"><div class="pf-check">✓</div>Career Score & Profile</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Live Job Board</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Basic Salary Insights</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Bexi AI (10 queries/day)</div>
+          <div class="pf-item"><div class="pf-check">✓</div>5 Learning Tracks</div>
+          <div class="pf-item"><div class="pf-check no">–</div><span style="color:var(--subtle)">Mentor Sessions</span></div>
+          <div class="pf-item"><div class="pf-check no">–</div><span style="color:var(--subtle)">Full Salary Data</span></div>
+        </div>
+        <button class="price-btn" onclick="openModal('signup')">Get Started Free</button>
+      </div>
+      <div class="price-card pop">
+        <div class="pop-badge">Most Popular</div>
+        <div class="price-tier">Pro</div>
+        <div class="price-amt">₹<span>499</span></div>
+        <div class="price-period">per month · Save 17% annually</div>
+        <div class="price-divider"></div>
+        <div class="price-feat">
+          <div class="pf-item"><div class="pf-check">✓</div>Everything in Starter</div>
+          <div class="pf-item"><div class="pf-check">✓</div>2 Mentor Sessions/month</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Full Salary Intelligence</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Unlimited Bexi AI</div>
+          <div class="pf-item"><div class="pf-check">✓</div>All 48+ Courses</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Priority Job Matching</div>
+          <div class="pf-item"><div class="pf-check">✓</div>AI Resume Review</div>
+        </div>
+        <button class="price-btn" onclick="handlePricing('pro')">Upgrade to Pro →</button>
+      </div>
+      <div class="price-card">
+        <div class="price-tier">Premium</div>
+        <div class="price-amt">₹<span>999</span></div>
+        <div class="price-period">per month</div>
+        <div class="price-divider"></div>
+        <div class="price-feat">
+          <div class="pf-item"><div class="pf-check">✓</div>Everything in Pro</div>
+          <div class="pf-item"><div class="pf-check">✓</div>5 Mentor Sessions/month</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Dedicated Career Coach</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Custom Learning Path</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Company Referrals</div>
+          <div class="pf-item"><div class="pf-check">✓</div>LinkedIn Profile Review</div>
+          <div class="pf-item"><div class="pf-check">✓</div>Priority Support</div>
+        </div>
+        <button class="price-btn" onclick="handlePricing('premium')">Go Premium →</button>
+      </div>
+    </div>
+  </div>
+</section>
 
-async function doLogin(){
-  hideAll('le');
-  const email=document.getElementById('le-email').value.trim();
-  const pass=document.getElementById('le-pass').value;
-  if(!email){showErr('le-err','Please enter your email');return;}
-  if(!pass){showErr('le-err','Please enter your password');return;}
-  const btn=document.getElementById('le-btn');
-  btn.disabled=true;btn.textContent='Signing in...';
-  try{
-    const{data,error}=await sb.auth.signInWithPassword({email,password:pass});
-    if(error)throw error;
-    showLoggedIn(data.user);closeM('mLogin');
-    toast('Welcome back to Belongix!','ok');
-    setTimeout(()=>location.href='dashboard.html',1200);
-  }catch(err){
-    showErr('le-err',err.message==='Invalid login credentials'?'Incorrect email or password.':err.message);
-    btn.disabled=false;btn.textContent='Sign In ->';
-  }
-}
+<!-- FAQ -->
+<section class="sec off-bg">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">FAQ</div>
+      <h2>Frequently asked <span>questions</span></h2>
+    </div>
+    <div class="faq-wrap rv">
+      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Who is Belongix built for?<div class="fi-ic">+</div></div><div class="fia">Belongix is built for everyone at every career stage in India — college students seeking internships, fresh graduates landing their first job, working professionals growing their careers, and career changers switching fields.</div></div>
+      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Is Belongix really free to use?<div class="fi-ic">+</div></div><div class="fia">Yes! The Starter plan is completely free and includes job board, career score, salary insights, Bexi AI (10 queries/day) and 5 learning tracks. Pro at ₹499/month unlocks mentor sessions, full salary data, unlimited Bexi AI and all 48+ courses.</div></div>
+      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">How does the Career Score work?<div class="fi-ic">+</div></div><div class="fia">Your Career Score starts at 30 and grows based on real actions — completing your profile (+30), verifying email (+10), adding skills, applying to jobs (+15), and completing courses. It's a real reflection of your career readiness, not a fake number.</div></div>
+      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Are the job listings real and verified?<div class="fi-ic">+</div></div><div class="fia">Yes. Belongix aggregates real job and internship listings from verified companies across India. All listings are verified before being shown. We're building direct partnerships with companies for exclusive Belongix-only opportunities.</div></div>
+      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">How does mentor booking work?<div class="fi-ic">+</div></div><div class="fia">Pro and Premium members can browse verified mentors filtered by field, experience, company and specialisation. Book 30 or 60-minute sessions directly. Mentors set their own rates. Sessions are coordinated securely through Belongix.</div></div>
+      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Is my data safe with Belongix?<div class="fi-ic">+</div></div><div class="fia">Absolutely. All data is encrypted using enterprise-grade security through Supabase. Your profile, salary info and career details are never shared with employers or third parties without your explicit permission.</div></div>
+    </div>
+  </div>
+</section>
 
-async function sendOTP(){
-  const phone=document.getElementById('lp-phone').value.trim();
-  if(!phone||phone.length<10){showErr('lp-err','Please enter a valid 10-digit number');return;}
-  const btn=document.getElementById('lp-btn1');btn.disabled=true;btn.textContent='Sending...';
-  try{
-    const{error}=await sb.auth.signInWithOtp({phone:'+91'+phone});
-    if(error)throw error;
-    document.getElementById('lp-num-display').textContent='+91 '+phone;
-    document.getElementById('lp-step1').classList.remove('active');
-    document.getElementById('lp-step2').classList.add('active');
-  }catch(err){showErr('lp-err',err.message||'Failed. Please try email login.');btn.disabled=false;btn.textContent='Send OTP ->';}
-}
-async function verifyOTP(){
-  const phone=document.getElementById('lp-phone').value.trim();
-  const otp=document.getElementById('lp-otp').value.trim();
-  if(!otp||otp.length<6){showErr('lp-err','Enter the 6-digit OTP');return;}
-  const btn=document.getElementById('lp-btn2');btn.disabled=true;btn.textContent='Verifying...';
-  try{
-    const{data,error}=await sb.auth.verifyOtp({phone:'+91'+phone,token:otp,type:'sms'});
-    if(error)throw error;
-    showLoggedIn(data.user);closeM('mLogin');
-    toast('Signed in!','ok');setTimeout(()=>location.href='dashboard.html',1200);
-  }catch(err){showErr('lp-err','Invalid OTP. Try again.');btn.disabled=false;btn.textContent='Verify ->';}
-}
-function backToPhone(){
-  document.getElementById('lp-step1').classList.add('active');
-  document.getElementById('lp-step2').classList.remove('active');
-  document.getElementById('lp-btn1').disabled=false;
-  document.getElementById('lp-btn1').textContent='Send OTP ->';
-  hideAll('lp');
-}
+<!-- CTA -->
+<section class="cta-sec">
+  <div class="sec-tag" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.8);margin-bottom:20px">Join Free Today</div>
+  <h2>Your career breakthrough<br/>starts <span style="color:var(--sky)">right here</span></h2>
+  <p>Join 50,000+ ambitious Indian professionals already on Belongix. Your next step forward is one click away.</p>
+  <div class="cta-form">
+    <input class="c-inp" type="email" id="cEmail" placeholder="Enter your email address"/>
+    <button class="c-btn" onclick="ctaSignup()">Join Free →</button>
+  </div>
+  <div class="c-ok" id="cOk">✓ You're in! Check your email to complete signup.</div>
+  <div class="c-fine">Free plan always available · No credit card needed · Cancel Pro anytime</div>
+  <div class="trust-row">
+    <div class="trust-item">🔒 100% Secure & Private</div>
+    <div class="trust-dot"></div>
+    <div class="trust-item">✅ Verified Professionals</div>
+    <div class="trust-dot"></div>
+    <div class="trust-item">🇮🇳 Built in India, for India</div>
+    <div class="trust-dot"></div>
+    <div class="trust-item">⭐ 4.9/5 Rating</div>
+  </div>
+</section>
 
-async function googleLogin(){
-  try{
-    const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});
-    if(error)throw error;
-  }catch(err){toast('Google login error. Try email.','err');}
-}
-async function linkedinLogin(){
-  try{
-    const{error}=await sb.auth.signInWithOAuth({provider:'linkedin_oidc',options:{redirectTo:window.location.origin+'/dashboard.html'}});
-    if(error)throw error;
-  }catch(err){toast('LinkedIn login coming soon.','err');}
-}
+<!-- FOOTER -->
+<footer>
+  <div class="footer-g">
+    <div class="footer-brand">
+      <div class="footer-logo">Belong<span>ix</span></div>
+      <p>India's most complete professional career platform — for students, freshers, and working professionals at every stage of their journey.</p>
+      <div class="footer-social">
+        <a class="fsoc" href="https://linkedin.com/company/belongix" target="_blank"><svg width="15" height="15" viewBox="0 0 24 24" fill="#60A5FA"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+        <a class="fsoc" href="https://instagram.com/belongix" target="_blank"><svg width="15" height="15" viewBox="0 0 24 24" fill="#F472B6"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+        <a class="fsoc" href="https://twitter.com/belongix" target="_blank"><svg width="15" height="15" viewBox="0 0 24 24" fill="#60A5FA"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.629L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="dashboard.html?page=jobs">Job Board</a>
+      <a href="dashboard.html?page=salary">Salary Insights</a>
+      <a href="dashboard.html?page=upskill">Upskilling Hub</a>
+      <a href="dashboard.html?page=overview">Career Score</a>
+      <a href="dashboard.html?page=overview">Bexi AI</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="about.html">About Us</a>
+      <a href="mentors.html">Mentors</a>
+      <a href="contact.html">Contact</a>
+      <a href="contact.html">Careers</a>
+      <a href="contact.html">Press</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Cookie Policy</a>
+      <a href="#">Refund Policy</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Belongix. All rights reserved. Built with ❤️ in India.</p>
+    <div class="footer-chips">
+      <span class="fc">🔒 Secure</span>
+      <span class="fc">🇮🇳 Made in India</span>
+      <span class="fc">⚡ PWA</span>
+    </div>
+  </div>
+</footer>
 
-async function doSignup(){
-  hideAll('su');
-  const fn=document.getElementById('su-fn').value.trim();
-  const ln=document.getElementById('su-ln').value.trim();
-  const email=document.getElementById('su-email').value.trim();
-  const pass=document.getElementById('su-pass').value;
-  const type=document.getElementById('su-type').value;
-  const field=document.getElementById('su-field').value;
-  const city=document.getElementById('su-city').value;
-  if(!fn){showErr('su-err','Please enter your first name');return;}
-  if(!email||!email.includes('@')){showErr('su-err','Please enter a valid email');return;}
-  if(!pass||pass.length<6){showErr('su-err','Password must be at least 6 characters');return;}
-  if(!type){showErr('su-err','Please select your profile type');return;}
-  const btn=document.getElementById('su-btn');
-  btn.disabled=true;btn.textContent='Creating account...';
-  const fullName=(fn+' '+ln).trim();
-  try{
-    const{data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:fullName,user_type:type,field,city}}});
-    if(error)throw error;
-    if(data.user){
-      await sb.from('profiles').upsert({id:data.user.id,full_name:fullName,email,user_type:type,field,city,career_score:30,created_at:new Date().toISOString()});
-    }
-    showOk('su-ok','Account created! Check your email to confirm, then sign in.');
-    toast('Welcome to Belongix! Check your email to confirm.','ok');
-    btn.textContent='Account Created!';
-  }catch(err){
-    showErr('su-err',err.message?.includes('already registered')?'Email already registered. Please sign in.':err.message||'Signup failed.');
-    btn.disabled=false;btn.textContent='Create My Account - Free ->';
-  }
-}
+<!-- MODAL -->
+<div class="modal-overlay" id="auth-modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="modal-title">Join Belongix Free</h3>
+    <p class="modal-sub" id="modal-sub">Create your account and start your career journey.</p>
+    <div class="m-tabs">
+      <button class="m-tab active" id="tab-signup" onclick="modalTab('signup')">Sign Up</button>
+      <button class="m-tab" id="tab-signin" onclick="modalTab('signin')">Sign In</button>
+    </div>
+    <div id="modal-signup">
+      <input class="m-inp" type="email" id="m-email" placeholder="Email address"/>
+      <input class="m-inp" type="password" id="m-pass" placeholder="Password (min 6 chars)"/>
+      <button class="m-btn" onclick="modalAuth('signup')">Create Account →</button>
+    </div>
+    <div id="modal-signin" style="display:none">
+      <input class="m-inp" type="email" id="m-si-email" placeholder="Email address"/>
+      <input class="m-inp" type="password" id="m-si-pass" placeholder="Password"/>
+      <button class="m-btn" onclick="modalAuth('signin')">Sign In →</button>
+    </div>
+    <button class="m-google" onclick="googleAuth()">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <div class="m-ok" id="m-ok"></div>
+    <div class="m-fine">By signing up, you agree to our Terms of Service and Privacy Policy.</div>
+  </div>
+</div>
 
-async function forgotPass(){
-  const email=document.getElementById('le-email').value.trim();
-  if(!email){showErr('le-err','Enter your email above first');return;}
-  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://belongix.in/dashboard.html'});
-  if(error){showErr('le-err',error.message);return;}
-  showOk('le-ok','Password reset email sent! Check your inbox.');
-}
-
-async function doLogout(){
-  await sb.auth.signOut();showLoggedOut();toast('Signed out successfully');
-}
-
-function toggleFaq(el){
-  const item=el.parentElement;
-  const wasOpen=item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
-  if(!wasOpen)item.classList.add('open');
-}
-
-// Scroll animations
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('on'),i*80);obs.unobserve(e.target);}});
-},{threshold:0.1});
-document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
-
-
-
-// ── BEXI AI ──
-// ── CLICK-BASED DROPDOWNS ──
-function initDropdowns(){
-  // Nav item dropdowns
-  document.querySelectorAll('.nav-item').forEach(function(item){
-    var btn = item.querySelector('.nav-link');
-    var dd = item.querySelector('.dropdown');
-    if(!btn || !dd) return;
-    btn.addEventListener('click', function(e){
-      e.stopPropagation();
-      var isOpen = dd.classList.contains('open');
-      closeAllDropdowns();
-      if(!isOpen){
-        dd.classList.add('open');
-        btn.classList.add('dd-open');
-      }
-    });
-  });
-
-  // User dropdown
-  var userBtn = document.querySelector('.nav-user-btn');
-  var userDd = document.querySelector('.user-dropdown');
-  if(userBtn && userDd){
-    userBtn.addEventListener('click', function(e){
-      e.stopPropagation();
-      var isOpen = userDd.classList.contains('open');
-      closeAllDropdowns();
-      if(!isOpen) userDd.classList.add('open');
-    });
-  }
-
-  // Close on outside click
-  document.addEventListener('click', closeAllDropdowns);
-}
-
-function closeAllDropdowns(){
-  document.querySelectorAll('.dropdown.open').forEach(function(d){ d.classList.remove('open'); });
-  document.querySelectorAll('.nav-link.dd-open').forEach(function(b){ b.classList.remove('dd-open'); });
-  var userDd = document.querySelector('.user-dropdown');
-  if(userDd) userDd.classList.remove('open');
-}
-
-initDropdowns();
-// Razorpay
-var RZP_KEY="rzp_live_SiouVVDYQu9HTt";
-async function handlePricing(plan){
-  var session=null;
-  try{if(typeof supabase!=="undefined"){var sc=supabase.createClient(SB_URL,SB_KEY);var r=await sc.auth.getSession();session=r&&r.data&&r.data.session;}}catch(e){}
-  if(session&&session.user){openRazorpay(plan,session.user);}
-  else{sessionStorage.setItem("pendingPlan",plan);openM("mSignup");}
-}
-function openRazorpay(plan,user){
-  var plans={pro:{amount:49900,label:"Belongix Pro - Rs.499/month"},premium:{amount:99900,label:"Belongix Premium - Rs.999/month"}};
-  var p=plans[plan]||plans.pro;
-  var rzp=new Razorpay({key:RZP_KEY,amount:p.amount,currency:"INR",name:"Belongix",description:p.label,prefill:{name:(user&&user.user_metadata&&user.user_metadata.full_name)||"",email:(user&&user.email)||""},theme:{color:"#1447E6"},handler:function(resp){alert("Payment successful! Welcome to Belongix "+(plan==="premium"?"Premium":"Pro")+"!");setTimeout(function(){location.href="dashboard.html";},800);}});
-  rzp.on("payment.failed",function(r){alert("Payment failed: "+((r.error&&r.error.description)||"Please try again."));});
-  rzp.open();
-}
-</script>
 <script src="bexi.js"></script>
 <script src="pwa-install.js"></script>
+<script>
+// SUPABASE
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb=supabase.createClient(SB_URL,SB_KEY);
+
+// AUTH STATE
+(function(){
+  sb.auth.getSession().then(function(r){
+    var s=r&&r.data&&r.data.session;
+    if(s&&s.user)showUserNav(s.user);
+    else showGuestNav();
+  });
+  sb.auth.onAuthStateChange(function(_,s){
+    if(s&&s.user){showUserNav(s.user);}
+    else{showGuestNav();}
+  });
+})();
+
+function showUserNav(user){
+  var nm=user.user_metadata&&user.user_metadata.full_name?user.user_metadata.full_name:user.email.split('@')[0];
+  document.getElementById('nav-out').style.display='none';
+  document.getElementById('nav-in').style.display='block';
+  document.getElementById('nav-av').textContent=nm.substring(0,2).toUpperCase();
+  document.getElementById('nav-nm').textContent='Hi, '+nm.split(' ')[0];
+  document.getElementById('ud-name').textContent=nm;
+  document.getElementById('ud-email').textContent=user.email||'';
+}
+function showGuestNav(){
+  document.getElementById('nav-out').style.display='flex';
+  document.getElementById('nav-in').style.display='none';
+}
+function doSignOut(){sb.auth.signOut().then(function(){location.reload();});}
+
+// NAV USER DROPDOWN
+var navBtn=document.getElementById('nav-user-btn');
+var navDd=document.getElementById('user-dd');
+if(navBtn&&navDd){
+  navBtn.addEventListener('click',function(e){
+    e.stopPropagation();
+    var o=navDd.classList.contains('open');
+    navDd.classList[o?'remove':'add']('open');
+    navBtn.classList[o?'remove':'add']('dd-open');
+  });
+  document.addEventListener('click',function(){
+    navDd.classList.remove('open');
+    navBtn.classList.remove('dd-open');
+  });
+}
+
+// NAV DROPDOWNS
+var openDd=null;
+function toggleDD(id,btn){
+  var dd=document.getElementById(id);
+  if(!dd)return;
+  var isOpen=dd.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
+  document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
+  if(!isOpen){dd.classList.add('open');btn.classList.add('dd-open');}
+}
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.nav-link')&&!e.target.closest('.dd-panel')){
+    document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
+    document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
+  }
+});
+
+// FAQ
+function toggleFaq(fiq){
+  var fi=fiq.closest('.fi');
+  var isOpen=fi.classList.contains('open');
+  document.querySelectorAll('.fi').forEach(function(f){f.classList.remove('open');});
+  if(!isOpen)fi.classList.add('open');
+}
+
+// HERO FORM
+function switchTab(tab){
+  document.getElementById('hc-signup-form').style.display=tab==='signup'?'block':'none';
+  document.getElementById('hc-signin-form').style.display=tab==='signin'?'block':'none';
+  document.querySelectorAll('.m-tabs .m-tab').forEach(function(t,i){
+    t.classList[(i===0&&tab==='signup')||(i===1&&tab==='signin')?'add':'remove']('active');
+  });
+}
+
+async function heroAuth(type){
+  var email='',pass='';
+  if(type==='signup'){email=(document.getElementById('hc-email')||{}).value||'';pass=(document.getElementById('hc-pass')||{}).value||'';}
+  else{email=(document.getElementById('hc-si-email')||{}).value||'';pass=(document.getElementById('hc-si-pass')||{}).value||'';}
+  if(!email||!pass){alert('Please enter email and password');return;}
+  try{
+    var res=type==='signup'?await sb.auth.signUp({email,password:pass}):await sb.auth.signInWithPassword({email,password:pass});
+    if(res.error)throw res.error;
+    if(type==='signup'){
+      var okEl=document.getElementById('hc-ok');
+      if(okEl)okEl.style.display='block';
+    }else{
+      window.location.href='dashboard.html';
+    }
+  }catch(e){alert('Error: '+e.message);}
+}
+
+async function googleAuth(){
+  try{
+    await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});
+  }catch(e){alert('Google auth error: '+e.message);}
+}
+
+// CTA SIGNUP
+async function ctaSignup(){
+  var email=(document.getElementById('cEmail')||{}).value||'';
+  if(!email){return;}
+  try{
+    await sb.auth.signUp({email,password:Math.random().toString(36).slice(-10)+'Bx1!'});
+    var ok=document.getElementById('cOk');if(ok)ok.style.display='block';
+  }catch(e){}
+}
+
+// MODAL
+function openModal(type){
+  document.getElementById('auth-modal').classList.add('open');
+  modalTab(type);
+}
+function closeModal(){document.getElementById('auth-modal').classList.remove('open');}
+function closeModalOutside(e){if(e.target===document.getElementById('auth-modal'))closeModal();}
+function modalTab(tab){
+  document.getElementById('modal-signup').style.display=tab==='signup'?'block':'none';
+  document.getElementById('modal-signin').style.display=tab==='signin'?'block':'none';
+  document.getElementById('tab-signup').classList[tab==='signup'?'add':'remove']('active');
+  document.getElementById('tab-signin').classList[tab==='signin'?'add':'remove']('active');
+}
+async function modalAuth(type){
+  var email='',pass='';
+  if(type==='signup'){email=(document.getElementById('m-email')||{}).value||'';pass=(document.getElementById('m-pass')||{}).value||'';}
+  else{email=(document.getElementById('m-si-email')||{}).value||'';pass=(document.getElementById('m-si-pass')||{}).value||'';}
+  if(!email||!pass){alert('Please fill all fields');return;}
+  try{
+    var res=type==='signup'?await sb.auth.signUp({email,password:pass}):await sb.auth.signInWithPassword({email,password:pass});
+    if(res.error)throw res.error;
+    if(type==='signin'){closeModal();window.location.href='dashboard.html';}
+    else{var ok=document.getElementById('m-ok');if(ok){ok.style.display='block';ok.textContent='Check your email to confirm signup!';}}
+  }catch(e){alert('Error: '+e.message);}
+}
+
+// PRICING
+function handlePricing(plan){
+  sb.auth.getSession().then(function(r){
+    if(r&&r.data&&r.data.session){window.location.href='dashboard.html?page=upgrade';}
+    else{openModal('signup');}
+  });
+}
+
+// SCROLL REVEAL
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('on');});
+},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv').forEach(function(el){obs.observe(el);});
+</script>
 </body>
 </html>
