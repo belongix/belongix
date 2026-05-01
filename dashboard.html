@@ -984,28 +984,37 @@ async function loadUserData() {
   loadPortfolio(p);
 }
 
-function calcScore(d) {
-  var score = 30;
-  if (currentUser.email_confirmed_at) {
-    score += 10;
-    document.getElementById("step-email").querySelector(".step-dot").className = "step-dot done";
-    document.getElementById("step-email").querySelector(".step-dot").textContent = "&#10003;";
+function calcScore(p) {
+  // Null-safe score calculator - works even if old DOM elements don't exist
+  function ss(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+  function sc(id,v){var el=document.getElementById(id);if(el)el.style.strokeDashoffset=v;}
+  var score = p && p.career_score ? p.career_score : 30;
+  if(!p || !p.career_score) {
+    score = 30;
+    if(currentUser && currentUser.email_confirmed_at) score += 10;
+    if(p && p.full_name && p.role && p.city && p.experience) score += 30;
+    score = Math.min(score, 95);
   }
-  if (d && d.full_name && d.role && d.city && d.experience) {
-    score += 30;
-    document.getElementById("step-profile").querySelector(".step-dot").className = "step-dot done";
-    document.getElementById("step-profile").querySelector(".step-dot").textContent = "&#10003;";
-  }
-  score = Math.min(score, 100);
-  document.getElementById("score-display").textContent = score;
-  document.getElementById("stat-score").textContent = score;
-  document.getElementById("score-chip").textContent = "Score: " + score;
-  var circ = document.getElementById("score-circle");
+  ss("score-display", score);
+  ss("stat-score", score);
+  ss("score-chip", "Score: " + score);
   var circumf = 351.86;
-  circ.style.strokeDashoffset = circumf - (circumf * score / 100);
+  sc("score-circle", circumf - (circumf * score / 100));
   var lvl = score < 40 ? "Getting Started" : score < 70 ? "Building Momentum" : score < 90 ? "Career Ready" : "Top Performer";
-  document.getElementById("score-level").textContent = lvl;
-  if (score >= 70) document.getElementById("score-desc").textContent = "You are career-ready! Keep applying and networking.";
+  ss("score-level", lvl);
+  if(score >= 70) ss("score-desc", "You are career-ready! Keep applying and networking.");
+  // Update step dots safely
+  function setDot(id){var el=document.getElementById(id);if(!el)return;var dot=el.querySelector(".step-dot");if(dot){dot.className="step-dot done";dot.textContent="OK";}}
+  if(currentUser && currentUser.email_confirmed_at) setDot("step-email");
+  if(p && p.full_name && p.role && p.city && p.experience) setDot("step-profile");
+  // Portfolio score ring
+  ss("ov-score-badge", score);
+  ss("ov-score-c", score);
+  var ring=document.getElementById("ov-ring");
+  if(ring){var c=113.1;ring.style.strokeDashoffset=c-(c*score/100);}
+  var ovLvl=score<40?"Getting Started":score<70?"Building Momentum":score<90?"Career Ready":"Top Performer";
+  ss("ov-level", ovLvl);
+  ss("ov-score-badge", score);
 }
 
 async function saveProfile() {
@@ -1027,11 +1036,8 @@ async function saveProfile() {
     var sbN=document.getElementById("sb-name");if(sbN&&updates.full_name)sbN.textContent=updates.full_name.split(" ")[0];
     var sbR=document.getElementById("sb-role");if(sbR)sbR.textContent=updates.role||updates.experience||"Member";
     calcScore(updates);populateProfileCard(updates);loadPortfolio(updates);
-    // Auto-switch to portfolio after save
-    setTimeout(function(){
-      var ovBtn = document.querySelector('[onclick*=overview]') || document.querySelector('.sb-link.active');
-      showPage('overview', ovBtn);
-    }, 800);
+    // Reload user data to refresh portfolio
+    setTimeout(loadUserData, 500);
   }catch(e){console.error(e);showToast("Save failed: "+e.message);}
   finally{if(btn){btn.disabled=false;btn.textContent="Save Profile";}}
 }
@@ -1045,12 +1051,17 @@ async function signOut() {
 function showPage(page, btn) {
   document.querySelectorAll(".page-section").forEach(function(el){ el.classList.remove("active"); });
   document.querySelectorAll(".sb-link").forEach(function(el){ el.classList.remove("active"); });
-  document.getElementById("page-" + page).classList.add("active");
+  var pageEl = document.getElementById("page-" + page);
+  if (pageEl) pageEl.classList.add("active");
   if (btn) btn.classList.add("active");
-  var titles={overview:"Overview",jobs:"Jobs & Internships",upskill:"Upskilling",salary:"Salary Insights",network:"Find a Mentor",profile:"My Profile",settings:"Settings",upgrade:"Upgrade Plan"};
-  if(page==="network")setTimeout(loadDashMentors,100);
-  document.getElementById("topbar-title").textContent = titles[page] || "Dashboard";
+  var titles={overview:"Portfolio",jobs:"Jobs & Internships",upskill:"Upskilling",salary:"Salary Insights",network:"Find a Mentor",profile:"My Profile",settings:"Settings",upgrade:"Upgrade Plan"};
+  var tb = document.getElementById("topbar-title");
+  if (tb) tb.textContent = titles[page] || "Dashboard";
+  // Page-specific actions
+  if (page === "network") setTimeout(loadDashMentors, 100);
   if (page === "jobs") loadJobs();
+  if (page === "profile") setTimeout(loadUserData, 100);
+  if (page === "overview") setTimeout(loadUserData, 100);
 }
 
 // -- JOBS --
