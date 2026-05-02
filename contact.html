@@ -2,307 +2,460 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Contact Us — Belongix</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Contact Belongix — Get in Touch</title>
+<meta name="description" content="Have a question, partnership idea, or want to become a mentor? Contact the Belongix team — we respond within 24 hours."/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="icon" href="icons/icon-32.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;450;500;600&display=swap" rel="stylesheet"/>
 <style>
-*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
-:root{--navy:#0a1628;--blue:#1d6fa4;--blue2:#1a5f8e;--blue3:#2485c1;--sky:#e6f3fb;--sky2:#cce5f6;--sky3:#a8d4ee;--white:#fff;--off:#f5faff;--off2:#eef6fc;--text:#1e3a52;--muted:#4a7a9b;--muted2:#7aafc8;--border:#c2dff0;--border2:#deeef9;--green:#0f7b4e;--red:#c0392b;}
-body{font-family:'DM Sans',sans-serif;background:var(--white);color:var(--text);font-weight:400;}
-nav{position:fixed;top:0;left:0;right:0;z-index:500;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(255,255,255,0.96);backdrop-filter:blur(24px);border-bottom:1px solid var(--border2);box-shadow:0 1px 10px rgba(29,111,164,0.06);}
-.nlogo{font-size:1.4rem;font-weight:700;color:var(--navy);text-decoration:none;letter-spacing:-0.03em;}.nlogo span{color:var(--blue);}
-.nlinks{display:flex;gap:2rem;list-style:none;}
-.nlinks a{font-size:0.875rem;font-weight:500;color:var(--muted);text-decoration:none;transition:color 0.2s;}
-.nlinks a:hover,.nlinks a.active{color:var(--blue);}
-.nbtns{display:flex;gap:0.5rem;}
-.nghost{padding:0.45rem 1rem;border-radius:8px;border:1.5px solid var(--border);background:transparent;font-size:0.84rem;font-weight:600;color:var(--text);cursor:pointer;font-family:'DM Sans',sans-serif;}
-.nghost:hover{border-color:var(--blue);color:var(--blue);}
-.nfill{padding:0.45rem 1.2rem;border-radius:8px;background:var(--blue);border:none;font-size:0.84rem;font-weight:600;color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;}
-
-
-
-
-
-
-.hero{padding:9rem 5% 5rem;background:linear-gradient(160deg,var(--white),var(--off),var(--sky));text-align:center;}
-.tag{display:inline-block;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);background:var(--sky);border:1px solid var(--sky2);border-radius:100px;padding:0.25rem 0.8rem;margin-bottom:0.85rem;}
-h1{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:700;color:var(--navy);letter-spacing:-0.03em;line-height:1.15;margin-bottom:1rem;}
-h1 span{color:var(--blue);}
-.sub{font-size:0.95rem;color:var(--muted);max-width:500px;margin:0 auto;line-height:1.75;}
-
-.layout{display:grid;grid-template-columns:1fr 1.4fr;gap:4rem;padding:5rem 5%;align-items:start;}
-.stag{display:inline-block;font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);background:var(--sky);border:1px solid var(--sky2);border-radius:100px;padding:0.25rem 0.8rem;margin-bottom:0.75rem;}
-.sh{font-size:1.7rem;font-weight:700;color:var(--navy);letter-spacing:-0.03em;line-height:1.15;margin-bottom:0.75rem;}
-.sh span{color:var(--blue);}
-.sp{font-size:0.875rem;color:var(--muted);line-height:1.75;margin-bottom:1.8rem;}
-
-.ccard{background:var(--white);border:1px solid var(--border2);border-radius:12px;padding:1rem 1.3rem;display:flex;align-items:center;gap:0.85rem;margin-bottom:0.6rem;transition:all 0.2s;text-decoration:none;color:inherit;cursor:pointer;}
-.ccard:hover{border-color:var(--sky2);box-shadow:0 4px 14px rgba(29,111,164,0.1);transform:translateX(4px);}
-.cc-icon{width:36px;height:36px;border-radius:9px;background:var(--sky);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
-.cc-label{font-size:0.68rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.12rem;}
-.cc-val{font-size:0.85rem;font-weight:600;color:var(--navy);}
-
-.for-section{margin-top:1.8rem;}
-.for-section h4{font-size:0.84rem;font-weight:700;color:var(--navy);margin-bottom:0.85rem;}
-.for-item{display:flex;align-items:flex-start;gap:0.65rem;margin-bottom:0.6rem;padding:0.65rem 0.9rem;background:var(--off2);border-radius:9px;border:1px solid var(--border2);}
-.for-icon{font-size:0.95rem;flex-shrink:0;margin-top:0.05rem;}
-.for-text strong{display:block;font-size:0.82rem;font-weight:600;color:var(--navy);margin-bottom:0.08rem;}
-.for-text span{font-size:0.74rem;color:var(--muted);}
-
-.form-wrap{background:var(--white);border:1px solid var(--border);border-radius:18px;padding:2rem;box-shadow:0 4px 24px rgba(29,111,164,0.08);}
-.form-title{font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:0.25rem;letter-spacing:-0.02em;}
-.form-sub{font-size:0.82rem;color:var(--muted);margin-bottom:1.5rem;}
-.fg{margin-bottom:0.85rem;}
-.fl{font-size:0.72rem;font-weight:600;color:var(--text);margin-bottom:0.28rem;display:block;}
-.fi,.fsel,.fta{width:100%;padding:0.65rem 0.9rem;background:var(--off2);border:1.5px solid var(--border2);border-radius:9px;font-size:0.875rem;font-family:'DM Sans',sans-serif;color:var(--text);outline:none;transition:all 0.2s;-webkit-appearance:none;}
-.fi:focus,.fsel:focus,.fta:focus{border-color:var(--blue);background:var(--white);}
-.fi::placeholder,.fta::placeholder{color:var(--muted2);}
-.fta{resize:vertical;min-height:120px;line-height:1.6;}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
-.submit-btn{width:100%;padding:0.8rem;border-radius:9px;background:var(--blue);color:#fff;border:none;font-size:0.875rem;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;margin-top:0.4rem;}
-.submit-btn:hover{background:var(--blue2);}
-.success-box{display:none;background:rgba(15,123,78,0.08);border:1.5px solid #86efac;border-radius:10px;padding:1rem 1.2rem;text-align:center;margin-top:0.85rem;}
-.success-box h4{font-size:0.95rem;font-weight:700;color:var(--green);margin-bottom:0.25rem;}
-.success-box p{font-size:0.82rem;color:var(--muted);}
-.err-box{display:none;background:#fef2f2;border:1px solid #fca5a5;border-radius:8px;padding:0.55rem 0.85rem;font-size:0.78rem;color:var(--red);margin-bottom:0.65rem;}
-
-.faq-sec{padding:4rem 5%;background:var(--off);}
-.faq-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-top:2rem;}
-.faq-card{background:var(--white);border:1px solid var(--border2);border-radius:12px;padding:1.3rem;transition:all 0.2s;}
-.faq-card:hover{border-color:var(--sky2);box-shadow:0 4px 14px rgba(29,111,164,0.08);}
-.faq-card h4{font-size:0.875rem;font-weight:700;color:var(--navy);margin-bottom:0.35rem;}
-.faq-card p{font-size:0.8rem;color:var(--muted);line-height:1.6;}
-
-footer{background:#060e1c;border-top:1px solid rgba(255,255,255,0.04);padding:3rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
-.flogo{font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-0.03em;}.flogo span{color:var(--sky3);}
-footer p{font-size:0.78rem;color:rgba(255,255,255,0.3);}
-.flinks{display:flex;gap:1.5rem;}
-.flinks a{font-size:0.8rem;color:rgba(255,255,255,0.35);text-decoration:none;cursor:pointer;transition:color 0.2s;}.flinks a:hover{color:var(--sky3);}
-
-#toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--navy);color:#fff;padding:0.65rem 1.4rem;border-radius:10px;font-size:0.84rem;font-weight:500;z-index:9999;transition:transform 0.3s,opacity 0.3s;opacity:0;box-shadow:0 8px 28px rgba(0,0,0,0.2);}
-.rv{opacity:1;}
-
-@media(max-width:1024px){.layout{grid-template-columns:1fr;gap:2.5rem;}}
-@media(max-width:768px){.nlinks{display:none;}.fr{grid-template-columns:1fr;}.flinks{display:none;}}
-
-
-
-
-/* Nav user dropdown - consistent with index */
-.nav-user-wrap{position:relative;display:none}
-.nav-user-btn{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:24px;border:1.5px solid #E5E7EB;background:#fff;cursor:pointer;font-family:inherit;transition:.15s;font-size:13px;font-weight:500;color:#111827}
-.nav-user-btn:hover{border-color:#C7D7FD;background:#EEF3FF}
-.nav-av{width:30px;height:30px;border-radius:50%;background:#1447E6;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:inherit}
-.nav-nm{font-size:13px;font-weight:500;color:#111827;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nav-user-btn svg{color:#9CA3AF;transition:transform .2s;flex-shrink:0}
+:root{
+  --brand:#2D1B69;--brand2:#4C2FAA;--brand3:#6B48CC;
+  --accent:#FF5C35;--accent2:#FF7A59;
+  --sky:#06B6D4;--green:#10B981;--amber:#F59E0B;--red:#EF4444;
+  --ink:#0D0D1A;--ink2:#1A1A2E;--muted:#5A5A7A;--subtle:#8B8BA8;
+  --bg:#FFFFFF;--off:#F7F7FC;--off2:#EFEFF8;
+  --border:#E4E4F0;--border2:#D0D0E8;
+  --ff:'Sora',sans-serif;--ffb:'DM Sans',sans-serif;
+  --r:14px;--r2:10px;--r3:22px;
+  --shadow:0 1px 4px rgba(45,27,105,.07),0 4px 20px rgba(45,27,105,.05);
+  --shadow-lg:0 8px 40px rgba(45,27,105,.12),0 2px 8px rgba(45,27,105,.06);
+  --max:1200px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--ffb);color:var(--ink);background:#FAFAFE;overflow-x:hidden;background-image:linear-gradient(rgba(45,27,105,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(45,27,105,.05) 1px,transparent 1px);background-size:52px 52px;background-attachment:fixed}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;padding:0 5%;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:.3s}
+.nav-in{max-width:var(--max);width:100%;margin:0 auto;display:flex;align-items:center}
+.nlogo{font-family:var(--ff);font-size:21px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.4px;margin-right:36px;flex-shrink:0}
+.nlogo span{color:var(--accent)}
+.nlinks{display:flex;align-items:center;gap:2px;flex:1;list-style:none}
+.nav-link{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;text-decoration:none;background:none;border:none;font-family:var(--ffb);display:flex;align-items:center;gap:4px;transition:.15s}
+.nav-link:hover{color:var(--brand);background:var(--off2)}
+.nav-link svg{width:11px;height:11px;transition:transform .2s}
+.nav-link.dd-open svg{transform:rotate(180deg)}
+.dd-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);padding:8px;min-width:250px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:200}
+.dd-panel.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.dd-item{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:10px;cursor:pointer;text-decoration:none;transition:.15s;color:var(--ink2)}
+.dd-item:hover{background:var(--off2)}
+.dd-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.dd-text strong{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:1px}
+.dd-text span{font-size:11.5px;color:var(--muted)}
+.nbtns{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nghost{padding:8px 18px;border-radius:9px;border:1.5px solid var(--border2);background:transparent;color:var(--ink2);font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.nghost:hover{border-color:var(--brand);color:var(--brand)}
+.nfill{padding:8px 18px;border-radius:9px;border:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.nfill:hover{background:var(--brand2)}
+/* Nav user */
+.nav-user-wrap{position:relative;display:none;margin-left:auto}
+.nav-user-btn{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:24px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:var(--ffb);transition:.15s;font-size:13px;font-weight:500}
+.nav-user-btn:hover{border-color:var(--brand3);background:var(--off2)}
+.nav-av{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-nm{font-size:13px;font-weight:500;color:var(--ink)}
+.nav-user-btn svg{width:11px;height:11px;color:var(--subtle);transition:transform .2s}
 .nav-user-btn.dd-open svg{transform:rotate(180deg)}
-.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid #E5E7EB;border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.14);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:600}
+.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
 .user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
-.ud-header{padding:10px 12px 10px;border-bottom:1px solid #F3F4F6;margin-bottom:4px}
-.ud-name{font-size:13px;font-weight:700;color:#0A1628}
-.ud-email{font-size:11px;color:#9CA3AF;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px}
-.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:#111827;cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:inherit;text-align:left}
-.ud-item:hover{background:#F3F4F6;color:#1447E6}
-.ud-item svg{width:15px;height:15px;flex-shrink:0;color:#6B7280}
-.ud-divider{height:1px;background:#F3F4F6;margin:4px 0}
-
+.ud-header{padding:10px 12px;border-bottom:1px solid var(--off2);margin-bottom:4px}
+.ud-name{font-size:13px;font-weight:700;color:var(--ink)}
+.ud-email{font-size:11px;color:var(--subtle);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:9px;font-size:13px;color:var(--ink2);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left}
+.ud-item:hover{background:var(--off2);color:var(--brand)}
+.ud-item svg{width:14px;height:14px;flex-shrink:0;color:var(--subtle)}
+.ud-divider{height:1px;background:var(--off2);margin:4px 0}
+/* LAYOUT */
+.page-wrap{padding-top:64px}
+.sec{padding:80px 5%}
+.sec-in{max-width:var(--max);margin:0 auto}
+.sec-center{text-align:center;max-width:640px;margin:0 auto 56px}
+.sec-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--brand);background:var(--off2);border:1px solid var(--border2);border-radius:100px;padding:4px 14px;margin-bottom:14px;letter-spacing:.3px;text-transform:uppercase}
+h2{font-family:var(--ff);font-size:clamp(28px,3.5vw,44px);font-weight:800;color:var(--ink);line-height:1.1;letter-spacing:-1px}
+h2 span{color:var(--brand)}
+.sec-sub{font-size:16px;color:var(--muted);line-height:1.75;margin-top:14px}
+/* BUTTONS */
+.btn-primary{padding:13px 26px;border-radius:10px;background:var(--brand);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary:hover{background:var(--brand2);transform:translateY(-1px)}
+.btn-ghost{padding:13px 22px;border-radius:10px;background:transparent;color:var(--ink2);border:1.5px solid var(--border2);font-size:14px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+/* CARDS */
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;transition:.2s}
+.card:hover{border-color:var(--brand3);box-shadow:var(--shadow)}
+/* ANIMATIONS */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.rv.on{opacity:1;transform:translateY(0)}
+/* FOOTER */
+footer{background:var(--brand);padding:56px 5% 32px;border-top:1px solid rgba(255,255,255,.06)}
+.footer-in{max-width:var(--max);margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:40px}
+.footer-logo{font-family:var(--ff);font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:12px}
+.footer-logo span{color:var(--accent)}
+.footer-desc{font-size:13px;color:rgba(255,255,255,.45);line-height:1.7;max-width:260px}
+.footer-col h4{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:9px;transition:.15s}
+.footer-col a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-bottom p{font-size:12px;color:rgba(255,255,255,.3)}
+.footer-chips{display:flex;gap:8px}
+.fc{font-size:11px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.4);border-radius:6px;padding:4px 10px}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(13,13,26,.6);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:22px;padding:36px;width:100%;max-width:420px;margin:20px;position:relative;animation:popIn .25s ease}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.modal-close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;background:var(--off2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted)}
+.modal-close:hover{background:var(--border2)}
+.modal h3{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:22px}
+.m-tabs{display:flex;gap:2px;background:var(--off);border-radius:10px;padding:3px;margin-bottom:20px}
+.m-tab{flex:1;padding:8px;text-align:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:.15s;border:none;background:none;font-family:var(--ffb)}
+.m-tab.active{background:#fff;color:var(--brand);font-weight:700;box-shadow:0 1px 4px rgba(45,27,105,.1)}
+.m-inp{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;margin-bottom:11px;transition:.15s}
+.m-inp:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,27,105,.08)}
+.m-btn{width:100%;padding:12px;background:var(--brand);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;margin-bottom:10px}
+.m-btn:hover{background:var(--brand2)}
+.m-google{width:100%;padding:11px;background:#fff;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;color:var(--ink2)}
+.m-google:hover{border-color:var(--border2);background:var(--off)}
+.m-ok{display:none;background:#ECFDF5;border:1px solid #6EE7B7;border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#065F46;font-weight:600;margin-top:10px}
+.m-fine{font-size:11.5px;color:var(--subtle);text-align:center;margin-top:11px}
+@media(max-width:768px){.nlinks{display:none}.footer-top{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.footer-top{grid-template-columns:1fr}}
 </style>
-<link rel="manifest" href="/manifest.json">
-<meta name="theme-color" content="#2563EB">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+.contact-hero{padding:80px 5% 60px;background:linear-gradient(135deg,var(--brand) 0%,var(--brand2) 60%,var(--brand3) 100%);margin-top:64px;position:relative;overflow:hidden;text-align:center}
+.contact-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:40px 40px}
+.contact-hero h1{font-family:var(--ff);font-size:clamp(32px,4.5vw,52px);font-weight:800;color:#fff;letter-spacing:-1.5px;position:relative;z-index:1;margin-bottom:12px}
+.contact-hero h1 span{color:var(--accent)}
+.contact-hero p{font-size:16px;color:rgba(255,255,255,.75);max-width:500px;margin:0 auto;position:relative;z-index:1;line-height:1.7}
+.contact-tag{display:inline-flex;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;color:rgba(255,255,255,.9);text-transform:uppercase;letter-spacing:.3px;margin-bottom:16px;position:relative;z-index:1}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.contact-form-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:32px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+.form-inp{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s;background:#FAFAFE}
+.form-inp:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,27,105,.07);background:#fff}
+textarea.form-inp{resize:vertical;min-height:120px;line-height:1.6}
+.form-submit{width:100%;padding:13px;background:var(--brand);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;margin-top:4px}
+.form-submit:hover{background:var(--brand2)}
+.form-ok{display:none;background:#ECFDF5;border:1px solid #6EE7B7;border-radius:10px;padding:14px;text-align:center;font-size:14px;color:#065F46;font-weight:600;margin-top:12px}
+.contact-cards{display:flex;flex-direction:column;gap:14px}
+.contact-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;gap:14px;align-items:flex-start;transition:.2s}
+.contact-card:hover{border-color:var(--brand3);box-shadow:var(--shadow)}
+.cc-icon{width:42px;height:42px;border-radius:11px;background:var(--off2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.cc-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.cc-desc{font-size:13px;color:var(--muted);margin-bottom:8px;line-height:1.5}
+.cc-link{font-size:13px;font-weight:600;color:var(--brand);text-decoration:none}
+.cc-link:hover{text-decoration:underline}
+.social-row{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap}
+.soc-btn{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;background:var(--off2);color:var(--ink2);text-decoration:none;font-size:12.5px;font-weight:600;transition:.15s;border:1px solid var(--border)}
+.soc-btn:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+@media(max-width:768px){.contact-grid{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
-<div id="toast"></div>
-<nav>
-  <a href="index.html" class="nlogo">Belong<span>ix</span></a>
-  <ul class="nlinks"><li><a href="index.html">Home</a></li><li><a href="mentors.html">Mentors</a></li><li><a href="contact.html" class="active">Contact</a></li><li><a href="about.html">About</a></li></ul>
-  <div class="nbtns" id="nav-out">
-    <button class="nghost" onclick="location.href='index.html'">Sign In</button>
-    <button class="nfill" onclick="location.href='index.html'">Join Free</button>
-  </div>
-  <div class="nav-user-wrap" id="nav-in">
-    <button class="nav-user-btn" id="nav-user-btn">
-      <div class="nav-av" id="nav-av">?</div>
-      <span class="nav-nm" id="nav-nm">Hi...</span>
-      <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
-    </button>
-    <div class="user-dropdown" id="user-dd">
-      <div class="ud-header"><div class="ud-name" id="ud-name">User</div><div class="ud-email" id="ud-email"></div></div>
-      <a class="ud-item" href="dashboard.html"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
-      <a class="ud-item" href="dashboard.html?page=profile"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>My Profile</a>
-      <div class="ud-divider"></div>
-      <button class="ud-item" onclick="doSignOut()" style="color:#DC2626"><svg fill="none" viewBox="0 0 24 24" stroke="#DC2626" stroke-width="1.8"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>Sign Out</button>
+<nav id="main-nav">
+  <div class="nav-in">
+    <a href="index.html" class="nlogo">Belong<span>ix</span></a>
+    <ul class="nlinks">
+      <li style="position:relative">
+        <button class="nav-link" onclick="toggleDD('dd-platform',this)">Platform <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="dd-panel" id="dd-platform">
+          <a class="dd-item" href="dashboard.html?page=jobs"><div class="dd-icon" style="background:#EEF0FF">💼</div><div class="dd-text"><strong>Job Board</strong><span>Live listings, apply instantly</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=salary"><div class="dd-icon" style="background:#ECFDF5">💰</div><div class="dd-text"><strong>Salary Intelligence</strong><span>Know your market worth</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF7ED">🤖</div><div class="dd-text"><strong>Bexi AI Guide</strong><span>24/7 career guidance</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF1F2">📊</div><div class="dd-text"><strong>Career Score</strong><span>Track your professional growth</span></div></a>
+        </div>
+      </li>
+      <li style="position:relative">
+        <button class="nav-link" onclick="toggleDD('dd-who',this)">Who It's For <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="dd-panel" id="dd-who">
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#ECFDF5">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#FFF7ED">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#FFF1F2">🔄</div><div class="dd-text"><strong>Career Changers</strong><span>Switch fields with mentor support</span></div></a>
+        </div>
+      </li>
+      <li style="position:relative">
+        <button class="nav-link" onclick="toggleDD('dd-learn',this)">Learn <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="dd-panel" id="dd-learn">
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>48+ curated courses</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#F5F3FF">🏆</div><div class="dd-text"><strong>Certifications</strong><span>AWS, Google, Microsoft</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#FFF1F2">🎯</div><div class="dd-text"><strong>DSA &amp; Interview Prep</strong><span>Crack FAANG &amp; top startups</span></div></a>
+        </div>
+      </li>
+      <li><a class="nav-link" href="mentors.html">Mentors</a></li>
+      <li><a class="nav-link" href="contact.html">Contact</a></li>
+      <li><a class="nav-link" href="about.html">About</a></li>
+    </ul>
+    <div class="nbtns" id="nav-out">
+      <button class="nghost" onclick="openModal('signin')">Sign In</button>
+      <button class="nfill" onclick="openModal('signup')">Join Free →</button>
+    </div>
+    <div class="nav-user-wrap" id="nav-in">
+      <button class="nav-user-btn" id="nav-user-btn">
+        <div class="nav-av" id="nav-av">?</div>
+        <span class="nav-nm" id="nav-nm">Hi...</span>
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div class="user-dropdown" id="user-dd">
+        <div class="ud-header"><div class="ud-name" id="ud-name">User</div><div class="ud-email" id="ud-email"></div></div>
+        <a class="ud-item" href="dashboard.html"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+        <a class="ud-item" href="dashboard.html?page=profile"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>My Profile</a>
+        <div class="ud-divider"></div>
+        <button class="ud-item" onclick="doSignOut()" style="color:var(--red)"><svg fill="none" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="1.8"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>Sign Out</button>
+      </div>
     </div>
   </div>
 </nav>
+<div class="page-wrap">
 
-<div class="hero">
-  <div class="tag">Contact Us</div>
+<div class="contact-hero">
+  <div class="contact-tag">Contact Us</div>
   <h1>We'd love to <span>hear from you</span></h1>
-  <p class="sub">Have a question, partnership idea, or want to become a mentor? We read every message personally and respond within 24 hours.</p>
+  <p>Have a question, partnership idea, or want to become a mentor? We read every message personally and respond within 24 hours.</p>
 </div>
 
-<div class="layout">
-  <div class="rv">
-    <div class="stag">Get in Touch</div>
-    <h2 class="sh">We're <span>here for you</span></h2>
-    <p class="sp">Reach out through any channel below. We respond to every message within 24 hours.</p>
-    <a class="ccard" href="mailto:teambelongix@gmail.com"><div class="cc-icon">📧</div><div><div class="cc-label">Email</div><div class="cc-val">teambelongix@gmail.com</div></div></a>
-    <a class="ccard" href="https://linkedin.com/company/belongix" target="_blank"><div class="cc-icon">💼</div><div><div class="cc-label">LinkedIn</div><div class="cc-val">linkedin.com/company/belongix</div></div></a>
-    <a class="ccard" href="https://instagram.com/belongix" target="_blank"><div class="cc-icon">📸</div><div><div class="cc-label">Instagram</div><div class="cc-val">@belongix</div></div></a>
-    <a class="ccard" href="https://twitter.com/belongix" target="_blank"><div class="cc-icon">𝕏</div><div><div class="cc-label">Twitter / X</div><div class="cc-val">@belongix</div></div></a>
-    <div class="for-section">
-      <h4>What can we help you with?</h4>
-      <div class="for-item"><span class="for-icon">🤝</span><div class="for-text"><strong>Become a Mentor</strong><span>Apply to join as a verified senior mentor</span></div></div>
-      <div class="for-item"><span class="for-icon">🏢</span><div class="for-text"><strong>Corporate Plans</strong><span>Upskilling packages for IT teams</span></div></div>
-      <div class="for-item"><span class="for-icon">💡</span><div class="for-text"><strong>Partnerships</strong><span>Collaborate with Belongix</span></div></div>
-      <div class="for-item"><span class="for-icon">💰</span><div class="for-text"><strong>Investor Enquiries</strong><span>Interested in investing in Belongix?</span></div></div>
-      <div class="for-item"><span class="for-icon">🐛</span><div class="for-text"><strong>Bug Reports</strong><span>Found something broken? Let us know!</span></div></div>
+<section class="sec">
+  <div class="sec-in">
+    <div class="contact-grid rv">
+      <div class="contact-form-card">
+        <h2 style="font-size:22px;margin-bottom:4px">Send a Message</h2>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:24px">Fill out the form and we'll get back to you quickly.</p>
+        <div id="form-err" style="display:none;background:#FFF1F2;border:1px solid #FECDD3;border-radius:10px;padding:12px;font-size:13px;color:#BE123C;margin-bottom:14px"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="form-group">
+            <label class="form-label">Your Name *</label>
+            <input class="form-inp" type="text" id="cf-name" placeholder="Keerthi Reddy"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email *</label>
+            <input class="form-inp" type="email" id="cf-email" placeholder="you@email.com"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Subject *</label>
+          <select class="form-inp" id="cf-subject">
+            <option value="">Select a topic</option>
+            <option>General Question</option>
+            <option>Mentor Application</option>
+            <option>Partnership / Business</option>
+            <option>Bug Report</option>
+            <option>Feature Request</option>
+            <option>Billing / Subscription</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Message *</label>
+          <textarea class="form-inp" id="cf-msg" placeholder="Tell us what's on your mind..."></textarea>
+        </div>
+        <button class="form-submit" id="cf-btn" onclick="submitContact()">Send Message →</button>
+        <div class="form-ok" id="form-ok">✓ Message sent! We'll reply within 24 hours.</div>
+      </div>
+      <div class="contact-cards">
+        <div class="contact-card">
+          <div class="cc-icon">📧</div>
+          <div>
+            <div class="cc-title">Email Us</div>
+            <div class="cc-desc">For any questions or support — we reply within 24 hours.</div>
+            <a class="cc-link" href="mailto:teambelongix@gmail.com">teambelongix@gmail.com</a>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="cc-icon">🤝</div>
+          <div>
+            <div class="cc-title">Become a Mentor</div>
+            <div class="cc-desc">Share your expertise with professionals who need your guidance.</div>
+            <a class="cc-link" href="mentors.html">Apply on mentors page →</a>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="cc-icon">💼</div>
+          <div>
+            <div class="cc-title">Partnership / Business</div>
+            <div class="cc-desc">Interested in a partnership or want to list job openings?</div>
+            <a class="cc-link" href="mailto:teambelongix@gmail.com?subject=Partnership Enquiry">Email us →</a>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="cc-icon">🌐</div>
+          <div>
+            <div class="cc-title">Follow Belongix</div>
+            <div class="cc-desc">Stay updated on new features and career tips.</div>
+            <div class="social-row">
+              <a class="soc-btn" href="https://linkedin.com/company/belongix" target="_blank">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/></svg>
+                LinkedIn
+              </a>
+              <a class="soc-btn" href="https://instagram.com/belongix" target="_blank">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                Instagram
+              </a>
+              <a class="soc-btn" href="https://twitter.com/belongix" target="_blank">✕ Twitter</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-  <div class="form-wrap rv">
-    <div class="form-title">Send us a message</div>
-    <div class="form-sub">We'll get back to you within 24 hours.</div>
-    <div class="err-box" id="form-err"></div>
-    <div class="fr">
-      <div class="fg"><label class="fl">First Name *</label><input class="fi" type="text" id="f-fname" placeholder="First name"/></div>
-      <div class="fg"><label class="fl">Last Name</label><input class="fi" type="text" id="f-lname" placeholder="Last name"/></div>
-    </div>
-    <div class="fg"><label class="fl">Email Address *</label><input class="fi" type="email" id="f-email" placeholder="your@email.com"/></div>
-    <div class="fg"><label class="fl">Your Role</label>
-      <select class="fsel" id="f-role">
-        <option value="">Select your role (optional)</option>
-        <option>College Student</option><option>Fresh Graduate</option>
-        <option>Working Professional</option><option>Career Changer</option>
-        <option>Entrepreneur / Founder</option><option>Other</option>
-      </select>
-    </div>
-    <div class="fg"><label class="fl">Reason for Contact *</label>
-      <select class="fsel" id="f-reason">
-        <option value="">Select a reason</option>
-        <option>General Enquiry</option><option>Become a Mentor</option>
-        <option>Corporate / Team Plans</option><option>Partnership Opportunity</option>
-        <option>Investor Enquiry</option><option>Bug Report / Technical Issue</option>
-        <option>Press / Media</option><option>Other</option>
-      </select>
-    </div>
-    <div class="fg"><label class="fl">Message *</label><textarea class="fta" id="f-msg" placeholder="Tell us what's on your mind..."></textarea></div>
-    <button class="submit-btn" onclick="submitForm()">Send Message →</button>
-    <div class="success-box" id="success-box">
-      <h4>✓ Message sent!</h4>
-      <p>We'll get back to you within 24 hours.</p>
-    </div>
-  </div>
-</div>
-
-<section class="faq-sec">
-  <div class="rv" style="text-align:center;">
-    <div class="stag">Quick Answers</div>
-    <h2 class="sh" style="font-size:1.6rem;">Common <span>questions</span></h2>
-  </div>
-  <div class="faq-grid rv">
-    <div class="faq-card"><h4>How quickly do you respond?</h4><p>We respond to every message within 24 hours on business days. Email us directly at teambelongix@gmail.com for urgent matters.</p></div>
-    <div class="faq-card"><h4>How do I become a mentor?</h4><p>If you have 6+ years of experience, fill the form and select "Become a Mentor". We'll review your profile within 48 hours.</p></div>
-    <div class="faq-card"><h4>Do you offer corporate plans?</h4><p>Yes! We offer custom upskilling packages for teams. Select "Corporate / Team Plans" and we'll send you our enterprise details.</p></div>
-    <div class="faq-card"><h4>Are you open to partnerships?</h4><p>Yes! We welcome partnerships with colleges, bootcamps, hiring platforms, and EdTech companies. Tell us your idea.</p></div>
-    <div class="faq-card"><h4>How do I report a bug?</h4><p>Select "Bug Report" in the form and describe what you found. Screenshots are very helpful and we take every report seriously.</p></div>
-    <div class="faq-card"><h4>Where is Belongix based?</h4><p>Belongix is based in India, building specifically for India's professional community. Our team operates remotely across Indian cities.</p></div>
   </div>
 </section>
 
 <footer>
-  <div class="flogo">Belong<span>ix</span></div>
-  <p>© 2026 Belongix · teambelongix@gmail.com · belongix.in</p>
-  <div class="flinks">
-    <a href="index.html">Home</a><a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
+  <div class="footer-in">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">Belong<span>ix</span></div>
+        <p class="footer-desc">India's professional career platform — for students, freshers, and working professionals at every stage of their journey.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="dashboard.html?page=jobs">Job Board</a>
+        <a href="dashboard.html?page=salary">Salary Insights</a>
+        <a href="dashboard.html?page=upskill">Upskilling Hub</a>
+        <a href="dashboard.html?page=overview">Career Score</a>
+        <a href="dashboard.html?page=overview">Bexi AI</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="about.html">About Us</a>
+        <a href="mentors.html">Mentors</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Refund Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Belongix. Built with ❤️ in India.</p>
+      <div class="footer-chips">
+        <span class="fc">🔒 Secure</span>
+        <span class="fc">🇮🇳 Made in India</span>
+        <span class="fc">⚡ PWA</span>
+      </div>
+    </div>
   </div>
 </footer>
+</div>
+<div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <h3 id="modal-title">Join Belongix Free</h3>
+    <p class="modal-sub" id="modal-sub">Create your account and start your career journey.</p>
+    <div class="m-tabs">
+      <button class="m-tab active" id="tab-signup" onclick="modalTab('signup')">Sign Up</button>
+      <button class="m-tab" id="tab-signin" onclick="modalTab('signin')">Sign In</button>
+    </div>
+    <div id="modal-signup">
+      <input class="m-inp" type="email" id="m-email" placeholder="Email address"/>
+      <input class="m-inp" type="password" id="m-pass" placeholder="Password (min 6 chars)"/>
+      <button class="m-btn" onclick="modalAuth('signup')">Create Account →</button>
+    </div>
+    <div id="modal-signin" style="display:none">
+      <input class="m-inp" type="email" id="m-si-email" placeholder="Email address"/>
+      <input class="m-inp" type="password" id="m-si-pass" placeholder="Password"/>
+      <button class="m-btn" onclick="modalAuth('signin')">Sign In →</button>
+    </div>
+    <button class="m-google" onclick="googleAuth()">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <div class="m-ok" id="m-ok"></div>
+    <div class="m-fine">By signing up you agree to our Terms &amp; Privacy Policy.</div>
+  </div>
+</div>
 <script>
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb=supabase.createClient(SB_URL,SB_KEY);
 (function(){
-  var SU='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
-  var SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
-  var sb=window._bxSb||(window._bxSb=supabase.createClient(SU,SK));
-  function showU(u){
-    var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];
-    var no=document.getElementById('nav-out');
-    var ni=document.getElementById('nav-in');
-    if(no)no.style.display='none';
-    if(ni)ni.style.display='block';
-    ['nav-av','nav-nm','ud-name'].forEach(function(id,i){
-      var el=document.getElementById(id);
-      if(el)el.textContent=i===1?'Hi, '+nm.split(' ')[0]:i===0?nm.substring(0,2).toUpperCase():nm;
-    });
-    var em=document.getElementById('ud-email');
-    if(em)em.textContent=u.email||'';
-  }
-  function showO(){
-    var no=document.getElementById('nav-out');
-    var ni=document.getElementById('nav-in');
-    if(no)no.style.display='flex';
-    if(ni)ni.style.display='none';
-  }
-  window.doSignOut=function(){sb.auth.signOut().then(function(){location.href='index.html';});};
-  sb.auth.getSession().then(function(r){
-    var s=r&&r.data&&r.data.session;
-    if(s&&s.user)showU(s.user); else showO();
-  });
-  sb.auth.onAuthStateChange(function(_,s){s?showU(s.user):showO();});
-  var btn=document.getElementById('nav-user-btn');
-  var dd=document.getElementById('user-dd');
-  if(btn&&dd){
-    btn.addEventListener('click',function(e){
-      e.stopPropagation();
-      var o=dd.classList.contains('open');
-      dd.classList[o?'remove':'add']('open');
-      btn.classList[o?'remove':'add']('dd-open');
-    });
-    document.addEventListener('click',function(){
-      dd.classList.remove('open');
-      btn.classList.remove('dd-open');
-    });
-  }
+  sb.auth.getSession().then(function(r){var s=r&&r.data&&r.data.session;if(s&&s.user)showUserNav(s.user);else showGuestNav();});
+  sb.auth.onAuthStateChange(function(_,s){if(s&&s.user)showUserNav(s.user);else showGuestNav();});
 })();
+function showUserNav(u){
+  var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];
+  var no=document.getElementById('nav-out'); if(no)no.style.display='none';
+  var ni=document.getElementById('nav-in'); if(ni)ni.style.display='block';
+  var av=document.getElementById('nav-av'); if(av)av.textContent=nm.substring(0,2).toUpperCase();
+  var nm_el=document.getElementById('nav-nm'); if(nm_el)nm_el.textContent='Hi, '+nm.split(' ')[0];
+  var udn=document.getElementById('ud-name'); if(udn)udn.textContent=nm;
+  var ude=document.getElementById('ud-email'); if(ude)ude.textContent=u.email||'';
+}
+function showGuestNav(){
+  var no=document.getElementById('nav-out'); if(no)no.style.display='flex';
+  var ni=document.getElementById('nav-in'); if(ni)ni.style.display='none';
+}
+function doSignOut(){sb.auth.signOut().then(function(){location.reload();});}
+var navBtn=document.getElementById('nav-user-btn');
+var navDd=document.getElementById('user-dd');
+if(navBtn&&navDd){
+  navBtn.addEventListener('click',function(e){e.stopPropagation();var o=navDd.classList.contains('open');navDd.classList[o?'remove':'add']('open');navBtn.classList[o?'remove':'add']('dd-open');});
+  document.addEventListener('click',function(){navDd.classList.remove('open');navBtn.classList.remove('dd-open');});
+}
+function toggleDD(id,btn){
+  document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
+  document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
+  var dd=document.getElementById(id);
+  if(dd){dd.classList.add('open');btn.classList.add('dd-open');}
+}
+document.addEventListener('click',function(e){if(!e.target.closest('.nav-link')&&!e.target.closest('.dd-panel')){document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});}});
+function openModal(type){document.getElementById('auth-modal').classList.add('open');modalTab(type);}
+function closeModal(){document.getElementById('auth-modal').classList.remove('open');}
+function modalTab(tab){
+  document.getElementById('modal-signup').style.display=tab==='signup'?'block':'none';
+  document.getElementById('modal-signin').style.display=tab==='signin'?'block':'none';
+  document.getElementById('tab-signup').classList[tab==='signup'?'add':'remove']('active');
+  document.getElementById('tab-signin').classList[tab==='signin'?'add':'remove']('active');
+}
+async function modalAuth(type){
+  var email='',pass='';
+  if(type==='signup'){email=(document.getElementById('m-email')||{}).value||'';pass=(document.getElementById('m-pass')||{}).value||'';}
+  else{email=(document.getElementById('m-si-email')||{}).value||'';pass=(document.getElementById('m-si-pass')||{}).value||'';}
+  if(!email||!pass){alert('Please fill all fields');return;}
+  try{
+    var res=type==='signup'?await sb.auth.signUp({email:email,password:pass}):await sb.auth.signInWithPassword({email:email,password:pass});
+    if(res.error)throw res.error;
+    if(type==='signin'){closeModal();window.location.href='dashboard.html';}
+    else{var ok=document.getElementById('m-ok');if(ok){ok.style.display='block';ok.textContent='Check your email to confirm signup!';}}
+  }catch(e){alert('Error: '+e.message);}
+}
+async function googleAuth(){
+  try{await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});}
+  catch(e){alert('Google auth error: '+e.message);}
+}
+// Scroll reveal
+var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('on');});},{threshold:0.07,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv').forEach(function(el){obs.observe(el);});
+</script>
+<script>
+function submitContact(){
+  var n=(document.getElementById('cf-name')||{}).value||'';
+  var e=(document.getElementById('cf-email')||{}).value||'';
+  var s=(document.getElementById('cf-subject')||{}).value||'';
+  var m=(document.getElementById('cf-msg')||{}).value||'';
+  var err=document.getElementById('form-err');
+  var ok=document.getElementById('form-ok');
+  if(err)err.style.display='none';
+  if(ok)ok.style.display='none';
+  if(!n||!e||!s||!m){if(err){err.textContent='Please fill in all required fields.';err.style.display='block';}return;}
+  if(!e.includes('@')){if(err){err.textContent='Please enter a valid email address.';err.style.display='block';}return;}
+  var btn=document.getElementById('cf-btn');
+  if(btn){btn.textContent='Sending...';btn.disabled=true;}
+  var subj=encodeURIComponent('[Belongix Contact] '+s+' from '+n);
+  var body=encodeURIComponent('Name: '+n+'\nEmail: '+e+'\nSubject: '+s+'\n\nMessage:\n'+m);
+  window.location.href='mailto:teambelongix@gmail.com?subject='+subj+'&body='+body;
+  setTimeout(function(){
+    if(ok)ok.style.display='block';
+    if(btn){btn.textContent='Send Message →';btn.disabled=false;}
+    ['cf-name','cf-email','cf-msg'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+    var sel=document.getElementById('cf-subject');if(sel)sel.value='';
+  },1200);
+}
 </script>
 <script src="bexi.js"></script>
 <script src="pwa-install.js"></script>
-
-<script>
-function submitForm(){
-  var name=(document.getElementById('f-name')||{}).value||'';
-  var email=(document.getElementById('f-email')||{}).value||'';
-  var subj=(document.getElementById('f-subject')||{}).value||'Contact';
-  var msg=(document.getElementById('f-message')||{}).value||'';
-  var ok=document.getElementById('form-ok');
-  var err=document.getElementById('form-err');
-  if(ok)ok.style.display='none';
-  if(err)err.style.display='none';
-  if(!name||!email||!msg){if(err){err.textContent='Please fill in all required fields.';err.style.display='block';}return;}
-  if(!email.includes('@')){if(err){err.textContent='Please enter a valid email.';err.style.display='block';}return;}
-  var subject=encodeURIComponent('[Belongix Contact] '+subj+' from '+name);
-  var body=encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nSubject: '+subj+'\n\nMessage:\n'+msg);
-  window.location.href='mailto:teambelongix@gmail.com?subject='+subject+'&body='+body;
-  setTimeout(function(){
-    if(ok){ok.style.display='block';}
-    var btn=document.querySelector('[onclick="submitForm()"]');
-    if(btn){btn.textContent='Message Sent!';}
-    setTimeout(function(){
-      ['f-name','f-email','f-message'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-      if(subj&&document.getElementById('f-subject'))document.getElementById('f-subject').value='';
-      if(ok)ok.style.display='none';
-      var btn2=document.querySelector('[onclick="submitForm()"]');
-      if(btn2)btn2.textContent='Send Message →';
-    },3000);
-  },1500);
-}
-</script>
-<script>
-(function(){
-  var obs = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add('on'); });
-  }, {threshold:0.05});
-  document.querySelectorAll('.rv').forEach(function(el){ obs.observe(el); });
-})();
-</script>
 </body>
+</html>
