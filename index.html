@@ -57,10 +57,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;ali
 .nfill:hover{background:var(--brand2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,27,105,.3)}
 /* User nav */
 .nav-user-wrap{position:relative;display:none;margin-left:auto}
-.nav-user-btn{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:24px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:var(--ffb);transition:.15s;font-size:13px;font-weight:500}
-.nav-user-btn:hover{border-color:var(--brand3);background:var(--off)}
-.nav-av{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nav-nm{font-size:13px;font-weight:500;color:var(--ink)}
+.nav-user-btn{display:inline-flex;align-items:center;gap:10px;padding:5px 16px 5px 5px;border-radius:50px;border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--brand),var(--accent)) border-box;cursor:pointer;font-family:var(--ffb);transition:.2s;font-size:14.5px;font-weight:600}
+.nav-user-btn:hover{background:linear-gradient(var(--off),var(--off)) padding-box,linear-gradient(135deg,var(--brand),var(--accent)) border-box;box-shadow:0 4px 16px rgba(45,27,105,.15)}
+.nav-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:-.5px;box-shadow:0 2px 8px rgba(45,27,105,.3)}
+.nav-nm{font-size:14.5px;font-weight:700;background:linear-gradient(135deg,var(--brand),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .nav-user-btn svg{width:11px;height:11px;color:var(--subtle);transition:transform .2s}
 .nav-user-btn.dd-open svg{transform:rotate(180deg)}
 .user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
@@ -342,6 +342,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 @media(max-width:640px){
   .nlinks{display:none}
   .nbtns{display:none}
+  .faq-mentor-grid{grid-template-columns:1fr!important}
   .nav-user-wrap .nbtns{display:flex}
   .nav-hamburger{display:flex}
   .hstat{padding:6px 0}
@@ -451,7 +452,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       <div class="hero-badge"><span class="badge-pulse"></span>India's Career Platform</div>
       <h1>Your Professional<br/><span class="hl">Career Starts</span> <span class="accent-word">Here</span></h1>
       <p class="hero-desc">Jobs, salary insights, AI career guidance, upskilling and mentors — everything your career needs, in one place. Built for India's 1 crore+ job seekers.</p>
-      <div class="hero-cta">
+      <div class="hero-cta" id="hero-guest-cta">
         <button class="btn-primary" onclick="openModal('signup')">
           Get Started Free
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
@@ -461,7 +462,12 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
           See Dashboard
         </button>
       </div>
-      <div class="hero-note">Free to join &middot; No credit card &middot; Cancel anytime</div>
+      <div class="hero-cta" id="hero-signed-cta" style="display:none">
+        <a href="dashboard.html" class="btn-primary" style="text-decoration:none">Go to Dashboard <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
+        <a href="dashboard.html?page=jobs" class="btn-ghost" style="text-decoration:none">Browse Jobs</a>
+      </div>
+      <div class="hero-note" id="hero-guest-note">Free to join &middot; No credit card &middot; Cancel anytime</div>
+      <div class="hero-note" id="hero-signed-note" style="display:none">Welcome back! Continue where you left off.</div>
       <div class="hero-stats">
         <div class="hstat"><div class="hstat-n">Live</div><div class="hstat-l">Job Board</div></div>
         <div class="hstat"><div class="hstat-n">48+</div><div class="hstat-l">Skill Courses</div></div>
@@ -470,7 +476,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       </div>
     </div>
     <!-- Hero signup card — now visible -->
-    <div class="hero-card rv rv-delay-2">
+    <div class="hero-card rv rv-delay-2" id="hero-signup-card">
       <div class="hc-title">Create your free account</div>
       <div class="m-tabs">
         <button class="m-tab active" onclick="switchHeroTab('signup')">Sign Up</button>
@@ -515,103 +521,101 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   </div>
 </section>
 
-<!-- WHO IT'S FOR -->
-<section style="padding:88px 5%;background:var(--off)" id="for-who">
+<!-- WHO + FEATURES combined -->
+<section style="padding:72px 5%;background:var(--off)" id="for-who">
   <div class="sec-in">
-    <div class="sec-center rv">
+    <!-- Top: Who It's For -->
+    <div class="sec-center rv" style="margin-bottom:36px">
       <div class="sec-tag">Who It's For</div>
       <h2>Built for <span>every career stage</span></h2>
-      <p class="sec-sub">Whether you're a student, fresher, professional, or changing careers — Belongix has you covered.</p>
     </div>
-    <div class="who-grid">
-      <div class="who-card rv" onclick="openModal('signup')">
+    <div class="who-grid rv" style="margin-bottom:64px">
+      <div class="who-card" onclick="openModal('signup')">
         <span class="who-icon">🎓</span>
         <div class="who-title">College Students</div>
         <div class="who-desc">Internship guidance, placement prep, skill building and career score from day one.</div>
         <span class="who-tag">Internships &amp; Placements</span>
       </div>
-      <div class="who-card rv rv-delay-1" onclick="openModal('signup')">
+      <div class="who-card" onclick="openModal('signup')">
         <span class="who-icon">🌱</span>
         <div class="who-title">Fresh Graduates</div>
         <div class="who-desc">First job roadmap, resume tips, interview prep and salary benchmarks for freshers.</div>
         <span class="who-tag">First Job Ready</span>
       </div>
-      <div class="who-card rv rv-delay-2" onclick="openModal('signup')">
+      <div class="who-card" onclick="openModal('signup')">
         <span class="who-icon">💼</span>
         <div class="who-title">Working Professionals</div>
         <div class="who-desc">Salary negotiation, promotions, upskilling and mentor sessions for real growth.</div>
         <span class="who-tag">Grow Your Career</span>
       </div>
-      <div class="who-card rv rv-delay-3" onclick="openModal('signup')">
+      <div class="who-card" onclick="openModal('signup')">
         <span class="who-icon">🔄</span>
         <div class="who-title">Career Changers</div>
         <div class="who-desc">Field transition roadmaps, reskilling paths and mentors who've made the switch.</div>
         <span class="who-tag">Switch Fields</span>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- SIX FEATURES -->
-<section style="padding:88px 5%;background:#fff" id="features">
-  <div class="sec-in">
-    <div class="sec-center rv">
+    <!-- Divider -->
+    <div style="height:1px;background:var(--border);margin-bottom:64px"></div>
+    <!-- Bottom: Six Features -->
+    <div class="sec-center rv" style="margin-bottom:36px">
       <div class="sec-tag">Everything You Need</div>
       <h2>Six powerful tools, <span>one platform</span></h2>
-      <p class="sec-sub">No more switching between 5 different apps. Belongix brings everything into one career-first experience.</p>
+      <p class="sec-sub">No more switching between apps. Belongix brings everything into one career-first experience.</p>
     </div>
-    <div class="feat-grid">
-      <a class="feat-card rv" href="dashboard.html?page=jobs">
+    <div class="feat-grid rv" id="features">
+      <a class="feat-card" href="dashboard.html?page=jobs">
         <div class="feat-num">01</div>
         <div class="feat-icon-wrap" style="background:#EEF0FF">💼</div>
         <div class="feat-title">Live Job Board</div>
         <div class="feat-desc">Real-time listings from top Indian companies — filtered to your skills, location and experience level.</div>
         <div class="feat-link">Browse jobs <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
-      <a class="feat-card rv rv-delay-1" href="dashboard.html?page=salary">
+      <a class="feat-card" href="dashboard.html?page=salary">
         <div class="feat-num">02</div>
         <div class="feat-icon-wrap" style="background:#ECFDF5">💰</div>
         <div class="feat-title">Salary Intelligence</div>
         <div class="feat-desc">Real market salary data for 15+ tech roles across Bangalore, Hyderabad, Mumbai, Pune and remote.</div>
         <div class="feat-link">Check salaries <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
-      <a class="feat-card rv rv-delay-2" href="dashboard.html?page=overview">
+      <a class="feat-card" href="dashboard.html?page=overview">
         <div class="feat-num">03</div>
         <div class="feat-icon-wrap" style="background:#FFF7ED">🤖</div>
         <div class="feat-title">Bexi AI Career Guide</div>
         <div class="feat-desc">Your AI assistant trained on Indian career data — answers questions on salary, interviews, skills and paths 24/7.</div>
         <div class="feat-link">Talk to Bexi <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
-      <a class="feat-card rv" href="dashboard.html?page=overview">
+      <a class="feat-card" href="dashboard.html?page=overview">
         <div class="feat-num">04</div>
         <div class="feat-icon-wrap" style="background:#FFF1F2">📊</div>
         <div class="feat-title">Career Score</div>
-        <div class="feat-desc">A dynamic score that tracks your professional growth — built on your profile, skills, applications and platform activity.</div>
+        <div class="feat-desc">A dynamic score that tracks your professional growth — built on profile, skills, applications and activity.</div>
         <div class="feat-link">Get your score <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
-      <a class="feat-card rv rv-delay-1" href="dashboard.html?page=upskill">
+      <a class="feat-card" href="dashboard.html?page=upskill">
         <div class="feat-num">05</div>
         <div class="feat-icon-wrap" style="background:#F5F3FF">🎓</div>
         <div class="feat-title">Upskilling Hub</div>
         <div class="feat-desc">48+ handpicked courses from Google, AWS, Meta, Scaler, NPTEL — free and paid paths for every level.</div>
         <div class="feat-link">Start learning <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
-      <a class="feat-card rv rv-delay-2" href="mentors.html">
+      <a class="feat-card" href="mentors.html">
         <div class="feat-num">06</div>
         <div class="feat-icon-wrap" style="background:#FFF7ED">🤝</div>
         <div class="feat-title">1-on-1 Mentors</div>
-        <div class="feat-desc">Connect with verified professionals for resume reviews, mock interviews, salary negotiation and career growth sessions.</div>
+        <div class="feat-desc">Connect with verified professionals for resume reviews, mock interviews, salary negotiation and growth sessions.</div>
         <div class="feat-link">Find a mentor <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
     </div>
   </div>
 </section>
 
-<!-- SALARY INTELLIGENCE -->
-<section style="padding:88px 5%;background:var(--off)" id="salary">
+<!-- SALARY + CAREER SCORE combined -->
+<section style="padding:72px 5%;background:#fff" id="salary">
   <div class="sec-in">
-    <div class="salary-wrap">
-      <div class="salary-left rv">
+    <!-- Salary -->
+    <div class="salary-wrap rv" style="margin-bottom:64px">
+      <div class="salary-left">
         <div class="sec-tag">Salary Intelligence</div>
         <h2>Know your <span>exact market worth</span></h2>
         <p class="sec-sub" style="max-width:420px">Real salary data for 15+ tech roles across India's top cities — so you never undersell yourself again.</p>
@@ -623,7 +627,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         </div>
         <p class="salary-note">Data sourced from publicly available market reports. Updated regularly.</p>
       </div>
-      <div class="salary-table rv rv-delay-1">
+      <div class="salary-table">
         <div class="sal-head">
           <span>Role</span>
           <span>Avg Range (LPA)</span>
@@ -656,13 +660,10 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         </div>
       </div>
     </div>
-  </div>
-</section>
-
-<!-- CAREER SCORE -->
-<section style="padding:88px 5%;background:#fff" id="score">
-  <div class="sec-in">
-    <div class="sec-center rv">
+    <!-- Divider -->
+    <div style="height:1px;background:var(--border);margin-bottom:64px"></div>
+    <!-- Career Score -->
+    <div class="sec-center rv" style="margin-bottom:36px" id="score">
       <div class="sec-tag">Career Score</div>
       <h2>Your growth, <span>measured</span></h2>
       <p class="sec-sub">A dynamic score that grows with every action you take — profile, skills, applications and courses all count.</p>
@@ -686,36 +687,12 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         </div>
       </div>
       <div class="score-steps">
-        <div class="score-step">
-          <div class="step-dot done">✓</div>
-          <div class="step-name">Create account</div>
-          <div class="step-pts">+10 pts</div>
-        </div>
-        <div class="score-step">
-          <div class="step-dot done">✓</div>
-          <div class="step-name">Verify email</div>
-          <div class="step-pts">+10 pts</div>
-        </div>
-        <div class="score-step">
-          <div class="step-dot done">✓</div>
-          <div class="step-name">Complete your profile</div>
-          <div class="step-pts">+20 pts</div>
-        </div>
-        <div class="score-step">
-          <div class="step-dot">4</div>
-          <div class="step-name">Add skills to your profile</div>
-          <div class="step-pts">+15 pts</div>
-        </div>
-        <div class="score-step">
-          <div class="step-dot">5</div>
-          <div class="step-name">Apply to your first job</div>
-          <div class="step-pts">+15 pts</div>
-        </div>
-        <div class="score-step">
-          <div class="step-dot">6</div>
-          <div class="step-name">Complete a course</div>
-          <div class="step-pts">+20 pts</div>
-        </div>
+        <div class="score-step"><div class="step-dot done">✓</div><div class="step-name">Create account</div><div class="step-pts">+10 pts</div></div>
+        <div class="score-step"><div class="step-dot done">✓</div><div class="step-name">Verify email</div><div class="step-pts">+10 pts</div></div>
+        <div class="score-step"><div class="step-dot done">✓</div><div class="step-name">Complete your profile</div><div class="step-pts">+20 pts</div></div>
+        <div class="score-step"><div class="step-dot">4</div><div class="step-name">Add skills to your profile</div><div class="step-pts">+15 pts</div></div>
+        <div class="score-step"><div class="step-dot">5</div><div class="step-name">Apply to your first job</div><div class="step-pts">+15 pts</div></div>
+        <div class="score-step"><div class="step-dot">6</div><div class="step-name">Complete a course</div><div class="step-pts">+20 pts</div></div>
       </div>
     </div>
   </div>
@@ -734,22 +711,22 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       <div class="marquee-track">
         <div class="marquee-inner" id="marqueeInner">
           <div class="mlogo"><div class="ml-ic" style="background:#4285F4"><svg viewBox="0 0 24 24" width="22" height="22"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg></div><div class="ml-name">Google</div><div class="ml-tag">Free</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#FF9900"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">AWS</span></div><div class="ml-name">Amazon AWS</div><div class="ml-tag">Free + Paid</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#0078D4"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">MS</span></div><div class="ml-name">Microsoft</div><div class="ml-tag">Free</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#0056D2"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">C</span></div><div class="ml-name">Coursera</div><div class="ml-tag">Free + Paid</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#20BEFF"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">K</span></div><div class="ml-name">Kaggle</div><div class="ml-tag">Free</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#CC0000"><span style="font-size:12px;font-weight:800;color:#fff;font-family:var(--ff)">NPTEL</span></div><div class="ml-name">NPTEL</div><div class="ml-tag">Free + Cert</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#FF6B35"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">S</span></div><div class="ml-name">Scaler</div><div class="ml-tag">Paid</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#0866FF"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">M</span></div><div class="ml-name">Meta</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#232F3E"><svg viewBox="0 0 50 30" width="52" height="32"><path fill="#FF9900" d="M14.3 12.2c0 .5.1.9.2 1.1.1.3.3.5.6.8.1.1.2.2.2.3 0 .1-.1.2-.3.4l-1 .7c-.1.1-.2.1-.3.1-.1 0-.3-.1-.4-.2-.2-.2-.4-.4-.5-.7-.1-.3-.3-.6-.4-1-1.1 1.3-2.5 1.9-4.1 1.9-1.2 0-2.1-.3-2.8-1s-1-1.6-1-2.7c0-1.2.4-2.1 1.3-2.8.9-.7 2-1.1 3.5-1.1.5 0 1 0 1.5.1s1 .2 1.6.3v-1c0-1-.2-1.7-.6-2.1-.4-.4-1.1-.6-2.1-.6-.4 0-.9.1-1.4.2s-.9.3-1.4.5c-.2.1-.3.1-.4.2h-.3c-.2 0-.3-.2-.3-.5V4.4c0-.3 0-.4.1-.5.1-.1.3-.2.5-.3.5-.2 1-.4 1.7-.5.7-.1 1.4-.2 2.1-.2 1.6 0 2.8.4 3.5 1.1.7.7 1.1 1.8 1.1 3.3v4.9zm-5.7 2.1c.5 0 .9-.1 1.4-.3.5-.2.9-.5 1.3-1 .2-.3.4-.6.4-1 0-.4.1-.8.1-1.3v-.6c-.4-.1-.8-.1-1.2-.2-.4 0-.8-.1-1.1-.1-.8 0-1.4.2-1.8.5-.4.3-.6.8-.6 1.4 0 .6.1 1 .4 1.3.3.2.7.3 1.1.3zm9.8 1.3c-.2 0-.3 0-.4-.1-.1-.1-.2-.3-.3-.5L15 7.4c-.1-.2-.1-.4-.1-.5 0-.2.1-.3.3-.3h1.3c.2 0 .4 0 .5.1.1.1.2.3.2.5l2.1 8.3 2-8.3c0-.2.1-.4.2-.5.1-.1.3-.1.5-.1h1.1c.2 0 .4 0 .5.1.1.1.2.3.2.5l2 8.4 2.2-8.4c.1-.2.2-.4.2-.5.1-.1.3-.1.5-.1h1.2c.2 0 .3.1.3.3 0 .1 0 .1-.1.3l-3.1 8.6c-.1.2-.2.4-.3.5-.1.1-.3.1-.4.1h-1.2c-.2 0-.4 0-.5-.1-.1-.1-.2-.3-.2-.5l-2-8.1-1.9 8.1c0 .2-.1.4-.2.5-.1.1-.3.1-.5.1h-1.2zm16.5.3c-.7 0-1.5-.1-2.1-.3-.7-.2-1.2-.5-1.6-.7-.2-.1-.4-.3-.4-.5v-.6c0-.3.1-.5.3-.5.1 0 .2 0 .3.1.1 0 .2.1.4.2.5.2 1 .4 1.6.5.6.1 1.1.2 1.7.2.9 0 1.6-.2 2.1-.5.5-.3.7-.8.7-1.3 0-.4-.1-.7-.4-.9-.3-.2-.7-.5-1.5-.7l-2.2-.7c-1.1-.3-1.9-.9-2.4-1.6-.5-.7-.7-1.5-.7-2.3 0-.7.1-1.3.4-1.8.3-.5.7-1 1.1-1.4.5-.4 1-.7 1.6-.9.6-.2 1.3-.3 2-.3.3 0 .7 0 1 .1.3.1.7.1 1 .2.3.1.6.2.9.3.3.1.5.2.6.3.2.1.3.2.4.4.1.1.1.3.1.5v.5c0 .3-.1.5-.3.5-.1 0-.3-.1-.6-.2-.9-.4-1.8-.6-2.8-.6-.8 0-1.4.1-1.8.4-.4.3-.6.7-.6 1.2 0 .4.1.7.4 1 .3.3.8.5 1.6.8l2.2.7c1.1.3 1.9.9 2.3 1.5.4.7.7 1.4.7 2.2 0 .7-.1 1.4-.4 1.9-.3.6-.7 1.1-1.2 1.4-.5.4-1.1.7-1.7.9-.8.2-1.5.3-2.3.3z"/></svg></div><div class="ml-name">Amazon AWS</div><div class="ml-tag">Free + Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#fff;border:1px solid #eee"><svg viewBox="0 0 21 21" width="36" height="36"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg></div><div class="ml-name">Microsoft</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#0056D2"><svg viewBox="0 0 50 50" width="32" height="32"><circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="4"/><path d="M18 17 L32 25 L18 33 Z" fill="#fff"/></svg></div><div class="ml-name">Coursera</div><div class="ml-tag">Free + Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#20BEFF"><svg viewBox="0 0 30 30" width="30" height="30"><text x="5" y="22" fill="#fff" font-size="20" font-weight="900" font-family="Arial">K</text></svg></div><div class="ml-name">Kaggle</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#CC0000;font-size:11px;font-weight:900;color:#fff;font-family:Arial,sans-serif;letter-spacing:-.5px">NPTEL</div><div class="ml-name">NPTEL</div><div class="ml-tag">Free + Cert</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#F0F4FF"><svg viewBox="0 0 40 40" width="36" height="36"><text x="7" y="28" fill="#FF6B35" font-size="26" font-weight="900" font-family="Arial">S</text></svg></div><div class="ml-name">Scaler</div><div class="ml-tag">Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#fff;border:1px solid #eee"><svg viewBox="0 0 60 30" width="50" height="26"><ellipse cx="12" cy="15" rx="8" ry="11" fill="none" stroke="#0866FF" stroke-width="3.5"/><path d="M20 15 Q30 2 40 15 Q30 28 20 15Z" fill="none" stroke="#0866FF" stroke-width="3.5"/><ellipse cx="48" cy="15" rx="8" ry="11" fill="none" stroke="#0866FF" stroke-width="3.5"/></svg></div><div class="ml-name">Meta</div><div class="ml-tag">Free</div></div>
           <!-- Duplicate for infinite loop -->
           <div class="mlogo"><div class="ml-ic" style="background:#4285F4"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">G</span></div><div class="ml-name">Google</div><div class="ml-tag">Free</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#FF9900"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">AWS</span></div><div class="ml-name">Amazon AWS</div><div class="ml-tag">Free + Paid</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#0078D4"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">MS</span></div><div class="ml-name">Microsoft</div><div class="ml-tag">Free</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#0056D2"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">C</span></div><div class="ml-name">Coursera</div><div class="ml-tag">Free + Paid</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#20BEFF"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">K</span></div><div class="ml-name">Kaggle</div><div class="ml-tag">Free</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#CC0000"><span style="font-size:12px;font-weight:800;color:#fff;font-family:var(--ff)">NPTEL</span></div><div class="ml-name">NPTEL</div><div class="ml-tag">Free + Cert</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#FF6B35"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">S</span></div><div class="ml-name">Scaler</div><div class="ml-tag">Paid</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#0866FF"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">M</span></div><div class="ml-name">Meta</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#232F3E"><svg viewBox="0 0 50 30" width="52" height="32"><path fill="#FF9900" d="M14.3 12.2c0 .5.1.9.2 1.1.1.3.3.5.6.8.1.1.2.2.2.3 0 .1-.1.2-.3.4l-1 .7c-.1.1-.2.1-.3.1-.1 0-.3-.1-.4-.2-.2-.2-.4-.4-.5-.7-.1-.3-.3-.6-.4-1-1.1 1.3-2.5 1.9-4.1 1.9-1.2 0-2.1-.3-2.8-1s-1-1.6-1-2.7c0-1.2.4-2.1 1.3-2.8.9-.7 2-1.1 3.5-1.1.5 0 1 0 1.5.1s1 .2 1.6.3v-1c0-1-.2-1.7-.6-2.1-.4-.4-1.1-.6-2.1-.6-.4 0-.9.1-1.4.2s-.9.3-1.4.5c-.2.1-.3.1-.4.2h-.3c-.2 0-.3-.2-.3-.5V4.4c0-.3 0-.4.1-.5.1-.1.3-.2.5-.3.5-.2 1-.4 1.7-.5.7-.1 1.4-.2 2.1-.2 1.6 0 2.8.4 3.5 1.1.7.7 1.1 1.8 1.1 3.3v4.9zm-5.7 2.1c.5 0 .9-.1 1.4-.3.5-.2.9-.5 1.3-1 .2-.3.4-.6.4-1 0-.4.1-.8.1-1.3v-.6c-.4-.1-.8-.1-1.2-.2-.4 0-.8-.1-1.1-.1-.8 0-1.4.2-1.8.5-.4.3-.6.8-.6 1.4 0 .6.1 1 .4 1.3.3.2.7.3 1.1.3zm9.8 1.3c-.2 0-.3 0-.4-.1-.1-.1-.2-.3-.3-.5L15 7.4c-.1-.2-.1-.4-.1-.5 0-.2.1-.3.3-.3h1.3c.2 0 .4 0 .5.1.1.1.2.3.2.5l2.1 8.3 2-8.3c0-.2.1-.4.2-.5.1-.1.3-.1.5-.1h1.1c.2 0 .4 0 .5.1.1.1.2.3.2.5l2 8.4 2.2-8.4c.1-.2.2-.4.2-.5.1-.1.3-.1.5-.1h1.2c.2 0 .3.1.3.3 0 .1 0 .1-.1.3l-3.1 8.6c-.1.2-.2.4-.3.5-.1.1-.3.1-.4.1h-1.2c-.2 0-.4 0-.5-.1-.1-.1-.2-.3-.2-.5l-2-8.1-1.9 8.1c0 .2-.1.4-.2.5-.1.1-.3.1-.5.1h-1.2zm16.5.3c-.7 0-1.5-.1-2.1-.3-.7-.2-1.2-.5-1.6-.7-.2-.1-.4-.3-.4-.5v-.6c0-.3.1-.5.3-.5.1 0 .2 0 .3.1.1 0 .2.1.4.2.5.2 1 .4 1.6.5.6.1 1.1.2 1.7.2.9 0 1.6-.2 2.1-.5.5-.3.7-.8.7-1.3 0-.4-.1-.7-.4-.9-.3-.2-.7-.5-1.5-.7l-2.2-.7c-1.1-.3-1.9-.9-2.4-1.6-.5-.7-.7-1.5-.7-2.3 0-.7.1-1.3.4-1.8.3-.5.7-1 1.1-1.4.5-.4 1-.7 1.6-.9.6-.2 1.3-.3 2-.3.3 0 .7 0 1 .1.3.1.7.1 1 .2.3.1.6.2.9.3.3.1.5.2.6.3.2.1.3.2.4.4.1.1.1.3.1.5v.5c0 .3-.1.5-.3.5-.1 0-.3-.1-.6-.2-.9-.4-1.8-.6-2.8-.6-.8 0-1.4.1-1.8.4-.4.3-.6.7-.6 1.2 0 .4.1.7.4 1 .3.3.8.5 1.6.8l2.2.7c1.1.3 1.9.9 2.3 1.5.4.7.7 1.4.7 2.2 0 .7-.1 1.4-.4 1.9-.3.6-.7 1.1-1.2 1.4-.5.4-1.1.7-1.7.9-.8.2-1.5.3-2.3.3z"/></svg></div><div class="ml-name">Amazon AWS</div><div class="ml-tag">Free + Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#fff;border:1px solid #eee"><svg viewBox="0 0 21 21" width="36" height="36"><rect x="1" y="1" width="9" height="9" fill="#F25022"/><rect x="11" y="1" width="9" height="9" fill="#7FBA00"/><rect x="1" y="11" width="9" height="9" fill="#00A4EF"/><rect x="11" y="11" width="9" height="9" fill="#FFB900"/></svg></div><div class="ml-name">Microsoft</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#0056D2"><svg viewBox="0 0 50 50" width="32" height="32"><circle cx="25" cy="25" r="20" fill="none" stroke="#fff" stroke-width="4"/><path d="M18 17 L32 25 L18 33 Z" fill="#fff"/></svg></div><div class="ml-name">Coursera</div><div class="ml-tag">Free + Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#20BEFF"><svg viewBox="0 0 30 30" width="30" height="30"><text x="5" y="22" fill="#fff" font-size="20" font-weight="900" font-family="Arial">K</text></svg></div><div class="ml-name">Kaggle</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#CC0000;font-size:11px;font-weight:900;color:#fff;font-family:Arial,sans-serif;letter-spacing:-.5px">NPTEL</div><div class="ml-name">NPTEL</div><div class="ml-tag">Free + Cert</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#F0F4FF"><svg viewBox="0 0 40 40" width="36" height="36"><text x="7" y="28" fill="#FF6B35" font-size="26" font-weight="900" font-family="Arial">S</text></svg></div><div class="ml-name">Scaler</div><div class="ml-tag">Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#fff;border:1px solid #eee"><svg viewBox="0 0 60 30" width="50" height="26"><ellipse cx="12" cy="15" rx="8" ry="11" fill="none" stroke="#0866FF" stroke-width="3.5"/><path d="M20 15 Q30 2 40 15 Q30 28 20 15Z" fill="none" stroke="#0866FF" stroke-width="3.5"/><ellipse cx="48" cy="15" rx="8" ry="11" fill="none" stroke="#0866FF" stroke-width="3.5"/></svg></div><div class="ml-name">Meta</div><div class="ml-tag">Free</div></div>
         </div>
       </div>
     </div>
@@ -822,90 +799,44 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   </div>
 </section>
 
-<!-- PRICING -->
-<section style="padding:88px 5%;background:var(--off)" id="pricing">
-  <div class="sec-in">
-    <div class="sec-center rv">
-      <div class="sec-tag">Pricing</div>
-      <h2>Start free, <span>upgrade when ready</span></h2>
-      <p class="sec-sub">No hidden fees. No credit card required to get started.</p>
-    </div>
-    <div class="pricing-grid rv">
-      <!-- Starter -->
-      <div class="price-card">
-        <div class="price-name">Starter</div>
-        <div class="price-amt">Free</div>
-        <div class="price-period">Always free, no card needed</div>
-        <ul class="price-features">
-          <li><span class="pf-check">✓</span>Live job board access</li>
-          <li><span class="pf-check">✓</span>Career score tracker</li>
-          <li><span class="pf-check">✓</span>Salary insights (basic)</li>
-          <li><span class="pf-check">✓</span>Bexi AI (10 queries/day)</li>
-          <li><span class="pf-check">✓</span>5 learning tracks</li>
-          <li><span class="pf-check no">✗</span>Mentor sessions</li>
-          <li><span class="pf-check no">✗</span>Full salary data</li>
-          <li><span class="pf-check no">✗</span>All 48+ courses</li>
-        </ul>
-        <button class="price-btn" onclick="openModal('signup')">Get Started Free</button>
-      </div>
-      <!-- Pro -->
-      <div class="price-card pop">
-        <div class="price-badge">Most Popular</div>
-        <div class="price-name">Pro</div>
-        <div class="price-amt"><sup>₹</sup>499</div>
-        <div class="price-period">per month · cancel anytime</div>
-        <ul class="price-features">
-          <li><span class="pf-check">✓</span>Everything in Starter</li>
-          <li><span class="pf-check">✓</span>1-on-1 mentor sessions</li>
-          <li><span class="pf-check">✓</span>Full salary intelligence</li>
-          <li><span class="pf-check">✓</span>Unlimited Bexi AI</li>
-          <li><span class="pf-check">✓</span>All 48+ courses</li>
-          <li><span class="pf-check">✓</span>Priority job matches</li>
-          <li><span class="pf-check">✓</span>Resume review</li>
-          <li><span class="pf-check">✓</span>Career roadmap</li>
-        </ul>
-        <button class="price-btn" onclick="handlePricing('pro')">Upgrade to Pro</button>
-      </div>
-    </div>
-  </div>
-</section>
 
-<!-- FAQ -->
-<section style="padding:88px 5%;background:#fff">
+<!-- FAQ + MENTOR combined -->
+<section style="padding:72px 5%;background:#fff">
   <div style="max-width:1200px;margin:0 auto">
-    <div class="sec-center rv">
-      <div class="sec-tag">FAQ</div>
-      <h2>Frequently asked <span>questions</span></h2>
-    </div>
-    <div class="faq-wrap rv">
-      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Who is Belongix built for?<div class="fi-ic">+</div></div><div class="fia">Belongix is built for everyone at every career stage in India — college students seeking internships, fresh graduates landing their first job, working professionals growing their careers, and career changers switching fields.</div></div>
-      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Is Belongix really free to use?<div class="fi-ic">+</div></div><div class="fia">Yes! The Starter plan is completely free and includes job board, career score, salary insights, Bexi AI (10 queries/day) and 5 learning tracks. Pro at ₹499/month unlocks mentor sessions, full salary data, unlimited Bexi AI and all 48+ courses.</div></div>
-      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">How does the Career Score work?<div class="fi-ic">+</div></div><div class="fia">Your Career Score starts at 30 and grows based on real actions — completing your profile (+30), verifying email (+10), adding skills, applying to jobs (+15), and completing courses. It's a real reflection of your career readiness, not a fake number.</div></div>
-      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Are the job listings real and verified?<div class="fi-ic">+</div></div><div class="fia">Yes. Belongix aggregates real job and internship listings from verified companies across India. All listings are verified before being shown. We're building direct partnerships with companies for exclusive Belongix-only opportunities.</div></div>
-      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">How does mentor booking work?<div class="fi-ic">+</div></div><div class="fia">Pro and Premium members can browse verified mentors filtered by field, experience, company and specialisation. Book 30 or 60-minute sessions directly. Mentors set their own rates. Sessions are coordinated securely through Belongix.</div></div>
-      <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Is my data safe with Belongix?<div class="fi-ic">+</div></div><div class="fia">Absolutely. All data is encrypted using enterprise-grade security through Supabase. Your profile, salary info and career details are never shared with employers or third parties without your explicit permission.</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-sec">
-  <div style="position:relative;z-index:1">
-    <div class="sec-tag" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.82);margin-bottom:20px">Join Free Today</div>
-    <h2>Your career breakthrough<br/>starts <span style="color:#7DD3FC">right here</span></h2>
-    <p>Sign up free and get instant access to live jobs, career guidance, upskilling courses and more — all in one place.</p>
-    <div class="cta-form">
-      <input class="c-inp" type="email" id="cEmail" placeholder="Enter your email address"/>
-      <button class="c-btn" onclick="ctaSignup()">Join Free →</button>
-    </div>
-    <div class="c-ok" id="cOk">✓ You're in! Check your email to complete signup.</div>
-    <div class="c-fine">Free plan always available · No credit card needed · Cancel Pro anytime</div>
-    <div class="trust-row">
-      <div class="trust-item">🔒 100% Secure &amp; Private</div>
-      <div class="trust-dot"></div>
-      <div class="trust-item">🇮🇳 Built in India, for India</div>
-      <div class="trust-dot"></div>
-      <div class="trust-item">⚡ Free to get started</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start">
+      <!-- FAQ left -->
+      <div class="rv">
+        <div class="sec-tag" style="margin-bottom:14px">FAQ</div>
+        <h2 style="margin-bottom:32px">Frequently asked <span>questions</span></h2>
+        <div class="faq-wrap" style="max-width:100%">
+          <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Who is Belongix built for?<div class="fi-ic">+</div></div><div class="fia">Belongix is built for everyone at every career stage in India — college students seeking internships, fresh graduates landing their first job, working professionals growing their careers, and career changers switching fields.</div></div>
+          <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Is Belongix really free to use?<div class="fi-ic">+</div></div><div class="fia">Yes! The Starter plan is completely free and includes job board, career score, salary insights, Bexi AI (10 queries/day) and 5 learning tracks. Pro at ₹499/month unlocks mentor sessions, full salary data, unlimited Bexi AI and all 48+ courses.</div></div>
+          <div class="fi"><div class="fiq" onclick="toggleFaq(this)">How does the Career Score work?<div class="fi-ic">+</div></div><div class="fia">Your Career Score starts at 30 and grows based on real actions — completing your profile (+30), verifying email (+10), adding skills, applying to jobs (+15), and completing courses. It's a real reflection of your career readiness, not a fake number.</div></div>
+          <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Are the job listings real and verified?<div class="fi-ic">+</div></div><div class="fia">Yes. Belongix aggregates real job and internship listings from verified companies across India. All listings are verified before being shown. We're building direct partnerships with companies for exclusive Belongix-only opportunities.</div></div>
+          <div class="fi"><div class="fiq" onclick="toggleFaq(this)">How does mentor booking work?<div class="fi-ic">+</div></div><div class="fia">Pro members can browse verified mentors filtered by field, experience, company and specialisation. Book 30 or 60-minute sessions directly. Sessions are coordinated securely through Belongix.</div></div>
+          <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Is my data safe with Belongix?<div class="fi-ic">+</div></div><div class="fia">Absolutely. All data is encrypted using enterprise-grade security through Supabase. Your profile, salary info and career details are never shared with employers or third parties without your explicit permission.</div></div>
+        </div>
+      </div>
+      <!-- Mentor right -->
+      <div class="rv rv-delay-1">
+        <div class="mentor-strip" style="text-align:left;padding:40px">
+          <div style="position:relative;z-index:3">
+            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:100px;padding:5px 16px;font-size:11.5px;font-weight:700;color:#fff;letter-spacing:.3px;text-transform:uppercase;margin-bottom:16px">Mentor Network</div>
+            <h2 style="font-family:'Sora',sans-serif;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1.15;font-size:clamp(22px,2.5vw,34px);margin-bottom:12px">Learn from professionals<br/>who've <span style="color:#7DD3FC">been there</span></h2>
+            <p style="font-size:14.5px;color:rgba(255,255,255,.78);margin-bottom:24px;line-height:1.7">Connect 1-on-1 with verified professionals for interview prep, salary negotiation, career switch guidance and more.</p>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:28px">
+              <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">✓</span>Verified mentors only</div>
+              <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">✓</span>Resume reviews &amp; mock interviews</div>
+              <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">✓</span>Salary coaching &amp; negotiation</div>
+              <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">✓</span>Career switch support</div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <a href="mentors.html" class="btn-white" style="padding:11px 22px;font-size:14px">Find a Mentor →</a>
+              <a href="mentors.html" class="btn-white-ghost" style="padding:11px 22px;font-size:14px">Become a Mentor</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1011,9 +942,23 @@ function showUserNav(user){
   document.getElementById('nav-out').style.display='none';
   document.getElementById('nav-in').style.display='block';
   document.getElementById('nav-av').textContent=nm.substring(0,2).toUpperCase();
-  document.getElementById('nav-nm').textContent='Hi, '+nm.split(' ')[0];
+  document.getElementById('nav-nm').textContent=nm.split(' ')[0];
   document.getElementById('ud-name').textContent=nm;
   document.getElementById('ud-email').textContent=user.email||'';
+  // Hide signup card and guest CTAs when signed in
+  var hsc=document.getElementById('hero-signup-card');
+  if(hsc)hsc.style.display='none';
+  var hgc=document.getElementById('hero-guest-cta');
+  if(hgc)hgc.style.display='none';
+  var hgn=document.getElementById('hero-guest-note');
+  if(hgn)hgn.style.display='none';
+  var hsc2=document.getElementById('hero-signed-cta');
+  if(hsc2)hsc2.style.display='flex';
+  var hsn=document.getElementById('hero-signed-note');
+  if(hsn)hsn.style.display='block';
+  // Also make hero single-column when card hidden
+  var hIn=document.querySelector('.hero-in');
+  if(hIn)hIn.style.gridTemplateColumns='1fr';
 }
 function showGuestNav(){
   document.getElementById('nav-out').style.display='flex';
