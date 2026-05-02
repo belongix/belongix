@@ -35,7 +35,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
 /* ── SIDEBAR ── */
 .sidebar{width:var(--sidebar-w);background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;overflow-y:auto;transition:.3s}
 .sb-top{padding:20px 16px 12px;border-bottom:1px solid var(--border)}
-.sb-logo{font-family:var(--ff);font-size:20px;font-weight:800;color:#2D1B69;letter-spacing:-.4px;text-decoration:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.sb-logo{font-family:var(--ff);font-size:20px;font-weight:800;color:#2D1B69;letter-spacing:-.4px;text-decoration:none;display:flex;align-items:center;gap:7px;white-space:nowrap;text-rendering:geometricPrecision}
 .sb-logo-icon{width:32px;height:32px;background:var(--brand,#2D1B69);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0}
 .sb-logo span{color:#FF5C35}
 .sb-nav{flex:1;padding:12px 10px}
@@ -352,7 +352,7 @@ textarea.pfin{resize:vertical;min-height:75px;line-height:1.6}
 <body>
 
 <div id="loading-screen">
-  <div class="loader-logo">Belong<span style="color:#FF5C35">ix</span></div>
+  <div class="loader-logo" style="white-space:nowrap">Belong<span style="color:#FF5C35">ix</span></div>
   <div class="loader-bar"><div class="loader-fill"></div></div>
 </div>
 
@@ -360,8 +360,7 @@ textarea.pfin{resize:vertical;min-height:75px;line-height:1.6}
 <aside class="sidebar">
   <div class="sb-top">
     <a href="index.html" class="sb-logo">
-      <div class="sb-logo-icon">B</div>
-      Belong<span style="color:#FF5C35">ix</span>
+      <div class="sb-logo-icon" style="flex-shrink:0">B</div><span style="white-space:nowrap;color:#2D1B69">Belong<span style="color:#FF5C35">ix</span></span>
     </a>
   </div>
   <nav class="sb-nav">
@@ -1034,6 +1033,12 @@ function loadJobs() {
   jobsLoaded = true;
   renderJobs(ALL_JOBS);
 }
+
+// Auto-load jobs immediately when script runs
+document.addEventListener('DOMContentLoaded', function() {
+  // Pre-render jobs so they show instantly when tab opens
+  setTimeout(function() { loadJobs(); }, 100);
+});
 
 function searchJobs() {
   var q = ((document.getElementById('job-search')||{}).value||'').toLowerCase();
