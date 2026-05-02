@@ -1,768 +1,854 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mentors — Belongix | Find Your Career Guide</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mentors — Belongix Career Network</title>
+<meta name="description" content="Connect 1-on-1 with verified professionals for resume reviews, mock interviews, salary negotiation coaching and career switch guidance."/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="manifest" href="manifest.json"/>
+<link rel="icon" href="icons/icon-32.png"/>
+<meta name="theme-color" content="#2D1B69"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Belongix"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;450;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --blue:#2563EB;--blue-dark:#1D4ED8;--blue-light:#EFF6FF;--blue-mid:#DBEAFE;
-  --navy:#1E3A5F;--teal:#0EA5E9;--green:#10B981;--amber:#F59E0B;
-  --white:#FFFFFF;--gray-50:#F8FAFC;--gray-100:#F1F5F9;--gray-200:#E2E8F0;
-  --gray-300:#CBD5E1;--gray-400:#94A3B8;--gray-500:#64748B;--gray-700:#334155;--gray-900:#0F172A;
-  --radius:14px;--shadow:0 1px 3px rgba(0,0,0,.08),0 8px 24px rgba(0,0,0,.06);
+  --brand:#2D1B69;--brand2:#4C2FAA;--brand3:#6B48CC;
+  --accent:#FF5C35;--accent2:#FF7A59;
+  --sky:#06B6D4;--green:#10B981;--amber:#F59E0B;--red:#EF4444;
+  --ink:#0D0D1A;--ink2:#1A1A2E;--muted:#5A5A7A;--subtle:#8B8BA8;
+  --bg:#FFFFFF;--off:#F7F7FC;--off2:#EFEFF8;
+  --border:#E4E4F0;--border2:#D0D0E8;
+  --ff:'Sora',sans-serif;--ffb:'DM Sans',sans-serif;
+  --r:14px;--r2:10px;--r3:22px;
+  --shadow:0 1px 4px rgba(45,27,105,.07),0 4px 20px rgba(45,27,105,.05);
+  --shadow-lg:0 8px 40px rgba(45,27,105,.12),0 2px 8px rgba(45,27,105,.06);
+  --max:1200px;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'DM Sans',sans-serif;background:var(--gray-50);color:var(--gray-900);min-height:100vh}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--ffb);color:var(--ink);background:#FAFAFE;overflow-x:hidden;background-image:linear-gradient(rgba(45,27,105,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(45,27,105,.05) 1px,transparent 1px);background-size:52px 52px;background-attachment:fixed}
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;padding:0 5%;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:.3s}
+.nav-in{max-width:var(--max);width:100%;margin:0 auto;display:flex;align-items:center}
+.nlogo{font-family:var(--ff);font-size:21px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.4px;margin-right:36px;flex-shrink:0}
+.nlogo span{color:var(--accent)}
+.nlinks{display:flex;align-items:center;gap:2px;flex:1;list-style:none}
+.nav-link{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;text-decoration:none;background:none;border:none;font-family:var(--ffb);display:flex;align-items:center;gap:4px;transition:.15s}
+.nav-link:hover{color:var(--brand);background:var(--off2)}
+.nav-link svg{width:11px;height:11px;transition:transform .2s}
+.nav-link.dd-open svg{transform:rotate(180deg)}
+.dd-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);padding:8px;min-width:250px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:200}
+.dd-panel.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.dd-item{display:flex;align-items:center;gap:11px;padding:9px 10px;border-radius:10px;cursor:pointer;text-decoration:none;transition:.15s;color:var(--ink2)}
+.dd-item:hover{background:var(--off2)}
+.dd-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.dd-text strong{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:1px}
+.dd-text span{font-size:11.5px;color:var(--muted)}
+.nbtns{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nghost{padding:8px 18px;border-radius:9px;border:1.5px solid var(--border2);background:transparent;color:var(--ink2);font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.nghost:hover{border-color:var(--brand);color:var(--brand)}
+.nfill{padding:8px 18px;border-radius:9px;border:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.nfill:hover{background:var(--brand2)}
+/* Nav user */
+.nav-user-wrap{position:relative;display:none;margin-left:auto}
+.nav-user-btn{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:24px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:var(--ffb);transition:.15s;font-size:13px;font-weight:500}
+.nav-user-btn:hover{border-color:var(--brand3);background:var(--off2)}
+.nav-av{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-nm{font-size:13px;font-weight:500;color:var(--ink)}
+.nav-user-btn svg{width:11px;height:11px;color:var(--subtle);transition:transform .2s}
+.nav-user-btn.dd-open svg{transform:rotate(180deg)}
+.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
+.user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.ud-header{padding:10px 12px;border-bottom:1px solid var(--off2);margin-bottom:4px}
+.ud-name{font-size:13px;font-weight:700;color:var(--ink)}
+.ud-email{font-size:11px;color:var(--subtle);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:9px;font-size:13px;color:var(--ink2);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left}
+.ud-item:hover{background:var(--off2);color:var(--brand)}
+.ud-item svg{width:14px;height:14px;flex-shrink:0;color:var(--subtle)}
+.ud-divider{height:1px;background:var(--off2);margin:4px 0}
+/* LAYOUT */
+.page-wrap{padding-top:64px}
+.sec{padding:80px 5%}
+.sec-in{max-width:var(--max);margin:0 auto}
+.sec-center{text-align:center;max-width:640px;margin:0 auto 56px}
+.sec-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--brand);background:var(--off2);border:1px solid var(--border2);border-radius:100px;padding:4px 14px;margin-bottom:14px;letter-spacing:.3px;text-transform:uppercase}
+h2{font-family:var(--ff);font-size:clamp(28px,3.5vw,44px);font-weight:800;color:var(--ink);line-height:1.1;letter-spacing:-1px}
+h2 span{color:var(--brand)}
+.sec-sub{font-size:16px;color:var(--muted);line-height:1.75;margin-top:14px}
+/* BUTTONS */
+.btn-primary{padding:13px 26px;border-radius:10px;background:var(--brand);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary:hover{background:var(--brand2);transform:translateY(-1px)}
+.btn-ghost{padding:13px 22px;border-radius:10px;background:transparent;color:var(--ink2);border:1.5px solid var(--border2);font-size:14px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+/* CARDS */
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;transition:.2s}
+.card:hover{border-color:var(--brand3);box-shadow:var(--shadow)}
+/* ANIMATIONS */
+.rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.rv.on{opacity:1;transform:translateY(0)}
+/* FOOTER */
+footer{background:var(--brand);padding:56px 5% 32px;border-top:1px solid rgba(255,255,255,.06)}
+.footer-in{max-width:var(--max);margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:40px}
+.footer-logo{font-family:var(--ff);font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:12px}
+.footer-logo span{color:var(--accent)}
+.footer-desc{font-size:13px;color:rgba(255,255,255,.45);line-height:1.7;max-width:260px}
+.footer-col h4{font-size:11px;font-weight:700;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;color:rgba(255,255,255,.5);text-decoration:none;margin-bottom:9px;transition:.15s}
+.footer-col a:hover{color:#fff}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.footer-bottom p{font-size:12px;color:rgba(255,255,255,.3)}
+.footer-chips{display:flex;gap:8px}
+.fc{font-size:11px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.4);border-radius:6px;padding:4px 10px}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(13,13,26,.6);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:22px;padding:36px;width:100%;max-width:420px;margin:20px;position:relative;animation:popIn .25s ease}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.modal-close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;background:var(--off2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted)}
+.modal-close:hover{background:var(--border2)}
+.modal h3{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:22px}
+.m-tabs{display:flex;gap:2px;background:var(--off);border-radius:10px;padding:3px;margin-bottom:20px}
+.m-tab{flex:1;padding:8px;text-align:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:.15s;border:none;background:none;font-family:var(--ffb)}
+.m-tab.active{background:#fff;color:var(--brand);font-weight:700;box-shadow:0 1px 4px rgba(45,27,105,.1)}
+.m-inp{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;margin-bottom:11px;transition:.15s}
+.m-inp:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,27,105,.08)}
+.m-btn{width:100%;padding:12px;background:var(--brand);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;margin-bottom:10px}
+.m-btn:hover{background:var(--brand2)}
+.m-google{width:100%;padding:11px;background:#fff;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;color:var(--ink2)}
+.m-google:hover{border-color:var(--border2);background:var(--off)}
+.m-ok{display:none;background:#ECFDF5;border:1px solid #6EE7B7;border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#065F46;font-weight:600;margin-top:10px}
+.m-fine{font-size:11.5px;color:var(--subtle);text-align:center;margin-top:11px}
+@media(max-width:768px){.nlinks{display:none}.footer-top{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.footer-top{grid-template-columns:1fr}}
+</style>
+<style>
+/* ── MENTORS PAGE ── */
+.mentors-hero{padding:80px 5% 60px;background:linear-gradient(135deg,var(--brand) 0%,var(--brand2) 60%,var(--brand3) 100%);margin-top:64px;position:relative;overflow:hidden;text-align:center}
+.mentors-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:40px 40px}
+.mentors-hero h1{font-family:var(--ff);font-size:clamp(32px,4.5vw,52px);font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:12px;position:relative;z-index:1}
+.mentors-hero h1 span{color:#FFD4C7}
+.mentors-hero p{font-size:16px;color:rgba(255,255,255,.75);max-width:520px;margin:0 auto 28px;line-height:1.7;position:relative;z-index:1}
+.hero-tag{display:inline-flex;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;color:rgba(255,255,255,.9);text-transform:uppercase;letter-spacing:.3px;margin-bottom:16px;position:relative;z-index:1}
+.hero-perks{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.hero-perk{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:6px 16px;font-size:12.5px;color:rgba(255,255,255,.85);font-weight:500}
 
-/* ── NAV ── */
-nav{background:white;border-bottom:1px solid var(--gray-200);padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.06)}
-.nav-logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;color:var(--navy);text-decoration:none}
-.nav-logo span{color:var(--blue)}
-.nav-links{display:flex;align-items:center;gap:24px}
-.nav-links a{font-size:14px;color:var(--gray-500);text-decoration:none;font-weight:500;transition:.2s}
-.nav-links a:hover{color:var(--gray-900)}
-.nav-links a.active{color:var(--blue);font-weight:600}
-.nav-cta{display:flex;gap:10px;align-items:center}
-.btn-outline{padding:8px 18px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;background:white;color:var(--gray-700);text-decoration:none;transition:.2s;font-family:'DM Sans',sans-serif}
-.btn-outline:hover{border-color:var(--blue);color:var(--blue)}
-.btn-primary{padding:9px 20px;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;background:var(--blue);color:white;text-decoration:none;transition:.2s;font-family:'DM Sans',sans-serif}
-.btn-primary:hover{background:var(--blue-dark)}
+/* Tabs */
+.tabs-bar{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:64px;z-index:80;padding:0 5%}
+.tabs-inner{max-width:var(--max);margin:0 auto;display:flex;gap:2px}
+.tab-btn{padding:14px 20px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--ffb);border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:.15s}
+.tab-btn:hover{color:var(--brand)}
+.tab-btn.active{color:var(--brand);border-bottom-color:var(--brand)}
 
-/* ── HERO ── */
-.hero{background:linear-gradient(135deg,#1E3A5F 0%,#2563EB 60%,#0EA5E9 100%);padding:64px 40px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;top:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(255,255,255,.07),transparent 70%);pointer-events:none}
-.hero::after{content:'';position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;background:radial-gradient(circle,rgba(14,165,233,.2),transparent 70%);pointer-events:none}
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:white;margin-bottom:20px}
-.hero h1{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:800;color:white;line-height:1.15;margin-bottom:16px;position:relative;z-index:1}
-.hero h1 span{color:#93C5FD}
-.hero p{font-size:16px;color:rgba(255,255,255,.8);max-width:520px;margin:0 auto 32px;line-height:1.7;position:relative;z-index:1}
-.hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
-.hero-btn-white{background:white;color:var(--blue);border:none;border-radius:10px;padding:13px 28px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;text-decoration:none;display:inline-block}
-.hero-btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
-.hero-btn-ghost{background:rgba(255,255,255,.15);color:white;border:1.5px solid rgba(255,255,255,.4);border-radius:10px;padding:12px 28px;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;text-decoration:none;display:inline-block}
-.hero-btn-ghost:hover{background:rgba(255,255,255,.25)}
-.hero-stats{display:flex;gap:32px;justify-content:center;margin-top:40px;flex-wrap:wrap;position:relative;z-index:1}
-.hero-stat{text-align:center}
-.hero-stat-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:800;color:white}
-.hero-stat-label{font-size:12px;color:rgba(255,255,255,.65);margin-top:2px}
-/* ── TABS ── */
-.tabs-bar{background:white;border-bottom:1px solid var(--gray-200);padding:0 40px;display:flex;gap:4px}
-.tab-btn{padding:16px 20px;font-size:14px;font-weight:600;color:var(--gray-500);border:none;background:none;cursor:pointer;border-bottom:2.5px solid transparent;transition:.2s;font-family:'DM Sans',sans-serif}
-.tab-btn:hover{color:var(--gray-900)}
-.tab-btn.active{color:var(--blue);border-bottom-color:var(--blue)}
+/* Container */
+.page-container{max-width:var(--max);margin:0 auto;padding:32px 5%}
 
-/* ── MAIN LAYOUT ── */
-.container{max-width:1200px;margin:0 auto;padding:40px}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
+/* Search bar */
+.search-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:240px}
+.search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--subtle)}
+.search-inp{width:100%;padding:11px 14px 11px 40px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s;background:#fff}
+.search-inp:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,27,105,.07)}
+.filter-sel{padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:var(--ffb);color:var(--ink2);outline:none;background:#fff;cursor:pointer;min-width:140px}
+.filter-sel:focus{border-color:var(--brand)}
 
-/* ── FILTERS ── */
-.filters-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;align-items:center}
-.filter-select{padding:9px 14px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--gray-700);background:white;cursor:pointer;transition:.2s}
-.filter-select:focus{outline:none;border-color:var(--blue)}
-.search-wrap{flex:1;min-width:200px;position:relative}
-.search-wrap input{width:100%;padding:9px 14px 9px 38px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--gray-900);background:white;transition:.2s}
-.search-wrap input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--gray-400);width:15px;height:15px}
+/* Mentor cards */
+.mentors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.mentor-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px;transition:.2s;position:relative}
+.mentor-card:hover{border-color:var(--brand3);box-shadow:0 8px 32px rgba(45,27,105,.12);transform:translateY(-2px)}
+.mc-top{display:flex;align-items:flex-start;gap:13px;margin-bottom:14px}
+.mc-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0;font-family:var(--ff)}
+.mc-name{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.mc-role{font-size:12.5px;color:var(--muted);margin-bottom:2px}
+.mc-company{font-size:12.5px;color:var(--brand);font-weight:600}
+.mc-exp-badge{position:absolute;top:16px;right:16px;background:var(--off2);color:var(--brand2);font-size:11px;font-weight:700;border-radius:20px;padding:3px 10px}
+.mc-bio{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.mc-tag{font-size:11px;font-weight:600;background:var(--off2);color:var(--ink2);border:1px solid var(--border);border-radius:6px;padding:3px 9px}
+.mc-footer{display:flex;gap:8px}
+.btn-book{flex:1;background:var(--brand);color:#fff;border:none;border-radius:9px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s}
+.btn-book:hover{background:var(--brand2)}
+.btn-profile{background:var(--off2);color:var(--brand);border:1px solid var(--border2);border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s}
+.btn-profile:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
 
-/* ── MENTOR GRID ── */
-.mentors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
-.mentor-card{background:white;border-radius:var(--radius);border:1.5px solid var(--gray-200);padding:24px;transition:.25s;position:relative}
-.mentor-card:hover{border-color:var(--blue);box-shadow:0 8px 32px rgba(37,99,235,.12);transform:translateY(-2px)}
-.mentor-card-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
-.mentor-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:white;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
-.mentor-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:16px;font-weight:700;margin-bottom:3px}
-.mentor-role{font-size:13px;color:var(--gray-500);margin-bottom:6px}
-.mentor-company{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--gray-600,#475569);font-weight:500}
-.mentor-badge{position:absolute;top:16px;right:16px;font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px}
-.badge-free{background:#F0FDF4;color:#15803D}
-.badge-paid{background:#EFF6FF;color:#2563EB}
-.mentor-bio{font-size:13px;color:var(--gray-500);line-height:1.6;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.mentor-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
-.mentor-tag{background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px}
-.mentor-meta{display:flex;gap:16px;font-size:12px;color:var(--gray-500);margin-bottom:16px}
-.mentor-meta span{display:flex;align-items:center;gap:4px}
-.mentor-footer{display:flex;gap:8px}
-.btn-book{flex:1;background:var(--blue);color:white;border:none;border-radius:8px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
-.btn-book:hover{background:var(--blue-dark)}
-.btn-view{background:white;color:var(--blue);border:1.5px solid var(--blue);border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s}
-.btn-view:hover{background:var(--blue-light)}
+/* Empty state */
+.empty-state{text-align:center;padding:64px 20px;color:var(--muted)}
+.empty-state-icon{font-size:48px;margin-bottom:16px}
+.empty-state h3{font-family:var(--ff);font-size:20px;font-weight:700;color:var(--ink2);margin-bottom:8px}
 
-/* ── EMPTY STATE ── */
-.empty-state{text-align:center;padding:80px 24px;color:var(--gray-500)}
-.empty-state svg{width:64px;height:64px;color:var(--gray-300);margin-bottom:16px}
-.empty-state h3{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:700;color:var(--gray-700);margin-bottom:8px}
-
-/* ── REGISTRATION FORM ── */
-.register-layout{display:grid;grid-template-columns:1fr 400px;gap:32px;align-items:start}
-.form-card{background:white;border-radius:var(--radius);border:1px solid var(--gray-200);padding:32px;box-shadow:var(--shadow)}
-.form-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px}
-.form-subtitle{font-size:14px;color:var(--gray-500);margin-bottom:28px;line-height:1.5}
-.form-section{margin-bottom:24px}
-.form-section-title{font-size:12px;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--gray-100)}
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-.form-group{margin-bottom:14px}
-.form-group label{display:block;font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:6px}
-.form-group label span{color:#EF4444;margin-left:2px}
-.form-control{width:100%;padding:10px 14px;border:1.5px solid var(--gray-200);border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;color:var(--gray-900);transition:.2s;background:white}
-.form-control:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.1)}
-.form-control::placeholder{color:var(--gray-400)}
-textarea.form-control{resize:vertical;min-height:90px;line-height:1.6}
-select.form-control{cursor:pointer}
+/* REGISTER SECTION */
+.register-layout{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start}
+.form-card{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:32px;box-shadow:var(--shadow)}
+.form-card-title{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.form-card-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.5}
+.form-section{margin-bottom:22px}
+.form-section-title{font-size:11px;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--off2)}
+.form-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.fg{margin-bottom:12px}
+.fg label{display:block;font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:5px}
+.fg label span{color:var(--red)}
+.finp{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:var(--ffb);color:var(--ink);transition:.15s;background:#fff;outline:none}
+.finp:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,27,105,.07)}
+textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
 .checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.checkbox-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--gray-200);border-radius:8px;cursor:pointer;transition:.15s;font-size:13px}
-.checkbox-item:hover{border-color:var(--blue);background:var(--blue-light)}
-.checkbox-item input{accent-color:var(--blue);width:15px;height:15px;flex-shrink:0}
-.checkbox-item.selected{border-color:var(--blue);background:var(--blue-light);color:var(--blue);font-weight:600}
-.submit-btn{width:100%;background:linear-gradient(135deg,var(--blue),var(--teal));color:white;border:none;border-radius:12px;padding:15px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.2s;margin-top:8px}
-.submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(37,99,235,.35)}
+.checkbox-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;transition:.15s;font-family:var(--ffb)}
+.checkbox-item:hover{border-color:var(--brand);background:var(--off2)}
+.checkbox-item input{accent-color:var(--brand);width:15px;height:15px;flex-shrink:0}
+.checkbox-item.selected{border-color:var(--brand);background:var(--off2);color:var(--brand);font-weight:600}
+.submit-btn{width:100%;background:linear-gradient(135deg,var(--brand),var(--brand3),var(--accent));color:#fff;border:none;border-radius:11px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:var(--ff);transition:.2s;margin-top:6px}
+.submit-btn:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(45,27,105,.35)}
 .submit-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 
-/* ── SIDEBAR INFO ── */
-.info-card{background:white;border-radius:var(--radius);border:1px solid var(--gray-200);padding:24px;margin-bottom:20px;box-shadow:var(--shadow)}
-.info-card-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
-.info-step{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start}
+/* Info sidebar */
+.info-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;margin-bottom:14px}
+.info-card-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.info-step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
 .info-step:last-child{margin-bottom:0}
-.step-num{width:28px;height:28px;border-radius:50%;background:var(--blue);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Plus Jakarta Sans',sans-serif}
-.step-text h4{font-size:13px;font-weight:700;margin-bottom:2px}
-.step-text p{font-size:12px;color:var(--gray-500);line-height:1.4}
-.perk-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:12px;font-size:13px}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--ff)}
+.step-text h4{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.step-text p{font-size:12px;color:var(--muted);line-height:1.4}
+.perk-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:13px;color:var(--ink2)}
 .perk-item:last-child{margin-bottom:0}
-.perk-icon{font-size:18px;flex-shrink:0;margin-top:-1px}
+.perk-icon{font-size:18px;flex-shrink:0}
 
-/* ── MODAL ── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.25s}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:white;border-radius:20px;padding:32px;max-width:500px;width:100%;box-shadow:0 24px 80px rgba(0,0,0,.2);transform:translateY(16px);transition:.25s}
-.modal-overlay.open .modal{transform:translateY(0)}
-.modal-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:800;margin-bottom:6px}
-.modal-subtitle{font-size:13px;color:var(--gray-500);margin-bottom:24px}
-.modal-close{position:absolute;top:16px;right:16px;background:var(--gray-100);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+/* Booking modal */
+.booking-modal{background:#fff;border-radius:20px;padding:32px;max-width:480px;width:100%}
+.booking-modal h3{font-family:var(--ff);font-size:18px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.booking-modal p{font-size:13px;color:var(--muted);margin-bottom:20px}
+.session-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.session-opt{border:2px solid var(--border);border-radius:11px;padding:14px;cursor:pointer;transition:.15s;text-align:center}
+.session-opt:hover,.session-opt.selected{border-color:var(--brand);background:var(--off2)}
+.session-opt-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.session-opt-price{font-size:13px;color:var(--brand);font-weight:600}
 
-/* ── SUCCESS ── */
-.success-box{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1.5px solid #86EFAC;border-radius:16px;padding:40px;text-align:center;max-width:520px;margin:0 auto;display:none}
+/* Success box */
+.success-box{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1.5px solid #86EFAC;border-radius:18px;padding:40px;text-align:center;display:none}
 
-/* ── LOADING ── */
-.spinner{width:20px;height:20px;border:2.5px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;margin-right:8px;vertical-align:middle}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* Toast */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(40px);background:var(--ink);color:#fff;padding:11px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:9000;transition:transform .3s,opacity .3s;opacity:0;font-family:var(--ffb)}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--gray-900);color:white;padding:12px 20px;border-radius:10px;font-size:14px;z-index:9999;opacity:0;transform:translateY(8px);transition:.3s;pointer-events:none}
-.toast.show{opacity:1;transform:translateY(0)}
-
-@media(max-width:768px){
-  nav{padding:0 16px}
-  .hero{padding:48px 20px}
-  .tabs-bar{padding:0 16px}
-  .container{padding:24px 16px}
-  .register-layout{grid-template-columns:1fr}
-  .form-row{grid-template-columns:1fr}
-  .checkbox-grid{grid-template-columns:1fr}
-  .filters-row{flex-direction:column}
-  .search-wrap{min-width:unset;width:100%}
-}
+@media(max-width:900px){.register-layout{grid-template-columns:1fr}}
+@media(max-width:600px){.form-row2{grid-template-columns:1fr}.checkbox-grid{grid-template-columns:1fr}.session-options{grid-template-columns:1fr}.search-bar{flex-direction:column}}
 </style>
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#2563EB">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Belongix">
-  <link rel="apple-touch-icon" href="/icons/icon-192.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512.png">
-  <meta name="msapplication-TileColor" content="#2563EB">
-  <meta name="msapplication-TileImage" content="/icons/icon-144.png">
 </head>
 <body>
-
-<!-- NAV -->
-<nav>
-  <a href="index.html" class="nav-logo">Be<span>longix</span></a>
-  <div class="nav-links">
-    <a href="index.html">Home</a>
-    <a href="dashboard.html">Dashboard</a>
-    <a href="mentors.html" class="active">Mentors</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-  </div>
-  <div class="nav-cta">
-    <a href="dashboard.html" class="btn-outline">Dashboard</a>
-    <a href="#register" onclick="switchTab('register');return false" class="btn-primary">Become a Mentor</a>
+<nav id="main-nav">
+  <div class="nav-in">
+    <a href="index.html" class="nlogo">Belong<span>ix</span></a>
+    <ul class="nlinks">
+      <li style="position:relative">
+        <button class="nav-link" onclick="toggleDD('dd-platform',this)">Platform <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="dd-panel" id="dd-platform">
+          <a class="dd-item" href="dashboard.html?page=jobs"><div class="dd-icon" style="background:#EEF0FF">💼</div><div class="dd-text"><strong>Job Board</strong><span>Live listings, apply instantly</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=salary"><div class="dd-icon" style="background:#ECFDF5">💰</div><div class="dd-text"><strong>Salary Intelligence</strong><span>Know your market worth</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF7ED">🤖</div><div class="dd-text"><strong>Bexi AI Guide</strong><span>24/7 career guidance</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF1F2">📊</div><div class="dd-text"><strong>Career Score</strong><span>Track your professional growth</span></div></a>
+        </div>
+      </li>
+      <li style="position:relative">
+        <button class="nav-link" onclick="toggleDD('dd-who',this)">Who It's For <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="dd-panel" id="dd-who">
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#ECFDF5">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#FFF7ED">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#FFF1F2">🔄</div><div class="dd-text"><strong>Career Changers</strong><span>Switch fields with mentor support</span></div></a>
+        </div>
+      </li>
+      <li style="position:relative">
+        <button class="nav-link" onclick="toggleDD('dd-learn',this)">Learn <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="dd-panel" id="dd-learn">
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>48+ curated courses</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#F5F3FF">🏆</div><div class="dd-text"><strong>Certifications</strong><span>AWS, Google, Microsoft</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#FFF1F2">🎯</div><div class="dd-text"><strong>DSA &amp; Interview Prep</strong><span>Crack FAANG &amp; top startups</span></div></a>
+        </div>
+      </li>
+      <li><a class="nav-link" href="mentors.html">Mentors</a></li>
+      <li><a class="nav-link" href="contact.html">Contact</a></li>
+      <li><a class="nav-link" href="about.html">About</a></li>
+    </ul>
+    <div class="nbtns" id="nav-out">
+      <button class="nghost" onclick="openModal('signin')">Sign In</button>
+      <button class="nfill" onclick="openModal('signup')">Join Free →</button>
+    </div>
+    <div class="nav-user-wrap" id="nav-in">
+      <button class="nav-user-btn" id="nav-user-btn">
+        <div class="nav-av" id="nav-av">?</div>
+        <span class="nav-nm" id="nav-nm">Hi...</span>
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div class="user-dropdown" id="user-dd">
+        <div class="ud-header"><div class="ud-name" id="ud-name">User</div><div class="ud-email" id="ud-email"></div></div>
+        <a class="ud-item" href="dashboard.html"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+        <a class="ud-item" href="dashboard.html?page=profile"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>My Profile</a>
+        <div class="ud-divider"></div>
+        <button class="ud-item" onclick="doSignOut()" style="color:var(--red)"><svg fill="none" viewBox="0 0 24 24" stroke="var(--red)" stroke-width="1.8"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>Sign Out</button>
+      </div>
+    </div>
   </div>
 </nav>
+<div id="toast"></div>
 
+<div class="page-wrap">
 <!-- HERO -->
-<div class="hero">
-  <div class="hero-badge">🎓 Real Mentors · Real Guidance</div>
-  <h1>Find Your <span>Career Mentor</span><br>or Become One</h1>
-  <p>Connect with verified professionals who've been where you want to go. Real guidance from real people — no fluff.</p>
-  <div class="hero-actions">
-    <a href="#directory" onclick="switchTab('directory');return false" class="hero-btn-white">🔍 Find a Mentor</a>
-    <a href="#register" onclick="switchTab('register');return false" class="hero-btn-ghost">✋ Become a Mentor</a>
-  </div>
-  <div class="hero-stats">
-    <div class="hero-stat"><div class="hero-stat-num" id="stat-mentors">—</div><div class="hero-stat-label">Registered Mentors</div></div>
-    <div class="hero-stat"><div class="hero-stat-num">Free</div><div class="hero-stat-label">To Browse & Connect</div></div>
-    <div class="hero-stat"><div class="hero-stat-num">🇮🇳</div><div class="hero-stat-label">India Focused</div></div>
+<div class="mentors-hero">
+  <div class="hero-tag">Mentor Network</div>
+  <h1>Learn from professionals<br/>who've <span>been there</span></h1>
+  <p>Connect 1-on-1 with verified professionals for interview prep, salary negotiation, career switch guidance and more.</p>
+  <div class="hero-perks">
+    <div class="hero-perk">✓ Verified mentors only</div>
+    <div class="hero-perk">✓ Resume reviews</div>
+    <div class="hero-perk">✓ Mock interviews</div>
+    <div class="hero-perk">✓ Salary coaching</div>
+    <div class="hero-perk">✓ Career switch support</div>
   </div>
 </div>
 
 <!-- TABS -->
 <div class="tabs-bar">
-  <button class="tab-btn active" onclick="switchTab('directory',this)" id="tab-directory">🔍 Find a Mentor</button>
-  <button class="tab-btn" onclick="switchTab('register',this)" id="tab-register">✋ Become a Mentor</button>
+  <div class="tabs-inner">
+    <button class="tab-btn active" id="tab-directory" onclick="switchTab('directory')">Find a Mentor</button>
+    <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Become a Mentor</button>
+  </div>
 </div>
 
-<!-- ── DIRECTORY TAB ── -->
-<div class="tab-panel active" id="panel-directory">
-  <div class="container">
-
-    <div class="filters-row">
+<!-- DIRECTORY TAB -->
+<div id="section-directory">
+  <div class="page-container">
+    <div class="search-bar">
       <div class="search-wrap">
-        <svg class="search-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" id="searchInput" placeholder="Search by name, role, or skill..." oninput="filterMentors()">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input class="search-inp" id="mentor-search" type="text" placeholder="Search by name, role, skill, company..." oninput="filterMentors()"/>
       </div>
-      <select class="filter-select" id="filterField" onchange="filterMentors()">
+      <select class="filter-sel" id="filter-field" onchange="filterMentors()">
         <option value="">All Fields</option>
-        <option value="Software Engineering">Software Engineering</option>
-        <option value="Data Science">Data Science & AI/ML</option>
-        <option value="Product Management">Product Management</option>
-        <option value="DevOps">DevOps & Cloud</option>
-        <option value="Cybersecurity">Cybersecurity</option>
-        <option value="UI/UX Design">UI/UX Design</option>
-        <option value="Full Stack">Full Stack Development</option>
-        <option value="Data Engineering">Data Engineering</option>
-        <option value="Finance">Finance & FinTech</option>
-        <option value="Marketing">Marketing & Growth</option>
-        <option value="HR">HR & Recruitment</option>
-        <option value="Startup">Entrepreneurship & Startups</option>
+        <option>Technology</option><option>Data &amp; Analytics</option>
+        <option>Product Management</option><option>Design</option>
+        <option>Marketing</option><option>Finance</option><option>HR</option>
       </select>
-      <select class="filter-select" id="filterExp" onchange="filterMentors()">
+      <select class="filter-sel" id="filter-exp" onchange="filterMentors()">
         <option value="">All Experience</option>
-        <option value="1-3">1–3 years</option>
-        <option value="3-5">3–5 years</option>
-        <option value="5-10">5–10 years</option>
-        <option value="10+">10+ years</option>
-      </select>
-      <select class="filter-select" id="filterType" onchange="filterMentors()">
-        <option value="">Free & Paid</option>
-        <option value="free">Free Only</option>
-        <option value="paid">Paid Only</option>
+        <option value="1-3">1-3 years</option>
+        <option value="3-7">3-7 years</option>
+        <option value="7+">7+ years</option>
       </select>
     </div>
-
-    <div id="mentors-grid" class="mentors-grid">
-      <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray-400)">
-        <div style="font-size:32px;margin-bottom:12px">⏳</div>
-        <div style="font-size:15px;font-weight:600">Loading mentors...</div>
+    <div id="mentors-count" style="font-size:13px;color:var(--muted);margin-bottom:14px;font-weight:500"></div>
+    <div class="mentors-grid" id="mentors-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--subtle)">
+        <div style="font-size:36px;margin-bottom:12px">🔍</div>
+        <div style="font-size:15px;font-weight:600;color:var(--ink2)">Loading mentors...</div>
       </div>
     </div>
-
   </div>
 </div>
 
-<!-- ── REGISTER TAB ── -->
-<div class="tab-panel" id="panel-register">
-  <div class="container">
-    <div id="register-form-wrap">
-      <div class="register-layout">
-
-        <!-- FORM -->
+<!-- REGISTER TAB -->
+<div id="section-register" style="display:none">
+  <div class="page-container">
+    <div class="register-layout">
+      <div>
         <div class="form-card">
-          <div class="form-title">Apply to be a Mentor 🎓</div>
-          <div class="form-subtitle">Share your expertise with professionals who need your guidance. Applications reviewed within 48 hours.</div>
+          <div class="form-card-title">Apply to become a Mentor</div>
+          <div class="form-card-sub">Share your expertise and help professionals grow. We review every application personally.</div>
 
-          <!-- Personal Info -->
-          <div class="form-section">
-            <div class="form-section-title">Personal Information</div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>First Name <span>*</span></label>
-                <input type="text" class="form-control" id="r-fname" placeholder="Sindhu">
-              </div>
-              <div class="form-group">
-                <label>Last Name <span>*</span></label>
-                <input type="text" class="form-control" id="r-lname" placeholder="Gowda">
-              </div>
-            </div>
-            <div class="form-group">
-              <label>Email Address <span>*</span></label>
-              <input type="email" class="form-control" id="r-email" placeholder="sindhugowda@gmail.com">
-            </div>
-            <div class="form-group">
-              <label>Phone Number <span>*</span></label>
-              <input type="tel" class="form-control" id="r-phone" placeholder="911021404" maxlength="10">
-            </div>
-            <div class="form-group">
-              <label>City <span>*</span></label>
-              <select class="form-control" id="r-city">
-                <option value="">Select your city</option>
-                <option>Bangalore</option><option>Hyderabad</option><option>Mumbai</option>
-                <option>Pune</option><option>Chennai</option><option>Delhi NCR</option>
-                <option>Kolkata</option><option>Ahmedabad</option><option>Remote</option><option>Other</option>
-              </select>
-            </div>
+          <div id="success-box" class="success-box">
+            <div style="font-size:48px;margin-bottom:12px">🎉</div>
+            <div style="font-family:var(--ff);font-size:22px;font-weight:800;color:#15803D;margin-bottom:8px">Application Submitted!</div>
+            <p style="font-size:14px;color:#166534;line-height:1.6">We'll review your application and get back to you within 48 hours. Thank you for wanting to help the community!</p>
           </div>
 
-          <!-- Professional Info -->
-          <div class="form-section">
-            <div class="form-section-title">Professional Background</div>
-            <div class="form-group">
-              <label>Current Job Title <span>*</span></label>
-              <input type="text" class="form-control" id="r-title" placeholder="Senior Software Engineer">
-            </div>
-            <div class="form-group">
-              <label>Current Company <span>*</span></label>
-              <input type="text" class="form-control" id="r-company" placeholder="Google, Razorpay, TCS...">
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Field / Domain <span>*</span></label>
-                <select class="form-control" id="r-field">
-                  <option value="">Select field</option>
-                  <option>Software Engineering</option><option>Data Science</option>
-                  <option>Product Management</option><option>DevOps</option>
-                  <option>Cybersecurity</option><option>UI/UX Design</option>
-                  <option>Full Stack</option><option>Data Engineering</option>
-                  <option>Finance</option><option>Marketing</option>
-                  <option>HR</option><option>Startup</option><option>Other</option>
-                </select>
+          <div id="mentor-form">
+            <div class="form-section">
+              <div class="form-section-title">Personal Information</div>
+              <div class="form-row2">
+                <div class="fg"><label>Full Name <span>*</span></label><input class="finp" id="m-name" placeholder="Keerthi Reddy"/></div>
+                <div class="fg"><label>Email <span>*</span></label><input class="finp" type="email" id="m-email" placeholder="you@email.com"/></div>
               </div>
-              <div class="form-group">
-                <label>Years of Experience <span>*</span></label>
-                <select class="form-control" id="r-exp">
-                  <option value="">Select experience</option>
-                  <option value="1-3">1–3 years</option>
-                  <option value="3-5">3–5 years</option>
-                  <option value="5-10">5–10 years</option>
-                  <option value="10+">10+ years</option>
-                </select>
+              <div class="form-row2">
+                <div class="fg"><label>Phone</label><input class="finp" type="tel" id="m-phone" placeholder="+91 98765 43210"/></div>
+                <div class="fg"><label>City</label>
+                  <select class="finp" id="m-city">
+                    <option value="">Select</option>
+                    <option>Bangalore</option><option>Hyderabad</option><option>Chennai</option>
+                    <option>Mumbai</option><option>Pune</option><option>Delhi NCR</option>
+                    <option>Kolkata</option><option>Remote</option><option>Other</option>
+                  </select>
+                </div>
               </div>
             </div>
-            <div class="form-group">
-              <label>LinkedIn Profile URL <span>*</span></label>
-              <input type="url" class="form-control" id="r-linkedin" placeholder="https://linkedin.com/in/yourname">
-            </div>
-          </div>
 
-          <!-- Mentoring -->
-          <div class="form-section">
-            <div class="form-section-title">Mentoring Details</div>
-            <div class="form-group">
-              <label>Who do you want to help? <span>*</span></label>
-              <div class="checkbox-grid" id="audience-grid">
-                <label class="checkbox-item"><input type="checkbox" value="Students"> College Students</label>
-                <label class="checkbox-item"><input type="checkbox" value="Freshers"> Fresh Graduates</label>
-                <label class="checkbox-item"><input type="checkbox" value="Professionals"> Working Professionals</label>
-                <label class="checkbox-item"><input type="checkbox" value="Career Changers"> Career Changers</label>
+            <div class="form-section">
+              <div class="form-section-title">Professional Details</div>
+              <div class="form-row2">
+                <div class="fg"><label>Current Role <span>*</span></label><input class="finp" id="m-role" placeholder="Senior Software Engineer"/></div>
+                <div class="fg"><label>Company <span>*</span></label><input class="finp" id="m-company" placeholder="Google, Razorpay, TCS..."/></div>
+              </div>
+              <div class="form-row2">
+                <div class="fg"><label>Years of Experience <span>*</span></label>
+                  <select class="finp" id="m-exp">
+                    <option value="">Select</option>
+                    <option value="1-3">1-3 years</option>
+                    <option value="3-7">3-7 years</option>
+                    <option value="7-12">7-12 years</option>
+                    <option value="12+">12+ years</option>
+                  </select>
+                </div>
+                <div class="fg"><label>Field / Domain</label>
+                  <select class="finp" id="m-field">
+                    <option value="">Select</option>
+                    <option>Technology / Software</option>
+                    <option>Data &amp; Analytics</option>
+                    <option>Product Management</option>
+                    <option>Design / UX</option>
+                    <option>Marketing / Growth</option>
+                    <option>Finance</option>
+                    <option>HR</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="fg">
+                <label>LinkedIn Profile</label>
+                <input class="finp" id="m-linkedin" placeholder="https://linkedin.com/in/yourname"/>
               </div>
             </div>
-            <div class="form-group">
-              <label>Key Skills / Topics you can mentor on <span>*</span></label>
-              <input type="text" class="form-control" id="r-skills" placeholder="e.g. Python, System Design, Resume Review, DSA, AWS...">
-              <div style="font-size:11px;color:var(--gray-400);margin-top:5px">Separate with commas</div>
-            </div>
-            <div class="form-group">
-              <label>Your Bio — Tell mentees about yourself <span>*</span></label>
-              <textarea class="form-control" id="r-bio" placeholder="I'm a senior engineer at Razorpay with 6 years of experience in fintech. I love helping freshers crack their first interviews and professionals navigate career growth..."></textarea>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label>Session Type <span>*</span></label>
-                <select class="form-control" id="r-session-type">
-                  <option value="">Select type</option>
-                  <option value="free">Free (Volunteer)</option>
-                  <option value="paid">Paid Sessions</option>
-                  <option value="both">Both Free & Paid</option>
-                </select>
+
+            <div class="form-section">
+              <div class="form-section-title">How can you help? <span style="color:var(--red)">*</span></div>
+              <div class="checkbox-grid" id="skills-grid">
+                <label class="checkbox-item"><input type="checkbox" value="Resume Review"/>Resume Review</label>
+                <label class="checkbox-item"><input type="checkbox" value="Mock Interviews"/>Mock Interviews</label>
+                <label class="checkbox-item"><input type="checkbox" value="Salary Negotiation"/>Salary Negotiation</label>
+                <label class="checkbox-item"><input type="checkbox" value="Career Switch"/>Career Switch Guidance</label>
+                <label class="checkbox-item"><input type="checkbox" value="DSA Prep"/>DSA &amp; Coding Prep</label>
+                <label class="checkbox-item"><input type="checkbox" value="System Design"/>System Design</label>
+                <label class="checkbox-item"><input type="checkbox" value="Product Sense"/>Product Sense</label>
+                <label class="checkbox-item"><input type="checkbox" value="Startup Advice"/>Startup Advice</label>
               </div>
-              <div class="form-group">
-                <label>Availability per month</label>
-                <select class="form-control" id="r-availability">
-                  <option value="1-2 sessions">1–2 sessions</option>
-                  <option value="3-5 sessions">3–5 sessions</option>
-                  <option value="5-10 sessions">5–10 sessions</option>
-                  <option value="10+ sessions">10+ sessions</option>
+            </div>
+
+            <div class="form-section">
+              <div class="form-section-title">About You</div>
+              <div class="fg">
+                <label>Tell mentees about your experience and how you can help <span>*</span></label>
+                <textarea class="finp" id="m-bio" rows="4" placeholder="Describe your experience, what you can help with, and what makes your mentoring unique..."></textarea>
+              </div>
+              <div class="fg">
+                <label>Session Rate (optional)</label>
+                <select class="finp" id="m-rate">
+                  <option value="free">Free (volunteer)</option>
+                  <option value="100-300">Rs.100-300 per session</option>
+                  <option value="300-500">Rs.300-500 per session</option>
+                  <option value="500-1000">Rs.500-1000 per session</option>
+                  <option value="1000+">Rs.1000+ per session</option>
                 </select>
               </div>
             </div>
-            <div class="form-group" id="rate-group" style="display:none">
-              <label>Session Rate (₹ per 30 minutes)</label>
-              <input type="number" class="form-control" id="r-rate" placeholder="500" min="0">
-            </div>
+
+            <button class="submit-btn" id="register-btn" onclick="submitMentorApplication()">
+              Submit Application →
+            </button>
           </div>
-
-          <div style="background:var(--blue-light);border-radius:10px;padding:14px;font-size:13px;color:var(--blue);margin-bottom:20px;line-height:1.5">
-            <b>📋 What happens next:</b> Our team reviews your application within 48 hours. Approved mentors get a profile on Belongix and start receiving session requests.
-          </div>
-
-          <button class="submit-btn" id="register-btn" onclick="submitMentorApplication()">
-            Submit My Application →
-          </button>
-        </div>
-
-        <!-- SIDEBAR -->
-        <div>
-          <div class="info-card">
-            <div class="info-card-title">⚙️ How It Works</div>
-            <div class="info-step">
-              <div class="step-num">1</div>
-              <div class="step-text"><h4>Apply</h4><p>Fill in your details and submit your application</p></div>
-            </div>
-            <div class="info-step">
-              <div class="step-num">2</div>
-              <div class="step-text"><h4>Review</h4><p>Our team verifies your LinkedIn and background within 48 hours</p></div>
-            </div>
-            <div class="info-step">
-              <div class="step-num">3</div>
-              <div class="step-text"><h4>Go Live</h4><p>Your profile appears in the mentor directory</p></div>
-            </div>
-            <div class="info-step">
-              <div class="step-num">4</div>
-              <div class="step-text"><h4>Connect</h4><p>Mentees can find and book sessions with you</p></div>
-            </div>
-          </div>
-
-          <div class="info-card">
-            <div class="info-card-title">💚 Why Mentor on Belongix</div>
-            <div class="perk-item"><div class="perk-icon">🎯</div><div><b>Right audience</b> — mentees who are genuinely motivated and career-focused</div></div>
-            <div class="perk-item"><div class="perk-icon">🌟</div><div><b>Build your brand</b> — establish yourself as a thought leader in your field</div></div>
-            <div class="perk-item"><div class="perk-icon">💰</div><div><b>Earn from sessions</b> — set your own rate for paid sessions</div></div>
-            <div class="perk-item"><div class="perk-icon">🤝</div><div><b>Give back</b> — help the next generation of Indian professionals</div></div>
-            <div class="perk-item"><div class="perk-icon">📅</div><div><b>Flexible schedule</b> — mentor at your own pace and availability</div></div>
-          </div>
-
-          <div class="info-card" style="background:linear-gradient(135deg,#1E3A5F,#2563EB);border:none">
-            <div style="color:white;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px">Questions?</div>
-            <div style="color:rgba(255,255,255,.75);font-size:13px;margin-bottom:16px;line-height:1.5">Write to us at teambelongix@gmail.com and we'll get back within 24 hours.</div>
-            <a href="mailto:teambelongix@gmail.com" style="display:inline-block;background:white;color:#2563EB;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;text-decoration:none">📧 Email Us</a>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- SUCCESS STATE -->
-    <div class="success-box" id="register-success">
-      <div style="font-size:52px;margin-bottom:16px">🎉</div>
-      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:800;color:#15803D;margin-bottom:8px">Application Submitted!</div>
-      <div style="font-size:14px;color:#166534;line-height:1.6;margin-bottom:20px">Thank you for applying to be a Belongix mentor! Our team will review your profile and get back to you at your email within 48 hours.</div>
-      <div style="background:white;border-radius:12px;padding:16px;margin-bottom:20px;text-align:left">
-        <div style="font-size:12px;font-weight:700;color:var(--gray-500);margin-bottom:8px">WHAT HAPPENS NEXT</div>
-        <div style="font-size:13px;color:var(--gray-700);display:flex;flex-direction:column;gap:8px">
-          <div>✅ Application received in our system</div>
-          <div>📧 Confirmation sent to your email</div>
-          <div>⏳ Review by Belongix team within 48 hrs</div>
-          <div>🚀 Profile goes live on mentor directory</div>
         </div>
       </div>
-      <button onclick="switchTab('directory')" style="background:#15803D;color:white;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">Browse Other Mentors →</button>
-    </div>
 
+      <!-- Sidebar -->
+      <div>
+        <div class="info-card">
+          <div class="info-card-title">📋 How it works</div>
+          <div class="info-step">
+            <div class="step-num">1</div>
+            <div class="step-text"><h4>Apply</h4><p>Submit your application — we review every profile personally within 48 hours.</p></div>
+          </div>
+          <div class="info-step">
+            <div class="step-num">2</div>
+            <div class="step-text"><h4>Get Verified</h4><p>Once approved, your profile goes live in the Belongix Mentor Directory.</p></div>
+          </div>
+          <div class="info-step">
+            <div class="step-num">3</div>
+            <div class="step-text"><h4>Take Sessions</h4><p>Mentees book 30 or 60 minute sessions directly with you on your schedule.</p></div>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-title">✨ Mentor Benefits</div>
+          <div class="perk-item"><span class="perk-icon">💰</span><div>Set your own rate or mentor for free — you choose completely.</div></div>
+          <div class="perk-item"><span class="perk-icon">🏅</span><div>Get a verified Belongix Mentor badge on your profile.</div></div>
+          <div class="perk-item"><span class="perk-icon">🌱</span><div>Give back to the Indian professional community.</div></div>
+          <div class="perk-item"><span class="perk-icon">📈</span><div>Build your personal brand and network.</div></div>
+        </div>
+        <div class="info-card" style="background:linear-gradient(135deg,var(--brand),var(--brand2));border-color:transparent">
+          <div style="font-family:var(--ff);font-size:15px;font-weight:700;color:#fff;margin-bottom:8px">Already a user?</div>
+          <div style="font-size:13px;color:rgba(255,255,255,.75);margin-bottom:14px;line-height:1.5">Sign in to your Belongix account to apply faster — your profile details will be pre-filled.</div>
+          <button onclick="openModal('signin')" style="background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.35);border-radius:9px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb);width:100%">Sign In to Apply</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- BOOKING MODAL -->
-<div class="modal-overlay" id="bookingModal">
-  <div class="modal" style="position:relative">
+<footer>
+  <div class="footer-in">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">Belong<span>ix</span></div>
+        <p class="footer-desc">India's professional career platform — for students, freshers, and working professionals at every stage of their journey.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="dashboard.html?page=jobs">Job Board</a>
+        <a href="dashboard.html?page=salary">Salary Insights</a>
+        <a href="dashboard.html?page=upskill">Upskilling Hub</a>
+        <a href="dashboard.html?page=overview">Career Score</a>
+        <a href="dashboard.html?page=overview">Bexi AI</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="about.html">About Us</a>
+        <a href="mentors.html">Mentors</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Refund Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Belongix. Built with ❤️ in India.</p>
+      <div class="footer-chips">
+        <span class="fc">🔒 Secure</span>
+        <span class="fc">🇮🇳 Made in India</span>
+        <span class="fc">⚡ PWA</span>
+      </div>
+    </div>
+  </div>
+</footer>
+</div>
+
+<!-- Booking Modal -->
+<div class="modal-overlay" id="booking-modal" onclick="if(event.target===this)closeBooking()" style="display:none;align-items:center;justify-content:center">
+  <div class="booking-modal">
+    <button onclick="closeBooking()" style="position:absolute;top:16px;right:16px;background:var(--off2);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--muted)">✕</button>
+    <h3 id="booking-title">Book a Session</h3>
+    <p id="booking-subtitle">Choose your session type</p>
+    <div class="session-options">
+      <div class="session-opt selected" onclick="selectSession(this,'30min')">
+        <div class="session-opt-title">30 Minutes</div>
+        <div class="session-opt-price">Quick Guidance</div>
+      </div>
+      <div class="session-opt" onclick="selectSession(this,'60min')">
+        <div class="session-opt-title">60 Minutes</div>
+        <div class="session-opt-price">Deep Dive</div>
+      </div>
+    </div>
+    <div class="fg"><label style="font-size:12px;font-weight:700;color:var(--ink2)">Your Name</label><input class="finp" id="b-name" placeholder="Your full name"/></div>
+    <div class="fg"><label style="font-size:12px;font-weight:700;color:var(--ink2)">Your Email</label><input class="finp" type="email" id="b-email" placeholder="you@email.com"/></div>
+    <div class="fg"><label style="font-size:12px;font-weight:700;color:var(--ink2)">What do you need help with?</label><textarea class="finp" id="b-msg" rows="3" placeholder="Briefly describe what you'd like to discuss..."></textarea></div>
+    <button class="submit-btn" onclick="submitBooking()">Request Session →</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title" id="modal-mentor-name">Book a Session</div>
-    <div class="modal-subtitle" id="modal-mentor-role">Send a session request to this mentor</div>
-    <div class="form-group">
-      <label>Your Name <span style="color:#EF4444">*</span></label>
-      <input type="text" class="form-control" id="book-name" placeholder="Your full name">
+    <h3 id="modal-title">Join Belongix Free</h3>
+    <p class="modal-sub" id="modal-sub">Create your account and start your career journey.</p>
+    <div class="m-tabs">
+      <button class="m-tab active" id="tab-signup" onclick="modalTab('signup')">Sign Up</button>
+      <button class="m-tab" id="tab-signin" onclick="modalTab('signin')">Sign In</button>
     </div>
-    <div class="form-group">
-      <label>Your Email <span style="color:#EF4444">*</span></label>
-      <input type="email" class="form-control" id="book-email" placeholder="your@email.com">
+    <div id="modal-signup">
+      <input class="m-inp" type="email" id="m-email" placeholder="Email address"/>
+      <input class="m-inp" type="password" id="m-pass" placeholder="Password (min 6 chars)"/>
+      <button class="m-btn" onclick="modalAuth('signup')">Create Account →</button>
     </div>
-    <div class="form-group">
-      <label>What do you need help with? <span style="color:#EF4444">*</span></label>
-      <textarea class="form-control" id="book-message" placeholder="e.g. I'm preparing for FAANG interviews and need help with system design. I have 2 years of experience as a backend developer..."></textarea>
+    <div id="modal-signin" style="display:none">
+      <input class="m-inp" type="email" id="m-si-email" placeholder="Email address"/>
+      <input class="m-inp" type="password" id="m-si-pass" placeholder="Password"/>
+      <button class="m-btn" onclick="modalAuth('signin')">Sign In →</button>
     </div>
-    <div class="form-group">
-      <label>Preferred Session Type</label>
-      <select class="form-control" id="book-type">
-        <option value="30min">30-minute session</option>
-        <option value="60min">60-minute session</option>
-        <option value="ongoing">Ongoing mentorship</option>
-      </select>
-    </div>
-    <button onclick="submitBooking()" class="submit-btn">Send Session Request →</button>
-    <div style="text-align:center;font-size:11px;color:var(--gray-400);margin-top:10px">Your request will be sent to the mentor's email. They will respond within 24-48 hours.</div>
+    <button class="m-google" onclick="googleAuth()">
+      <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <div class="m-ok" id="m-ok"></div>
+    <div class="m-fine">By signing up you agree to our Terms &amp; Privacy Policy.</div>
   </div>
 </div>
-
-<div class="toast" id="toast"></div>
-<script src="belongix-ai.js"></script>
-
 <script>
-var SB_URL = 'https://efhcfuaxgbzuqlmhlsxc.supabase.co';
-var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
-var sb = supabase.createClient(SB_URL, SB_KEY);
-var allMentors = [];
-var currentMentorId = null;
+// ── SINGLE SUPABASE INSTANCE ──
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb = window._bxSb || (window._bxSb = supabase.createClient(SB_URL, SB_KEY));
 
-var AVATAR_COLORS = [
-  'linear-gradient(135deg,#2563EB,#0EA5E9)',
-  'linear-gradient(135deg,#7C3AED,#0EA5E9)',
-  'linear-gradient(135deg,#10B981,#2563EB)',
-  'linear-gradient(135deg,#F59E0B,#EF4444)',
-  'linear-gradient(135deg,#EC4899,#7C3AED)',
-  'linear-gradient(135deg,#0EA5E9,#10B981)',
-  'linear-gradient(135deg,#1E3A5F,#2563EB)',
-  'linear-gradient(135deg,#DC2626,#F59E0B)'
-];
+// ── AUTH STATE ──
+sb.auth.getSession().then(function(r) {
+  var s = r && r.data && r.data.session;
+  if (s && s.user) showUserNav(s.user);
+  else showGuestNav();
+});
+sb.auth.onAuthStateChange(function(_, s) {
+  if (s && s.user) showUserNav(s.user);
+  else showGuestNav();
+});
+
+function showUserNav(u) {
+  var nm = u.user_metadata && u.user_metadata.full_name ? u.user_metadata.full_name : u.email.split('@')[0];
+  var no = document.getElementById('nav-out'); if (no) no.style.display = 'none';
+  var ni = document.getElementById('nav-in'); if (ni) ni.style.display = 'block';
+  var av = document.getElementById('nav-av'); if (av) av.textContent = nm.substring(0,2).toUpperCase();
+  var nm_el = document.getElementById('nav-nm'); if (nm_el) nm_el.textContent = 'Hi, ' + nm.split(' ')[0];
+  var udn = document.getElementById('ud-name'); if (udn) udn.textContent = nm;
+  var ude = document.getElementById('ud-email'); if (ude) ude.textContent = u.email || '';
+}
+function showGuestNav() {
+  var no = document.getElementById('nav-out'); if (no) no.style.display = 'flex';
+  var ni = document.getElementById('nav-in'); if (ni) ni.style.display = 'none';
+}
+function doSignOut() { sb.auth.signOut().then(function() { location.reload(); }); }
+
+// ── NAV DROPDOWNS - wrapped in DOMContentLoaded ──
+document.addEventListener('DOMContentLoaded', function() {
+  var navBtn = document.getElementById('nav-user-btn');
+  var navDd = document.getElementById('user-dd');
+  if (navBtn && navDd) {
+    navBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var o = navDd.classList.contains('open');
+      navDd.classList[o ? 'remove' : 'add']('open');
+      navBtn.classList[o ? 'remove' : 'add']('dd-open');
+    });
+    document.addEventListener('click', function() {
+      if (navDd) navDd.classList.remove('open');
+      if (navBtn) navBtn.classList.remove('dd-open');
+    });
+  }
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('.nav-link') && !e.target.closest('.dd-panel')) {
+      document.querySelectorAll('.dd-panel').forEach(function(p) { p.classList.remove('open'); });
+      document.querySelectorAll('.nav-link').forEach(function(b) { b.classList.remove('dd-open'); });
+    }
+  });
+  // Checkbox styling
+  document.querySelectorAll('.checkbox-item input').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      cb.closest('.checkbox-item').classList.toggle('selected', cb.checked);
+    });
+  });
+});
+
+// ── MODAL ──
+function openModal(type) {
+  var m = document.getElementById('auth-modal'); if (m) m.classList.add('open');
+  modalTab(type);
+}
+function closeModal() { var m = document.getElementById('auth-modal'); if (m) m.classList.remove('open'); }
+function modalTab(tab) {
+  var su = document.getElementById('modal-signup'); if (su) su.style.display = tab === 'signup' ? 'block' : 'none';
+  var si = document.getElementById('modal-signin'); if (si) si.style.display = tab === 'signin' ? 'block' : 'none';
+  var ts = document.getElementById('tab-signup'); if (ts) ts.classList[tab === 'signup' ? 'add' : 'remove']('active');
+  var ti = document.getElementById('tab-signin'); if (ti) ti.classList[tab === 'signin' ? 'add' : 'remove']('active');
+}
+async function modalAuth(type) {
+  var email = '', pass = '';
+  if (type === 'signup') { email = (document.getElementById('m-email') || {}).value || ''; pass = (document.getElementById('m-pass') || {}).value || ''; }
+  else { email = (document.getElementById('m-si-email') || {}).value || ''; pass = (document.getElementById('m-si-pass') || {}).value || ''; }
+  if (!email || !pass) { alert('Please fill all fields'); return; }
+  try {
+    var res = type === 'signup' ? await sb.auth.signUp({email: email, password: pass}) : await sb.auth.signInWithPassword({email: email, password: pass});
+    if (res.error) throw res.error;
+    if (type === 'signin') { closeModal(); window.location.href = 'dashboard.html'; }
+    else { var ok = document.getElementById('m-ok'); if (ok) { ok.style.display = 'block'; ok.textContent = 'Check your email to confirm signup!'; } }
+  } catch(e) { alert('Error: ' + e.message); }
+}
+async function googleAuth() {
+  try { await sb.auth.signInWithOAuth({provider: 'google', options: {redirectTo: window.location.origin + '/dashboard.html'}}); }
+  catch(e) { alert('Google auth error: ' + e.message); }
+}
+function toggleDD(id, btn) {
+  document.querySelectorAll('.dd-panel').forEach(function(p) { p.classList.remove('open'); });
+  document.querySelectorAll('.nav-link').forEach(function(b) { b.classList.remove('dd-open'); });
+  var dd = document.getElementById(id);
+  if (dd) { dd.classList.add('open'); btn.classList.add('dd-open'); }
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 3000);
+}
 
 // ── TAB SWITCHING ──
-function switchTab(tab, btn) {
-  document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('panel-' + tab).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'directory') loadMentors();
+function switchTab(tab) {
+  var dir = document.getElementById('section-directory');
+  var reg = document.getElementById('section-register');
+  var td = document.getElementById('tab-directory');
+  var tr = document.getElementById('tab-register');
+  if (tab === 'directory') {
+    if (dir) dir.style.display = 'block';
+    if (reg) reg.style.display = 'none';
+    if (td) td.classList.add('active');
+    if (tr) tr.classList.remove('active');
+    loadMentors();
+  } else {
+    if (dir) dir.style.display = 'none';
+    if (reg) reg.style.display = 'block';
+    if (td) td.classList.remove('active');
+    if (tr) tr.classList.add('active');
+  }
 }
 
 // ── LOAD MENTORS ──
+var allMentors = [];
 async function loadMentors() {
+  var grid = document.getElementById('mentors-grid');
+  if (!grid) return;
   try {
-    var res = await sb.from('mentors').select('*').eq('approved', true).order('created_at', { ascending: false });
-    allMentors = (res.data || []);
-    document.getElementById('stat-mentors').textContent = allMentors.length || '0';
+    var r = await sb.from('mentors').select('*').order('created_at', {ascending: false});
+    allMentors = r.data || [];
     renderMentors(allMentors);
   } catch(e) {
-    renderMentors([]);
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;"><div style="font-size:36px;margin-bottom:12px">🤝</div><div style="font-size:15px;font-weight:600;color:var(--ink2);margin-bottom:16px">No mentors listed yet</div><p style="color:var(--muted);font-size:13px;margin-bottom:20px">Be the first - apply to become a mentor!</p><button onclick="switchTab('register')" style="background:var(--brand);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb)">Become a Mentor</button></div>';
   }
 }
 
 function renderMentors(mentors) {
   var grid = document.getElementById('mentors-grid');
+  if (!grid) return;
+  var cnt = document.getElementById('mentors-count');
+  if (cnt) cnt.textContent = mentors.length + ' mentor' + (mentors.length !== 1 ? 's' : '') + ' available';
   if (!mentors.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:80px 24px">' +
-      '<div style="font-size:48px;margin-bottom:16px">🎓</div>' +
-      '<div style="font-family:\'Plus Jakarta Sans\',sans-serif;font-size:20px;font-weight:700;color:var(--gray-700);margin-bottom:8px">No mentors yet — be the first!</div>' +
-      '<div style="font-size:14px;color:var(--gray-500);margin-bottom:24px">Belongix is building its mentor network. Apply to be among our founding mentors and shape the community.</div>' +
-      '<button onclick="switchTab(\'register\')" style="background:var(--blue);color:white;border:none;border-radius:10px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;font-family:\'DM Sans\',sans-serif">Become a Founding Mentor →</button>' +
-      '</div>';
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:64px 20px"><div style="font-size:48px;margin-bottom:14px">🔍</div><div style="font-size:17px;font-weight:700;color:var(--ink2);margin-bottom:8px">No mentors found</div><p style="color:var(--muted);font-size:14px">Try a different search or filter.</p></div>';
     return;
   }
+  var colors = ['#2D1B69','#4C2FAA','#0EA5E9','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4'];
   grid.innerHTML = mentors.map(function(m, i) {
-    var initials = ((m.first_name || '')[0] || '') + ((m.last_name || '')[0] || '');
-    var color = AVATAR_COLORS[i % AVATAR_COLORS.length];
-    var skills = (m.skills || '').split(',').slice(0,3).map(function(s){
-      return '<span class="mentor-tag">' + s.trim() + '</span>';
-    }).join('');
-    var isFree = m.session_type === 'free' || m.session_type === 'both';
-    var isPaid = m.session_type === 'paid' || m.session_type === 'both';
-    var badge = isFree && !isPaid ? '<div class="mentor-badge badge-free">FREE</div>' :
-                isPaid && !isFree ? '<div class="mentor-badge badge-paid">PAID</div>' :
-                '<div class="mentor-badge badge-free">FREE & PAID</div>';
-    return '<div class="mentor-card">' +
-      badge +
-      '<div class="mentor-card-top">' +
-        '<div class="mentor-avatar" style="background:' + color + '">' + initials.toUpperCase() + '</div>' +
-        '<div>' +
-          '<div class="mentor-name">' + m.first_name + ' ' + m.last_name + '</div>' +
-          '<div class="mentor-role">' + (m.job_title || '') + '</div>' +
-          '<div class="mentor-company">🏢 ' + (m.company || '') + ' · 📍 ' + (m.city || '') + '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="mentor-bio">' + (m.bio || '') + '</div>' +
-      '<div class="mentor-tags">' + skills + '</div>' +
-      '<div class="mentor-meta">' +
-        '<span>💼 ' + (m.experience || '') + ' exp</span>' +
-        '<span>📅 ' + (m.availability || '1-2 sessions') + '/month</span>' +
-        (m.rate ? '<span>💰 ₹' + m.rate + '/30min</span>' : '<span>💚 Free sessions</span>') +
-      '</div>' +
-      '<div class="mentor-footer">' +
-        '<button class="btn-book" onclick="openBooking(\'' + m.id + '\',\'' + m.first_name + ' ' + m.last_name + '\',\'' + (m.job_title || '') + ' at ' + (m.company || '') + '\',\'' + (m.email || '') + '\')">Book Session</button>' +
-        (m.linkedin ? '<a href="' + m.linkedin + '" target="_blank" class="btn-view">LinkedIn ↗</a>' : '') +
-      '</div>' +
-    '</div>';
+    var clr = colors[i % colors.length];
+    var init = (m.name || 'M').substring(0, 2).toUpperCase();
+    var skills = (m.skills || m.specializations || '').split(',').slice(0,3).filter(function(s){return s.trim();}).map(function(s){return '<span class="mc-tag">'+s.trim()+'</span>';}).join('');
+    return '<div class="mentor-card"><div class="mc-top"><div class="mc-av" style="background:'+clr+'">'+init+'</div><div><div class="mc-name">'+(m.name||'Mentor')+'</div><div class="mc-role">'+(m.role||'Professional')+'</div><div class="mc-company">'+(m.company||'')+'</div></div></div>'+(m.experience?'<div class="mc-exp-badge">'+m.experience+'</div>':'')+( m.bio?'<div class="mc-bio">'+m.bio+'</div>':'')+( skills?'<div class="mc-tags">'+skills+'</div>':'')+' <div class="mc-footer"><button class="btn-book" onclick="openBooking(''+m.id+'',''+( m.name||'Mentor')+'',''+(m.role||'Professional')+'',''+(m.email||'teambelongix@gmail.com')+'')">Book Session</button><button class="btn-profile" onclick="window.location.href='mentors.html'">View</button></div></div>';
   }).join('');
 }
 
+// ── FILTER ──
 function filterMentors() {
-  var q = document.getElementById('searchInput').value.toLowerCase();
-  var field = document.getElementById('filterField').value;
-  var exp = document.getElementById('filterExp').value;
-  var type = document.getElementById('filterType').value;
+  var q = ((document.getElementById('mentor-search') || {}).value || '').toLowerCase();
+  var field = ((document.getElementById('filter-field') || {}).value || '').toLowerCase();
   var filtered = allMentors.filter(function(m) {
-    var text = ((m.first_name || '') + ' ' + (m.last_name || '') + ' ' + (m.job_title || '') + ' ' + (m.skills || '') + ' ' + (m.company || '')).toLowerCase();
-    if (q && text.indexOf(q) === -1) return false;
-    if (field && (m.field || '') !== field) return false;
-    if (exp && (m.experience || '') !== exp) return false;
-    if (type === 'free' && m.session_type === 'paid') return false;
-    if (type === 'paid' && m.session_type === 'free') return false;
-    return true;
+    var txt = ((m.name||'') + ' ' + (m.role||'') + ' ' + (m.company||'') + ' ' + (m.skills||'') + ' ' + (m.field||'')).toLowerCase();
+    return (!q || txt.includes(q)) && (!field || txt.includes(field));
   });
   renderMentors(filtered);
 }
 
-// ── REGISTRATION ──
-document.getElementById('r-session-type').addEventListener('change', function() {
-  document.getElementById('rate-group').style.display = (this.value === 'paid' || this.value === 'both') ? 'block' : 'none';
-});
-
-document.querySelectorAll('.checkbox-item').forEach(function(item) {
-  item.querySelector('input').addEventListener('change', function() {
-    item.classList.toggle('selected', this.checked);
-  });
-});
-
+// ── SUBMIT MENTOR APPLICATION ──
 async function submitMentorApplication() {
+  function gv(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; }
+  var name = gv('m-name'), email = gv('m-email'), role = gv('m-role'), company = gv('m-company'), exp = gv('m-exp'), bio = gv('m-bio');
+  if (!name || !email || !role || !company || !exp || !bio) { showToast('Please fill all required fields'); return; }
+  var skills = [];
+  document.querySelectorAll('.checkbox-item input:checked').forEach(function(cb) { skills.push(cb.value); });
+  if (!skills.length) { showToast('Please select at least one skill you can help with'); return; }
   var btn = document.getElementById('register-btn');
-  var fname = document.getElementById('r-fname').value.trim();
-  var lname = document.getElementById('r-lname').value.trim();
-  var email = document.getElementById('r-email').value.trim();
-  var phone = document.getElementById('r-phone').value.trim();
-  var city = document.getElementById('r-city').value;
-  var title = document.getElementById('r-title').value.trim();
-  var company = document.getElementById('r-company').value.trim();
-  var field = document.getElementById('r-field').value;
-  var exp = document.getElementById('r-exp').value;
-  var linkedin = document.getElementById('r-linkedin').value.trim();
-  var skills = document.getElementById('r-skills').value.trim();
-  var bio = document.getElementById('r-bio').value.trim();
-  var sessionType = document.getElementById('r-session-type').value;
-  var availability = document.getElementById('r-availability').value;
-  var rate = document.getElementById('r-rate').value;
-
-  var audience = [];
-  document.querySelectorAll('#audience-grid input:checked').forEach(function(cb){ audience.push(cb.value); });
-
-  if (!fname || !lname || !email || !phone || !city || !title || !company || !field || !exp || !linkedin || !skills || !bio || !sessionType) {
-    showToast('Please fill in all required fields'); return;
-  }
-  if (!email.includes('@')) { showToast('Please enter a valid email'); return; }
-  if (!linkedin.includes('linkedin.com')) { showToast('Please enter a valid LinkedIn URL'); return; }
-  if (audience.length === 0) { showToast('Please select at least one audience type'); return; }
-
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Submitting...';
-
+  if (btn) { btn.disabled = true; btn.textContent = 'Submitting...'; }
   try {
-    var payload = {
-      first_name: fname, last_name: lname, email: email, phone: phone,
-      city: city, job_title: title, company: company, field: field,
-      experience: exp, linkedin: linkedin, skills: skills, bio: bio,
-      session_type: sessionType, availability: availability,
-      rate: rate ? parseInt(rate) : null,
-      audience: audience.join(', '),
-      approved: false,
-      created_at: new Date().toISOString()
+    var data = {
+      name: name, email: email, phone: gv('m-phone'), city: gv('m-city'),
+      role: role, company: company, experience: exp, field: gv('m-field'),
+      linkedin: gv('m-linkedin'), skills: skills.join(', '), bio: bio, rate: gv('m-rate')
     };
-
-    var res = await sb.from('mentors').insert([payload]);
+    var res = await sb.from('mentors').insert([data]);
     if (res.error) throw res.error;
+    var form = document.getElementById('mentor-form');
+    var success = document.getElementById('success-box');
+    if (form) form.style.display = 'none';
+    if (success) success.style.display = 'block';
+    showToast('Application submitted successfully!');
+    // Also send email notification
+    var subj = encodeURIComponent('[Belongix] New Mentor Application from ' + name);
+    var body = encodeURIComponent('Name: '+name+'
+Email: '+email+'
+Role: '+role+'
+Company: '+company+'
+Experience: '+exp+'
+Skills: '+skills.join(', ')+'
 
-    // Send email notification to Belongix team
-    var subject = encodeURIComponent('New Mentor Application — ' + fname + ' ' + lname + ' (' + company + ')');
-    var body = encodeURIComponent(
-      'NEW MENTOR APPLICATION — BELONGIX\n\n' +
-      'Name: ' + fname + ' ' + lname + '\n' +
-      'Email: ' + email + '\n' +
-      'Phone: ' + phone + '\n' +
-      'City: ' + city + '\n' +
-      'Title: ' + title + '\n' +
-      'Company: ' + company + '\n' +
-      'Field: ' + field + '\n' +
-      'Experience: ' + exp + '\n' +
-      'LinkedIn: ' + linkedin + '\n' +
-      'Skills: ' + skills + '\n' +
-      'Session Type: ' + sessionType + '\n' +
-      'Availability: ' + availability + '\n' +
-      'Rate: ' + (rate ? 'Rs.' + rate + '/30min' : 'Free') + '\n' +
-      'Audience: ' + audience.join(', ') + '\n\n' +
-      'Bio:\n' + bio + '\n\n' +
-      'Please review and approve in Supabase dashboard.'
-    );
-
-    document.getElementById('register-form-wrap').style.display = 'none';
-    document.getElementById('register-success').style.display = 'block';
-
-    setTimeout(function() {
-      try { window.location.href = 'mailto:teambelongix@gmail.com?subject=' + subject + '&body=' + body; } catch(e) {}
-    }, 800);
-
+Bio:
+'+bio);
+    window.open('mailto:teambelongix@gmail.com?subject='+subj+'&body='+body, '_blank');
   } catch(e) {
-    showToast('Something went wrong. Please try again or email us directly.');
-    btn.disabled = false;
-    btn.innerHTML = 'Submit My Application →';
+    console.error(e);
+    showToast('Submission failed: ' + e.message);
+    if (btn) { btn.disabled = false; btn.textContent = 'Submit Application →'; }
   }
 }
 
 // ── BOOKING ──
+var currentMentorId = null;
+var selectedSession = '30min';
+
 function openBooking(mentorId, name, role, mentorEmail) {
-  currentMentorId = { id: mentorId, name: name, email: mentorEmail };
-  document.getElementById('modal-mentor-name').textContent = 'Book a session with ' + name;
-  document.getElementById('modal-mentor-role').textContent = role;
-  document.getElementById('bookingModal').classList.add('open');
+  currentMentorId = mentorId;
+  var bt = document.getElementById('booking-title');
+  var bs = document.getElementById('booking-subtitle');
+  if (bt) bt.textContent = 'Book a session with ' + name;
+  if (bs) bs.textContent = role + ' - select duration and send a request';
+  var m = document.getElementById('booking-modal');
+  if (m) { m.style.display = 'flex'; }
+  // Pre-fill name/email if signed in
+  sb.auth.getSession().then(function(r) {
+    if (r.data && r.data.session) {
+      var u = r.data.session.user;
+      var nm = u.user_metadata && u.user_metadata.full_name ? u.user_metadata.full_name : u.email.split('@')[0];
+      var bn = document.getElementById('b-name'); if (bn) bn.value = nm;
+      var be = document.getElementById('b-email'); if (be) be.value = u.email || '';
+    }
+  });
 }
-
-function closeModal() {
-  document.getElementById('bookingModal').classList.remove('open');
-  currentMentorId = null;
+function closeBooking() {
+  var m = document.getElementById('booking-modal'); if (m) m.style.display = 'none';
 }
-
+function selectSession(el, type) {
+  selectedSession = type;
+  document.querySelectorAll('.session-opt').forEach(function(o) { o.classList.remove('selected'); });
+  el.classList.add('selected');
+}
 async function submitBooking() {
-  var name = document.getElementById('book-name').value.trim();
-  var email = document.getElementById('book-email').value.trim();
-  var message = document.getElementById('book-message').value.trim();
-  var type = document.getElementById('book-type').value;
+  var name = (document.getElementById('b-name') || {}).value || '';
+  var email = (document.getElementById('b-email') || {}).value || '';
+  var msg = (document.getElementById('b-msg') || {}).value || '';
+  if (!name || !email) { showToast('Please fill in your name and email'); return; }
+  var subj = encodeURIComponent('[Belongix] Mentor Session Request - ' + selectedSession);
+  var body = encodeURIComponent('Name: '+name+'
+Email: '+email+'
+Session: '+selectedSession+'
 
-  if (!name || !email || !message) { showToast('Please fill in all fields'); return; }
-
-  try {
-    await sb.from('mentor_bookings').insert([{
-      mentor_id: currentMentorId.id,
-      mentee_name: name,
-      mentee_email: email,
-      message: message,
-      session_type: type,
-      status: 'pending',
-      created_at: new Date().toISOString()
-    }]);
-  } catch(e) {}
-
-  // Email to mentor
-  var subject = encodeURIComponent('New Session Request on Belongix from ' + name);
-  var body = encodeURIComponent(
-    'Hello,\n\nYou have a new session request on Belongix!\n\n' +
-    'From: ' + name + '\nEmail: ' + email + '\nSession Type: ' + type + '\n\n' +
-    'Their message:\n' + message + '\n\n' +
-    'Please reply to ' + email + ' to confirm the session.\n\nThanks,\nBelongix Team'
-  );
-
-  closeModal();
-  showToast('Request sent! The mentor will contact you within 24-48 hours.');
-  setTimeout(function() {
-    try { window.location.href = 'mailto:' + (currentMentorId ? currentMentorId.email : 'teambelongix@gmail.com') + '?subject=' + subject + '&body=' + body; } catch(e) {}
-  }, 1000);
+Message:
+'+msg);
+  window.location.href = 'mailto:teambelongix@gmail.com?subject='+subj+'&body='+body;
+  showToast('Session request sent! We will confirm within 24 hours.');
+  closeBooking();
 }
 
-function showToast(msg) {
-  var t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 3000);
-}
+// ── SCROLL REVEAL ──
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('on'); });
+}, {threshold: 0.07});
+document.querySelectorAll('.rv').forEach(function(el) { obs.observe(el); });
 
-// Close modal on backdrop click
-document.getElementById('bookingModal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
-
-// Init
+// ── INIT ──
 loadMentors();
 </script>
-  <script src="/pwa-install.js"></script>
+<script src="bexi.js"></script>
+<script src="pwa-install.js"></script>
 </body>
 </html>
