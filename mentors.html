@@ -139,7 +139,7 @@ footer{background:var(--brand);padding:56px 5% 32px;border-top:1px solid rgba(25
 .hero-perk{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:6px 16px;font-size:12.5px;color:rgba(255,255,255,.85);font-weight:500}
 
 /* Tabs */
-.tabs-bar{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:64px;z-index:80;padding:0 5%}
+.tabs-bar{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:64px;z-index:150;padding:0 5%}
 .tabs-inner{max-width:var(--max);margin:0 auto;display:flex;gap:2px}
 .tab-btn{padding:14px 20px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--ffb);border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:.15s}
 .tab-btn:hover{color:var(--brand)}
@@ -775,15 +775,7 @@ async function submitMentorApplication() {
     showToast('Application submitted successfully!');
     // Also send email notification
     var subj = encodeURIComponent('[Belongix] New Mentor Application from ' + name);
-    var body = encodeURIComponent('Name: '+name+'
-Email: '+email+'
-Role: '+role+'
-Company: '+company+'
-Experience: '+exp+'
-Skills: '+skills.join(', ')+'
-
-Bio:
-'+bio);
+    var body = encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nRole: '+role+'\nCompany: '+company+'\nExperience: '+exp+'\nSkills: '+skills.join(', ')+'\n\nBio:\n'+bio);
     window.open('mailto:teambelongix@gmail.com?subject='+subj+'&body='+body, '_blank');
   } catch(e) {
     console.error(e);
@@ -828,12 +820,7 @@ async function submitBooking() {
   var msg = (document.getElementById('b-msg') || {}).value || '';
   if (!name || !email) { showToast('Please fill in your name and email'); return; }
   var subj = encodeURIComponent('[Belongix] Mentor Session Request - ' + selectedSession);
-  var body = encodeURIComponent('Name: '+name+'
-Email: '+email+'
-Session: '+selectedSession+'
-
-Message:
-'+msg);
+  var body = encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nSession: '+selectedSession+'\n\nMessage:\n'+msg);
   window.location.href = 'mailto:teambelongix@gmail.com?subject='+subj+'&body='+body;
   showToast('Session request sent! We will confirm within 24 hours.');
   closeBooking();
