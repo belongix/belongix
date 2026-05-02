@@ -1196,7 +1196,286 @@ function renderJobs(jobs) {
 </script>
 
 <script>
-var supaClient = window._bxSb || (window._bxSb = supabase.createClient('https://efhcfuaxgbzuqlmhlsxc.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY'));
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var supaClient = supabase.createClient(SB_URL, SB_KEY);
+var currentUser = null;
+
+// ── NAVIGATION ──
+function showPage(page, btn) {
+  document.querySelectorAll('.page-section').forEach(function(el){ el.classList.remove('active'); });
+  document.querySelectorAll('.sb-link').forEach(function(el){ el.classList.remove('active'); });
+  var sec = document.getElementById('page-' + page);
+  if (sec) sec.classList.add('active');
+  if (btn) btn.classList.add('active');
+  var titles = {overview:'Portfolio',jobs:'Jobs & Internships',upskill:'Upskilling Hub',salary:'Salary Insights',network:'Find a Mentor',profile:'My Profile',settings:'Settings',upgrade:'Upgrade Plan'};
+  var tb = document.getElementById('topbar-title');
+  if (tb) tb.textContent = titles[page] || 'Dashboard';
+  if (page === 'jobs') loadJobs();
+  if (page === 'network') setTimeout(loadDashMentors, 100);
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+// ── SIGN OUT ──
+async function signOut() {
+  await supaClient.auth.signOut();
+  window.location.href = 'index.html';
+}
+
+// ── LOAD USER DATA ──
+async function loadUserData() {
+  if (!currentUser) return;
+  var r = await supaClient.from('profiles').select('*').eq('id', currentUser.id).maybeSingle();
+  var p = r.data || {};
+  var name = p.full_name || currentUser.email.split('@')[0];
+  var initials = name.split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2) || 'U';
+
+  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||'';}
+  function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||'';}
+
+  st('sb-name', name);
+  st('sb-role', p.role || p.experience || 'Member');
+  st('settings-email', currentUser.email);
+  st('settings-score', p.career_score || 30);
+  st('sb-score', 'Score: ' + (p.career_score || 30));
+  st('settings-plan', p.plan || 'Free');
+
+  var avKey = 'bx_avatar_' + currentUser.id;
+  var avUrl = p.avatar_url || localStorage.getItem(avKey);
+  var sbAv = document.getElementById('sb-avatar');
+  if (sbAv) {
+    if (avUrl) { sbAv.style.backgroundImage='url('+avUrl+')'; sbAv.style.backgroundSize='cover'; sbAv.style.backgroundPosition='center'; sbAv.textContent=''; }
+    else { sbAv.textContent = initials; }
+  }
+
+  sv('pf-name', p.full_name); sv('pf-role', p.role); sv('pf-exp', p.experience);
+  sv('pf-city', p.city); sv('pf-skills', p.skills); sv('pf-about', p.bio||p.about);
+  sv('pf-usertype', p.user_type); sv('pf-field', p.field);
+  sv('pf-company', p.company); sv('pf-notice', p.notice_period);
+  sv('pf-phone', p.phone); sv('pf-address', p.address);
+
+  var sc = p.career_score || 30;
+  st('sb-score', 'Score: ' + sc);
+
+  populateProfileCard(p);
+  loadPortfolio(p);
+
+  var rKey = 'bx_resume_' + currentUser.id + '_name';
+  var rName = localStorage.getItem(rKey);
+  if (rName) {
+    var drop = document.getElementById('resume-drop'); if(drop) drop.style.display='none';
+    var done = document.getElementById('resume-done'); if(done) done.style.display='flex';
+    var nm = document.getElementById('res-name'); if(nm) nm.textContent=rName;
+  }
+}
+
+function populateProfileCard(p) {
+  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||'';}
+  var name = p.full_name || (currentUser && currentUser.email ? currentUser.email.split('@')[0] : 'User');
+  var init = name.substring(0,2).toUpperCase();
+  st('pav-txt', init); st('pcard-name', name);
+  st('pcard-role', p.role || 'Add your role'); st('pcard-co', p.company || '');
+  st('ps-exp', p.experience || '--'); st('ps-city', (p.city||'--').substring(0,9));
+  st('ps-score', p.career_score || 30);
+  st('pc-email', currentUser ? currentUser.email : '');
+  st('pc-city', p.city || '--'); st('pc-phone', p.phone || '--');
+  var flds = ['full_name','city','user_type','role','experience','skills','bio'];
+  var pct = Math.round(flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length/7*100);
+  st('ppct-val', pct + '%');
+  var bar = document.getElementById('ppct-fill'); if(bar) bar.style.width = pct + '%';
+  var tip = document.getElementById('ppct-tip');
+  if(tip) tip.textContent = pct>=100 ? 'Profile complete!' : (7-Math.round(pct*7/100)) + ' fields left';
+  var avKey = 'bx_avatar_' + (currentUser ? currentUser.id : 'x');
+  var avUrl = p.avatar_url || localStorage.getItem(avKey);
+  var pavEl = document.getElementById('pav-el');
+  if (pavEl && avUrl) {
+    pavEl.style.backgroundImage='url('+avUrl+')'; pavEl.style.backgroundSize='cover';
+    pavEl.style.backgroundPosition='center';
+    var txt = document.getElementById('pav-txt'); if(txt) txt.style.display='none';
+  }
+}
+
+function loadPortfolio(p) {
+  if (!p) return;
+  var name = p.full_name || (currentUser && currentUser.email ? currentUser.email.split('@')[0] : 'User');
+  function st(id,v){var el=document.getElementById(id);if(el)el.textContent=v||'';}
+  function sv(id,v){var el=document.getElementById(id);if(el&&el.value!==undefined)el.value=v||'';}
+  var sc = p.career_score || 30;
+  st('ov-name', name); st('ov-jobtitle', p.role || 'Add your role');
+  st('ov-co', p.company || ''); st('ov-loc', p.city || 'India');
+  st('ov-score-c', sc);
+  var lv = sc<40?'Getting Started':sc<70?'Building Momentum':sc<90?'Career Ready':'Top Performer';
+  st('ov-level', lv);
+  var ring = document.getElementById('ov-ring');
+  if (ring) { var c=119.38; ring.style.strokeDashoffset=c-(c*sc/100); }
+  var avKey = 'bx_avatar_' + (currentUser ? currentUser.id : 'x');
+  var avUrl = p.avatar_url || localStorage.getItem(avKey);
+  var av = document.getElementById('ov-avatar');
+  if (av) {
+    av.textContent = name.substring(0,2).toUpperCase();
+    if (avUrl) { av.style.backgroundImage='url('+avUrl+')'; av.style.backgroundSize='cover'; av.style.backgroundPosition='center'; av.textContent=''; }
+  }
+  var flds=['full_name','city','user_type','role','experience','skills','bio'];
+  var pct=Math.round(flds.filter(function(k){return p[k]&&String(p[k]).trim();}).length/7*100);
+  st('ov-pct', pct + '%');
+  var bioEl=document.getElementById('ov-bio');
+  if(bioEl){if(p.bio||p.about){bioEl.textContent=p.bio||p.about;bioEl.classList.remove('port-empty');}else{bioEl.textContent='No summary yet. Click Edit to add.';bioEl.classList.add('port-empty');}}
+  sv('bio-inp', p.bio||p.about);
+  var workEl=document.getElementById('ov-work');
+  if(workEl){if(p.role){workEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127970;</div><div><div class="wt">'+(p.role||'')+'</div><div class="wc">'+(p.company||'Not specified')+'</div><div class="wp">'+(p.experience||'')+(p.notice_period?' &bull; Notice: '+p.notice_period:'')+'</div></div></div>';}else{workEl.innerHTML='<div class="port-empty">No experience added yet.</div>';}}
+  sv('we-role',p.role);sv('we-company',p.company);sv('we-exp',p.experience);sv('we-notice',p.notice_period);
+  var sklEl=document.getElementById('ov-skills');
+  if(sklEl){if(p.skills){sklEl.innerHTML=p.skills.split(',').filter(function(s){return s.trim();}).map(function(s){return'<span class="sk-chip">'+s.trim()+'</span>';}).join('');}else{sklEl.innerHTML='<div class="port-empty">No skills added yet.</div>';}}
+  sv('skills-inp',p.skills);
+  var eduData=null;
+  try{eduData=JSON.parse(localStorage.getItem('bx_edu_'+(currentUser?currentUser.id:'x')));}catch(e){}
+  var eduEl=document.getElementById('ov-edu');
+  if(eduEl){if(eduData&&eduData.degree){eduEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127979;</div><div><div class="wt">'+eduData.degree+'</div><div class="wc">'+eduData.college+'</div><div class="wp">'+eduData.year+(eduData.grade?' &bull; '+eduData.grade:'')+'</div></div></div>';sv('edu-degree',eduData.degree);sv('edu-college',eduData.college);sv('edu-year',eduData.year);sv('edu-grade',eduData.grade);}else{eduEl.innerHTML='<div class="port-empty">No education added yet.</div>';}}
+  var tm={college_student:'College Student',fresher:'Fresh Graduate',junior_prof:'Junior Professional',mid_prof:'Mid-level',senior_prof:'Senior Professional',career_changer:'Career Changer'};
+  st('pref-role',p.role||'--');st('pref-exp',p.experience||'--');st('pref-loc',p.city||'--');
+  st('pref-notice',p.notice_period||'--');st('pref-field',p.field||'--');st('pref-type',tm[p.user_type]||p.user_type||'--');
+  sv('pref-inp-role',p.role);sv('pref-inp-loc',p.city);sv('pref-inp-exp',p.experience);
+  sv('pref-inp-notice',p.notice_period);sv('pref-inp-field',p.field);sv('pref-inp-type',p.user_type);
+  st('pd-name',p.full_name||'--');st('pd-email',currentUser?currentUser.email:'--');
+  st('pd-phone',p.phone||'--');st('pd-city',p.city||'--');st('pd-company',p.company||'--');st('pd-address',p.address||'--');
+  sv('pd-inp-phone',p.phone);sv('pd-inp-city',p.city);sv('pd-inp-company',p.company);sv('pd-inp-address',p.address);
+  if(p.linkedin){sv('li-inp',p.linkedin);var ll=document.getElementById('li-link');if(ll){ll.href=p.linkedin;ll.style.display='inline';}}
+  var rKey='bx_resume_'+(currentUser?currentUser.id:'x')+'_name';
+  var rName=localStorage.getItem(rKey);
+  if(rName){var drop=document.getElementById('resume-drop');var done=document.getElementById('resume-done');var nm=document.getElementById('res-name');if(drop)drop.style.display='none';if(done)done.style.display='flex';if(nm)nm.textContent=rName;}
+}
+
+function toggleEdit(id) {
+  var el=document.getElementById(id);if(!el)return;
+  el.style.display=el.style.display==='none'?'block':'none';
+}
+
+async function saveProfile() {
+  if(!currentUser){showToast('Please sign in');return;}
+  function gv(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
+  var updates={id:currentUser.id,email:currentUser.email,full_name:gv('pf-name')||null,city:gv('pf-city')||null,user_type:gv('pf-usertype')||null,role:gv('pf-role')||null,experience:gv('pf-exp')||null,skills:gv('pf-skills')||null,bio:gv('pf-about')||null,field:gv('pf-field')||null,company:gv('pf-company')||null,notice_period:gv('pf-notice')||null,phone:gv('pf-phone')||null,address:gv('pf-address')||null,updated_at:new Date().toISOString()};
+  var sf=['full_name','city','user_type','role','experience','skills','bio'];
+  updates.career_score=Math.min(30+sf.filter(function(k){return updates[k]&&updates[k].trim();}).length*10,95);
+  var btn=document.getElementById('prof-save-btn');
+  if(btn){btn.disabled=true;btn.textContent='Saving...';}
+  try{
+    var res=await supaClient.from('profiles').upsert([updates],{onConflict:'id'});
+    if(res.error)throw res.error;
+    showToast('Profile saved! Score: '+updates.career_score);
+    populateProfileCard(updates);loadPortfolio(updates);
+    var sbN=document.getElementById('sb-name');if(sbN&&updates.full_name)sbN.textContent=updates.full_name.split(' ')[0];
+    var sbR=document.getElementById('sb-role');if(sbR)sbR.textContent=updates.role||updates.experience||'Member';
+    var sbSc=document.getElementById('sb-score');if(sbSc)sbSc.textContent='Score: '+updates.career_score;
+  }catch(e){showToast('Save failed: '+e.message);}
+  finally{if(btn){btn.disabled=false;btn.textContent='Save Profile';}}
+}
+
+async function saveField(field) {
+  if(!currentUser)return;
+  var existingName=(document.getElementById('ov-name')||{}).textContent||currentUser.email.split('@')[0];
+  var updates={id:currentUser.id,email:currentUser.email,full_name:existingName||currentUser.email.split('@')[0]};
+  if(field==='bio'){var v=(document.getElementById('bio-inp')||{}).value||'';updates.bio=v;var bioEl=document.getElementById('ov-bio');if(bioEl){bioEl.textContent=v||'No summary yet.';bioEl.classList[v?'remove':'add']('port-empty');}toggleEdit('bio-edit');}
+  else if(field==='skills'){var v=(document.getElementById('skills-inp')||{}).value||'';updates.skills=v;var sklEl=document.getElementById('ov-skills');if(sklEl)sklEl.innerHTML=v?v.split(',').filter(function(s){return s.trim();}).map(function(s){return'<span class="sk-chip">'+s.trim()+'</span>';}).join(''):'<div class="port-empty">No skills.</div>';toggleEdit('skills-edit');}
+  else if(field==='work'){updates.role=(document.getElementById('we-role')||{}).value||null;updates.company=(document.getElementById('we-company')||{}).value||null;updates.experience=(document.getElementById('we-exp')||{}).value||null;updates.notice_period=(document.getElementById('we-notice')||{}).value||null;var workEl=document.getElementById('ov-work');if(workEl&&updates.role)workEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127970;</div><div><div class="wt">'+(updates.role||'')+'</div><div class="wc">'+(updates.company||'')+'</div><div class="wp">'+(updates.experience||'')+'</div></div></div>';toggleEdit('work-edit');}
+  else if(field==='prefs'){updates.role=(document.getElementById('pref-inp-role')||{}).value||null;updates.city=(document.getElementById('pref-inp-loc')||{}).value||null;updates.experience=(document.getElementById('pref-inp-exp')||{}).value||null;updates.notice_period=(document.getElementById('pref-inp-notice')||{}).value||null;updates.field=(document.getElementById('pref-inp-field')||{}).value||null;updates.user_type=(document.getElementById('pref-inp-type')||{}).value||null;toggleEdit('prefs-edit');}
+  else if(field==='personal'){updates.phone=(document.getElementById('pd-inp-phone')||{}).value||null;updates.city=(document.getElementById('pd-inp-city')||{}).value||null;updates.company=(document.getElementById('pd-inp-company')||{}).value||null;updates.address=(document.getElementById('pd-inp-address')||{}).value||null;toggleEdit('personal-edit');}
+  else if(field==='edu'){var edu={degree:(document.getElementById('edu-degree')||{}).value||'',college:(document.getElementById('edu-college')||{}).value||'',year:(document.getElementById('edu-year')||{}).value||'',grade:(document.getElementById('edu-grade')||{}).value||''};try{localStorage.setItem('bx_edu_'+currentUser.id,JSON.stringify(edu));}catch(e){}var eduEl=document.getElementById('ov-edu');if(eduEl&&edu.degree)eduEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127979;</div><div><div class="wt">'+edu.degree+'</div><div class="wc">'+edu.college+'</div><div class="wp">'+edu.year+(edu.grade?' &bull; '+edu.grade:'')+'</div></div></div>';toggleEdit('edu-edit');showToast('Education saved!');return;}
+  try{var res=await supaClient.from('profiles').upsert([updates],{onConflict:'id'});if(res.error)throw res.error;showToast('Saved!');loadUserData();}catch(e){showToast('Save failed: '+e.message);}
+}
+
+async function saveLinkedIn() {
+  var v=(document.getElementById('li-inp')||{}).value||'';
+  if(!v||!currentUser)return;
+  try{await supaClient.from('profiles').update({linkedin:v}).eq('id',currentUser.id);var ll=document.getElementById('li-link');if(ll){ll.href=v;ll.style.display='inline';}showToast('LinkedIn saved!');}
+  catch(e){showToast('Save failed: '+e.message);}
+}
+
+function uploadAvatar(input) {
+  var file=input.files[0];if(!file)return;
+  if(file.size>800*1024){showToast('Use image under 800KB');return;}
+  var img=new Image();var obj=URL.createObjectURL(file);
+  img.onload=async function(){
+    URL.revokeObjectURL(obj);
+    var MAX=150;var canvas=document.createElement('canvas');
+    var ratio=Math.min(MAX/img.width,MAX/img.height,1);
+    canvas.width=Math.round(img.width*ratio);canvas.height=Math.round(img.height*ratio);
+    canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+    var b64=canvas.toDataURL('image/jpeg',0.6);
+    function applyAv(id){var av=document.getElementById(id);if(!av)return;av.style.backgroundImage='url('+b64+')';av.style.backgroundSize='cover';av.style.backgroundPosition='center';av.textContent='';}
+    applyAv('ov-avatar');applyAv('pav-el');applyAv('sb-avatar');
+    var avKey='bx_avatar_'+(currentUser?currentUser.id:'x');
+    try{localStorage.setItem(avKey,b64);}catch(e){}
+    showToast('Saving photo...');
+    if(!currentUser)return;
+    try{await supaClient.from('profiles').update({avatar_url:b64}).eq('id',currentUser.id);showToast('Photo saved!');}catch(e){console.warn(e);}
+  };
+  img.src=obj;
+}
+
+function uploadResume(input) {
+  var file=input.files[0];if(!file)return;
+  if(file.size>5*1024*1024){showToast('Max 5MB');return;}
+  try{localStorage.setItem('bx_resume_'+currentUser.id+'_name',file.name);}catch(e){}
+  var drop=document.getElementById('resume-drop');var done=document.getElementById('resume-done');var nm=document.getElementById('res-name');
+  if(drop)drop.style.display='none';if(done)done.style.display='flex';if(nm)nm.textContent=file.name;
+  showToast('Resume saved!');
+}
+
+function shareProfile() {
+  var url='https://belongix.in';
+  if(navigator.clipboard){navigator.clipboard.writeText(url).then(function(){showToast('Profile link copied!');});}
+}
+
+async function resetPassword() {
+  if(!currentUser)return;
+  try{await supaClient.auth.resetPasswordForEmail(currentUser.email);showToast('Password reset email sent!');}
+  catch(e){showToast('Error: '+e.message);}
+}
+
+var RZP_KEY='rzp_live_SiouVVDYQu9HTt';
+function startPayment(plan) {
+  if(!currentUser){showToast('Please sign in');return;}
+  var am={monthly:49900,premium:99900};
+  try{
+    var nm=document.getElementById('sb-name');
+    var rzp=new Razorpay({key:RZP_KEY,amount:am[plan]||49900,currency:'INR',name:'Belongix',description:plan==='premium'?'Belongix Premium':'Belongix Pro',prefill:{name:nm?nm.textContent:'',email:currentUser.email||''},theme:{color:'#2D1B69'},handler:function(r){onPaySuccess(r,plan);}});
+    rzp.open();
+  }catch(e){showToast('Razorpay: '+e.message);}
+}
+async function onPaySuccess(r,plan) {
+  try{await supaClient.from('profiles').update({plan:plan==='premium'?'premium':'pro',payment_id:r.razorpay_payment_id}).eq('id',currentUser.id);}catch(e){}
+  var el=document.getElementById('paySuccess');if(el)el.style.display='block';
+  showToast('Welcome to Belongix '+(plan==='premium'?'Premium':'Pro')+'!');
+}
+
+async function loadDashMentors() {
+  var grid=document.getElementById('dash-mentors-grid');if(!grid)return;
+  try{
+    var r=await supaClient.from('mentors').select('*').limit(12);
+    var mentors=r.data||[];
+    if(!mentors.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px"><a href="mentors.html" style="background:var(--blue);color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">Browse Mentors</a></div>';return;}
+    var colors=['#2D1B69','#4C2FAA','#0EA5E9','#10B981','#F59E0B','#EF4444'];
+    grid.innerHTML=mentors.map(function(m,i){
+      var clr=colors[i%colors.length];var init=(m.name||'M').substring(0,2).toUpperCase();
+      return '<div class="mentor-card"><div class="mentor-top"><div class="mentor-av" style="background:'+clr+'">'+init+'</div><div class="mentor-info"><div class="mentor-name">'+(m.name||'Mentor')+'</div><div class="mentor-role">'+(m.role||'Professional')+'</div><div class="mentor-company">'+(m.company||'')+'</div></div></div><button class="mentor-book" onclick="window.open(\'mentors.html\',\'_blank\')">Book Session</button></div>';
+    }).join('');
+  }catch(e){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px"><a href="mentors.html" style="background:#2D1B69;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">Browse All Mentors</a></div>';}
+}
+
+function dashFilterMentors() {
+  var q=((document.getElementById('dash-mentor-search')||{}).value||'');
+  document.querySelectorAll('.mentor-card').forEach(function(c){c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'flex':'none';});
+}
+
+
 async function init() {
   var res = await supaClient.auth.getSession();
   if (!res.data.session) { window.location.href = 'index.html'; return; }
