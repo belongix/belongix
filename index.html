@@ -7,332 +7,352 @@
 <meta name="description" content="Jobs, salary insights, AI career guidance, upskilling and mentors — everything your career needs, in one place."/>
 <link rel="manifest" href="manifest.json"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;450;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" href="icons/icon-32.png"/>
 <style>
 :root{
-  --blue:#1447E6;--blue-dark:#0f3bc4;--blue-mid:#3B82F6;--blue-light:#EEF3FF;
-  --sky:#0EA5E9;--teal:#06B6D4;
-  --ink:#0A1628;--ink2:#1E293B;--muted:#64748B;--subtle:#94A3B8;
-  --bg:#FFFFFF;--off:#FFFFFF;--off2:#F8FAFC;
-  --border:#E2E8F0;--border2:#CBD5E1;
-  --green:#22C55E;--amber:#F59E0B;--red:#EF4444;
-  --ff:'Figtree',sans-serif;
-  --ffb:'Plus Jakarta Sans',sans-serif;
-  --r:16px;--r2:12px;--r3:24px;
-  --shadow:0 1px 3px rgba(0,0,0,.08),0 4px 16px rgba(0,0,0,.06);
-  --shadow-lg:0 8px 32px rgba(0,0,0,.12),0 2px 8px rgba(0,0,0,.06);
-  --shadow-xl:0 20px 60px rgba(0,0,0,.15);
+  --brand:#2D1B69;--brand2:#4C2FAA;--brand3:#6B48CC;
+  --accent:#FF5C35;--accent2:#FF7A59;
+  --sky:#06B6D4;--green:#10B981;--amber:#F59E0B;--red:#EF4444;
+  --ink:#0D0D1A;--ink2:#1A1A2E;--muted:#5A5A7A;--subtle:#8B8BA8;
+  --bg:#FFFFFF;--off:#F7F7FC;--off2:#EFEFF8;
+  --border:#E4E4F0;--border2:#D0D0E8;
+  --ff:'Sora',sans-serif;
+  --ffb:'DM Sans',sans-serif;
+  --r:14px;--r2:10px;--r3:22px;
+  --shadow:0 1px 4px rgba(45,27,105,.07),0 4px 20px rgba(45,27,105,.05);
+  --shadow-lg:0 8px 40px rgba(45,27,105,.12),0 2px 8px rgba(45,27,105,.06);
+  --shadow-xl:0 24px 64px rgba(45,27,105,.18);
   --max:1200px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
 body{font-family:var(--ffb);color:var(--ink);background:var(--bg);overflow-x:hidden}
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:900;height:62px;display:flex;align-items:center;padding:0 5%;background:rgba(255,255,255,.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:.3s}
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;padding:0 5%;background:rgba(255,255,255,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);transition:.3s}
 .nav-in{max-width:var(--max);width:100%;margin:0 auto;display:flex;align-items:center;gap:0}
-.nlogo{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--ink);text-decoration:none;letter-spacing:-.5px;margin-right:40px;flex-shrink:0}
-.nlogo span{color:var(--blue)}
+.nlogo{font-family:var(--ff);font-size:21px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.4px;margin-right:36px;flex-shrink:0}
+.nlogo span{color:var(--accent)}
 .nlinks{display:flex;align-items:center;gap:2px;flex:1;list-style:none}
 .nlinks li{position:relative}
-.nav-link{padding:7px 14px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;text-decoration:none;background:none;border:none;font-family:var(--ffb);display:flex;align-items:center;gap:4px;transition:.15s}
-.nav-link:hover{color:var(--ink);background:var(--off)}
+.nav-link{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;text-decoration:none;background:none;border:none;font-family:var(--ffb);display:flex;align-items:center;gap:4px;transition:.15s}
+.nav-link:hover{color:var(--brand);background:var(--off)}
 .nav-link svg{width:11px;height:11px;transition:transform .2s}
 .nav-link.dd-open svg{transform:rotate(180deg)}
 /* Dropdowns */
-.dd-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);padding:8px;min-width:240px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:200}
+.dd-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);padding:8px;min-width:250px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:200}
 .dd-panel.open{opacity:1;pointer-events:all;transform:translateY(0)}
-.dd-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;text-decoration:none;transition:.15s;color:var(--ink2)}
+.dd-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;text-decoration:none;transition:.15s;color:var(--ink2)}
 .dd-item:hover{background:var(--off)}
-.dd-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.dd-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
 .dd-text strong{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:1px}
 .dd-text span{font-size:11.5px;color:var(--muted)}
 /* Nav right */
 .nbtns{display:flex;align-items:center;gap:8px;margin-left:auto}
 .nghost{padding:7px 16px;border-radius:8px;border:1.5px solid var(--border2);background:transparent;color:var(--ink2);font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.15s}
-.nghost:hover{border-color:var(--blue);color:var(--blue)}
-.nfill{padding:8px 18px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s}
-.nfill:hover{background:var(--blue-dark)}
+.nghost:hover{border-color:var(--brand);color:var(--brand)}
+.nfill{padding:8px 20px;border-radius:8px;border:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s}
+.nfill:hover{background:var(--brand2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,27,105,.3)}
 /* User nav */
 .nav-user-wrap{position:relative;display:none;margin-left:auto}
 .nav-user-btn{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:24px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:var(--ffb);transition:.15s;font-size:13px;font-weight:500}
-.nav-user-btn:hover{border-color:#C7D7FD;background:var(--blue-light)}
-.nav-av{width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-user-btn:hover{border-color:var(--brand3);background:var(--off)}
+.nav-av{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .nav-nm{font-size:13px;font-weight:500;color:var(--ink)}
 .nav-user-btn svg{width:11px;height:11px;color:var(--subtle);transition:transform .2s}
 .nav-user-btn.dd-open svg{transform:rotate(180deg)}
-.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
+.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
 .user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
-.ud-header{padding:10px 12px 10px;border-bottom:1px solid var(--off2);margin-bottom:4px}
+.ud-header{padding:10px 12px;border-bottom:1px solid var(--off2);margin-bottom:4px}
 .ud-name{font-size:13px;font-weight:700;color:var(--ink)}
 .ud-email{font-size:11px;color:var(--subtle);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--ink2);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left}
-.ud-item:hover{background:var(--off);color:var(--blue)}
+.ud-item:hover{background:var(--off);color:var(--brand)}
 .ud-item svg{width:14px;height:14px;flex-shrink:0;color:var(--subtle)}
 .ud-divider{height:1px;background:var(--off2);margin:4px 0}
+/* Mobile hamburger */
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border-radius:8px;border:none;background:none;margin-left:auto}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;transition:.3s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:#fff;z-index:800;padding:24px 5%;overflow-y:auto}
+.mobile-menu.open{display:block}
+.mm-link{display:block;padding:14px 0;font-size:16px;font-weight:500;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)}
+.mm-link:last-child{border-bottom:none}
+.mm-btns{display:flex;flex-direction:column;gap:10px;margin-top:24px}
 
-/* HERO */
-.hero{min-height:100vh;padding:120px 5% 80px;position:relative;overflow:hidden;background:#ffffff;display:flex;align-items:center}
+/* ── HERO ── */
+.hero{min-height:100vh;padding:100px 5% 80px;position:relative;overflow:hidden;background:#fff;display:flex;align-items:center}
+/* Mesh background */
+.hero-mesh{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.18}
+.hero-orb-1{width:600px;height:600px;background:radial-gradient(circle,#6B48CC,transparent);top:-100px;right:-100px}
+.hero-orb-2{width:400px;height:400px;background:radial-gradient(circle,#FF5C35,transparent);bottom:-80px;left:10%}
+.hero-orb-3{width:300px;height:300px;background:radial-gradient(circle,#06B6D4,transparent);top:40%;left:40%}
+.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:48px 48px;opacity:.3}
 
-
-
-
-
-.hero-in{max-width:1200px;margin:0 auto;width:100%;display:block;position:relative;z-index:2;text-align:left}
-.hero-badge{display:inline-flex;align-items:center;gap:7px;background:var(--blue-light);border:1px solid #C7D7FD;border-radius:100px;padding:5px 14px 5px 8px;font-size:12px;font-weight:700;color:var(--blue);margin-bottom:28px;letter-spacing:.2px}
+.hero-in{max-width:var(--max);margin:0 auto;width:100%;display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center;position:relative;z-index:2}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(45,27,105,.07),rgba(107,72,204,.07));border:1px solid rgba(45,27,105,.15);border-radius:100px;padding:5px 16px 5px 8px;font-size:12px;font-weight:600;color:var(--brand);margin-bottom:26px;letter-spacing:.2px}
 .badge-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
-h1{font-family:var(--ff);font-size:clamp(38px,4.5vw,62px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink)}
-h1 .hl{color:var(--blue);position:relative;display:inline-block}
-h1 .hl::after{content:'';position:absolute;bottom:-4px;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--blue),var(--sky));border-radius:2px;opacity:.4}
-.hero-desc{font-size:17px;color:var(--muted);line-height:1.75;margin-top:22px;max-width:520px;font-weight:400}
-.hero-cta{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;align-items:center}
-.btn-primary{padding:14px 28px;border-radius:10px;background:var(--blue);color:#fff;border:none;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
-.btn-primary:hover{background:var(--blue-dark);transform:translateY(-1px);box-shadow:0 8px 24px rgba(20,71,230,.3)}
-.btn-ghost{padding:14px 24px;border-radius:10px;background:transparent;color:var(--ink2);border:1.5px solid var(--border2);font-size:15px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
-.btn-ghost:hover{border-color:var(--blue);color:var(--blue)}
-.hero-note{font-size:12.5px;color:var(--subtle);margin-top:14px;display:flex;align-items:center;gap:6px}
-.hero-avatars{display:flex}
-.hero-av{width:24px;height:24px;border-radius:50%;border:2px solid #fff;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;margin-left:-7px}
-.hero-av:first-child{margin-left:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+h1{font-family:var(--ff);font-size:clamp(36px,4.2vw,58px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink)}
+h1 .hl{position:relative;display:inline-block;color:var(--brand)}
+h1 .hl::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent),var(--brand3));border-radius:2px}
+h1 .accent-word{color:var(--accent)}
+.hero-desc{font-size:16.5px;color:var(--muted);line-height:1.8;margin-top:20px;max-width:500px}
+.hero-cta{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;align-items:center}
+.btn-primary{padding:13px 26px;border-radius:10px;background:var(--brand);color:#fff;border:none;font-size:14.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:var(--brand2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,27,105,.3)}
+.btn-ghost{padding:13px 22px;border-radius:10px;background:transparent;color:var(--ink2);border:1.5px solid var(--border2);font-size:14.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
+.hero-note{font-size:12px;color:var(--subtle);margin-top:14px}
 /* Hero stats */
-.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;background:var(--off);border:1px solid var(--border);border-radius:14px;padding:16px 20px;margin-top:36px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--off);border:1px solid var(--border);border-radius:16px;padding:14px 20px;margin-top:32px}
 .hstat{text-align:center;padding:8px 0}
 .hstat:not(:last-child){border-right:1px solid var(--border)}
-.hstat-n{font-family:var(--ff);font-size:24px;font-weight:800;color:var(--blue);letter-spacing:-1px}
-.hstat-l{font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:500}
-/* Hero right card */
-.hero-card{background:#fff;border:1px solid var(--border);border-radius:20px;padding:28px;box-shadow:var(--shadow-xl);position:relative}
-.hero-card::before{content:'';position:absolute;top:-1px;left:24px;right:24px;height:3px;background:linear-gradient(90deg,var(--blue),var(--sky));border-radius:0 0 3px 3px}
+.hstat-n{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--brand);letter-spacing:-0.5px}
+.hstat-l{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500}
+
+/* Hero signup card */
+.hero-card{background:#fff;border:1px solid var(--border);border-radius:22px;padding:28px;box-shadow:var(--shadow-xl);position:relative}
+.hero-card::before{content:'';position:absolute;top:0;left:20px;right:20px;height:3px;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:0 0 3px 3px}
 .hc-title{font-family:var(--ff);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:18px}
-.hc-form-row{margin-bottom:14px}
-.hc-label{font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
-.hc-input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s;background:#FAFCFF}
-.hc-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(20,71,230,.08)}
-.hc-btn{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);margin-top:4px;transition:.2s}
-.hc-btn:hover{background:var(--blue-dark)}
+.hc-form-row{margin-bottom:12px}
+.hc-label{font-size:11.5px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.hc-input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s;background:#FAFAFE}
+.hc-input:focus{border-color:var(--brand3);box-shadow:0 0 0 3px rgba(107,72,204,.1)}
+.hc-btn{width:100%;padding:12px;background:var(--brand);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);margin-top:4px;transition:.2s}
+.hc-btn:hover{background:var(--brand2)}
 .hc-or{text-align:center;font-size:12px;color:var(--subtle);margin:14px 0;position:relative}
 .hc-or::before,.hc-or::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
 .hc-or::before{left:0}.hc-or::after{right:0}
 .hc-google{width:100%;padding:10px;background:#fff;border:1.5px solid var(--border);border-radius:9px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;color:var(--ink2)}
 .hc-google:hover{border-color:var(--border2);background:var(--off)}
-.hc-ok{display:none;background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#15803D;font-weight:600;margin-top:10px}
+.hc-ok{display:none;background:#ECFDF5;border:1px solid #86EFAC;border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#15803D;font-weight:600;margin-top:10px}
 .hc-fine{font-size:11px;color:var(--subtle);text-align:center;margin-top:12px}
-.hc-trust{display:flex;align-items:center;gap:8px;margin-top:16px;padding-top:14px;border-top:1px solid var(--off2)}
-.hc-trust-av{display:flex}
-.hc-av{width:22px;height:22px;border-radius:50%;background:var(--blue-light);border:2px solid #fff;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:var(--blue);margin-left:-6px}
-.hc-av:first-child{margin-left:0}
-.hc-trust-txt{font-size:11.5px;color:var(--muted)}
-.hc-trust-txt strong{color:var(--ink);font-weight:600}
+.m-tabs{display:flex;gap:2px;background:var(--off);border-radius:10px;padding:3px;margin-bottom:20px}
+.m-tab{flex:1;padding:8px;text-align:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:.15s;border:none;background:none;font-family:var(--ffb)}
+.m-tab.active{background:#fff;color:var(--brand);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.08)}
 
-/* LOGOS */
-
-
-
-
-
-
-
-/* SECTION */
-.sec{padding:80px 5%}
+/* ── SECTIONS ── */
+.sec{padding:88px 5%}
 .sec-in{max-width:var(--max);margin:0 auto}
-.sec-center{text-align:center;max-width:620px;margin:0 auto 56px}
-.sec-tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--blue);background:var(--blue-light);border:1px solid #C7D7FD;border-radius:100px;padding:4px 14px;margin-bottom:14px;letter-spacing:.3px;text-transform:uppercase}
-h2{font-family:var(--ff);font-size:clamp(28px,3.5vw,44px);font-weight:800;color:var(--ink);line-height:1.1;letter-spacing:-1px}
-h2 span{color:var(--blue)}
-.sec-sub{font-size:17px;color:var(--muted);line-height:1.7;margin-top:14px}
-.off-bg{background:#ffffff}
+.sec-center{text-align:center;max-width:600px;margin:0 auto 52px}
+.sec-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--brand);background:linear-gradient(135deg,rgba(45,27,105,.06),rgba(107,72,204,.06));border:1px solid rgba(45,27,105,.12);border-radius:100px;padding:4px 14px;margin-bottom:14px;letter-spacing:.4px;text-transform:uppercase}
+h2{font-family:var(--ff);font-size:clamp(26px,3.2vw,42px);font-weight:800;color:var(--ink);line-height:1.1;letter-spacing:-1px}
+h2 span{color:var(--brand)}
+h2 .accent{color:var(--accent)}
+.sec-sub{font-size:16.5px;color:var(--muted);line-height:1.75;margin-top:14px}
 
-/* WHO GRID */
-.who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.who-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px 20px;transition:.2s;cursor:pointer;position:relative;overflow:hidden}
-.who-card::after{content:'';position:absolute;inset:0;border-radius:16px;border:2px solid var(--blue);opacity:0;transition:.2s}
-.who-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
-.who-card:hover::after{opacity:1}
-.who-icon{font-size:32px;margin-bottom:14px;display:block}
+/* ── WHO GRID ── */
+.who-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.who-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:26px 20px;transition:.25s;cursor:pointer;position:relative;overflow:hidden}
+.who-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:18px 18px 0 0;opacity:0;transition:.25s}
+.who-card:nth-child(1)::before{background:linear-gradient(90deg,var(--brand),var(--brand3))}
+.who-card:nth-child(2)::before{background:linear-gradient(90deg,var(--green),#34D399)}
+.who-card:nth-child(3)::before{background:linear-gradient(90deg,var(--sky),#38BDF8)}
+.who-card:nth-child(4)::before{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.who-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.who-card:hover::before{opacity:1}
+.who-icon{font-size:30px;margin-bottom:14px;display:block}
 .who-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:8px}
 .who-desc{font-size:13px;color:var(--muted);line-height:1.65}
-.who-tag{display:inline-flex;margin-top:14px;font-size:11px;font-weight:600;color:var(--blue);background:var(--blue-light);border-radius:20px;padding:3px 10px}
+.who-tag{display:inline-flex;margin-top:14px;font-size:11px;font-weight:600;color:var(--brand);background:rgba(45,27,105,.06);border-radius:20px;padding:3px 10px}
 
-/* FEATURES */
-.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.feat-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;transition:.2s;cursor:pointer;text-decoration:none;display:block}
-.feat-card:hover{border-color:var(--blue);box-shadow:var(--shadow-lg);transform:translateY(-2px)}
-.feat-num{font-size:11px;font-weight:700;color:var(--subtle);letter-spacing:.5px;margin-bottom:14px;font-family:var(--ff)}
-.feat-icon-wrap{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
+/* ── FEATURES ── */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.feat-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:26px;transition:.25s;cursor:pointer;text-decoration:none;display:block;position:relative;overflow:hidden}
+.feat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--brand),var(--accent));opacity:0;transition:.25s}
+.feat-card:hover{border-color:transparent;box-shadow:var(--shadow-lg);transform:translateY(-3px)}
+.feat-card:hover::after{opacity:1}
+.feat-num{font-size:10.5px;font-weight:700;color:var(--subtle);letter-spacing:.8px;margin-bottom:14px;font-family:var(--ff)}
+.feat-icon-wrap{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px}
 .feat-title{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px}
 .feat-desc{font-size:13px;color:var(--muted);line-height:1.65}
-.feat-link{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:600;color:var(--blue);margin-top:14px}
+.feat-link{display:inline-flex;align-items:center;gap:4px;font-size:12.5px;font-weight:600;color:var(--brand);margin-top:14px}
 .feat-link svg{width:13px;height:13px;transition:transform .2s}
 .feat-card:hover .feat-link svg{transform:translateX(3px)}
 
-/* SALARY SECTION */
-
+/* ── SALARY SECTION ── */
+.salary-wrap{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
 .salary-left .sec-tag{margin-bottom:14px}
-
-
-
+.salary-table{background:#fff;border:1px solid var(--border);border-radius:18px;overflow:hidden}
+.sal-head{display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:12px 20px;background:var(--off);border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.5px}
+.sal-row{display:grid;grid-template-columns:1fr auto auto;gap:12px;padding:14px 20px;align-items:center;border-bottom:1px solid var(--border);transition:.15s}
 .sal-row:last-child{border-bottom:none}
 .sal-row:hover{background:var(--off)}
+.sal-role{font-size:13.5px;font-weight:600;color:var(--ink)}
+.sal-exp{font-size:12px;color:var(--muted)}
+.sal-range{font-size:13.5px;font-weight:700;color:var(--brand);text-align:right;white-space:nowrap}
+.sal-bar-wrap{width:90px;height:5px;background:var(--off2);border-radius:6px;overflow:hidden}
+.sal-bar{height:100%;background:linear-gradient(90deg,var(--brand),var(--brand3));border-radius:6px}
+.salary-note{margin-top:16px;font-size:12.5px;color:var(--subtle);font-style:italic}
 
-
-.sal-bar-wrap{width:100px;height:6px;background:var(--off2);border-radius:6px;overflow:hidden}
-
-
-/* SCORE SECTION */
-.score-wrap{background:#fff;border:1px solid var(--border);border-radius:20px;padding:36px;display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:center}
+/* ── CAREER SCORE ── */
+.score-wrap{background:#fff;border:1px solid var(--border);border-radius:22px;padding:36px;display:grid;grid-template-columns:200px 1fr;gap:40px;align-items:center}
 .score-ring-wrap{position:relative;width:180px;height:180px;flex-shrink:0}
 .score-ring-wrap svg{transform:rotate(-90deg)}
 .score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.score-num{font-family:var(--ff);font-size:46px;font-weight:800;color:var(--blue);line-height:1}
+.score-num{font-family:var(--ff);font-size:44px;font-weight:800;color:var(--brand);line-height:1}
 .score-label{font-size:12px;color:var(--muted);font-weight:500;margin-top:4px}
-.score-steps{display:flex;flex-direction:column;gap:12px}
-.score-step{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--off);border-radius:10px}
-.step-dot{width:22px;height:22px;border-radius:50%;background:var(--blue-light);color:var(--blue);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;border:2px solid #C7D7FD}
-.step-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.score-steps{display:flex;flex-direction:column;gap:10px}
+.score-step{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--off);border-radius:12px}
+.step-dot{width:24px;height:24px;border-radius:50%;background:rgba(45,27,105,.1);color:var(--brand);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-dot.done{background:var(--green);color:#fff}
 .step-name{flex:1;font-size:13px;font-weight:500;color:var(--ink2)}
-.step-pts{font-size:12px;font-weight:700;color:var(--blue)}
+.step-pts{font-size:12px;font-weight:700;color:var(--brand)}
 
-/* TESTIMONIALS */
+/* ── COURSES ── */
+.marquee-wrap{overflow:hidden;position:relative;margin-bottom:40px}
+.marquee-wrap::before,.marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+.marquee-wrap::before{left:0;background:linear-gradient(90deg,#fff,transparent)}
+.marquee-wrap::after{right:0;background:linear-gradient(-90deg,#fff,transparent)}
+.marquee-track{overflow:hidden}
+.marquee-inner{display:flex;gap:14px;animation:marquee 28s linear infinite;width:max-content}
+.marquee-inner:hover{animation-play-state:paused}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.mlogo{background:#fff;border:1px solid var(--border);border-radius:14px;padding:16px 22px;text-align:center;flex-shrink:0;width:140px;transition:.2s;cursor:pointer}
+.mlogo:hover{border-color:var(--brand3);transform:translateY(-2px);box-shadow:0 4px 16px rgba(45,27,105,.1)}
+.ml-ic{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.ml-name{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.ml-tag{font-size:11px;color:var(--muted);font-weight:500}
+/* Course tracks */
+.courses-tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ct-card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:6px;position:relative;transition:.2s;cursor:pointer;text-decoration:none}
+.ct-card:hover{border-color:var(--brand3);box-shadow:0 4px 20px rgba(45,27,105,.1);transform:translateY(-2px)}
+.ct-icon{font-size:26px}
+.ct-title{font-family:var(--ff);font-size:14.5px;font-weight:700;color:var(--ink)}
+.ct-sub{font-size:12px;color:var(--muted)}
+.ct-badge{position:absolute;top:14px;right:14px;font-size:10px;font-weight:700;background:rgba(45,27,105,.07);color:var(--brand);border-radius:20px;padding:2px 9px}
+.ct-badge.hot{background:#FEF2F2;color:#991B1B}
 
-
-.testi-card:hover{border-color:var(--blue-light);box-shadow:var(--shadow-lg)}
-
-
-
-
-
-
-
-
-.testi-highlight 
-.testi-highlight 
-.testi-highlight 
-.testi-highlight 
-
-/* MENTOR STRIP */
-.mentor-strip{background:linear-gradient(135deg,#0A1628 0%,#1E3A8A 50%,#1447E6 100%) !important;border-radius:24px;padding:52px;position:relative;overflow:hidden;text-align:center;border:none;opacity:1 !important;transform:none !important}
-.mentor-strip::before{content:'';position:absolute;top:-80px;right:-80px;width:400px;height:400px;border-radius:50%;background:transparent}
-
-.mentor-strip h2{color:#ffffff !important;letter-spacing:-1px;font-size:clamp(26px,3vw,40px);position:relative;z-index:2}
-.mentor-strip p{color:rgba(255,255,255,.85) !important;font-size:15px;line-height:1.7;max-width:520px;margin:14px auto 36px;position:relative;z-index:2}
+/* ── MENTOR STRIP ── */
+.mentor-strip{background:linear-gradient(135deg,#120826 0%,#2D1B69 55%,#4C2FAA 100%);border-radius:26px;padding:60px 48px;text-align:center;position:relative;overflow:hidden}
+.mentor-strip::before{content:'';position:absolute;top:-120px;right:-80px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(255,92,53,.15),transparent);pointer-events:none}
+.mentor-strip::after{content:'';position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(6,182,212,.12),transparent);pointer-events:none}
+.mentor-strip h2{color:#fff;letter-spacing:-1px;font-size:clamp(26px,3vw,42px);position:relative;z-index:2}
+.mentor-strip p{color:rgba(255,255,255,.82);font-size:15.5px;line-height:1.75;max-width:520px;margin:14px auto 32px;position:relative;z-index:2}
 .mentor-perks{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:36px;position:relative;z-index:3}
-.mentor-perk{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:6px 16px;font-size:12.5px;color:rgba(255,255,255,.85);font-weight:500;display:flex;align-items:center;gap:5px}
+.mentor-perk{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.88);font-weight:500;display:flex;align-items:center;gap:5px}
 .mentor-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
-.btn-white{padding:13px 26px;border-radius:10px;background:#fff;color:var(--blue);border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s}
-.btn-white:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.2)}
-.btn-white-ghost{padding:13px 26px;border-radius:10px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,.3);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s}
-.btn-white-ghost:hover{border-color:rgba(255,255,255,.7);background:rgba(255,255,255,.08)}
+.btn-white{padding:13px 26px;border-radius:10px;background:#fff;color:var(--brand);border:none;font-size:14.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s;text-decoration:none;display:inline-block}
+.btn-white:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.25)}
+.btn-white-ghost{padding:13px 26px;border-radius:10px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,.28);font-size:14.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;text-decoration:none;display:inline-block}
+.btn-white-ghost:hover{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.08)}
 
-/* PRICING */
-
-
-.price-card.pop{border-color:var(--blue);box-shadow:0 0 0 4px rgba(20,71,230,.06)}
-
-
-
-.price-amt sup{font-size:20px;vertical-align:top;margin-top:8px;font-weight:700}
-
-
-
-
-
+/* ── PRICING ── */
+.pricing-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;max-width:680px;margin:0 auto}
+.price-card{background:#fff;border:1px solid var(--border);border-radius:22px;padding:30px;position:relative;transition:.2s}
+.price-card.pop{border-color:var(--brand3);box-shadow:0 0 0 4px rgba(107,72,204,.08)}
+.price-badge{display:inline-block;background:linear-gradient(135deg,var(--brand),var(--brand3));color:#fff;font-size:11px;font-weight:700;padding:3px 12px;border-radius:20px;margin-bottom:16px}
+.price-name{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.price-amt{font-family:var(--ff);font-size:38px;font-weight:800;color:var(--ink);line-height:1;margin-bottom:4px}
+.price-amt sup{font-size:18px;vertical-align:top;margin-top:8px}
+.price-period{font-size:13px;color:var(--muted);margin-bottom:22px}
+.price-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.price-features li{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--ink2)}
+.pf-check{width:20px;height:20px;border-radius:50%;background:rgba(16,185,129,.1);color:var(--green);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700}
 .pf-check.no{background:var(--off2);color:var(--subtle)}
+.price-btn{width:100%;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;border:1.5px solid var(--border2);background:#fff;color:var(--ink2)}
+.price-card.pop .price-btn{background:var(--brand);color:#fff;border:none}
+.price-card.pop .price-btn:hover{background:var(--brand2)}
+.price-btn:hover{border-color:var(--brand);color:var(--brand)}
 
-.price-card.pop 
-.price-card.pop .price-btn:hover{background:var(--blue-dark)}
-.price-btn:hover{border-color:var(--blue);color:var(--blue)}
-
-/* FAQ */
+/* ── FAQ ── */
 .faq-wrap{max-width:720px;margin:0 auto}
-.fi{border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;transition:.2s}
-.fi.open{border-color:var(--blue)}
-.fiq{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;cursor:pointer;font-size:15px;font-weight:600;color:var(--ink);gap:16px}
-.fi-ic{width:24px;height:24px;border-radius:50%;background:var(--off2);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:400;color:var(--muted);flex-shrink:0;transition:.2s}
-.fi.open .fi-ic{background:var(--blue);color:#fff;transform:rotate(45deg)}
-.fia{display:none;padding:0 20px 18px;font-size:14px;color:var(--muted);line-height:1.7}
+.fi{border:1px solid var(--border);border-radius:14px;margin-bottom:10px;overflow:hidden;transition:.2s}
+.fi.open{border-color:var(--brand3);box-shadow:0 4px 16px rgba(107,72,204,.08)}
+.fiq{display:flex;justify-content:space-between;align-items:center;padding:18px 22px;cursor:pointer;font-size:14.5px;font-weight:600;color:var(--ink);gap:16px;font-family:var(--ff)}
+.fi-ic{width:24px;height:24px;border-radius:50%;background:var(--off2);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted);flex-shrink:0;transition:.25s;font-weight:400}
+.fi.open .fi-ic{background:var(--brand);color:#fff;transform:rotate(45deg)}
+.fia{display:none;padding:0 22px 18px;font-size:14px;color:var(--muted);line-height:1.75}
 .fi.open .fia{display:block}
 
-/* CTA */
-.cta-sec{background:linear-gradient(160deg,#0A1628 0%,#1E3A8A 60%,var(--blue) 100%);padding:96px 5%;text-align:center;position:relative;overflow:hidden}
-.cta-sec::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background-image:radial-gradient(circle at 20% 80%,rgba(14,165,233,.15) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(20,71,230,.2) 0%,transparent 50%)}
-.cta-sec h2{color:#fff;position:relative;z-index:1;max-width:600px;margin:0 auto 16px}
-.cta-sec p{color:rgba(255,255,255,.7);font-size:16px;max-width:480px;margin:0 auto 40px;position:relative;z-index:1}
+/* ── CTA ── */
+.cta-sec{background:linear-gradient(160deg,#120826 0%,#2D1B69 55%,#4C2FAA 100%);padding:96px 5%;text-align:center;position:relative;overflow:hidden}
+.cta-sec::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background-image:radial-gradient(circle at 20% 80%,rgba(6,182,212,.12) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(255,92,53,.15) 0%,transparent 50%)}
+.cta-sec h2{color:#fff;position:relative;z-index:1;max-width:580px;margin:0 auto 16px}
+.cta-sec p{color:rgba(255,255,255,.72);font-size:16px;max-width:480px;margin:0 auto 40px;position:relative;z-index:1}
 .cta-form{display:flex;gap:10px;max-width:440px;margin:0 auto;position:relative;z-index:1}
 .c-inp{flex:1;padding:14px 18px;border-radius:10px;border:none;font-size:14px;font-family:var(--ffb);outline:none;color:var(--ink)}
-.c-btn{padding:14px 24px;background:var(--green);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);white-space:nowrap;transition:.2s}
-.c-btn:hover{background:#16a34a;transform:translateY(-1px)}
+.c-btn{padding:14px 24px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);white-space:nowrap;transition:.2s}
+.c-btn:hover{background:var(--accent2);transform:translateY(-1px)}
 .c-ok{display:none;color:#86EFAC;font-size:14px;font-weight:600;margin-top:14px;position:relative;z-index:1}
-.c-fine{font-size:12px;color:rgba(255,255,255,.4);margin-top:14px;position:relative;z-index:1}
+.c-fine{font-size:12px;color:rgba(255,255,255,.38);margin-top:14px;position:relative;z-index:1}
 .trust-row{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:36px;flex-wrap:wrap;position:relative;z-index:1}
 .trust-item{display:flex;align-items:center;gap:6px;font-size:12.5px;color:rgba(255,255,255,.5);font-weight:500}
-.trust-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.2)}
+.trust-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.2)}
 
-/* FOOTER */
-footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,255,255,.06)}
+/* ── FOOTER ── */
+footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,255,255,.05)}
 .footer-g{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:2.2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
-.footer-brand p{font-size:13px;color:rgba(255,255,255,.4);line-height:1.7;margin-top:14px;max-width:280px}
-.footer-logo{font-family:var(--ff);font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px}
-.footer-logo span{color:var(--sky)}
-.footer-col h4{font-size:12px;font-weight:700;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:16px}
-.footer-col a{display:block;font-size:13.5px;color:rgba(255,255,255,.45);text-decoration:none;margin-bottom:10px;transition:.15s}
+.footer-brand p{font-size:13px;color:rgba(255,255,255,.38);line-height:1.75;margin-top:14px;max-width:280px}
+.footer-logo{font-family:var(--ff);font-size:21px;font-weight:800;color:#fff;letter-spacing:-.4px}
+.footer-logo span{color:var(--accent2)}
+.footer-col h4{font-size:11.5px;font-weight:700;color:rgba(255,255,255,.42);text-transform:uppercase;letter-spacing:.7px;margin-bottom:16px}
+.footer-col a{display:block;font-size:13.5px;color:rgba(255,255,255,.42);text-decoration:none;margin-bottom:10px;transition:.15s}
 .footer-col a:hover{color:#fff}
 .footer-social{display:flex;gap:10px;margin-top:20px}
 .fsoc{width:34px;height:34px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;text-decoration:none}
 .fsoc:hover{background:rgba(255,255,255,.12)}
 .footer-bottom{max-width:var(--max);margin:0 auto;padding-top:28px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
-.footer-bottom p{font-size:12.5px;color:rgba(255,255,255,.3)}
+.footer-bottom p{font-size:12.5px;color:rgba(255,255,255,.28)}
 .footer-chips{display:flex;gap:8px;flex-wrap:wrap}
-.fc{font-size:11px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);border-radius:6px;padding:4px 10px;font-weight:500}
+.fc{font-size:11px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.38);border-radius:6px;padding:4px 10px;font-weight:500}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(13,13,26,.55);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
 .modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:20px;padding:36px;width:100%;max-width:420px;margin:20px;position:relative;animation:popIn .25s ease}
+.modal{background:#fff;border-radius:22px;padding:36px;width:100%;max-width:420px;margin:20px;position:relative;animation:popIn .25s ease}
 @keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 .modal-close{position:absolute;top:16px;right:16px;width:28px;height:28px;border-radius:50%;background:var(--off2);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted)}
 .modal-close:hover{background:var(--border2)}
 .modal h3{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--ink);margin-bottom:6px}
 .modal-sub{font-size:13.5px;color:var(--muted);margin-bottom:24px}
 .m-inp{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;margin-bottom:12px;transition:.15s}
-.m-inp:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(20,71,230,.08)}
-.m-btn{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;margin-bottom:10px}
-.m-btn:hover{background:var(--blue-dark)}
+.m-inp:focus{border-color:var(--brand3);box-shadow:0 0 0 3px rgba(107,72,204,.1)}
+.m-btn{width:100%;padding:12px;background:var(--brand);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;margin-bottom:10px}
+.m-btn:hover{background:var(--brand2)}
 .m-google{width:100%;padding:11px;background:#fff;border:1.5px solid var(--border);border-radius:9px;font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);display:flex;align-items:center;justify-content:center;gap:8px;transition:.15s;color:var(--ink2)}
 .m-google:hover{border-color:var(--border2);background:var(--off)}
 .m-fine{font-size:11.5px;color:var(--subtle);text-align:center;margin-top:12px}
-.m-ok{display:none;background:#F0FDF4;border:1px solid #86EFAC;border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#15803D;font-weight:600;margin-top:10px}
-.m-tabs{display:flex;gap:2px;background:var(--off);border-radius:10px;padding:3px;margin-bottom:22px}
-.m-tab{flex:1;padding:8px;text-align:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);transition:.15s;border:none;background:none;font-family:var(--ffb)}
-.m-tab.active{background:#fff;color:var(--blue);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.m-ok{display:none;background:#ECFDF5;border:1px solid #86EFAC;border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#15803D;font-weight:600;margin-top:10px}
 
-/* NAV USER CSS */
-.nav-user-wrap{position:relative;display:none;margin-left:auto}
-.nav-user-btn{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;border-radius:24px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-family:var(--ffb);transition:.15s;font-size:13px;font-weight:500}
-.nav-user-btn:hover{border-color:#C7D7FD;background:var(--blue-light)}
-.nav-av{width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.nav-nm{font-size:13px;font-weight:500;color:var(--ink)}
-.nav-user-btn svg{width:11px;height:11px;color:var(--subtle);transition:transform .2s}
-.nav-user-btn.dd-open svg{transform:rotate(180deg)}
-.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-lg);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
-.user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
-.ud-header{padding:10px 12px 10px;border-bottom:1px solid var(--off2);margin-bottom:4px}
-.ud-name{font-size:13px;font-weight:700;color:var(--ink)}
-.ud-email{font-size:11px;color:var(--subtle);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--ink2);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left}
-.ud-item:hover{background:var(--off);color:var(--blue)}
-.ud-item svg{width:14px;height:14px;flex-shrink:0;color:var(--subtle)}
-.ud-divider{height:1px;background:var(--off2);margin:4px 0}
-
-/* ANIMATIONS */
-.rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+/* ── SCROLL REVEAL ── */
+.rv{opacity:0;transform:translateY(22px);transition:opacity .65s ease,transform .65s ease}
 .rv.on{opacity:1;transform:translateY(0)}
+.rv-delay-1{transition-delay:.1s}
+.rv-delay-2{transition-delay:.2s}
+.rv-delay-3{transition-delay:.3s}
 
-/* RESPONSIVE */
-@media(max-width:1024px){.hero-in{grid-template-columns:1fr}.hero-card{display:none}.who-grid{grid-template-columns:repeat(2,1fr)}.feat-grid{grid-template-columns:repeat(2,1fr)}.score-wrap{grid-template-columns:1fr}.footer-g{grid-template-columns:1fr 1fr}}
-@media(max-width:640px){.nlinks{display:none}.hstat{padding:6px 0}.hero-stats{grid-template-columns:repeat(2,1fr)}.mentor-strip{padding:36px 24px}.cta-form{flex-direction:column}.who-grid{grid-template-columns:1fr}.footer-g{grid-template-columns:1fr}}
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .hero-in{grid-template-columns:1fr}
+  .hero-card{display:none}
+  .who-grid{grid-template-columns:repeat(2,1fr)}
+  .feat-grid{grid-template-columns:repeat(2,1fr)}
+  .salary-wrap{grid-template-columns:1fr}
+  .score-wrap{grid-template-columns:1fr;justify-items:center}
+  .footer-g{grid-template-columns:1fr 1fr}
+  .courses-tracks{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+  .nlinks{display:none}
+  .nbtns{display:none}
+  .nav-user-wrap .nbtns{display:flex}
+  .nav-hamburger{display:flex}
+  .hstat{padding:6px 0}
+  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .mentor-strip{padding:40px 24px}
+  .cta-form{flex-direction:column}
+  .who-grid{grid-template-columns:1fr}
+  .footer-g{grid-template-columns:1fr}
+  .pricing-grid{grid-template-columns:1fr}
+  .courses-tracks{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
@@ -342,39 +362,36 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   <div class="nav-in">
     <a href="index.html" class="nlogo">Belong<span>ix</span></a>
     <ul class="nlinks">
-      <!-- Platform -->
       <li>
         <button class="nav-link" onclick="toggleDD('dd-platform',this)">
           Platform <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="dd-panel" id="dd-platform">
-          <a class="dd-item" href="dashboard.html?page=jobs"><div class="dd-icon" style="background:#EEF3FF">💼</div><div class="dd-text"><strong>Job Board</strong><span>Live listings, apply instantly</span></div></a>
-          <a class="dd-item" href="dashboard.html?page=salary"><div class="dd-icon" style="background:#F0FDF4">💰</div><div class="dd-text"><strong>Salary Intelligence</strong><span>Know your market worth</span></div></a>
-          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FEF9C3">🤖</div><div class="dd-text"><strong>Bexi AI Guide</strong><span>24/7 career guidance</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=jobs"><div class="dd-icon" style="background:#EEF0FF">💼</div><div class="dd-text"><strong>Job Board</strong><span>Live listings, apply instantly</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=salary"><div class="dd-icon" style="background:#ECFDF5">💰</div><div class="dd-text"><strong>Salary Intelligence</strong><span>Know your market worth</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF7ED">🤖</div><div class="dd-text"><strong>Bexi AI Guide</strong><span>24/7 career guidance</span></div></a>
           <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF1F2">📊</div><div class="dd-text"><strong>Career Score</strong><span>Track your professional growth</span></div></a>
         </div>
       </li>
-      <!-- Who It's For -->
       <li>
         <button class="nav-link" onclick="toggleDD('dd-who',this)">
           Who It's For <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="dd-panel" id="dd-who">
-          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#EEF3FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
-          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#F0FDF4">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
-          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#FEF9C3">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
+          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
+          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#ECFDF5">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
+          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#FFF7ED">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
           <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#FFF1F2">🔄</div><div class="dd-text"><strong>Career Changers</strong><span>Switch fields with mentor support</span></div></a>
         </div>
       </li>
-      <!-- Learn -->
       <li>
         <button class="nav-link" onclick="toggleDD('dd-learn',this)">
           Learn <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="dd-panel" id="dd-learn">
-          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF3FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>48+ curated courses</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>48+ curated courses</span></div></a>
           <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#F5F3FF">🏆</div><div class="dd-text"><strong>Certifications</strong><span>AWS, Google, Microsoft</span></div></a>
-          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#FFF1F2">🎯</div><div class="dd-text"><strong>DSA & Interview Prep</strong><span>Crack FAANG & top startups</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#FFF1F2">🎯</div><div class="dd-text"><strong>DSA &amp; Interview Prep</strong><span>Crack FAANG &amp; top startups</span></div></a>
         </div>
       </li>
       <li><a class="nav-link" href="mentors.html">Mentors</a></li>
@@ -399,16 +416,40 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         <button class="ud-item" onclick="doSignOut()" style="color:#EF4444"><svg fill="none" viewBox="0 0 24 24" stroke="#EF4444" stroke-width="1.8"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>Sign Out</button>
       </div>
     </div>
+    <!-- Mobile hamburger -->
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a class="mm-link" href="dashboard.html?page=jobs">Job Board</a>
+  <a class="mm-link" href="dashboard.html?page=salary">Salary Intelligence</a>
+  <a class="mm-link" href="dashboard.html?page=overview">Bexi AI Guide</a>
+  <a class="mm-link" href="dashboard.html?page=upskill">Upskilling Hub</a>
+  <a class="mm-link" href="mentors.html">Mentors</a>
+  <a class="mm-link" href="about.html">About</a>
+  <a class="mm-link" href="contact.html">Contact</a>
+  <div class="mm-btns">
+    <button class="nghost" style="width:100%;text-align:center" onclick="openModal('signin');toggleMobileMenu()">Sign In</button>
+    <button class="nfill" style="width:100%;text-align:center;padding:12px" onclick="openModal('signup');toggleMobileMenu()">Join Free →</button>
+  </div>
+</div>
+
 <!-- HERO -->
 <section class="hero" id="home">
-  
+  <div class="hero-mesh">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-orb hero-orb-1"></div>
+    <div class="hero-orb hero-orb-2"></div>
+    <div class="hero-orb hero-orb-3"></div>
+  </div>
   <div class="hero-in">
-    <div class="hero-left">
-      <div class="hero-badge"><span class="badge-pulse"></span>Your Career, Upgraded</div>
-      <h1>Your Professional<br/><span class="hl">Career Starts Here</span></h1>
+    <div class="hero-left rv">
+      <div class="hero-badge"><span class="badge-pulse"></span>India's Career Platform</div>
+      <h1>Your Professional<br/><span class="hl">Career Starts</span> <span class="accent-word">Here</span></h1>
       <p class="hero-desc">Jobs, salary insights, AI career guidance, upskilling and mentors — everything your career needs, in one place. Built for India's 1 crore+ job seekers.</p>
       <div class="hero-cta">
         <button class="btn-primary" onclick="openModal('signup')">
@@ -420,9 +461,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
           See Dashboard
         </button>
       </div>
-      <div class="hero-note">
-        Free to join &middot; No credit card &middot; Cancel anytime
-      </div>
+      <div class="hero-note">Free to join &middot; No credit card &middot; Cancel anytime</div>
       <div class="hero-stats">
         <div class="hstat"><div class="hstat-n">Live</div><div class="hstat-l">Job Board</div></div>
         <div class="hstat"><div class="hstat-n">48+</div><div class="hstat-l">Skill Courses</div></div>
@@ -430,12 +469,12 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         <div class="hstat"><div class="hstat-n">24/7</div><div class="hstat-l">Bexi AI Guide</div></div>
       </div>
     </div>
-    <!-- Hero signup card hidden -->
-    <div class="hero-card rv" style="display:none">
+    <!-- Hero signup card — now visible -->
+    <div class="hero-card rv rv-delay-2">
       <div class="hc-title">Create your free account</div>
       <div class="m-tabs">
-        <button class="m-tab active" onclick="switchTab('signup')">Sign Up</button>
-        <button class="m-tab" onclick="switchTab('signin')">Sign In</button>
+        <button class="m-tab active" onclick="switchHeroTab('signup')">Sign Up</button>
+        <button class="m-tab" onclick="switchHeroTab('signin')">Sign In</button>
       </div>
       <div id="hc-signup-form">
         <div class="hc-form-row">
@@ -472,38 +511,38 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         <div class="hc-ok" id="hc-si-ok"></div>
       </div>
       <div class="hc-fine">Free plan always available · No credit card needed</div>
-
     </div>
   </div>
 </section>
+
 <!-- WHO IT'S FOR -->
-<section style="padding:80px 5%;background:#fff" id="for-who">
+<section style="padding:88px 5%;background:var(--off)" id="for-who">
   <div class="sec-in">
     <div class="sec-center rv">
       <div class="sec-tag">Who It's For</div>
       <h2>Built for <span>every career stage</span></h2>
       <p class="sec-sub">Whether you're a student, fresher, professional, or changing careers — Belongix has you covered.</p>
     </div>
-    <div class="who-grid rv">
-      <div class="who-card" onclick="openModal('signup')">
+    <div class="who-grid">
+      <div class="who-card rv" onclick="openModal('signup')">
         <span class="who-icon">🎓</span>
         <div class="who-title">College Students</div>
         <div class="who-desc">Internship guidance, placement prep, skill building and career score from day one.</div>
-        <span class="who-tag">Internships & Placements</span>
+        <span class="who-tag">Internships &amp; Placements</span>
       </div>
-      <div class="who-card" onclick="openModal('signup')">
+      <div class="who-card rv rv-delay-1" onclick="openModal('signup')">
         <span class="who-icon">🌱</span>
         <div class="who-title">Fresh Graduates</div>
         <div class="who-desc">First job roadmap, resume tips, interview prep and salary benchmarks for freshers.</div>
         <span class="who-tag">First Job Ready</span>
       </div>
-      <div class="who-card" onclick="openModal('signup')">
+      <div class="who-card rv rv-delay-2" onclick="openModal('signup')">
         <span class="who-icon">💼</span>
         <div class="who-title">Working Professionals</div>
         <div class="who-desc">Salary negotiation, promotions, upskilling and mentor sessions for real growth.</div>
         <span class="who-tag">Grow Your Career</span>
       </div>
-      <div class="who-card" onclick="openModal('signup')">
+      <div class="who-card rv rv-delay-3" onclick="openModal('signup')">
         <span class="who-icon">🔄</span>
         <div class="who-title">Career Changers</div>
         <div class="who-desc">Field transition roadmaps, reskilling paths and mentors who've made the switch.</div>
@@ -514,50 +553,50 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 </section>
 
 <!-- SIX FEATURES -->
-<section style="padding:80px 5%;background:#F8FAFC" id="features">
+<section style="padding:88px 5%;background:#fff" id="features">
   <div class="sec-in">
     <div class="sec-center rv">
       <div class="sec-tag">Everything You Need</div>
       <h2>Six powerful tools, <span>one platform</span></h2>
       <p class="sec-sub">No more switching between 5 different apps. Belongix brings everything into one career-first experience.</p>
     </div>
-    <div class="feat-grid rv">
-      <a class="feat-card" href="dashboard.html?page=jobs">
+    <div class="feat-grid">
+      <a class="feat-card rv" href="dashboard.html?page=jobs">
         <div class="feat-num">01</div>
-        <div class="feat-icon-wrap" style="background:#EEF3FF">💼</div>
+        <div class="feat-icon-wrap" style="background:#EEF0FF">💼</div>
         <div class="feat-title">Live Job Board</div>
         <div class="feat-desc">Real-time listings from top Indian companies — filtered to your skills, location and experience level.</div>
         <div class="feat-link">Browse jobs <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
-      <a class="feat-card" href="dashboard.html?page=salary">
+      <a class="feat-card rv rv-delay-1" href="dashboard.html?page=salary">
         <div class="feat-num">02</div>
-        <div class="feat-icon-wrap" style="background:#F0FDF4">💰</div>
+        <div class="feat-icon-wrap" style="background:#ECFDF5">💰</div>
         <div class="feat-title">Salary Intelligence</div>
         <div class="feat-desc">Real market salary data for 15+ tech roles across Bangalore, Hyderabad, Mumbai, Pune and remote.</div>
         <div class="feat-link">Check salaries <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
-      <a class="feat-card" href="dashboard.html?page=overview">
+      <a class="feat-card rv rv-delay-2" href="dashboard.html?page=overview">
         <div class="feat-num">03</div>
-        <div class="feat-icon-wrap" style="background:#FEF9C3">🤖</div>
+        <div class="feat-icon-wrap" style="background:#FFF7ED">🤖</div>
         <div class="feat-title">Bexi AI Career Guide</div>
         <div class="feat-desc">Your AI assistant trained on Indian career data — answers questions on salary, interviews, skills and paths 24/7.</div>
         <div class="feat-link">Talk to Bexi <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
-      <a class="feat-card" href="dashboard.html?page=overview">
+      <a class="feat-card rv" href="dashboard.html?page=overview">
         <div class="feat-num">04</div>
         <div class="feat-icon-wrap" style="background:#FFF1F2">📊</div>
         <div class="feat-title">Career Score</div>
         <div class="feat-desc">A dynamic score that tracks your professional growth — built on your profile, skills, applications and platform activity.</div>
         <div class="feat-link">Get your score <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
-      <a class="feat-card" href="dashboard.html?page=upskill">
+      <a class="feat-card rv rv-delay-1" href="dashboard.html?page=upskill">
         <div class="feat-num">05</div>
         <div class="feat-icon-wrap" style="background:#F5F3FF">🎓</div>
         <div class="feat-title">Upskilling Hub</div>
         <div class="feat-desc">48+ handpicked courses from Google, AWS, Meta, Scaler, NPTEL — free and paid paths for every level.</div>
         <div class="feat-link">Start learning <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
-      <a class="feat-card" href="mentors.html">
+      <a class="feat-card rv rv-delay-2" href="mentors.html">
         <div class="feat-num">06</div>
         <div class="feat-icon-wrap" style="background:#FFF7ED">🤝</div>
         <div class="feat-title">1-on-1 Mentors</div>
@@ -568,72 +607,157 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   </div>
 </section>
 
+<!-- SALARY INTELLIGENCE -->
+<section style="padding:88px 5%;background:var(--off)" id="salary">
+  <div class="sec-in">
+    <div class="salary-wrap">
+      <div class="salary-left rv">
+        <div class="sec-tag">Salary Intelligence</div>
+        <h2>Know your <span>exact market worth</span></h2>
+        <p class="sec-sub" style="max-width:420px">Real salary data for 15+ tech roles across India's top cities — so you never undersell yourself again.</p>
+        <div style="margin-top:28px">
+          <a href="dashboard.html?page=salary" class="btn-primary" style="display:inline-flex;text-decoration:none">
+            Explore All Salaries
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <p class="salary-note">Data sourced from publicly available market reports. Updated regularly.</p>
+      </div>
+      <div class="salary-table rv rv-delay-1">
+        <div class="sal-head">
+          <span>Role</span>
+          <span>Avg Range (LPA)</span>
+          <span>Demand</span>
+        </div>
+        <div class="sal-row">
+          <div><div class="sal-role">Software Engineer</div><div class="sal-exp">2–5 yrs · Bangalore</div></div>
+          <div class="sal-range">₹12–28L</div>
+          <div><div class="sal-bar-wrap"><div class="sal-bar" style="width:90%"></div></div></div>
+        </div>
+        <div class="sal-row">
+          <div><div class="sal-role">Data Analyst</div><div class="sal-exp">1–4 yrs · Hyderabad</div></div>
+          <div class="sal-range">₹8–18L</div>
+          <div><div class="sal-bar-wrap"><div class="sal-bar" style="width:75%"></div></div></div>
+        </div>
+        <div class="sal-row">
+          <div><div class="sal-role">Product Manager</div><div class="sal-exp">3–7 yrs · Mumbai</div></div>
+          <div class="sal-range">₹18–42L</div>
+          <div><div class="sal-bar-wrap"><div class="sal-bar" style="width:85%"></div></div></div>
+        </div>
+        <div class="sal-row">
+          <div><div class="sal-role">DevOps Engineer</div><div class="sal-exp">2–6 yrs · Remote</div></div>
+          <div class="sal-range">₹14–32L</div>
+          <div><div class="sal-bar-wrap"><div class="sal-bar" style="width:80%"></div></div></div>
+        </div>
+        <div class="sal-row">
+          <div><div class="sal-role">AI / ML Engineer</div><div class="sal-exp">2–5 yrs · Pune</div></div>
+          <div class="sal-range">₹16–38L</div>
+          <div><div class="sal-bar-wrap"><div class="sal-bar" style="width:95%"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- CAREER SCORE -->
+<section style="padding:88px 5%;background:#fff" id="score">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">Career Score</div>
+      <h2>Your growth, <span>measured</span></h2>
+      <p class="sec-sub">A dynamic score that grows with every action you take — profile, skills, applications and courses all count.</p>
+    </div>
+    <div class="score-wrap rv">
+      <div class="score-ring-wrap">
+        <svg width="180" height="180" viewBox="0 0 180 180">
+          <circle cx="90" cy="90" r="78" fill="none" stroke="#E4E4F0" stroke-width="14"/>
+          <circle cx="90" cy="90" r="78" fill="none" stroke="url(#scoreGrad)" stroke-width="14" stroke-linecap="round"
+            stroke-dasharray="490" stroke-dashoffset="294"/>
+          <defs>
+            <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#2D1B69"/>
+              <stop offset="100%" stop-color="#FF5C35"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="score-center">
+          <div class="score-num">40</div>
+          <div class="score-label">Career Score</div>
+        </div>
+      </div>
+      <div class="score-steps">
+        <div class="score-step">
+          <div class="step-dot done">✓</div>
+          <div class="step-name">Create account</div>
+          <div class="step-pts">+10 pts</div>
+        </div>
+        <div class="score-step">
+          <div class="step-dot done">✓</div>
+          <div class="step-name">Verify email</div>
+          <div class="step-pts">+10 pts</div>
+        </div>
+        <div class="score-step">
+          <div class="step-dot done">✓</div>
+          <div class="step-name">Complete your profile</div>
+          <div class="step-pts">+20 pts</div>
+        </div>
+        <div class="score-step">
+          <div class="step-dot">4</div>
+          <div class="step-name">Add skills to your profile</div>
+          <div class="step-pts">+15 pts</div>
+        </div>
+        <div class="score-step">
+          <div class="step-dot">5</div>
+          <div class="step-name">Apply to your first job</div>
+          <div class="step-pts">+15 pts</div>
+        </div>
+        <div class="score-step">
+          <div class="step-dot">6</div>
+          <div class="step-name">Complete a course</div>
+          <div class="step-pts">+20 pts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-
-
-<!-- COURSES FROM -->
-<section style="padding:80px 5%;background:#fff" id="courses">
+<!-- COURSES -->
+<section style="padding:88px 5%;background:var(--off)" id="courses">
   <div class="sec-in">
     <div class="sec-center rv">
       <div class="sec-tag">Upskilling Hub</div>
       <h2>Learn from the <span>best platforms</span></h2>
       <p class="sec-sub">48+ handpicked courses from globally recognised platforms — free and paid tracks for every level and every role.</p>
     </div>
-
     <!-- Marquee logos -->
     <div class="marquee-wrap rv">
       <div class="marquee-track">
         <div class="marquee-inner" id="marqueeInner">
-          <div class="mlogo"><div class="ml-ic" style="background:#4285F4">
-            <svg viewBox="0 0 24 24" width="22" height="22"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          </div><div class="ml-name">Google</div><div class="ml-tag">Free</div></div>
-
-          <div class="mlogo"><div class="ml-ic" style="background:#FF9900">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M13.23 10.56V10c-1.94.02-3.99.41-3.99 2.67 0 1.16.61 1.95 1.63 1.95.76 0 1.43-.47 1.86-1.22.52-.93.5-1.79.5-2.84m2.7 6.53c-.18.16-.43.17-.63.06-1.29-1.07-1.52-1.57-2.23-2.59-2.13 2.17-3.64 2.82-6.41 2.82-3.27 0-5.82-2.02-5.82-6.05.0-3.15 1.7-5.29 4.13-6.34 2.1-.93 5.04-1.09 7.28-1.35V3c0-.93.07-2.02-.94-2.74C10.56 0 9.3.24 8.22.49L8.1.52c-.98.24-2 .56-2.77 1.14-.52.38-.72.89-.76 1.36-.04.48.13.95.5 1.24L7.71 7.38c.15.12.33.18.51.18.37 0 .72-.24.83-.59.22-.67.81-1.22 1.59-1.22 1.04 0 1.68.75 1.68 1.95V9.18c-2.35.24-4.88.5-6.85 1.48C2.91 11.7 2 13.25 2 15.52c0 3.36 2.34 5.54 5.8 5.54 2.2 0 3.93-.61 5.41-1.84 1.37 1.27 2.89 1.84 4.46 1.84.4 0 .76-.04 1.12-.12.95-.2 1.12-.95.62-1.66l-.48-.19z"/></svg>
-          </div><div class="ml-name">Amazon AWS</div><div class="ml-tag">Free + Paid</div></div>
-
-          <div class="mlogo"><div class="ml-ic" style="background:#0078D4">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M11.4 24C5.1 24 0 18.9 0 12.6S5.1 1.2 11.4 1.2c2.8 0 5.4 1 7.4 2.8L16.2 6.6C14.8 5.4 13.2 4.8 11.4 4.8 7 4.8 3.6 8.2 3.6 12.6s3.4 7.8 7.8 7.8c3 0 5.6-1.6 6.8-4H11.4v-3.6h10.2c.2.8.4 1.7.4 2.6 0 6.1-4.5 10.6-10.6 10.6z"/></svg>
-          </div><div class="ml-name">Microsoft</div><div class="ml-tag">Free</div></div>
-
-          <div class="mlogo"><div class="ml-ic" style="background:#0056D2">
-            <span style="font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)">C</span>
-          </div><div class="ml-name">Coursera</div><div class="ml-tag">Free + Paid</div></div>
-
-          <div class="mlogo"><div class="ml-ic" style="background:#20BEFF">
-            <span style="font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)">K</span>
-          </div><div class="ml-name">Kaggle</div><div class="ml-tag">Free</div></div>
-
-          <div class="mlogo"><div class="ml-ic" style="background:#CC0000">
-            <span style="font-size:14px;font-weight:800;color:#fff;font-family:var(--ff)">NPTEL</span>
-          </div><div class="ml-name">NPTEL</div><div class="ml-tag">Free + Cert</div></div>
-
-          <div class="mlogo"><div class="ml-ic" style="background:#FF6B35">
-            <span style="font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)">S</span>
-          </div><div class="ml-name">Scaler</div><div class="ml-tag">Paid</div></div>
-
-          <div class="mlogo"><div class="ml-ic" style="background:#0866FF">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          </div><div class="ml-name">Meta</div><div class="ml-tag">Free</div></div>
-        <!-- duplicate for loop -->
-          <div class="mlogo"><div class="ml-ic" style="background:#4285F4"><span style="font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)">G</span></div><div class="ml-name">Google</div><div class="ml-tag">Free</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#FF9900"><span style="font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)">A</span></div><div class="ml-name">Amazon AWS</div><div class="ml-tag">Free + Paid</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#0078D4"><span style="font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)">M</span></div><div class="ml-name">Microsoft</div><div class="ml-tag">Free</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#0056D2"><span style="font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)">C</span></div><div class="ml-name">Coursera</div><div class="ml-tag">Free + Paid</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#20BEFF"><span style="font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)">K</span></div><div class="ml-name">Kaggle</div><div class="ml-tag">Free</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#CC0000"><span style="font-size:14px;font-weight:800;color:#fff;font-family:var(--ff)">NPTEL</span></div><div class="ml-name">NPTEL</div><div class="ml-tag">Free + Cert</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#FF6B35"><span style="font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)">S</span></div><div class="ml-name">Scaler</div><div class="ml-tag">Paid</div></div>
-          <div class="mlogo"><div class="ml-ic" style="background:#0866FF"><span style="font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)">M</span></div><div class="ml-name">Meta</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#4285F4"><svg viewBox="0 0 24 24" width="22" height="22"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg></div><div class="ml-name">Google</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#FF9900"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">AWS</span></div><div class="ml-name">Amazon AWS</div><div class="ml-tag">Free + Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#0078D4"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">MS</span></div><div class="ml-name">Microsoft</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#0056D2"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">C</span></div><div class="ml-name">Coursera</div><div class="ml-tag">Free + Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#20BEFF"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">K</span></div><div class="ml-name">Kaggle</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#CC0000"><span style="font-size:12px;font-weight:800;color:#fff;font-family:var(--ff)">NPTEL</span></div><div class="ml-name">NPTEL</div><div class="ml-tag">Free + Cert</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#FF6B35"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">S</span></div><div class="ml-name">Scaler</div><div class="ml-tag">Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#0866FF"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">M</span></div><div class="ml-name">Meta</div><div class="ml-tag">Free</div></div>
+          <!-- Duplicate for infinite loop -->
+          <div class="mlogo"><div class="ml-ic" style="background:#4285F4"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">G</span></div><div class="ml-name">Google</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#FF9900"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">AWS</span></div><div class="ml-name">Amazon AWS</div><div class="ml-tag">Free + Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#0078D4"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">MS</span></div><div class="ml-name">Microsoft</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#0056D2"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">C</span></div><div class="ml-name">Coursera</div><div class="ml-tag">Free + Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#20BEFF"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">K</span></div><div class="ml-name">Kaggle</div><div class="ml-tag">Free</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#CC0000"><span style="font-size:12px;font-weight:800;color:#fff;font-family:var(--ff)">NPTEL</span></div><div class="ml-name">NPTEL</div><div class="ml-tag">Free + Cert</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#FF6B35"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">S</span></div><div class="ml-name">Scaler</div><div class="ml-tag">Paid</div></div>
+          <div class="mlogo"><div class="ml-ic" style="background:#0866FF"><span style="font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)">M</span></div><div class="ml-name">Meta</div><div class="ml-tag">Free</div></div>
         </div>
       </div>
     </div>
-
     <!-- Course Tracks -->
     <div class="courses-tracks rv">
       <a class="ct-card" href="dashboard.html?page=upskill">
         <div class="ct-icon">🔥</div>
-        <div class="ct-title">Agentic AI & LangChain</div>
+        <div class="ct-title">Agentic AI &amp; LangChain</div>
         <div class="ct-sub">Most demanded skill of 2026</div>
         <span class="ct-badge hot">Hot</span>
       </a>
@@ -663,70 +787,91 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       </a>
       <a class="ct-card" href="dashboard.html?page=upskill">
         <div class="ct-icon">🎯</div>
-        <div class="ct-title">DSA & Interview Prep</div>
+        <div class="ct-title">DSA &amp; Interview Prep</div>
         <div class="ct-sub">Crack FAANG and top startups</div>
         <span class="ct-badge hot">Top Pick</span>
       </a>
     </div>
     <div style="text-align:center;margin-top:36px">
-      <a href="dashboard.html?page=upskill" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--blue);color:#fff;border-radius:10px;text-decoration:none;font-size:15px;font-weight:600;transition:.2s" onmouseover="this.style.background='#0f3bc4'" onmouseout="this.style.background='#1447E6'">Browse All Courses &rarr;</a>
+      <a href="dashboard.html?page=upskill" class="btn-primary" style="display:inline-flex;text-decoration:none">Browse All Courses &rarr;</a>
     </div>
   </div>
 </section>
-<style>
-/* Marquee */
-.marquee-wrap{overflow:hidden;position:relative;margin-bottom:40px}
-.marquee-wrap::before,.marquee-wrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
-.marquee-wrap::before{left:0;background:linear-gradient(90deg,var(--off),transparent)}
-.marquee-wrap::after{right:0;background:linear-gradient(-90deg,var(--off),transparent)}
-.marquee-track{overflow:hidden}
-.marquee-inner{display:flex;gap:16px;animation:marquee 25s linear infinite;width:max-content}
-.marquee-inner:hover{animation-play-state:paused}
-@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.mlogo{background:#fff;border:1px solid var(--border);border-radius:14px;padding:18px 24px;text-align:center;flex-shrink:0;width:140px;transition:.2s;cursor:pointer}
-.mlogo:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 4px 16px rgba(20,71,230,.1)}
-.ml-ic{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
-.ml-name{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
-.ml-tag{font-size:11px;color:var(--muted);font-weight:500}
-/* Course tracks */
-.courses-tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-.ct-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:22px;display:flex;flex-direction:column;gap:6px;position:relative;transition:.2s;cursor:pointer;text-decoration:none}
-.ct-card:hover{border-color:var(--blue);box-shadow:0 4px 20px rgba(20,71,230,.1);transform:translateY(-2px)}
-.ct-icon{font-size:28px}
-.ct-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink)}
-.ct-sub{font-size:12.5px;color:var(--muted)}
-.ct-badge{position:absolute;top:14px;right:14px;font-size:10px;font-weight:700;background:var(--blue-light);color:var(--blue);border:1px solid #C7D7FD;border-radius:20px;padding:2px 9px}
-.ct-badge.hot{background:#FEF9C3;color:#92400E;border-color:#FDE68A}
-@media(max-width:1024px){.courses-tracks{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:640px){.courses-tracks{grid-template-columns:1fr}}
-</style>
 
 <!-- MENTOR STRIP -->
-<section style="padding:60px 5%;background:#ffffff">
+<section style="padding:60px 5%;background:#fff">
   <div style="max-width:1200px;margin:0 auto">
-    <div style="background:linear-gradient(135deg,#0A1628 0%,#1E3A8A 55%,#1447E6 100%);border-radius:24px;padding:60px 40px;text-align:center;position:relative;overflow:hidden">
+    <div class="mentor-strip rv">
       <div style="position:relative;z-index:3">
-        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px;text-transform:uppercase;margin-bottom:18px">Mentor Network</div>
-        <h2 style="font-family:'Figtree',sans-serif;font-size:clamp(28px,3.5vw,44px);font-weight:800;color:#ffffff;letter-spacing:-1px;line-height:1.1;margin-bottom:14px">Learn from professionals<br/>who've <span style="color:#7DD3FC">been there</span></h2>
-        <p style="font-size:16px;color:rgba(255,255,255,.8);max-width:520px;margin:0 auto 32px;line-height:1.7">Connect 1-on-1 with verified professionals for interview prep, salary negotiation, career switch guidance and more.</p>
-        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:36px">
-          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.9);font-weight:500">&#10003; Verified mentors only</div>
-          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.9);font-weight:500">&#10003; Resume reviews</div>
-          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.9);font-weight:500">&#10003; Mock interviews</div>
-          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.9);font-weight:500">&#10003; Salary coaching</div>
-          <div style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:7px 18px;font-size:13px;color:rgba(255,255,255,.9);font-weight:500">&#10003; Career switch support</div>
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;color:#fff;letter-spacing:.3px;text-transform:uppercase;margin-bottom:18px">Mentor Network</div>
+        <h2 style="font-family:'Sora',sans-serif;font-weight:800;color:#ffffff;letter-spacing:-1px;line-height:1.1;margin-bottom:14px">Learn from professionals<br/>who've <span style="color:#7DD3FC">been there</span></h2>
+        <p style="font-size:16px;color:rgba(255,255,255,.8);max-width:520px;margin:0 auto 32px;line-height:1.75">Connect 1-on-1 with verified professionals for interview prep, salary negotiation, career switch guidance and more.</p>
+        <div class="mentor-perks">
+          <div class="mentor-perk">✓ Verified mentors only</div>
+          <div class="mentor-perk">✓ Resume reviews</div>
+          <div class="mentor-perk">✓ Mock interviews</div>
+          <div class="mentor-perk">✓ Salary coaching</div>
+          <div class="mentor-perk">✓ Career switch support</div>
         </div>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-          <a href="mentors.html" style="padding:14px 28px;background:#ffffff;color:#1447E6;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;font-family:'Plus Jakarta Sans',sans-serif;transition:.2s">Find a Mentor &rarr;</a>
-          <a href="mentors.html" style="padding:14px 28px;background:transparent;color:#ffffff;border:2px solid rgba(255,255,255,.35);border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block;font-family:'Plus Jakarta Sans',sans-serif">Become a Mentor</a>
+        <div class="mentor-btns">
+          <a href="mentors.html" class="btn-white">Find a Mentor &rarr;</a>
+          <a href="mentors.html" class="btn-white-ghost">Become a Mentor</a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
+<!-- PRICING -->
+<section style="padding:88px 5%;background:var(--off)" id="pricing">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">Pricing</div>
+      <h2>Start free, <span>upgrade when ready</span></h2>
+      <p class="sec-sub">No hidden fees. No credit card required to get started.</p>
+    </div>
+    <div class="pricing-grid rv">
+      <!-- Starter -->
+      <div class="price-card">
+        <div class="price-name">Starter</div>
+        <div class="price-amt">Free</div>
+        <div class="price-period">Always free, no card needed</div>
+        <ul class="price-features">
+          <li><span class="pf-check">✓</span>Live job board access</li>
+          <li><span class="pf-check">✓</span>Career score tracker</li>
+          <li><span class="pf-check">✓</span>Salary insights (basic)</li>
+          <li><span class="pf-check">✓</span>Bexi AI (10 queries/day)</li>
+          <li><span class="pf-check">✓</span>5 learning tracks</li>
+          <li><span class="pf-check no">✗</span>Mentor sessions</li>
+          <li><span class="pf-check no">✗</span>Full salary data</li>
+          <li><span class="pf-check no">✗</span>All 48+ courses</li>
+        </ul>
+        <button class="price-btn" onclick="openModal('signup')">Get Started Free</button>
+      </div>
+      <!-- Pro -->
+      <div class="price-card pop">
+        <div class="price-badge">Most Popular</div>
+        <div class="price-name">Pro</div>
+        <div class="price-amt"><sup>₹</sup>499</div>
+        <div class="price-period">per month · cancel anytime</div>
+        <ul class="price-features">
+          <li><span class="pf-check">✓</span>Everything in Starter</li>
+          <li><span class="pf-check">✓</span>1-on-1 mentor sessions</li>
+          <li><span class="pf-check">✓</span>Full salary intelligence</li>
+          <li><span class="pf-check">✓</span>Unlimited Bexi AI</li>
+          <li><span class="pf-check">✓</span>All 48+ courses</li>
+          <li><span class="pf-check">✓</span>Priority job matches</li>
+          <li><span class="pf-check">✓</span>Resume review</li>
+          <li><span class="pf-check">✓</span>Career roadmap</li>
+        </ul>
+        <button class="price-btn" onclick="handlePricing('pro')">Upgrade to Pro</button>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FAQ -->
-<section style="padding:80px 5%;background:#ffffff">
+<section style="padding:88px 5%;background:#fff">
   <div style="max-width:1200px;margin:0 auto">
     <div class="sec-center rv">
       <div class="sec-tag">FAQ</div>
@@ -745,21 +890,23 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 
 <!-- CTA -->
 <section class="cta-sec">
-  <div class="sec-tag" style="background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.8);margin-bottom:20px">Join Free Today</div>
-  <h2>Your career breakthrough<br/>starts <span style="color:var(--sky)">right here</span></h2>
-  <p>Sign up free and get instant access to live jobs, career guidance, upskilling courses and more — all in one place.</p>
-  <div class="cta-form">
-    <input class="c-inp" type="email" id="cEmail" placeholder="Enter your email address"/>
-    <button class="c-btn" onclick="ctaSignup()">Join Free →</button>
-  </div>
-  <div class="c-ok" id="cOk">✓ You're in! Check your email to complete signup.</div>
-  <div class="c-fine">Free plan always available · No credit card needed · Cancel Pro anytime</div>
-  <div class="trust-row">
-    <div class="trust-item">🔒 100% Secure &amp; Private</div>
-    <div class="trust-dot"></div>
-    <div class="trust-item">🇮🇳 Built in India, for India</div>
-    <div class="trust-dot"></div>
-    <div class="trust-item">⚡ Free to get started</div>
+  <div style="position:relative;z-index:1">
+    <div class="sec-tag" style="background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18);color:rgba(255,255,255,.82);margin-bottom:20px">Join Free Today</div>
+    <h2>Your career breakthrough<br/>starts <span style="color:#7DD3FC">right here</span></h2>
+    <p>Sign up free and get instant access to live jobs, career guidance, upskilling courses and more — all in one place.</p>
+    <div class="cta-form">
+      <input class="c-inp" type="email" id="cEmail" placeholder="Enter your email address"/>
+      <button class="c-btn" onclick="ctaSignup()">Join Free →</button>
+    </div>
+    <div class="c-ok" id="cOk">✓ You're in! Check your email to complete signup.</div>
+    <div class="c-fine">Free plan always available · No credit card needed · Cancel Pro anytime</div>
+    <div class="trust-row">
+      <div class="trust-item">🔒 100% Secure &amp; Private</div>
+      <div class="trust-dot"></div>
+      <div class="trust-item">🇮🇳 Built in India, for India</div>
+      <div class="trust-dot"></div>
+      <div class="trust-item">⚡ Free to get started</div>
+    </div>
   </div>
 </section>
 
@@ -891,12 +1038,10 @@ if(navBtn&&navDd){
 }
 
 // NAV DROPDOWNS
-var openDd=null;
 function toggleDD(id,btn){
   var dd=document.getElementById(id);
   if(!dd)return;
   var isOpen=dd.classList.contains('open');
-  // Close all
   document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
   document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
   if(!isOpen){dd.classList.add('open');btn.classList.add('dd-open');}
@@ -908,6 +1053,14 @@ document.addEventListener('click',function(e){
   }
 });
 
+// MOBILE MENU
+function toggleMobileMenu(){
+  var mm=document.getElementById('mobile-menu');
+  var hb=document.getElementById('hamburger');
+  mm.classList.toggle('open');
+  hb.classList.toggle('open');
+}
+
 // FAQ
 function toggleFaq(fiq){
   var fi=fiq.closest('.fi');
@@ -916,15 +1069,11 @@ function toggleFaq(fiq){
   if(!isOpen)fi.classList.add('open');
 }
 
-// HERO FORM
-function switchTab(tab){
-  var sf=document.getElementById('hc-signup-form');
-  var sif=document.getElementById('hc-signin-form');
-  if(sf)sf.style.display=tab==='signup'?'block':'none';
-  if(sif)sif.style.display=tab==='signin'?'block':'none';
-  // Update hero card tabs only
-  var heroTabs=document.querySelectorAll('.hero-card .m-tab');
-  heroTabs.forEach(function(t,i){
+// HERO FORM TABS
+function switchHeroTab(tab){
+  document.getElementById('hc-signup-form').style.display=tab==='signup'?'block':'none';
+  document.getElementById('hc-signin-form').style.display=tab==='signin'?'block':'none';
+  document.querySelectorAll('.hero-card .m-tab').forEach(function(t,i){
     t.classList[(i===0&&tab==='signup')||(i===1&&tab==='signin')?'add':'remove']('active');
   });
 }
@@ -937,12 +1086,8 @@ async function heroAuth(type){
   try{
     var res=type==='signup'?await sb.auth.signUp({email,password:pass}):await sb.auth.signInWithPassword({email,password:pass});
     if(res.error)throw res.error;
-    if(type==='signup'){
-      var okEl=document.getElementById('hc-ok');
-      if(okEl)okEl.style.display='block';
-    }else{
-      window.location.href='dashboard.html';
-    }
+    if(type==='signup'){var okEl=document.getElementById('hc-ok');if(okEl)okEl.style.display='block';}
+    else{window.location.href='dashboard.html';}
   }catch(e){alert('Error: '+e.message);}
 }
 
@@ -999,7 +1144,7 @@ function handlePricing(plan){
 // SCROLL REVEAL
 var obs=new IntersectionObserver(function(entries){
   entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('on');});
-},{threshold:0.08,rootMargin:'0px 0px -40px 0px'});
+},{threshold:0.07,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.rv').forEach(function(el){obs.observe(el);});
 </script>
 </body>
