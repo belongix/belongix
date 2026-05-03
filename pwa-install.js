@@ -15,23 +15,23 @@
     banner.id = "bx-install-banner";
     banner.style.cssText = [
       "position:fixed;bottom:90px;left:50%;transform:translateX(-50%);",
-      "background:white;border:1.5px solid #DBEAFE;border-radius:16px;",
+      "background:white;border:1.5px solid #D0D0E8;border-radius:16px;",
       "padding:14px 18px;display:flex;align-items:center;gap:12px;",
-      "box-shadow:0 8px 32px rgba(37,99,235,.18);z-index:2147483640;",
+      "box-shadow:0 8px 32px rgba(45,27,105,.18);z-index:2147483640;",
       "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;",
       "max-width:340px;width:calc(100vw - 48px);animation:bxSlideUp .4s ease"
     ].join("");
 
     banner.innerHTML = [
       "<style>@keyframes bxSlideUp{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}</style>",
-      "<div style='width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#2563EB,#0EA5E9);display:flex;align-items:center;justify-content:center;flex-shrink:0'>",
+      "<div style='width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#2D1B69,#6B48CC);display:flex;align-items:center;justify-content:center;flex-shrink:0'>",
         "<span style='color:white;font-size:20px'>B</span>",
       "</div>",
       "<div style='flex:1;min-width:0'>",
         "<div style='font-size:13px;font-weight:700;color:#0F172A'>Install Belongix App</div>",
         "<div style='font-size:11px;color:#64748B;margin-top:2px'>Add to home screen for quick access</div>",
       "</div>",
-      "<button id='bx-install-btn' style='background:#2563EB;color:white;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:inherit'>Install</button>",
+      "<button id='bx-install-btn' style='background:#2D1B69;color:white;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:inherit'>Install</button>",
       "<button id='bx-install-close' style='background:none;border:none;color:#94A3B8;cursor:pointer;font-size:18px;line-height:1;flex-shrink:0;padding:2px'>&#10005;</button>"
     ].join("");
 
@@ -76,8 +76,8 @@
       tip.id = "bx-ios-tip";
       tip.style.cssText = [
         "position:fixed;bottom:90px;left:50%;transform:translateX(-50%);",
-        "background:white;border:1.5px solid #DBEAFE;border-radius:16px;",
-        "padding:16px 18px;box-shadow:0 8px 32px rgba(37,99,235,.18);",
+        "background:white;border:1.5px solid #D0D0E8;border-radius:16px;",
+        "padding:16px 18px;box-shadow:0 8px 32px rgba(45,27,105,.18);",
         "z-index:2147483640;max-width:300px;width:calc(100vw - 48px);",
         "font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;text-align:center"
       ].join("");

@@ -1,5 +1,5 @@
 /* Belongix Service Worker v1.0 */
-var CACHE = "belongix-v1";
+var CACHE = "belongix-v2";
 var OFFLINE_URL = "/offline.html";
 
 var PRECACHE = [
@@ -9,7 +9,7 @@ var PRECACHE = [
   "/about.html",
   "/contact.html",
   "/mentors.html",
-  "/belongix-ai.js",
+  "/bexi.js",
   "/manifest.json",
   "/offline.html"
 ];
