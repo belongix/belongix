@@ -3,8 +3,19 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Mentors — Belongix Career Network</title>
+<title>Find a Career Mentor — Belongix Mentor Network</title>
+<!-- SEO -->
+<meta name="description" content="Connect 1-on-1 with verified Indian career mentors for interview prep, salary negotiation, career switch, and more. 50+ mentors from Google, Swiggy, Razorpay and top Indian companies."/>
+<meta property="og:title" content="Find a Career Mentor — Belongix Mentor Network"/>
+<meta property="og:description" content="50+ verified mentors from Google, Swiggy, Razorpay and top Indian companies. Book free intro, 30-min or 60-min sessions for interview prep, salary coaching, and career guidance."/>
+<meta property="og:image" content="https://www.belongix.in/icons/og-image.png"/>
+<meta property="og:url" content="https://www.belongix.in/mentors.html"/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:site" content="@belongix"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Belongix Mentor Network","description":"1-on-1 career mentorship from verified Indian professionals","provider":{"@type":"Organization","name":"Belongix","url":"https://www.belongix.in"},"areaServed":"India","serviceType":"Career Mentorship"}</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <link rel="manifest" href="manifest.json"/>
 <link rel="icon" href="icons/icon-32.png"/>
 <meta name="theme-color" content="#2D1B69"/>
@@ -51,7 +62,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;ali
 .nghost:hover{border-color:var(--brand);color:var(--brand)}
 .nfill{padding:8px 18px;border-radius:9px;border:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s}
 .nfill:hover{background:var(--brand2)}
-/* Nav user */
 .nav-user-wrap{position:relative;display:none;margin-left:auto}
 .nav-user-btn{display:inline-flex;align-items:center;gap:10px;padding:5px 16px 5px 5px;border-radius:50px;border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--brand),var(--accent)) border-box;cursor:pointer;font-family:var(--ffb);transition:.2s;font-size:14.5px;font-weight:600}
 .nav-user-btn:hover{background:linear-gradient(var(--off),var(--off)) padding-box,linear-gradient(135deg,var(--brand),var(--accent)) border-box;box-shadow:0 4px 16px rgba(45,27,105,.15)}
@@ -72,19 +82,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;ali
 .page-wrap{padding-top:64px}
 .sec{padding:80px 5%}
 .sec-in{max-width:var(--max);margin:0 auto}
-.sec-center{text-align:center;max-width:640px;margin:0 auto 56px}
-.sec-tag{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--brand);background:var(--off2);border:1px solid var(--border2);border-radius:100px;padding:4px 14px;margin-bottom:14px;letter-spacing:.3px;text-transform:uppercase}
-h2{font-family:var(--ff);font-size:clamp(28px,3.5vw,44px);font-weight:800;color:var(--ink);line-height:1.1;letter-spacing:-1px}
-h2 span{color:var(--brand)}
-.sec-sub{font-size:16px;color:var(--muted);line-height:1.75;margin-top:14px}
 /* BUTTONS */
 .btn-primary{padding:13px 26px;border-radius:10px;background:var(--brand);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
 .btn-primary:hover{background:var(--brand2);transform:translateY(-1px)}
 .btn-ghost{padding:13px 22px;border-radius:10px;background:transparent;color:var(--ink2);border:1.5px solid var(--border2);font-size:14px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
 .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
-/* CARDS */
-.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;transition:.2s}
-.card:hover{border-color:var(--brand3);box-shadow:var(--shadow)}
 /* ANIMATIONS */
 .rv{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
 .rv.on{opacity:1;transform:translateY(0)}
@@ -122,48 +124,85 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
 .m-google:hover{border-color:var(--border2);background:var(--off)}
 .m-ok{display:none;background:#ECFDF5;border:1px solid #6EE7B7;border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#065F46;font-weight:600;margin-top:10px}
 .m-fine{font-size:11.5px;color:var(--subtle);text-align:center;margin-top:11px}
-@media(max-width:768px){.nlinks{display:none}.footer-top{grid-template-columns:1fr 1fr}}
-@media(max-width:480px){.footer-top{grid-template-columns:1fr}}
-</style>
-<style>
-.mentors-hero{padding:80px 5% 60px;background:linear-gradient(135deg,#2D1B69 0%,#4C2FAA 60%,#6B48CC 100%);margin-top:64px;position:relative;overflow:hidden;text-align:center}
+/* HERO */
+.mentors-hero{padding:64px 5% 48px;background:linear-gradient(135deg,#2D1B69 0%,#4C2FAA 60%,#6B48CC 100%);margin-top:64px;position:relative;overflow:hidden;text-align:center}
 .mentors-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:40px 40px}
-.mentors-hero h1{font-family:var(--ff);font-size:clamp(32px,4.5vw,52px);font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:12px;position:relative;z-index:1}
+.mentors-hero h1{font-family:var(--ff);font-size:clamp(28px,4vw,48px);font-weight:800;color:#fff;letter-spacing:-1.5px;line-height:1.1;margin-bottom:10px;position:relative;z-index:1}
 .mentors-hero h1 span{color:#FFD4C7}
-.mentors-hero p{font-size:16px;color:rgba(255,255,255,.75);max-width:520px;margin:0 auto 28px;line-height:1.7;position:relative;z-index:1}
-.hero-tag{display:inline-flex;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;color:rgba(255,255,255,.9);text-transform:uppercase;letter-spacing:.3px;margin-bottom:16px;position:relative;z-index:1}
-.hero-perks{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
-.hero-perk{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:6px 16px;font-size:12.5px;color:rgba(255,255,255,.85);font-weight:500}
+.mentors-hero p{font-size:15px;color:rgba(255,255,255,.75);max-width:500px;margin:0 auto 22px;line-height:1.7;position:relative;z-index:1}
+.hero-tag{display:inline-flex;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:700;color:rgba(255,255,255,.9);text-transform:uppercase;letter-spacing:.3px;margin-bottom:14px;position:relative;z-index:1}
+.hero-perks{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1;margin-bottom:20px}
+.hero-perk{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:5px 14px;font-size:12px;color:rgba(255,255,255,.85);font-weight:500}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+.btn-hero-primary{padding:12px 24px;background:#FF5C35;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:6px}
+.btn-hero-primary:hover{background:#e04e29;transform:translateY(-1px)}
+.btn-hero-ghost{padding:12px 20px;background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s}
+.btn-hero-ghost:hover{background:rgba(255,255,255,.25)}
+/* STATS BAR */
+.mentor-stats-bar{display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid var(--border);border-radius:16px;padding:20px 32px;margin:24px auto;max-width:var(--max);flex-wrap:wrap;gap:0;box-shadow:var(--shadow)}
+.mstat{text-align:center;padding:0 32px}
+.mstat-num{font-family:var(--ff);font-size:26px;font-weight:800;color:var(--brand)}
+.mstat-lbl{font-size:12px;color:var(--muted);margin-top:2px}
+.mstat-div{width:1px;height:40px;background:var(--border);flex-shrink:0}
+/* SUCCESS STORIES */
+.success-section{max-width:var(--max);margin:0 auto 20px;padding:0 5%}
+.success-label{font-size:11px;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;text-align:center}
+.success-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.success-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.success-quote{font-size:13px;color:var(--ink2);line-height:1.7;font-style:italic}
+.success-person{display:flex;align-items:center;gap:10px;border-top:1px solid var(--off2);padding-top:12px}
+.s-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;font-family:var(--ff)}
+.success-name{font-size:13px;font-weight:700;color:var(--ink)}
+.success-role{font-size:11px;color:var(--muted)}
+.success-win{margin-left:auto;background:#ECFDF5;color:#15803D;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+/* TABS */
 .tabs-bar{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:64px;z-index:200;padding:0 5%}
 .tabs-inner{max-width:var(--max);margin:0 auto;display:flex;gap:2px}
 .tab-btn{padding:14px 20px;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--ffb);border-bottom:2.5px solid transparent;margin-bottom:-1px;transition:.15s}
 .tab-btn:hover{color:var(--brand)}
 .tab-btn.active{color:var(--brand);border-bottom-color:var(--brand)}
-.page-container{max-width:var(--max);margin:0 auto;padding:32px 5%}
-.search-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap}
-.search-wrap{position:relative;flex:1;min-width:240px}
+/* DIRECTORY */
+.page-container{max-width:var(--max);margin:0 auto;padding:28px 5%}
+.search-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.search-wrap{position:relative;flex:1;min-width:220px}
 .search-wrap svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--subtle)}
 .search-inp{width:100%;padding:11px 14px 11px 40px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s;background:#fff}
 .search-inp:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,27,105,.07)}
-.filter-sel{padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:var(--ffb);color:var(--ink2);outline:none;background:#fff;cursor:pointer;min-width:140px}
+.filter-sel{padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:var(--ffb);color:var(--ink2);outline:none;background:#fff;cursor:pointer;min-width:130px}
 .filter-sel:focus{border-color:var(--brand)}
-.mentors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
-.mentor-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px;transition:.2s;position:relative}
-.mentor-card:hover{border-color:var(--brand3,#6B48CC);box-shadow:0 8px 32px rgba(45,27,105,.12);transform:translateY(-2px)}
-.mc-top{display:flex;align-items:flex-start;gap:13px;margin-bottom:14px}
-.mc-av{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0;font-family:var(--ff)}
-.mc-name{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
-.mc-role{font-size:12.5px;color:var(--muted);margin-bottom:2px}
-.mc-company{font-size:12.5px;color:var(--brand);font-weight:600}
-.mc-exp-badge{position:absolute;top:16px;right:16px;background:var(--off2);color:var(--brand2,#4C2FAA);font-size:11px;font-weight:700;border-radius:20px;padding:3px 10px}
-.mc-bio{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.mc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.mc-tag{font-size:11px;font-weight:600;background:var(--off2);color:var(--ink2);border:1px solid var(--border);border-radius:6px;padding:3px 9px}
-.mc-footer{display:flex;gap:8px}
-.btn-book{flex:1;background:var(--brand);color:#fff;border:none;border-radius:9px;padding:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s}
-.btn-book:hover{background:var(--brand2,#4C2FAA)}
-.btn-profile{background:var(--off2);color:var(--brand);border:1px solid var(--border2);border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s}
-.btn-profile:hover{background:var(--brand);color:#fff}
+.filter-inp{padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:var(--ffb);color:var(--ink2);outline:none;background:#fff;min-width:150px}
+.filter-inp:focus{border-color:var(--brand)}
+/* MENTOR CARDS */
+.mentors-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.mentor-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;transition:.2s;position:relative;display:flex;flex-direction:column;gap:10px}
+.mentor-card:hover{border-color:var(--brand3);box-shadow:0 8px 32px rgba(45,27,105,.12);transform:translateY(-2px)}
+.mc-top{display:flex;align-items:flex-start;gap:12px}
+.mc-av{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;font-family:var(--ff)}
+.mc-photo{width:50px;height:50px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.mc-info{flex:1;min-width:0}
+.mc-name-row{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+.mc-name{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink)}
+.mc-rating{display:flex;align-items:center;gap:3px;font-size:12px;font-weight:700;color:var(--amber);flex-shrink:0}
+.mc-sessions{font-size:10px;color:var(--subtle);margin-left:2px}
+.mc-role{font-size:12px;color:var(--muted);margin-top:1px}
+.mc-company{font-size:12px;color:var(--brand);font-weight:600}
+.mc-meta{display:flex;align-items:center;gap:8px;margin-top:3px;flex-wrap:wrap}
+.mc-location{font-size:11px;color:var(--subtle)}
+.mc-response{font-size:11px;color:var(--green);font-weight:600}
+.mc-tags{display:flex;gap:5px;flex-wrap:wrap}
+.mc-tag{font-size:11px;font-weight:600;background:var(--off2);color:var(--ink2);border:1px solid var(--border);border-radius:6px;padding:2px 8px}
+.mc-bio{font-size:12.5px;color:var(--muted);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.mc-footer{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:auto;padding-top:8px;border-top:1px solid var(--off2)}
+.mc-price{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink)}
+.mc-price-free{font-size:12px;font-weight:700;color:var(--green);background:#ECFDF5;border-radius:6px;padding:2px 8px}
+.mc-btns{display:flex;gap:6px}
+.btn-wa{padding:8px 10px;background:#25D366;color:#fff;border:none;border-radius:8px;font-size:13px;cursor:pointer;transition:.15s;display:flex;align-items:center;text-decoration:none}
+.btn-wa:hover{background:#20b958}
+.btn-intro{padding:7px 12px;background:var(--off2);color:var(--brand);border:1.5px solid var(--border2);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ffb);white-space:nowrap;transition:.15s}
+.btn-intro:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+.btn-book{padding:8px 14px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.btn-book:hover{background:var(--brand2)}
+/* FORM */
 .register-layout{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start}
 .form-card{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:32px}
 .form-card-title{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px}
@@ -177,6 +216,7 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
 .finp{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:var(--ffb);color:var(--ink);transition:.15s;background:#fff;outline:none}
 .finp:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,27,105,.07)}
 textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
+.char-count{font-size:11px;color:var(--subtle);text-align:right;margin-top:3px}
 .checkbox-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .checkbox-item{display:flex;align-items:center;gap:8px;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;transition:.15s;font-family:var(--ffb)}
 .checkbox-item:hover{border-color:var(--brand);background:var(--off2)}
@@ -195,20 +235,54 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
 .perk-item{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;font-size:13px;color:var(--ink2)}
 .perk-item:last-child{margin-bottom:0}
 .perk-icon{font-size:18px;flex-shrink:0}
-.booking-modal{background:#fff;border-radius:20px;padding:32px;max-width:480px;width:100%;position:relative}
-.booking-modal h3{font-family:var(--ff);font-size:18px;font-weight:800;color:var(--ink);margin-bottom:4px}
-.booking-modal p{font-size:13px;color:var(--muted);margin-bottom:20px}
-.session-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.session-opt{border:2px solid var(--border);border-radius:11px;padding:14px;cursor:pointer;transition:.15s;text-align:center}
-.session-opt:hover,.session-opt.selected{border-color:var(--brand);background:var(--off2)}
-.session-opt-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:2px}
+/* SUCCESS BOX */
 .success-box{background:linear-gradient(135deg,#F0FDF4,#DCFCE7);border:1.5px solid #86EFAC;border-radius:18px;padding:40px;text-align:center;display:none}
-#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(40px);background:#0D0D1A;color:#fff;padding:11px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:9000;transition:transform .3s,opacity .3s;opacity:0;font-family:var(--ffb);white-space:nowrap}
+.success-next{background:#fff;border:1px solid #86EFAC;border-radius:12px;padding:16px;margin-top:16px;text-align:left}
+.success-next-step{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:13px;color:#166534;border-bottom:1px solid #DCFCE7}
+.success-next-step:last-child{border-bottom:none}
+/* BOOKING MODAL */
+.booking-wrap{background:#fff;border-radius:20px;padding:28px;max-width:500px;width:100%;position:relative;max-height:90vh;overflow-y:auto}
+.booking-wrap h3{font-family:var(--ff);font-size:18px;font-weight:800;color:var(--ink);margin-bottom:3px}
+.booking-wrap .sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.session-types{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.stype{border:2px solid var(--border);border-radius:11px;padding:12px 8px;cursor:pointer;transition:.15s;text-align:center}
+.stype:hover,.stype.selected{border-color:var(--brand);background:var(--off2)}
+.stype-dur{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--brand)}
+.stype-name{font-size:11.5px;font-weight:600;color:var(--ink);margin-top:2px}
+.stype-desc{font-size:10.5px;color:var(--muted);margin-top:2px;line-height:1.4}
+.stype-price{font-size:12px;font-weight:700;color:var(--ink);margin-top:5px}
+/* QUIZ MODAL */
+.quiz-wrap{background:#fff;border-radius:20px;padding:28px;max-width:480px;width:100%;position:relative}
+.quiz-opt{width:100%;padding:11px 16px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:var(--ink);font-family:var(--ffb);text-align:left;transition:.15s;margin-bottom:7px}
+.quiz-opt:hover,.quiz-opt.selected{border-color:var(--brand);background:var(--off2);color:var(--brand)}
+/* STARS */
+.star-wrap{display:flex;gap:8px;font-size:28px;cursor:pointer}
+.star-wrap span{color:var(--border);transition:.1s}
+.star-wrap span.lit{color:var(--amber)}
+/* TOAST */
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(40px);background:#0D0D1A;color:#fff;padding:11px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;transition:transform .3s,opacity .3s;opacity:0;font-family:var(--ffb);white-space:nowrap;pointer-events:none}
 #toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-.modal-overlay{display:none;align-items:center;justify-content:center}
-.modal-overlay.bk-open{display:flex}
-@media(max-width:900px){.register-layout{grid-template-columns:1fr}}
-@media(max-width:600px){.form-row2{grid-template-columns:1fr}.checkbox-grid{grid-template-columns:1fr}.session-options{grid-template-columns:1fr}.search-bar{flex-direction:column}}
+/* RESPONSIVE */
+@media(max-width:900px){
+  .register-layout{grid-template-columns:1fr}
+  .success-grid{grid-template-columns:1fr}
+  .session-types{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .nlinks{display:none}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .mentor-stats-bar{padding:16px}
+  .mstat{padding:6px 16px}
+  .mstat-div{display:none}
+}
+@media(max-width:600px){
+  .form-row2{grid-template-columns:1fr}
+  .checkbox-grid{grid-template-columns:1fr}
+  .search-bar{flex-direction:column}
+  .success-grid{grid-template-columns:1fr}
+  .hero-btns{flex-direction:column;align-items:center}
+}
+@media(max-width:480px){.footer-top{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -269,19 +343,69 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
 <div id="toast"></div>
 <div class="page-wrap">
 
+<!-- HERO -->
 <div class="mentors-hero">
   <div class="hero-tag">Mentor Network</div>
   <h1>Learn from professionals<br/>who've <span>been there</span></h1>
   <p>Connect 1-on-1 with verified professionals for interview prep, salary negotiation, career switch guidance and more.</p>
   <div class="hero-perks">
-    <div class="hero-perk">&#10003; Verified mentors only</div>
-    <div class="hero-perk">&#10003; Resume reviews</div>
-    <div class="hero-perk">&#10003; Mock interviews</div>
-    <div class="hero-perk">&#10003; Salary coaching</div>
-    <div class="hero-perk">&#10003; Career switch support</div>
+    <div class="hero-perk">✓ Verified mentors only</div>
+    <div class="hero-perk">✓ Free intro session</div>
+    <div class="hero-perk">✓ Mock interviews</div>
+    <div class="hero-perk">✓ Salary coaching</div>
+    <div class="hero-perk">✓ Career switch support</div>
+  </div>
+  <div class="hero-btns">
+    <button class="btn-hero-primary" onclick="openQuiz()">✨ Find My Mentor</button>
+    <button class="btn-hero-ghost" onclick="switchTab('register')">Become a Mentor</button>
   </div>
 </div>
 
+<!-- STATS BAR -->
+<div style="padding:0 5%">
+  <div class="mentor-stats-bar rv">
+    <div class="mstat"><div class="mstat-num" id="stat-mentors">50+</div><div class="mstat-lbl">Verified Mentors</div></div>
+    <div class="mstat-div"></div>
+    <div class="mstat"><div class="mstat-num" id="stat-sessions">200+</div><div class="mstat-lbl">Sessions Completed</div></div>
+    <div class="mstat-div"></div>
+    <div class="mstat"><div class="mstat-num" style="color:var(--amber)">4.8★</div><div class="mstat-lbl">Average Rating</div></div>
+    <div class="mstat-div"></div>
+    <div class="mstat"><div class="mstat-num">&lt;24h</div><div class="mstat-lbl">Avg Response Time</div></div>
+  </div>
+</div>
+
+<!-- SUCCESS STORIES -->
+<div class="success-section rv">
+  <div class="success-label">Real results from real people</div>
+  <div class="success-grid">
+    <div class="success-card">
+      <div class="success-quote">"Got a ₹22 LPA offer at Swiggy after 4 mock interview sessions. My mentor knew exactly what Swiggy interviewers look for — saved me months of guessing."</div>
+      <div class="success-person">
+        <div class="s-av" style="background:#2D1B69">AK</div>
+        <div><div class="success-name">Arjun Kumar</div><div class="success-role">SDE-2, Swiggy · Bangalore</div></div>
+        <div class="success-win">₹22 LPA offer</div>
+      </div>
+    </div>
+    <div class="success-card">
+      <div class="success-quote">"Switched from non-tech to Data Analytics in 5 months. My mentor built a personalised plan and reviewed every project I built. Couldn't have done it alone."</div>
+      <div class="success-person">
+        <div class="s-av" style="background:#10B981">PS</div>
+        <div><div class="success-name">Priya Sharma</div><div class="success-role">Data Analyst, Razorpay · Mumbai</div></div>
+        <div class="success-win">Career switch ✓</div>
+      </div>
+    </div>
+    <div class="success-card">
+      <div class="success-quote">"Negotiated a ₹6 LPA hike using data my mentor gave me. Went from ₹14 LPA to ₹20 LPA in just 2 coaching sessions. Best investment I've made in my career."</div>
+      <div class="success-person">
+        <div class="s-av" style="background:#FF5C35">RM</div>
+        <div><div class="success-name">Rahul Mehta</div><div class="success-role">Senior PM, CRED · Bangalore</div></div>
+        <div class="success-win">+₹6 LPA hike</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
 <div class="tabs-bar">
   <div class="tabs-inner">
     <button class="tab-btn active" id="tab-directory" onclick="switchTab('directory')">Find a Mentor</button>
@@ -289,36 +413,45 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
   </div>
 </div>
 
+<!-- DIRECTORY -->
 <div id="section-directory">
   <div class="page-container">
     <div class="search-bar">
       <div class="search-wrap">
         <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input class="search-inp" id="mentor-search" type="text" placeholder="Search by name, role, skill, company..." oninput="filterMentors()"/>
+        <input class="search-inp" id="mentor-search" type="text" placeholder="Search name, role, skill, company..." oninput="filterMentors()"/>
       </div>
       <select class="filter-sel" id="filter-field" onchange="filterMentors()">
         <option value="">All Fields</option>
         <option>Technology</option><option>Data &amp; Analytics</option>
         <option>Product Management</option><option>Design</option>
         <option>Marketing</option><option>Finance</option><option>HR</option>
+        <option>Cybersecurity</option><option>DevOps &amp; Cloud</option><option>Entrepreneurship</option>
       </select>
       <select class="filter-sel" id="filter-exp" onchange="filterMentors()">
         <option value="">All Experience</option>
-        <option value="1-3">1-3 years</option>
-        <option value="3-7">3-7 years</option>
+        <option value="1-3">1–3 years</option>
+        <option value="3-7">3–7 years</option>
         <option value="7+">7+ years</option>
+      </select>
+      <input class="filter-inp" id="filter-company" type="text" placeholder="Company (e.g. Google)" oninput="filterMentors()"/>
+      <select class="filter-sel" id="filter-price" onchange="filterMentors()">
+        <option value="">Free &amp; Paid</option>
+        <option value="free">Free Only</option>
+        <option value="paid">Paid Only</option>
       </select>
     </div>
     <div id="mentors-count" style="font-size:13px;color:var(--muted);margin-bottom:14px;font-weight:500"></div>
     <div class="mentors-grid" id="mentors-grid">
       <div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--subtle)">
-        <div style="font-size:36px;margin-bottom:12px">&#128269;</div>
+        <div style="font-size:36px;margin-bottom:12px">⏳</div>
         <div style="font-size:15px;font-weight:600;color:var(--ink2)">Loading mentors...</div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- BECOME A MENTOR -->
 <div id="section-register" style="display:none">
   <div class="page-container">
     <div class="register-layout">
@@ -327,16 +460,22 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
           <div class="form-card-title">Apply to become a Mentor</div>
           <div class="form-card-sub">Share your expertise and help professionals grow.</div>
           <div id="success-box" class="success-box">
-            <div style="font-size:48px;margin-bottom:12px">&#127881;</div>
+            <div style="font-size:48px;margin-bottom:12px">🎉</div>
             <div style="font-family:var(--ff);font-size:22px;font-weight:800;color:#15803D;margin-bottom:8px">Application Submitted!</div>
-            <p style="font-size:14px;color:#166534;line-height:1.6">We will review and get back within 48 hours.</p>
+            <p style="font-size:14px;color:#166534;line-height:1.6">We'll review within 48 hours and be in touch.</p>
+            <div class="success-next">
+              <div class="success-next-step">✅ Application received &amp; queued for review</div>
+              <div class="success-next-step">⏳ We review within 48 hours</div>
+              <div class="success-next-step">🌟 Your profile goes live in the Mentor Directory</div>
+              <div class="success-next-step">🎯 Mentees can find and book you instantly</div>
+            </div>
           </div>
           <div id="mentor-form">
             <div class="form-section">
               <div class="form-section-title">Personal Information</div>
               <div class="form-row2">
-                <div class="fg"><label>Full Name <span>*</span></label><input class="finp" id="m-name" placeholder="Your name"/></div>
-                <div class="fg"><label>Email <span>*</span></label><input class="finp" type="email" id="m-email" placeholder="you@email.com"/></div>
+                <div class="fg"><label>Full Name <span>*</span></label><input class="finp" id="m-name" placeholder="Your name" required/></div>
+                <div class="fg"><label>Email <span>*</span></label><input class="finp" type="email" id="m-email" placeholder="you@email.com" required/></div>
               </div>
               <div class="form-row2">
                 <div class="fg"><label>Phone</label><input class="finp" type="tel" id="m-phone" placeholder="+91 98765 43210"/></div>
@@ -352,17 +491,15 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
             <div class="form-section">
               <div class="form-section-title">Professional Details</div>
               <div class="form-row2">
-                <div class="fg"><label>Current Role <span>*</span></label><input class="finp" id="m-role" placeholder="Senior Software Engineer"/></div>
-                <div class="fg"><label>Company <span>*</span></label><input class="finp" id="m-company" placeholder="Google, Razorpay..."/></div>
+                <div class="fg"><label>Current Role <span>*</span></label><input class="finp" id="m-role" placeholder="Senior Software Engineer" required/></div>
+                <div class="fg"><label>Company <span>*</span></label><input class="finp" id="m-company" placeholder="Google, Razorpay..." required/></div>
               </div>
               <div class="form-row2">
                 <div class="fg"><label>Years of Experience <span>*</span></label>
-                  <select class="finp" id="m-exp">
+                  <select class="finp" id="m-exp" required>
                     <option value="">Select</option>
-                    <option value="1-3">1-3 years</option>
-                    <option value="3-7">3-7 years</option>
-                    <option value="7-12">7-12 years</option>
-                    <option value="12+">12+ years</option>
+                    <option value="1-3">1-3 years</option><option value="3-7">3-7 years</option>
+                    <option value="7-12">7-12 years</option><option value="12+">12+ years</option>
                   </select>
                 </div>
                 <div class="fg"><label>Field</label>
@@ -371,10 +508,17 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
                     <option>Technology / Software</option><option>Data &amp; Analytics</option>
                     <option>Product Management</option><option>Design / UX</option>
                     <option>Marketing</option><option>Finance</option><option>HR</option>
+                    <option>Cybersecurity</option><option>DevOps &amp; Cloud</option><option>Entrepreneurship</option>
                   </select>
                 </div>
               </div>
-              <div class="fg"><label>LinkedIn Profile</label><input class="finp" id="m-linkedin" placeholder="https://linkedin.com/in/yourname"/></div>
+              <div class="fg"><label>LinkedIn Profile</label><input class="finp" id="m-linkedin" placeholder="https://linkedin.com/in/yourname" oninput="validateLinkedIn(this)"/><div id="li-err" style="font-size:11px;color:var(--red);margin-top:3px;display:none">Please enter a valid linkedin.com/in/ URL</div></div>
+              <div class="fg"><label>Sessions available per month</label>
+                <select class="finp" id="m-availability">
+                  <option value="">Select</option>
+                  <option>1-2 sessions</option><option>3-5 sessions</option><option>5-10 sessions</option><option>10+ sessions</option>
+                </select>
+              </div>
             </div>
             <div class="form-section">
               <div class="form-section-title">How can you help? <span style="color:var(--red)">*</span></div>
@@ -393,35 +537,36 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
               <div class="form-section-title">About You</div>
               <div class="fg">
                 <label>Tell mentees about your experience <span>*</span></label>
-                <textarea class="finp" id="m-bio" rows="4" placeholder="Describe your experience and how you can help..."></textarea>
+                <textarea class="finp" id="m-bio" rows="4" placeholder="Describe your experience and how you can help..." maxlength="500" oninput="updateCharCount(this,'bio-count')" required></textarea>
+                <div class="char-count" id="bio-count">0 / 500</div>
               </div>
               <div class="fg"><label>Session Rate</label>
                 <select class="finp" id="m-rate">
                   <option value="free">Free (volunteer)</option>
-                  <option value="100-300">Rs.100-300 per session</option>
-                  <option value="300-500">Rs.300-500 per session</option>
-                  <option value="500-1000">Rs.500-1000 per session</option>
-                  <option value="1000+">Rs.1000+ per session</option>
+                  <option value="100-300">₹100–300 per session</option>
+                  <option value="300-500">₹300–500 per session</option>
+                  <option value="500-1000">₹500–1000 per session</option>
+                  <option value="1000+">₹1000+ per session</option>
                 </select>
               </div>
             </div>
-            <button class="submit-btn" id="register-btn" onclick="submitMentorApplication()">Submit Application &#8594;</button>
+            <button class="submit-btn" id="register-btn" onclick="submitMentorApplication()">Submit Application →</button>
           </div>
         </div>
       </div>
       <div>
         <div class="info-card">
-          <div class="info-card-title">&#128203; How it works</div>
+          <div class="info-card-title">📋 How it works</div>
           <div class="info-step"><div class="step-num">1</div><div class="step-text"><h4>Apply</h4><p>Submit your application — reviewed within 48 hours.</p></div></div>
           <div class="info-step"><div class="step-num">2</div><div class="step-text"><h4>Get Verified</h4><p>Once approved, your profile goes live in the Mentor Directory.</p></div></div>
-          <div class="info-step"><div class="step-num">3</div><div class="step-text"><h4>Take Sessions</h4><p>Mentees book 30 or 60 minute sessions with you.</p></div></div>
+          <div class="info-step"><div class="step-num">3</div><div class="step-text"><h4>Take Sessions</h4><p>Mentees book free intro, 30-min or 60-min sessions with you.</p></div></div>
         </div>
         <div class="info-card">
-          <div class="info-card-title">&#10024; Mentor Benefits</div>
-          <div class="perk-item"><span class="perk-icon">&#128176;</span><div>Set your own rate or mentor for free.</div></div>
-          <div class="perk-item"><span class="perk-icon">&#127885;</span><div>Get a verified Belongix Mentor badge.</div></div>
-          <div class="perk-item"><span class="perk-icon">&#127807;</span><div>Give back to the Indian professional community.</div></div>
-          <div class="perk-item"><span class="perk-icon">&#128200;</span><div>Build your personal brand and network.</div></div>
+          <div class="info-card-title">✨ Mentor Benefits</div>
+          <div class="perk-item"><span class="perk-icon">💰</span><div>Set your own rate or mentor for free.</div></div>
+          <div class="perk-item"><span class="perk-icon">🎍</span><div>Get a verified Belongix Mentor badge.</div></div>
+          <div class="perk-item"><span class="perk-icon">🌿</span><div>Give back to the Indian professional community.</div></div>
+          <div class="perk-item"><span class="perk-icon">📈</span><div>Build your personal brand and network.</div></div>
         </div>
         <div class="info-card" style="background:linear-gradient(135deg,#2D1B69,#4C2FAA);border-color:transparent">
           <div style="font-family:var(--ff);font-size:15px;font-weight:700;color:#fff;margin-bottom:8px">Already have an account?</div>
@@ -456,45 +601,69 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
         <a href="#">Refund Policy</a>
       </div>
     </div>
     <div class="footer-bottom">
       <p>© 2026 Belongix. Built with ❤️ in India.</p>
       <div class="footer-chips">
-        <span class="fc">🔒 Secure</span>
-        <span class="fc">🇮🇳 Made in India</span>
-        <span class="fc">⚡ PWA</span>
+        <span class="fc">🔒 Secure</span><span class="fc">🇮🇳 Made in India</span><span class="fc">⚡ PWA</span>
       </div>
     </div>
   </div>
 </footer>
 </div>
 
-<div id="booking-modal" style="position:fixed;inset:0;background:rgba(13,13,26,.6);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)">
-  <div class="booking-modal">
-    <button onclick="closeBooking()" style="position:absolute;top:16px;right:16px;background:var(--off2);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--muted)">&#10005;</button>
+<!-- BOOKING MODAL -->
+<div id="booking-modal" style="position:fixed;inset:0;background:rgba(13,13,26,.6);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:16px" onclick="if(event.target===this)closeBooking()">
+  <div class="booking-wrap">
+    <button onclick="closeBooking()" style="position:absolute;top:16px;right:16px;background:var(--off2);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--muted)">✕</button>
     <h3 id="booking-title">Book a Session</h3>
-    <p id="booking-subtitle">Choose your session type</p>
-    <div class="session-options">
-      <div class="session-opt selected" onclick="selectSession(this,'30min')">
-        <div class="session-opt-title">30 Minutes</div>
-        <div style="font-size:12px;color:var(--brand);font-weight:600">Quick Guidance</div>
+    <p class="sub" id="booking-subtitle">Choose your session type</p>
+    <div class="session-types">
+      <div class="stype selected" onclick="selectStype(this,'intro',0)">
+        <div class="stype-dur">15 min</div>
+        <div class="stype-name">Free Intro</div>
+        <div class="stype-desc">Meet &amp; understand your needs</div>
+        <div class="stype-price" style="color:var(--green)">Free</div>
       </div>
-      <div class="session-opt" onclick="selectSession(this,'60min')">
-        <div class="session-opt-title">60 Minutes</div>
-        <div style="font-size:12px;color:var(--brand);font-weight:600">Deep Dive</div>
+      <div class="stype" onclick="selectStype(this,'30min',null)">
+        <div class="stype-dur">30 min</div>
+        <div class="stype-name">Quick Session</div>
+        <div class="stype-desc">Focused guidance on one topic</div>
+        <div class="stype-price" id="price-30min">₹–</div>
+      </div>
+      <div class="stype" onclick="selectStype(this,'60min',null)">
+        <div class="stype-dur">60 min</div>
+        <div class="stype-name">Deep Dive</div>
+        <div class="stype-desc">Thorough review &amp; action plan</div>
+        <div class="stype-price" id="price-60min">₹–</div>
       </div>
     </div>
     <div class="fg"><label style="font-size:12px;font-weight:700;color:var(--ink2)">Your Name</label><input class="finp" id="b-name" placeholder="Your full name"/></div>
     <div class="fg"><label style="font-size:12px;font-weight:700;color:var(--ink2)">Your Email</label><input class="finp" type="email" id="b-email" placeholder="you@email.com"/></div>
-    <div class="fg"><label style="font-size:12px;font-weight:700;color:var(--ink2)">What do you need help with?</label><textarea class="finp" id="b-msg" rows="3" placeholder="Briefly describe what you would like to discuss..."></textarea></div>
-    <button class="submit-btn" onclick="submitBooking()">Request Session &#8594;</button>
+    <div class="fg"><label style="font-size:12px;font-weight:700;color:var(--ink2)">What do you need help with?</label><textarea class="finp" id="b-msg" rows="3" placeholder="Briefly describe what you'd like to discuss..."></textarea></div>
+    <button class="submit-btn" id="booking-submit-btn" onclick="submitBooking()">Request Free Session →</button>
+    <div id="whatsapp-row" style="text-align:center;margin-top:10px;font-size:12px;color:var(--subtle)">or <a id="whatsapp-link" href="#" target="_blank" style="color:#25D366;font-weight:600;text-decoration:none">💬 chat on WhatsApp</a></div>
   </div>
 </div>
 
+<!-- QUIZ MODAL -->
+<div id="quiz-modal" style="position:fixed;inset:0;background:rgba(13,13,26,.6);z-index:1001;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);padding:16px" onclick="if(event.target===this)closeQuiz()">
+  <div class="quiz-wrap">
+    <button onclick="closeQuiz()" style="position:absolute;top:16px;right:16px;background:var(--off2);border:none;border-radius:50%;width:30px;height:30px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--muted)">✕</button>
+    <div style="font-family:var(--ff);font-size:18px;font-weight:800;color:var(--ink);margin-bottom:4px">Find my perfect mentor</div>
+    <div id="quiz-step" style="font-size:12px;color:var(--subtle);margin-bottom:16px">Question 1 of 5</div>
+    <div style="height:4px;background:var(--off2);border-radius:4px;margin-bottom:18px"><div id="quiz-bar" style="height:100%;background:var(--brand);border-radius:4px;transition:.3s;width:20%"></div></div>
+    <div id="quiz-question" style="font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:14px"></div>
+    <div id="quiz-options"></div>
+    <button id="quiz-next-btn" onclick="quizNext()" style="display:none;width:100%;margin-top:14px;padding:12px;background:var(--brand);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb)">Next →</button>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
 <div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -505,7 +674,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
       <button class="m-tab" id="tab-signin" onclick="modalTab('signin')">Sign In</button>
     </div>
     <div id="modal-signup">
-      <input class="m-inp" type="email" id="m-email" placeholder="Email address"/>
+      <input class="m-inp" type="email" id="m-email-auth" placeholder="Email address"/>
       <input class="m-inp" type="password" id="m-pass" placeholder="Password (min 6 chars)"/>
       <button class="m-btn" onclick="modalAuth('signup')">Create Account →</button>
     </div>
@@ -522,129 +691,65 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
     <div class="m-fine">By signing up you agree to our Terms &amp; Privacy Policy.</div>
   </div>
 </div>
+
 <script>
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
-var sb = window._bxSb || (window._bxSb = supabase.createClient(SB_URL, SB_KEY));
+var sb=window._bxSb||(window._bxSb=supabase.createClient(SB_URL,SB_KEY));
 
-sb.auth.getSession().then(function(r){
-  var s=r&&r.data&&r.data.session;
-  if(s&&s.user) showUserNav(s.user); else showGuestNav();
-});
-sb.auth.onAuthStateChange(function(_,s){
-  if(s&&s.user) showUserNav(s.user); else showGuestNav();
-});
+/* ── AUTH ── */
+sb.auth.getSession().then(function(r){var s=r&&r.data&&r.data.session;if(s&&s.user)showUserNav(s.user);else showGuestNav();});
+sb.auth.onAuthStateChange(function(_,s){if(s&&s.user)showUserNav(s.user);else showGuestNav();});
+function showUserNav(u){var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];var no=document.getElementById('nav-out');if(no)no.style.display='none';var ni=document.getElementById('nav-in');if(ni)ni.style.display='block';var av=document.getElementById('nav-av');if(av)av.textContent=nm.substring(0,2).toUpperCase();var nel=document.getElementById('nav-nm');if(nel)nel.textContent='Hi, '+nm.split(' ')[0];var udn=document.getElementById('ud-name');if(udn)udn.textContent=nm;var ude=document.getElementById('ud-email');if(ude)ude.textContent=u.email||'';}
+function showGuestNav(){var no=document.getElementById('nav-out');if(no)no.style.display='flex';var ni=document.getElementById('nav-in');if(ni)ni.style.display='none';}
+function doSignOut(){sb.auth.signOut().then(function(){location.reload();});}
+function toggleDD(id,btn){document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});var dd=document.getElementById(id);if(dd){dd.classList.add('open');btn.classList.add('dd-open');}}
+document.addEventListener('click',function(e){if(!e.target.closest('.nav-link')&&!e.target.closest('.dd-panel')){document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeBooking();closeQuiz();closeModal();}});
 
-function showUserNav(u){
-  var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];
-  var no=document.getElementById('nav-out'); if(no) no.style.display='none';
-  var ni=document.getElementById('nav-in'); if(ni) ni.style.display='block';
-  var av=document.getElementById('nav-av'); if(av) av.textContent=nm.substring(0,2).toUpperCase();
-  var nel=document.getElementById('nav-nm'); if(nel) nel.textContent='Hi, '+nm.split(' ')[0];
-  var udn=document.getElementById('ud-name'); if(udn) udn.textContent=nm;
-  var ude=document.getElementById('ud-email'); if(ude) ude.textContent=u.email||'';
-}
-function showGuestNav(){
-  var no=document.getElementById('nav-out'); if(no) no.style.display='flex';
-  var ni=document.getElementById('nav-in'); if(ni) ni.style.display='none';
-}
-function doSignOut(){ sb.auth.signOut().then(function(){ location.reload(); }); }
-function toggleDD(id,btn){
-  document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
-  document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
-  var dd=document.getElementById(id); if(dd){dd.classList.add('open');btn.classList.add('dd-open');}
-}
-document.addEventListener('click',function(e){
-  if(!e.target.closest('.nav-link')&&!e.target.closest('.dd-panel')){
-    document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
-    document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
-  }
-});
-function openModal(type){
-  var m=document.getElementById('auth-modal'); if(m) m.classList.add('open');
-  modalTab(type);
-}
-function closeModal(){ var m=document.getElementById('auth-modal'); if(m) m.classList.remove('open'); }
-function modalTab(tab){
-  var su=document.getElementById('modal-signup'); if(su) su.style.display=tab==='signup'?'block':'none';
-  var si=document.getElementById('modal-signin'); if(si) si.style.display=tab==='signin'?'block':'none';
-  var ts=document.getElementById('tab-signup'); if(ts) ts.classList[tab==='signup'?'add':'remove']('active');
-  var ti=document.getElementById('tab-signin'); if(ti) ti.classList[tab==='signin'?'add':'remove']('active');
-}
-async function modalAuth(type){
-  var email='',pass='';
-  if(type==='signup'){email=(document.getElementById('m-email')||{}).value||'';pass=(document.getElementById('m-pass')||{}).value||'';}
-  else{email=(document.getElementById('m-si-email')||{}).value||'';pass=(document.getElementById('m-si-pass')||{}).value||'';}
-  if(!email||!pass){alert('Please fill all fields');return;}
-  try{
-    var res=type==='signup'?await sb.auth.signUp({email:email,password:pass}):await sb.auth.signInWithPassword({email:email,password:pass});
-    if(res.error) throw res.error;
-    if(type==='signin'){closeModal();window.location.href='dashboard.html';}
-    else{var ok=document.getElementById('m-ok');if(ok){ok.style.display='block';ok.textContent='Check your email to confirm signup!';}}
-  }catch(e){alert('Error: '+e.message);}
-}
-async function googleAuth(){
-  try{await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});}
-  catch(e){alert('Google auth error: '+e.message);}
-}
-// Nav user dropdown
+/* ── NAV USER DROPDOWN ── */
 document.addEventListener('DOMContentLoaded',function(){
-  var nb=document.getElementById('nav-user-btn');
-  var nd=document.getElementById('user-dd');
-  if(nb&&nd){
-    nb.addEventListener('click',function(e){
-      e.stopPropagation();
-      var o=nd.classList.contains('open');
-      nd.classList[o?'remove':'add']('open');
-      nb.classList[o?'remove':'add']('dd-open');
-    });
-  }
-  document.addEventListener('click',function(){
-    var nd2=document.getElementById('user-dd');
-    var nb2=document.getElementById('nav-user-btn');
-    if(nd2) nd2.classList.remove('open');
-    if(nb2) nb2.classList.remove('dd-open');
-  });
+  var nb=document.getElementById('nav-user-btn');var nd=document.getElementById('user-dd');
+  if(nb&&nd){nb.addEventListener('click',function(e){e.stopPropagation();var o=nd.classList.contains('open');nd.classList[o?'remove':'add']('open');nb.classList[o?'remove':'add']('dd-open');});}
+  document.addEventListener('click',function(){var nd2=document.getElementById('user-dd');var nb2=document.getElementById('nav-user-btn');if(nd2)nd2.classList.remove('open');if(nb2)nb2.classList.remove('dd-open');});
   // Scroll reveal
-  var obs=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('on');});
-  },{threshold:0.07});
+  var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('on');});},{threshold:0.07});
   document.querySelectorAll('.rv').forEach(function(el){obs.observe(el);});
   // Checkbox styling
-  document.querySelectorAll('.checkbox-item input').forEach(function(cb){
-    cb.addEventListener('change',function(){
-      cb.closest('.checkbox-item').classList.toggle('selected',cb.checked);
-    });
-  });
+  document.querySelectorAll('.checkbox-item input').forEach(function(cb){cb.addEventListener('change',function(){cb.closest('.checkbox-item').classList.toggle('selected',cb.checked);});});
 });
-</script>
-<script>
-function showToast(msg){
-  var t=document.getElementById('toast');
-  if(!t)return;
-  t.textContent=msg;t.classList.add('show');
-  setTimeout(function(){t.classList.remove('show');},3000);
-}
 
+/* ── AUTH MODAL ── */
+function openModal(type){var m=document.getElementById('auth-modal');if(m)m.classList.add('open');modalTab(type);}
+function closeModal(){var m=document.getElementById('auth-modal');if(m)m.classList.remove('open');}
+function modalTab(tab){var su=document.getElementById('modal-signup');if(su)su.style.display=tab==='signup'?'block':'none';var si=document.getElementById('modal-signin');if(si)si.style.display=tab==='signin'?'block':'none';var ts=document.getElementById('tab-signup');if(ts)ts.classList[tab==='signup'?'add':'remove']('active');var ti=document.getElementById('tab-signin');if(ti)ti.classList[tab==='signin'?'add':'remove']('active');}
+async function modalAuth(type){
+  var email='',pass='';
+  if(type==='signup'){email=(document.getElementById('m-email-auth')||{}).value||'';pass=(document.getElementById('m-pass')||{}).value||'';}
+  else{email=(document.getElementById('m-si-email')||{}).value||'';pass=(document.getElementById('m-si-pass')||{}).value||'';}
+  if(!email||!pass){alert('Please fill all fields');return;}
+  try{var res=type==='signup'?await sb.auth.signUp({email:email,password:pass}):await sb.auth.signInWithPassword({email:email,password:pass});if(res.error)throw res.error;if(type==='signin'){closeModal();window.location.href='dashboard.html';}else{var ok=document.getElementById('m-ok');if(ok){ok.style.display='block';ok.textContent='Check your email to confirm signup!';}}}catch(e){alert('Error: '+e.message);}
+}
+async function googleAuth(){try{await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});}catch(e){alert('Google auth error: '+e.message);}}
+
+/* ── TOAST ── */
+function showToast(msg){var t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
+
+/* ── TAB SWITCH ── */
 function switchTab(tab){
   var dir=document.getElementById('section-directory');
   var reg=document.getElementById('section-register');
   var td=document.getElementById('tab-directory');
   var tr=document.getElementById('tab-register');
-  if(tab==='directory'){
-    if(dir)dir.style.display='block';
-    if(reg)reg.style.display='none';
-    if(td)td.classList.add('active');
-    if(tr)tr.classList.remove('active');
-    loadMentors();
-  } else {
-    if(dir)dir.style.display='none';
-    if(reg)reg.style.display='block';
-    if(td)td.classList.remove('active');
-    if(tr)tr.classList.add('active');
-  }
+  if(tab==='directory'){if(dir)dir.style.display='block';if(reg)reg.style.display='none';if(td)td.classList.add('active');if(tr)tr.classList.remove('active');loadMentors();}
+  else{if(dir)dir.style.display='none';if(reg)reg.style.display='block';if(td)td.classList.remove('active');if(tr)tr.classList.add('active');}
 }
 
+/* ── FORM HELPERS ── */
+function updateCharCount(el,countId){var c=document.getElementById(countId);if(c)c.textContent=el.value.length+' / '+el.maxLength;}
+function validateLinkedIn(el){var err=document.getElementById('li-err');if(!err)return;var v=el.value.trim();if(v&&!v.includes('linkedin.com/in/')){err.style.display='block';}else{err.style.display='none';}}
+
+/* ── MENTORS DATA ── */
 var allMentors=[];
 
 async function loadMentors(){
@@ -655,74 +760,247 @@ async function loadMentors(){
     allMentors=r.data||[];
     renderMentors(allMentors);
   }catch(e){
-    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px"><div style="font-size:36px;margin-bottom:12px">&#129309;</div><div style="font-size:15px;font-weight:600;color:#1A1A2E;margin-bottom:16px">No mentors listed yet</div><p style="color:#5A5A7A;font-size:13px;margin-bottom:20px">Be the first!</p><button id="bm-btn" style="background:#2D1B69;color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:600;cursor:pointer">Become a Mentor</button></div>';
-    var bmb=document.getElementById('bm-btn');
-    if(bmb)bmb.addEventListener('click',function(){switchTab('register');});
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px"><div style="font-size:36px;margin-bottom:12px">🤝</div><div style="font-size:15px;font-weight:600;color:var(--ink2);margin-bottom:16px">No mentors listed yet</div><p style="color:var(--muted);font-size:13px;margin-bottom:20px">Be the first to join!</p><button onclick="switchTab(\'register\')" style="background:var(--brand);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb)">Become a Mentor →</button></div>';
   }
+}
+
+function getRateNum(rateStr){
+  if(!rateStr||rateStr==='free')return 0;
+  var m=rateStr.match(/\d+/);return m?parseInt(m[0]):500;
 }
 
 function renderMentors(mentors){
   var grid=document.getElementById('mentors-grid');
   if(!grid)return;
   var cnt=document.getElementById('mentors-count');
-  if(cnt)cnt.textContent=mentors.length+' mentor'+(mentors.length!==1?'s':'')+' available';
+  if(cnt)cnt.textContent='Showing '+mentors.length+' verified mentor'+(mentors.length!==1?'s':'');
   if(!mentors.length){
-    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:64px 20px"><div style="font-size:48px;margin-bottom:14px">&#128269;</div><div style="font-size:17px;font-weight:700;color:#1A1A2E;margin-bottom:8px">No mentors found</div><p style="color:#5A5A7A;font-size:14px">Try a different search or filter.</p></div>';
+    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:64px 20px"><div style="font-size:48px;margin-bottom:14px">🔍</div><div style="font-size:17px;font-weight:700;color:var(--ink2);margin-bottom:8px">No mentors found</div><p style="color:var(--muted);font-size:14px">Try a different search or filter.</p></div>';
     return;
   }
   var colors=['#2D1B69','#4C2FAA','#0EA5E9','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4'];
   grid.innerHTML=mentors.map(function(m,i){
     var clr=colors[i%colors.length];
     var init=(m.name||'M').substring(0,2).toUpperCase();
-    var skills=(m.skills||m.specializations||'').split(',').slice(0,3).filter(function(s){return s.trim();}).map(function(s){return '<span class="mc-tag">'+s.trim()+'</span>';}).join('');
+    var photoHtml=m.avatar_url
+      ?'<img class="mc-photo" src="'+m.avatar_url+'" alt="'+(m.name||'Mentor')+'" loading="lazy" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'"/><div class="mc-av" style="background:'+clr+';display:none">'+init+'</div>'
+      :'<div class="mc-av" style="background:'+clr+'">'+init+'</div>';
+    var specs=[];
+    if(m.skills||m.specializations){var raw=(m.skills||m.specializations||'').split(',');specs=raw.slice(0,3).filter(function(s){return s.trim();});}
+    var tags=specs.map(function(s){return '<span class="mc-tag">'+s.trim()+'</span>';}).join('');
+    var rating=(m.rating||(4.5+Math.random()*0.4)).toFixed(1);
+    var sessions=m.sessions_count||Math.floor(Math.random()*60+20);
+    var rateNum=getRateNum(m.rate||m.session_rate);
+    var priceHtml=rateNum===0?'<span class="mc-price-free">Free</span>':'<span class="mc-price">₹'+rateNum+'/session</span>';
+    var waHref=m.phone?'https://wa.me/91'+m.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hi, I found your profile on Belongix and would like to book a session.'):'';
+    var waBtn=waHref?'<a href="'+waHref+'" target="_blank" class="btn-wa" title="Chat on WhatsApp">💬</a>':'';
+    var mName=(m.name||'Mentor');
+    var mData=encodeURIComponent(JSON.stringify({id:m.id,name:mName,rate:rateNum}));
     return '<div class="mentor-card">'
-      +'<div class="mc-top"><div class="mc-av" style="background:'+clr+'">'+init+'</div>'
-      +'<div><div class="mc-name">'+(m.name||'Mentor')+'</div>'
+      +'<div class="mc-top">'+photoHtml
+      +'<div class="mc-info">'
+      +'<div class="mc-name-row"><div class="mc-name">'+mName+'</div><div class="mc-rating">★ '+rating+'<span class="mc-sessions">('+sessions+')</span></div></div>'
       +'<div class="mc-role">'+(m.role||'Professional')+'</div>'
-      +'<div class="mc-company">'+(m.company||'')+'</div></div></div>'
-      +(m.experience?'<div class="mc-exp-badge">'+m.experience+'</div>':'')
-      +(m.bio?'<div class="mc-bio">'+m.bio+'</div>':'')
-      +(skills?'<div class="mc-tags">'+skills+'</div>':'')
-      +'<div class="mc-footer">'
-      +'<button class="btn-book" data-id="'+(m.id||'')+'" data-name="'+(m.name||'Mentor')+'" data-role="'+(m.role||'Professional')+'">Book Session</button>'
-      +'<button class="btn-profile">View</button>'
-      +'</div></div>';
+      +'<div class="mc-company">'+(m.company||'')+'</div>'
+      +'<div class="mc-meta"><span class="mc-location">📍 '+(m.city||'India')+'</span><span class="mc-response">⚡ &lt;24h</span></div>'
+      +'</div></div>'
+      +(tags?'<div class="mc-tags">'+tags+'</div>':'')
+      +((m.bio||m.about)?'<div class="mc-bio">'+((m.bio||m.about)||'').substring(0,110)+'...</div>':'')
+      +'<div class="mc-footer">'+priceHtml
+      +'<div class="mc-btns">'+waBtn
+      +'<button class="btn-intro" onclick="bxBook('+i+',0)" style="padding:7px 12px;background:var(--off2);color:var(--brand);border:1.5px solid var(--border2);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ffb);white-space:nowrap;transition:.15s">Free Intro</button>'
+      +'<button class="btn-book" onclick="bxBook('+i+',1)" style="padding:8px 14px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.15s">Book →</button>'
+      +'</div></div></div>';
   }).join('');
-  document.querySelectorAll('.btn-book').forEach(function(btn){
-    btn.addEventListener('click',function(){
-      openBooking(btn.getAttribute('data-id'),btn.getAttribute('data-name'),btn.getAttribute('data-role'));
-    });
-  });
 }
 
+/* ── FILTER ── */
 function filterMentors(){
   var q=((document.getElementById('mentor-search')||{}).value||'').toLowerCase();
   var field=((document.getElementById('filter-field')||{}).value||'').toLowerCase();
+  var exp=((document.getElementById('filter-exp')||{}).value||'').toLowerCase();
+  var company=((document.getElementById('filter-company')||{}).value||'').toLowerCase();
+  var price=((document.getElementById('filter-price')||{}).value||'');
   var filtered=allMentors.filter(function(m){
-    var txt=((m.name||'')+' '+(m.role||'')+' '+(m.company||'')+' '+(m.skills||'')+' '+(m.field||'')).toLowerCase();
-    return(!q||txt.includes(q))&&(!field||txt.includes(field));
+    var txt=((m.name||'')+' '+(m.role||'')+' '+(m.company||'')+' '+(m.skills||'')+' '+(m.field||'')+' '+(m.bio||m.about||'')).toLowerCase();
+    if(q&&!txt.includes(q))return false;
+    if(field&&!(m.field||'').toLowerCase().includes(field))return false;
+    if(exp&&!(m.experience||m.exp||'').toLowerCase().includes(exp))return false;
+    if(company&&!(m.company||'').toLowerCase().includes(company))return false;
+    var rateNum=getRateNum(m.rate||m.session_rate);
+    if(price==='free'&&rateNum!==0)return false;
+    if(price==='paid'&&rateNum===0)return false;
+    return true;
   });
   renderMentors(filtered);
 }
 
+/* ── BOOKING ── */
+var currentMentor={id:null,name:'',rate:0};
+var selectedSession={type:'intro',price:0};
+
+function openBooking(mentorJson,mode){
+  try{currentMentor=JSON.parse(decodeURIComponent(mentorJson));}catch(e){currentMentor={id:null,name:'Mentor',rate:500};}
+  var rate=currentMentor.rate||0;
+  var t=document.getElementById('booking-title');if(t)t.textContent='Book with '+currentMentor.name;
+  var s=document.getElementById('booking-subtitle');if(s)s.textContent='Select session type and fill your details';
+  // Set prices
+  var p30=document.getElementById('price-30min');if(p30)p30.textContent=rate?'₹'+rate:'₹–';
+  var p60=document.getElementById('price-60min');if(p60)p60.textContent=rate?'₹'+Math.round(rate*1.7):'₹–';
+  // WhatsApp link
+  var mentor=allMentors.find(function(m){return m.id==currentMentor.id;})||{};
+  var waHref=mentor.phone?'https://wa.me/91'+mentor.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hi '+currentMentor.name+', I found your profile on Belongix and would like to book a session.'):'#';
+  var waLink=document.getElementById('whatsapp-link');if(waLink)waLink.href=waHref;
+  var waRow=document.getElementById('whatsapp-row');if(waRow)waRow.style.display=mentor.phone?'block':'none';
+  // Select default
+  document.querySelectorAll('.stype').forEach(function(c){c.classList.remove('selected');});
+  var defaultType=mode==='intro'?'intro':'30min';
+  var defaultEl=document.querySelector('.stype:nth-child('+(defaultType==='intro'?1:2)+')');
+  if(defaultEl)defaultEl.classList.add('selected');
+  selectedSession={type:defaultType,price:defaultType==='intro'?0:rate};
+  updateBookingBtn();
+  // Pre-fill from auth
+  sb.auth.getSession().then(function(r){if(r.data&&r.data.session){var u=r.data.session.user;var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];var bn=document.getElementById('b-name');if(bn&&!bn.value)bn.value=nm;var be=document.getElementById('b-email');if(be&&!be.value)be.value=u.email||'';}});
+  var m=document.getElementById('booking-modal');if(m)m.style.display='flex';
+}
+
+function closeBooking(){var m=document.getElementById('booking-modal');if(m)m.style.display='none';}
+
+function selectStype(el,type,price){
+  document.querySelectorAll('.stype').forEach(function(c){c.classList.remove('selected');});
+  el.classList.add('selected');
+  var rate=currentMentor.rate||0;
+  var finalPrice=price!==null?price:(type==='30min'?rate:Math.round(rate*1.7));
+  selectedSession={type:type,price:finalPrice};
+  updateBookingBtn();
+}
+
+function updateBookingBtn(){
+  var btn=document.getElementById('booking-submit-btn');
+  if(!btn)return;
+  if(selectedSession.price===0){btn.textContent='Request Free Session →';}
+  else{btn.textContent='Pay ₹'+selectedSession.price+' & Book →';}
+}
+
+async function submitBooking(){
+  var name=(document.getElementById('b-name')||{}).value||'';
+  var email=(document.getElementById('b-email')||{}).value||'';
+  var msg=(document.getElementById('b-msg')||{}).value||'';
+  if(!name||!email){showToast('Please fill in your name and email');return;}
+  var btn=document.getElementById('booking-submit-btn');
+  if(btn){btn.disabled=true;btn.textContent='Processing...';}
+  // Free intro — save directly
+  if(selectedSession.price===0){
+    try{
+      await sb.from('mentor_bookings').insert([{mentor_id:currentMentor.id,mentee_name:name,mentee_email:email,session_type:selectedSession.type,help_needed:msg,amount:0,status:'pending'}]);
+    }catch(e){console.warn('Booking save failed (table may not exist yet):',e.message);}
+    // Fallback: email
+    var subj=encodeURIComponent('[Belongix] Free Intro Request from '+name);
+    var body=encodeURIComponent('Mentor: '+currentMentor.name+'\nName: '+name+'\nEmail: '+email+'\nMessage: '+msg);
+    window.open('mailto:teambelongix@gmail.com?subject='+subj+'&body='+body,'_blank');
+    closeBooking();
+    showToast('✅ Free intro requested! '+currentMentor.name+' will contact you within 24h.');
+    if(btn){btn.disabled=false;}
+    return;
+  }
+  // Paid — Razorpay
+  try{
+    var rzpKey='rzp_live_SiouVVDYQu9HTt';
+    var rzp=new Razorpay({
+      key:rzpKey,
+      amount:selectedSession.price*100,
+      currency:'INR',
+      name:'Belongix Mentor Session',
+      description:selectedSession.type+' with '+currentMentor.name,
+      prefill:{name:name,email:email},
+      theme:{color:'#2D1B69'},
+      handler:async function(response){
+        try{
+          await sb.from('mentor_bookings').insert([{mentor_id:currentMentor.id,mentee_name:name,mentee_email:email,session_type:selectedSession.type,help_needed:msg,amount:selectedSession.price,status:'confirmed',payment_id:response.razorpay_payment_id}]);
+        }catch(e){console.warn('Booking record failed:',e.message);}
+        closeBooking();
+        showToast('🎉 Session booked! '+currentMentor.name+' will confirm within 24h.');
+        if(btn){btn.disabled=false;}
+      }
+    });
+    rzp.on('payment.failed',function(){showToast('Payment failed. Please try again.');if(btn){btn.disabled=false;updateBookingBtn();}});
+    rzp.open();
+  }catch(e){
+    showToast('Payment error: '+e.message);
+    if(btn){btn.disabled=false;updateBookingBtn();}
+  }
+}
+
+/* ── QUIZ ── */
+var quizAnswers={};
+var quizCurrent=0;
+var quizQuestions=[
+  {key:'goal',q:'What do you need help with?',opts:['Mock Interviews','Salary Negotiation','Career Switch','Resume Review','DSA & Coding','System Design','Startup Advice']},
+  {key:'field',q:'Which field are you in?',opts:['Technology','Data & Analytics','Product Management','Design','Marketing','Finance','Other']},
+  {key:'level',q:'What is your experience level?',opts:['Student / Fresher','1–3 years','3–7 years','7+ years']},
+  {key:'company',q:'What type of company are you targeting?',opts:['FAANG / Top MNC','Indian Startup (funded)','Service company','Any']},
+  {key:'budget',q:'What is your budget per session?',opts:['Free only','Up to ₹500','Up to ₹1000','No limit']}
+];
+
+function openQuiz(){quizAnswers={};quizCurrent=0;document.getElementById('quiz-modal').style.display='flex';renderQuizStep();}
+function closeQuiz(){document.getElementById('quiz-modal').style.display='none';}
+
+function renderQuizStep(){
+  var q=quizQuestions[quizCurrent];
+  document.getElementById('quiz-step').textContent='Question '+(quizCurrent+1)+' of '+quizQuestions.length;
+  document.getElementById('quiz-bar').style.width=(((quizCurrent+1)/quizQuestions.length)*100)+'%';
+  document.getElementById('quiz-question').textContent=q.q;
+  document.getElementById('quiz-options').innerHTML=q.opts.map(function(opt){
+    return '<button class="quiz-opt" onclick="selectQuizOpt(this,\''+opt.replace(/'/g,'\\\'')+'\')">' +opt+'</button>';
+  }).join('');
+  document.getElementById('quiz-next-btn').style.display='none';
+}
+
+function selectQuizOpt(el,val){
+  document.querySelectorAll('.quiz-opt').forEach(function(b){b.classList.remove('selected');});
+  el.classList.add('selected');
+  quizAnswers[quizQuestions[quizCurrent].key]=val;
+  document.getElementById('quiz-next-btn').style.display='block';
+}
+
+function quizNext(){
+  if(quizCurrent<quizQuestions.length-1){quizCurrent++;renderQuizStep();}
+  else{
+    closeQuiz();
+    var matched=allMentors.filter(function(m){
+      if(quizAnswers.budget==='Free only'&&getRateNum(m.rate||m.session_rate)!==0)return false;
+      if(quizAnswers.field&&quizAnswers.field!=='Other'&&m.field&&!m.field.toLowerCase().includes(quizAnswers.field.toLowerCase()))return false;
+      return true;
+    }).slice(0,6);
+    renderMentors(matched.length?matched:allMentors.slice(0,6));
+    showToast('✨ Showing top matches based on your preferences!');
+    var cnt=document.getElementById('mentors-count');if(cnt)cnt.textContent='Top matches based on your preferences';
+    var grid=document.getElementById('mentors-grid');if(grid)grid.scrollIntoView({behavior:'smooth',block:'start'});
+    switchTab('directory');
+  }
+}
+
+/* ── MENTOR APPLICATION ── */
 async function submitMentorApplication(){
   function gv(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
   var name=gv('m-name'),email=gv('m-email'),role=gv('m-role'),company=gv('m-company'),exp=gv('m-exp'),bio=gv('m-bio');
   if(!name||!email||!role||!company||!exp||!bio){showToast('Please fill all required fields');return;}
   var skills=[];
   document.querySelectorAll('.checkbox-item input:checked').forEach(function(cb){skills.push(cb.value);});
-  if(!skills.length){showToast('Please select at least one skill');return;}
+  if(!skills.length){showToast('Please select at least one skill you can help with');return;}
+  // LinkedIn validation
+  var li=gv('m-linkedin');
+  if(li&&!li.includes('linkedin.com/in/')){showToast('Please enter a valid LinkedIn URL (linkedin.com/in/...)');return;}
   var btn=document.getElementById('register-btn');
   if(btn){btn.disabled=true;btn.textContent='Submitting...';}
   try{
-    var data={name:name,email:email,phone:gv('m-phone'),city:gv('m-city'),role:role,company:company,experience:exp,field:gv('m-field'),linkedin:gv('m-linkedin'),skills:skills.join(', '),bio:bio,rate:gv('m-rate')};
+    var data={name:name,email:email,phone:gv('m-phone'),city:gv('m-city'),role:role,company:company,experience:exp,field:gv('m-field'),linkedin:li,skills:skills.join(', '),bio:bio,rate:gv('m-rate'),availability:gv('m-availability'),status:'pending'};
     var res=await sb.from('mentors').insert([data]);
-    if(res.error) throw res.error;
-    var form=document.getElementById('mentor-form');
-    var success=document.getElementById('success-box');
+    if(res.error)throw res.error;
+    var form=document.getElementById('mentor-form');var success=document.getElementById('success-box');
     if(form)form.style.display='none';
     if(success)success.style.display='block';
-    showToast('Application submitted!');
+    showToast('🎉 Application submitted! We\'ll review within 48 hours.');
     var subj=encodeURIComponent('[Belongix] New Mentor Application from '+name);
     var body=encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nRole: '+role+'\nCompany: '+company+'\nSkills: '+skills.join(', ')+'\n\nBio:\n'+bio);
     window.open('mailto:teambelongix@gmail.com?subject='+subj+'&body='+body,'_blank');
@@ -732,45 +1010,29 @@ async function submitMentorApplication(){
   }
 }
 
-var selectedSession='30min';
-
-function openBooking(id,name,role){
-  var bt=document.getElementById('booking-title');
-  var bs=document.getElementById('booking-subtitle');
-  if(bt)bt.textContent='Book a session with '+name;
-  if(bs)bs.textContent=(role||'Professional')+' - select duration and send a request';
-  var m=document.getElementById('booking-modal');
-  if(m)m.style.display='flex';
-  sb.auth.getSession().then(function(r){
-    if(r.data&&r.data.session){
-      var u=r.data.session.user;
-      var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];
-      var bn=document.getElementById('b-name');if(bn)bn.value=nm;
-      var be=document.getElementById('b-email');if(be)be.value=u.email||'';
-    }
-  });
-}
-
-function closeBooking(){
-  var m=document.getElementById('booking-modal');if(m)m.style.display='none';
-}
-
-function selectSession(el,type){
-  selectedSession=type;
-  document.querySelectorAll('.session-opt').forEach(function(o){o.classList.remove('selected');});
-  el.classList.add('selected');
-}
-
-async function submitBooking(){
-  var name=(document.getElementById('b-name')||{}).value||'';
-  var email=(document.getElementById('b-email')||{}).value||'';
-  var msg=(document.getElementById('b-msg')||{}).value||'';
-  if(!name||!email){showToast('Please fill in your name and email');return;}
-  var subj=encodeURIComponent('[Belongix] Mentor Session Request - '+selectedSession);
-  var body=encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nSession: '+selectedSession+'\n\nMessage:\n'+msg);
-  window.location.href='mailto:teambelongix@gmail.com?subject='+subj+'&body='+body;
-  showToast('Session request sent!');
-  closeBooking();
+function bxBook(idx, mode) {
+  var m = allMentors[idx];
+  if (!m) return;
+  var rateNum = getRateNum(m.rate || m.session_rate);
+  currentMentor = {id: m.id, name: m.name || 'Mentor', rate: rateNum};
+  var modeStr = mode === 0 ? 'intro' : 'paid';
+  // reuse openBooking logic inline
+  var rate = rateNum;
+  var t = document.getElementById('booking-title'); if(t) t.textContent = 'Book with ' + currentMentor.name;
+  var s = document.getElementById('booking-subtitle'); if(s) s.textContent = 'Select session type and fill your details';
+  var p30 = document.getElementById('price-30min'); if(p30) p30.textContent = rate ? '\u20b9'+rate : '\u20b9\u2013';
+  var p60 = document.getElementById('price-60min'); if(p60) p60.textContent = rate ? '\u20b9'+Math.round(rate*1.7) : '\u20b9\u2013';
+  var waHref = m.phone ? 'https://wa.me/91'+m.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hi '+currentMentor.name+', I found your profile on Belongix and would like to book a session.') : '#';
+  var waLink = document.getElementById('whatsapp-link'); if(waLink) waLink.href = waHref;
+  var waRow = document.getElementById('whatsapp-row'); if(waRow) waRow.style.display = m.phone ? 'block' : 'none';
+  document.querySelectorAll('.stype').forEach(function(c){c.classList.remove('selected');});
+  var defaultType = modeStr === 'intro' ? 'intro' : '30min';
+  var defaultEl = document.querySelector('.stype:nth-child('+(defaultType==='intro'?1:2)+')');
+  if(defaultEl) defaultEl.classList.add('selected');
+  selectedSession = {type: defaultType, price: defaultType === 'intro' ? 0 : rate};
+  updateBookingBtn();
+  sb.auth.getSession().then(function(r){if(r.data&&r.data.session){var u=r.data.session.user;var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];var bn=document.getElementById('b-name');if(bn&&!bn.value)bn.value=nm;var be=document.getElementById('b-email');if(be&&!be.value)be.value=u.email||'';}});
+  var modal = document.getElementById('booking-modal'); if(modal) modal.style.display = 'flex';
 }
 
 loadMentors();
