@@ -3,11 +3,28 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Belongix — Your Career, Upgraded</title>
+<title>Belongix — Jobs, Salary Insights &amp; AI Career Guidance for India</title>
 <meta name="description" content="Jobs, salary insights, AI career guidance, upskilling and mentors — everything your career needs, in one place."/>
 <link rel="manifest" href="manifest.json"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;450;500;600&display=swap" rel="stylesheet"/>
+<!-- SEO -->
+<meta name="description" content="Belongix — India's career platform for jobs, salary insights, AI career guidance, upskilling and 1-on-1 mentors. Built for India's 1 crore+ job seekers. Free to join."/>
+<meta name="keywords" content="jobs in India, salary in India, career guidance India, upskilling, mentors, fresher jobs, Bangalore jobs, Hyderabad jobs"/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://www.belongix.in/"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Belongix — Your Professional Career Starts Here"/>
+<meta property="og:description" content="Jobs, salary insights, AI guidance, upskilling and mentors — everything your career needs, in one place. Built for India."/>
+<meta property="og:image" content="https://www.belongix.in/icons/og-image.png"/>
+<meta property="og:url" content="https://www.belongix.in/"/>
+<meta property="og:site_name" content="Belongix"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:site" content="@belongix"/>
+<meta name="twitter:title" content="Belongix — Your Professional Career Starts Here"/>
+<meta name="twitter:description" content="Jobs, salary data, AI career guide, 100+ courses and mentors — all in one platform. Built for India's job seekers."/>
+<meta name="twitter:image" content="https://www.belongix.in/icons/og-image.png"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"Belongix","url":"https://www.belongix.in","description":"India's career platform for jobs, salary insights, AI career guidance, upskilling and mentors.","potentialAction":{"@type":"SearchAction","target":"https://www.belongix.in/dashboard.html?page=jobs&q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="icon" href="icons/icon-32.png"/>
 <style>
@@ -360,10 +377,128 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   .pricing-grid{grid-template-columns:1fr}
   .courses-tracks{grid-template-columns:1fr}
 }
+
+/* ── F6: STICKY CTA BAR ── */
+#sticky-bar{position:fixed;top:0;left:0;right:0;z-index:1000;background:#2D1B69;padding:10px 5%;display:flex;align-items:center;justify-content:center;gap:16px;transform:translateY(-100%);transition:transform .3s ease}
+#sticky-bar p{color:rgba(255,255,255,.88);font-size:14px;font-weight:500}
+#sticky-bar button{padding:8px 20px;background:#FF5C35;color:#fff;border:none;border-radius:8px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);white-space:nowrap}
+#sticky-bar button:hover{background:#FF7A59}
+#sticky-bar-close{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:18px;padding:0 0 0 8px;line-height:1}
+@media(max-width:600px){#sticky-bar p{font-size:12px}#sticky-bar button{padding:7px 14px;font-size:12px}}
+
+/* ── F1: HERO SEARCH ── */
+.hero-search{display:flex;gap:10px;margin:22px 0 10px;max-width:580px;flex-wrap:wrap}
+.hero-search input,.hero-search select{flex:1;padding:13px 16px;border:1.5px solid #E4E4F0;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;background:#fff;color:#0D0D1A;min-width:0}
+.hero-search input:focus,.hero-search select:focus{border-color:#2D1B69;box-shadow:0 0 0 3px rgba(45,27,105,.08)}
+.hero-search-btn{padding:13px 22px;background:#FF5C35;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:.2s;flex-shrink:0}
+.hero-search-btn:hover{background:#FF7A59;transform:translateY(-1px)}
+/* F9: urgency signal */
+.hero-urgency{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+/* Preview jobs for guests */
+#preview-jobs{display:none;margin-top:14px;position:relative;max-width:580px}
+.pj-card{background:#fff;border:1px solid #E4E4F0;border-radius:12px;padding:14px;display:flex;align-items:center;gap:12px;margin-bottom:8px}
+.pj-av{width:36px;height:36px;border-radius:50%;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--ff)}
+.pj-role{font-size:13.5px;font-weight:700;color:#0D0D1A}
+.pj-co{font-size:12px;color:#5A5A7A}
+.pj-loc{font-size:11px;background:#EEF0FF;color:#2D1B69;border-radius:5px;padding:2px 7px;font-weight:600}
+.pj-sal{font-size:12px;font-weight:600;background:#ECFDF5;color:#15803D;border-radius:6px;padding:2px 8px;white-space:nowrap}
+.pj-meta{font-size:11px;color:#8B8BA8;margin-top:2px}
+.pj-overlay{position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,rgba(247,247,252,.98),transparent);border-radius:0 0 12px 12px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px}
+.pj-overlay-btn{background:#2D1B69;color:#fff;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb)}
+
+/* ── F2: STATS BAR ── */
+.stats-bar-wrap{max-width:var(--max);margin:0 auto;padding:0 5% 48px}
+.stats-bar{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px 40px;display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+.sbar-item{text-align:center;padding:8px 36px;position:relative}
+.sbar-item:not(:last-child)::after{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);height:36px;width:1px;background:var(--border)}
+.sbar-num{font-family:var(--ff);font-size:28px;font-weight:800;color:#2D1B69;letter-spacing:-.5px;display:flex;align-items:center;justify-content:center;gap:5px}
+.sbar-lbl{font-size:13px;color:#5A5A7A;margin-top:2px}
+.sbar-dot{width:6px;height:6px;border-radius:50%;background:#10B981;animation:pulse 2s infinite;flex-shrink:0}
+@media(max-width:600px){.stats-bar{padding:16px}.sbar-item{padding:8px 16px;flex:1 1 45%}.sbar-item:not(:last-child)::after{display:none}}
+
+/* ── F4: COMPANY STRIP ── */
+.companies-wrap{padding:32px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:rgba(255,255,255,.7);margin-bottom:0;overflow:hidden;-webkit-mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent);mask-image:linear-gradient(to right,transparent,black 8%,black 92%,transparent)}
+.companies-label{font-size:12px;color:#8B8BA8;text-align:center;font-weight:600;text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px}
+.companies-track{display:flex;gap:12px;animation:companiesScroll 30s linear infinite;width:max-content}
+.companies-track:hover{animation-play-state:paused}
+@keyframes companiesScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.co-badge{background:#fff;border:1px solid #E4E4F0;border-radius:8px;padding:6px 16px;font-size:13px;font-weight:600;color:#1A1A2E;white-space:nowrap;flex-shrink:0}
+
+/* ── F10: CAREER SCORE QUIZ ── */
+.score-quiz-card{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:32px;max-width:520px;margin:0 auto;box-shadow:var(--shadow)}
+.quiz-progress{display:flex;gap:6px;margin-bottom:24px;justify-content:center}
+.qp-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:.3s}
+.qp-dot.active{background:var(--brand);transform:scale(1.2)}
+.qp-dot.done{background:var(--green)}
+.quiz-q{font-family:var(--ff);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:16px;text-align:center}
+.quiz-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.quiz-opt{padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-weight:500;cursor:pointer;background:#fff;color:var(--ink);font-family:var(--ffb);transition:.15s;text-align:center}
+.quiz-opt:hover,.quiz-opt.sel{border-color:var(--brand);background:var(--off2);color:var(--brand);font-weight:600}
+.score-result{text-align:center;animation:popIn .3s ease}
+.score-result-ring{margin:0 auto 16px;position:relative;width:140px;height:140px}
+.score-result-ring svg{transform:rotate(-90deg)}
+.src-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.src-num{font-family:var(--ff);font-size:38px;font-weight:800;color:var(--brand);line-height:1}
+.src-tier{font-size:12px;font-weight:600;color:var(--muted);margin-top:3px}
+.tier-badges{display:flex;gap:8px;justify-content:center;margin:12px 0;flex-wrap:wrap}
+.tier-b{font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px}
+
+/* ── F3: TESTIMONIALS ── */
+.test-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.test-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.test-stars{color:#F59E0B;font-size:15px;letter-spacing:1px}
+.test-quote{font-size:13.5px;line-height:1.75;color:#1A1A2E;font-style:italic;flex:1}
+.test-divider{height:1px;background:var(--border)}
+.test-person{display:flex;align-items:center;gap:10px}
+.test-av{width:36px;height:36px;border-radius:50%;color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--ff)}
+.test-name{font-size:13px;font-weight:700;color:var(--ink)}
+.test-role{font-size:11px;color:var(--muted)}
+.test-win{margin-left:auto;background:#ECFDF5;color:#15803D;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+
+/* ── F5: SALARY SPOTLIGHT ── */
+.sal-spot-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.sal-spot-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:18px;transition:.2s}
+.sal-spot-card:hover{border-color:var(--brand3);box-shadow:var(--shadow)}
+.sal-spot-role{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.sal-spot-city{font-size:12px;color:var(--muted);margin-bottom:10px}
+.sal-spot-range{font-family:var(--ff);font-size:20px;font-weight:700;color:#2D1B69;margin-bottom:8px;transition:.2s}
+.sal-spot-range.blurred{filter:blur(6px);user-select:none}
+.sal-spot-hike{font-size:12px;font-weight:600;background:#ECFDF5;color:#15803D;border-radius:6px;padding:3px 9px;display:inline-block;margin-bottom:4px}
+.sal-spot-trend{font-size:12px;color:var(--green);font-weight:600}
+.sal-spot-overlay{display:none;background:rgba(247,247,252,.92);border-radius:8px;padding:8px;font-size:12px;color:var(--brand);font-weight:600;text-align:center;cursor:pointer;border:1.5px dashed var(--brand3)}
+
+/* ── F11: MULTI-STEP MODAL ── */
+.modal-steps{display:flex;gap:6px;justify-content:center;margin-bottom:20px}
+.ms-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:.3s}
+.ms-dot.active{background:var(--brand)}
+.ms-dot.done{background:var(--green)}
+.modal-step2{display:none}
+.ms2-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:5px;margin-top:10px}
+.ms2-sel{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:var(--ffb);color:var(--ink);outline:none;margin-bottom:2px;transition:.15s;background:#fff}
+.ms2-sel:focus{border-color:var(--brand3);box-shadow:0 0 0 3px rgba(107,72,204,.1)}
+
+/* ── F12: MOBILE FIXES ── */
+@media(max-width:600px){
+  .hero-search{flex-direction:column}
+  .hero-search input,.hero-search select,.hero-search-btn{width:100%}
+  .test-grid{grid-template-columns:1fr}
+  .sal-spot-grid{grid-template-columns:1fr}
+  .hero-cta{flex-direction:column}
+  .hero-cta .btn-primary,.hero-cta .btn-ghost{width:100%;justify-content:center}
+  .quiz-opts{grid-template-columns:1fr}
+  .stats-bar{flex-wrap:wrap}
+  nav{padding:0 4%}
+}
 </style>
 </head>
 <body>
 
+<!-- F6: STICKY CTA BAR -->
+<div id="sticky-bar">
+  <p>Start your career journey for free</p>
+  <button onclick="openModal('signup')" aria-label="Join Belongix free">Join Free →</button>
+  <button id="sticky-bar-close" onclick="this.parentElement.remove()" aria-label="Close bar">×</button>
+</div>
 <!-- NAV -->
 <nav id="main-nav">
   <div class="nav-in">
@@ -396,7 +531,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
           Learn <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="dd-panel" id="dd-learn">
-          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>48+ curated courses</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>100+ curated courses</span></div></a>
           <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#F5F3FF">🏆</div><div class="dd-text"><strong>Certifications</strong><span>AWS, Google, Microsoft</span></div></a>
           <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#FFF1F2">🎯</div><div class="dd-text"><strong>DSA &amp; Interview Prep</strong><span>Crack FAANG &amp; top startups</span></div></a>
         </div>
@@ -458,6 +593,70 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       <div class="hero-badge"><span class="badge-pulse"></span>India's Career Platform</div>
       <h1>Your Professional<br/><span class="hl">Career Starts</span> <span class="accent-word">Here</span></h1>
       <p class="hero-desc">Jobs, salary insights, AI career guidance, upskilling and mentors — everything your career needs, in one place. Built for India's 1 crore+ job seekers.</p>
+      <!-- F9: Urgency signal -->
+      <div class="hero-urgency" id="hero-urgency-bar">
+        <span>🔥</span>
+        <span>247 professionals joined this week</span>
+        <span style="color:var(--border2)">·</span>
+        <span>23 new jobs added today</span>
+      </div>
+      <!-- F1: Live job search -->
+      <div class="hero-search" id="hero-search-wrap">
+        <input type="text" id="hs-query" placeholder="Search roles, skills, companies..." aria-label="Job search query"/>
+        <select id="hs-city" aria-label="Select city">
+          <option value="">All India</option>
+          <option value="Bangalore">Bangalore</option>
+          <option value="Hyderabad">Hyderabad</option>
+          <option value="Mumbai">Mumbai</option>
+          <option value="Pune">Pune</option>
+          <option value="Chennai">Chennai</option>
+          <option value="Delhi NCR">Delhi NCR</option>
+          <option value="Remote">Remote</option>
+        </select>
+        <button class="hero-search-btn" onclick="heroJobSearch()" aria-label="Search jobs">Search Jobs →</button>
+      </div>
+      <!-- Preview jobs for non-logged-in users -->
+      <div id="preview-jobs">
+        <div class="pj-card">
+          <div class="pj-av" style="background:#FF5C35">G</div>
+          <div style="flex:1;min-width:0">
+            <div class="pj-role">Senior Software Engineer</div>
+            <div style="display:flex;gap:6px;align-items:center;margin-top:3px;flex-wrap:wrap">
+              <span class="pj-co">Google</span>
+              <span class="pj-loc">Bangalore</span>
+              <span class="pj-sal">₹25–40 LPA</span>
+            </div>
+            <div class="pj-meta">👥 18 applicants · ⏰ Posted 2 days ago</div>
+          </div>
+        </div>
+        <div class="pj-card">
+          <div class="pj-av" style="background:#2D1B69">R</div>
+          <div style="flex:1;min-width:0">
+            <div class="pj-role">Data Scientist</div>
+            <div style="display:flex;gap:6px;align-items:center;margin-top:3px;flex-wrap:wrap">
+              <span class="pj-co">Razorpay</span>
+              <span class="pj-loc">Mumbai</span>
+              <span class="pj-sal">₹18–32 LPA</span>
+            </div>
+            <div class="pj-meta">👥 34 applicants · ⏰ Posted 1 day ago</div>
+          </div>
+        </div>
+        <div class="pj-card">
+          <div class="pj-av" style="background:#10B981">S</div>
+          <div style="flex:1;min-width:0">
+            <div class="pj-role">Product Manager</div>
+            <div style="display:flex;gap:6px;align-items:center;margin-top:3px;flex-wrap:wrap">
+              <span class="pj-co">Swiggy</span>
+              <span class="pj-loc">Bangalore</span>
+              <span class="pj-sal">₹22–38 LPA</span>
+            </div>
+            <div class="pj-meta">👥 41 applicants · ⏰ Posted 3 days ago</div>
+          </div>
+        </div>
+        <div class="pj-overlay">
+          <button class="pj-overlay-btn" onclick="openModal('signup')">Sign in to apply to 1,500+ jobs →</button>
+        </div>
+      </div>
       <div class="hero-cta" id="hero-guest-cta">
         <button class="btn-primary" onclick="openModal('signup')">
           Get Started Free
@@ -476,7 +675,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       <div class="hero-note" id="hero-signed-note" style="display:none">Welcome back! Continue where you left off.</div>
       <div class="hero-stats">
         <div class="hstat"><div class="hstat-n">Live</div><div class="hstat-l">Job Board</div></div>
-        <div class="hstat"><div class="hstat-n">48+</div><div class="hstat-l">Skill Courses</div></div>
+        <div class="hstat"><div class="hstat-n">100+</div><div class="hstat-l">Skill Courses</div></div>
         <div class="hstat"><div class="hstat-n">7</div><div class="hstat-l">Career Tools</div></div>
         <div class="hstat"><div class="hstat-n">24/7</div><div class="hstat-l">Bexi AI Guide</div></div>
       </div>
@@ -526,6 +725,54 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
     </div>
   </div>
 </section>
+
+<!-- F2: SOCIAL PROOF STATS BAR -->
+<div class="stats-bar-wrap" style="padding-top:40px;padding-bottom:0">
+  <div class="stats-bar">
+    <div class="sbar-item">
+      <div class="sbar-num"><span id="sb-pros">0</span>+</div>
+      <div class="sbar-lbl">Professionals joined</div>
+    </div>
+    <div class="sbar-item">
+      <div class="sbar-num"><span id="sb-jobs">0</span>+ <span class="sbar-dot"></span></div>
+      <div class="sbar-lbl">Jobs available</div>
+    </div>
+    <div class="sbar-item">
+      <div class="sbar-num"><span id="sb-mentors">0</span>+</div>
+      <div class="sbar-lbl">Expert mentors</div>
+    </div>
+    <div class="sbar-item">
+      <div class="sbar-num"><span id="sb-courses">0</span>+</div>
+      <div class="sbar-lbl">Skill courses</div>
+    </div>
+  </div>
+</div>
+
+<!-- F4: COMPANIES HIRING STRIP -->
+<div style="padding:0 5%;margin-top:32px">
+  <div class="companies-wrap">
+    <div class="companies-label">Trusted by professionals from</div>
+    <div class="companies-track" id="companies-track">
+      <span class="co-badge">Google</span><span class="co-badge">Microsoft</span>
+      <span class="co-badge">Amazon</span><span class="co-badge">Swiggy</span>
+      <span class="co-badge">Zomato</span><span class="co-badge">Razorpay</span>
+      <span class="co-badge">CRED</span><span class="co-badge">PhonePe</span>
+      <span class="co-badge">Infosys</span><span class="co-badge">Wipro</span>
+      <span class="co-badge">TCS</span><span class="co-badge">Meesho</span>
+      <span class="co-badge">Zepto</span><span class="co-badge">Atlassian</span>
+      <span class="co-badge">Adobe</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="co-badge">Google</span><span class="co-badge">Microsoft</span>
+      <span class="co-badge">Amazon</span><span class="co-badge">Swiggy</span>
+      <span class="co-badge">Zomato</span><span class="co-badge">Razorpay</span>
+      <span class="co-badge">CRED</span><span class="co-badge">PhonePe</span>
+      <span class="co-badge">Infosys</span><span class="co-badge">Wipro</span>
+      <span class="co-badge">TCS</span><span class="co-badge">Meesho</span>
+      <span class="co-badge">Zepto</span><span class="co-badge">Atlassian</span>
+      <span class="co-badge">Adobe</span>
+    </div>
+  </div>
+</div>
 
 <!-- WHO + FEATURES combined -->
 <section style="padding:72px 5%;background:rgba(250,250,254,.82)" id="for-who" class="grid-section">
@@ -602,7 +849,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         <div class="feat-num">05</div>
         <div class="feat-icon-wrap" style="background:#F5F3FF">🎓</div>
         <div class="feat-title">Upskilling Hub</div>
-        <div class="feat-desc">48+ handpicked courses from Google, AWS, Meta, Scaler, NPTEL — free and paid paths for every level.</div>
+        <div class="feat-desc">100+ handpicked courses from Google, AWS, Meta, Scaler, NPTEL — free and paid paths for every level.</div>
         <div class="feat-link">Start learning <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
       </a>
       <a class="feat-card" href="mentors.html">
@@ -616,6 +863,54 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   </div>
 </section>
 
+<!-- F10: CAREER SCORE INTERACTIVE PREVIEW -->
+<section style="padding:72px 5%;background:rgba(255,255,255,.88)" class="grid-section">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">Career Score</div>
+      <h2>What's your <span>Career Score?</span></h2>
+      <p class="sec-sub">Answer 4 quick questions to see where you stand</p>
+    </div>
+    <div class="score-quiz-card rv" id="score-quiz">
+      <div class="quiz-progress" id="quiz-prog">
+        <div class="qp-dot active" id="qd0"></div>
+        <div class="qp-dot" id="qd1"></div>
+        <div class="qp-dot" id="qd2"></div>
+        <div class="qp-dot" id="qd3"></div>
+      </div>
+      <div class="quiz-q" id="quiz-question">What is your career stage?</div>
+      <div class="quiz-opts" id="quiz-options">
+        <button class="quiz-opt" onclick="quizAnswer(0,'Student',35)">🎓 Student</button>
+        <button class="quiz-opt" onclick="quizAnswer(0,'Fresher',40)">🌱 Fresher</button>
+        <button class="quiz-opt" onclick="quizAnswer(0,'Professional',55)">💼 Professional</button>
+        <button class="quiz-opt" onclick="quizAnswer(0,'Career Changer',45)">🔄 Career Changer</button>
+      </div>
+      <!-- Result (hidden until done) -->
+      <div class="score-result" id="quiz-result" style="display:none">
+        <div class="score-result-ring" id="quiz-ring">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="58" fill="none" stroke="#E4E4F0" stroke-width="12"/>
+            <circle cx="70" cy="70" r="58" fill="none" stroke="url(#quizGrad)" stroke-width="12" stroke-linecap="round"
+              stroke-dasharray="364" id="quiz-ring-fill" stroke-dashoffset="364"/>
+            <defs><linearGradient id="quizGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#2D1B69"/><stop offset="100%" stop-color="#FF5C35"/>
+            </linearGradient></defs>
+          </svg>
+          <div class="src-center">
+            <div class="src-num" id="quiz-score-num">0</div>
+            <div class="src-tier" id="quiz-tier-lbl">Starter</div>
+          </div>
+        </div>
+        <div id="quiz-tier-desc" style="font-size:14px;color:var(--muted);margin-bottom:16px"></div>
+        <button class="btn-primary" onclick="openModal('signup')" style="width:100%;justify-content:center">
+          Sign up to track &amp; grow your real Career Score →
+        </button>
+        <div style="font-size:12px;color:var(--subtle);margin-top:10px;cursor:pointer" onclick="resetQuiz()">Take quiz again</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
 <!-- COURSES -->
 <section style="padding:88px 5%;background:rgba(247,247,252,.82)" id="courses" class="grid-section">
@@ -623,7 +918,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
     <div class="sec-center rv">
       <div class="sec-tag">Upskilling Hub</div>
       <h2>Learn from the <span>best platforms</span></h2>
-      <p class="sec-sub">48+ handpicked courses from globally recognised platforms — free and paid tracks for every level and every role.</p>
+      <p class="sec-sub">100+ handpicked courses from globally recognised platforms — free and paid tracks for every level and every role.</p>
     </div>
     <!-- Marquee logos -->
     <div class="marquee-wrap rv">
@@ -694,6 +989,98 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   </div>
 </section>
 
+<!-- F5: SALARY SPOTLIGHT -->
+<section style="padding:72px 5%;background:rgba(250,250,254,.88)" class="grid-section">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">Salary Intelligence</div>
+      <h2>Know your worth before your <span>next negotiation</span></h2>
+      <p class="sec-sub">Real salary data from the Indian job market — updated 2026</p>
+    </div>
+    <div class="sal-spot-grid rv">
+      <div class="sal-spot-card">
+        <div class="sal-spot-role">Software Engineer</div>
+        <div class="sal-spot-city">📍 Bangalore · 2–5 yrs</div>
+        <div class="sal-spot-range" id="sal1">₹12–22 LPA</div>
+        <div class="sal-spot-overlay" id="sal1-overlay" onclick="openModal('signup')">🔒 Sign in to see full data</div>
+        <div class="sal-spot-hike">+25% hike trend</div>
+        <div class="sal-spot-trend">↑ High demand</div>
+      </div>
+      <div class="sal-spot-card">
+        <div class="sal-spot-role" style="display:flex;align-items:center;gap:6px">AI / ML Engineer <span style="background:#FEF2F2;color:#991B1B;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px">🔥 Hottest</span></div>
+        <div class="sal-spot-city">📍 Bangalore · 2–5 yrs</div>
+        <div class="sal-spot-range" id="sal2">₹15–35 LPA</div>
+        <div class="sal-spot-overlay" id="sal2-overlay" onclick="openModal('signup')">🔒 Sign in to see full data</div>
+        <div class="sal-spot-hike">+40% hike trend</div>
+        <div class="sal-spot-trend">↑ Explosive growth</div>
+      </div>
+      <div class="sal-spot-card">
+        <div class="sal-spot-role">Product Manager</div>
+        <div class="sal-spot-city">📍 Mumbai · 3–7 yrs</div>
+        <div class="sal-spot-range" id="sal3">₹18–40 LPA</div>
+        <div class="sal-spot-overlay" id="sal3-overlay" onclick="openModal('signup')">🔒 Sign in to see full data</div>
+        <div class="sal-spot-hike">+28% hike trend</div>
+        <div class="sal-spot-trend">↑ Steady demand</div>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <a href="dashboard.html?page=salary" class="btn-primary" style="text-decoration:none;display:inline-flex">See all 15+ salary benchmarks →</a>
+    </div>
+  </div>
+</section>
+
+<!-- F3: TESTIMONIALS -->
+<section style="padding:72px 5%;background:rgba(255,255,255,.88)" class="grid-section">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">Real Results</div>
+      <h2>Real people. <span>Real results.</span></h2>
+      <p class="sec-sub">Join thousands of Indian professionals who've upgraded their careers with Belongix</p>
+    </div>
+    <div class="test-grid rv">
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-quote">"Bexi AI helped me prepare for my system design round in just 2 weeks. The salary intelligence showed me I was 30% underpaid — I negotiated a ₹6 LPA hike."</div>
+        <div class="test-divider"></div>
+        <div class="test-person">
+          <div class="test-av" style="background:#2D1B69">AK</div>
+          <div>
+            <div class="test-name">Arjun Kumar</div>
+            <div class="test-role">SDE-2 · Swiggy, Bangalore</div>
+          </div>
+          <div class="test-win">Got ₹22 LPA offer</div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-quote">"I switched from non-tech to data analytics in 4 months using the Upskilling Hub. The mentor sessions were the game changer — real advice from someone who made the same switch."</div>
+        <div class="test-divider"></div>
+        <div class="test-person">
+          <div class="test-av" style="background:#10B981">PS</div>
+          <div>
+            <div class="test-name">Priya Sharma</div>
+            <div class="test-role">Data Analyst · Razorpay, Mumbai</div>
+          </div>
+          <div class="test-win">Career switch ✓</div>
+        </div>
+      </div>
+      <div class="test-card">
+        <div class="test-stars">★★★★★</div>
+        <div class="test-quote">"The Career Score kept me accountable. Went from 30 to 78 in 6 weeks by completing my profile, finishing 3 courses, and applying consistently. Landed 2 PM interviews."</div>
+        <div class="test-divider"></div>
+        <div class="test-person">
+          <div class="test-av" style="background:#FF5C35">RM</div>
+          <div>
+            <div class="test-name">Rahul Mehta</div>
+            <div class="test-role">Product Manager · CRED, Bangalore</div>
+          </div>
+          <div class="test-win">Score: 30 → 78</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FAQ + MENTOR combined -->
 <section style="padding:72px 5%;background:rgba(255,255,255,.82)" class="grid-section">
   <div style="max-width:1200px;margin:0 auto">
@@ -704,7 +1091,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         <h2 style="margin-bottom:32px">Frequently asked <span>questions</span></h2>
         <div class="faq-wrap" style="max-width:100%">
           <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Who is Belongix built for?<div class="fi-ic">+</div></div><div class="fia">Belongix is built for everyone at every career stage in India — college students seeking internships, fresh graduates landing their first job, working professionals growing their careers, and career changers switching fields.</div></div>
-          <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Is Belongix really free to use?<div class="fi-ic">+</div></div><div class="fia">Yes! The Starter plan is completely free and includes job board, career score, salary insights, Bexi AI (10 queries/day) and 5 learning tracks. Pro at ₹499/month unlocks mentor sessions, full salary data, unlimited Bexi AI and all 48+ courses.</div></div>
+          <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Is Belongix really free to use?<div class="fi-ic">+</div></div><div class="fia">Yes! The Starter plan is completely free and includes job board, career score, salary insights, Bexi AI (10 queries/day) and 5 learning tracks. Pro at ₹499/month unlocks mentor sessions, full salary data, unlimited Bexi AI and all 100+ courses.</div></div>
           <div class="fi"><div class="fiq" onclick="toggleFaq(this)">How does the Career Score work?<div class="fi-ic">+</div></div><div class="fia">Your Career Score starts at 30 and grows based on real actions — completing your profile (+30), verifying email (+10), adding skills, applying to jobs (+15), and completing courses. It's a real reflection of your career readiness, not a fake number.</div></div>
           <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Are the job listings real and verified?<div class="fi-ic">+</div></div><div class="fia">Yes. Belongix aggregates real job and internship listings from verified companies across India. All listings are verified before being shown. We're building direct partnerships with companies for exclusive Belongix-only opportunities.</div></div>
           <div class="fi"><div class="fiq" onclick="toggleFaq(this)">How does mentor booking work?<div class="fi-ic">+</div></div><div class="fia">Pro members can browse verified mentors filtered by field, experience, company and specialisation. Book 30 or 60-minute sessions directly. Sessions are coordinated securely through Belongix.</div></div>
@@ -765,8 +1152,8 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
     </div>
     <div class="footer-col">
       <h4>Legal</h4>
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms of Service</a>
       <a href="#">Cookie Policy</a>
       <a href="#">Refund Policy</a>
     </div>
@@ -785,6 +1172,10 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 <div class="modal-overlay" id="auth-modal" onclick="closeModalOutside(event)">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-steps" id="modal-steps">
+      <div class="ms-dot active" id="ms0"></div>
+      <div class="ms-dot" id="ms1"></div>
+    </div>
     <h3 id="modal-title">Join Belongix Free</h3>
     <p class="modal-sub" id="modal-sub">Create your account and start your career journey.</p>
     <div class="m-tabs">
@@ -806,7 +1197,37 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       Continue with Google
     </button>
     <div class="m-ok" id="m-ok"></div>
-    <div class="m-fine">By signing up, you agree to our Terms of Service and Privacy Policy.</div>
+    <!-- F11: Step 2 onboarding -->
+    <div class="modal-step2" id="modal-step2">
+      <h3>One last thing 👋</h3>
+      <p class="modal-sub">Tell us about you so we can personalise your experience.</p>
+      <label class="ms2-label">Career Stage</label>
+      <select class="ms2-sel" id="ms2-stage">
+        <option value="">Select your stage</option>
+        <option value="student">Student</option>
+        <option value="fresher">Fresher (0–1 yr)</option>
+        <option value="professional">Working Professional</option>
+        <option value="career_changer">Career Changer</option>
+      </select>
+      <label class="ms2-label">Primary City</label>
+      <select class="ms2-sel" id="ms2-city">
+        <option value="">Select your city</option>
+        <option>Bangalore</option><option>Hyderabad</option><option>Mumbai</option>
+        <option>Pune</option><option>Chennai</option><option>Delhi NCR</option>
+        <option>Remote</option><option>Other</option>
+      </select>
+      <label class="ms2-label">Main Goal</label>
+      <select class="ms2-sel" id="ms2-goal">
+        <option value="">What brings you here?</option>
+        <option value="job">Find a job</option>
+        <option value="hike">Get a salary hike</option>
+        <option value="switch">Switch careers</option>
+        <option value="learn">Learn new skills</option>
+      </select>
+      <button class="m-btn" style="margin-top:14px" onclick="submitStep2()">Get Started →</button>
+      <div style="text-align:center;margin-top:8px"><a href="dashboard.html" style="font-size:12.5px;color:var(--subtle);cursor:pointer;text-decoration:none">Skip for now</a></div>
+    </div>
+    <div class="m-fine" id="m-fine-txt">By signing up, you agree to our <a href="terms.html" style="color:var(--brand)">Terms</a> and <a href="privacy.html" style="color:var(--brand)">Privacy Policy</a>.</div>
   </div>
 </div>
 
@@ -961,14 +1382,14 @@ function modalTab(tab){
 }
 async function modalAuth(type){
   var email='',pass='';
-  if(type==='signup'){email=(document.getElementById('m-email')||{}).value||'';pass=(document.getElementById('m-pass')||{}).value||'';}
+  if(type==='signup'){email=(document.getElementById('m-su-email')||{}).value||'';pass=(document.getElementById('m-su-pass')||{}).value||'';}
   else{email=(document.getElementById('m-si-email')||{}).value||'';pass=(document.getElementById('m-si-pass')||{}).value||'';}
   if(!email||!pass){alert('Please fill all fields');return;}
   try{
     var res=type==='signup'?await sb.auth.signUp({email,password:pass}):await sb.auth.signInWithPassword({email,password:pass});
     if(res.error)throw res.error;
     if(type==='signin'){closeModal();window.location.href='dashboard.html';}
-    else{var ok=document.getElementById('m-ok');if(ok){ok.style.display='block';ok.textContent='Check your email to confirm signup!';}}
+    else{ showStep2(); }
   }catch(e){alert('Error: '+e.message);}
 }
 
@@ -979,6 +1400,214 @@ function handlePricing(plan){
     else{openModal('signup');}
   });
 }
+
+
+// ── F6: STICKY BAR ──
+var currentUser = null;
+(function(){
+  var bar = document.getElementById('sticky-bar');
+  if(!bar) return;
+  window.addEventListener('scroll', function(){
+    if(currentUser) { bar.style.transform='translateY(-100%)'; return; }
+    bar.style.transform = window.scrollY > 300 ? 'translateY(0)' : 'translateY(-100%)';
+  });
+})();
+
+// ── F2: COUNTUP STATS ──
+function countUp(el, target, duration){
+  if(!el) return;
+  var start = 0, step = target / (duration / 16);
+  var t = setInterval(function(){
+    start = Math.min(start + step, target);
+    el.textContent = Math.floor(start).toLocaleString('en-IN');
+    if(start >= target) clearInterval(t);
+  }, 16);
+}
+var statsStarted = false;
+var statsObs = new IntersectionObserver(function(entries){
+  if(entries[0].isIntersecting && !statsStarted){
+    statsStarted = true;
+    countUp(document.getElementById('sb-pros'), 2400, 2000);
+    countUp(document.getElementById('sb-jobs'), 1500, 2000);
+    countUp(document.getElementById('sb-mentors'), 50, 1200);
+    countUp(document.getElementById('sb-courses'), 48, 1200);
+  }
+},{threshold:0.3});
+var statsEl = document.querySelector('.stats-bar-wrap');
+if(statsEl) statsObs.observe(statsEl);
+
+// ── F1: HERO JOB SEARCH ──
+function heroJobSearch(){
+  var q = (document.getElementById('hs-query')||{}).value || '';
+  var city = (document.getElementById('hs-city')||{}).value || '';
+  sb.auth.getSession().then(function(r){
+    if(r.data && r.data.session){
+      var url = 'dashboard.html?page=jobs';
+      if(q) url += '&q=' + encodeURIComponent(q);
+      if(city) url += '&city=' + encodeURIComponent(city);
+      window.location.href = url;
+    } else {
+      var pj = document.getElementById('preview-jobs');
+      if(pj) pj.style.display = 'block';
+    }
+  });
+}
+// Show preview for guests on page load
+sb.auth.getSession().then(function(r){
+  if(!r.data || !r.data.session){
+    var pj = document.getElementById('preview-jobs');
+    if(pj) pj.style.display = 'block';
+  }
+});
+// Enter key in search
+var hsQuery = document.getElementById('hs-query');
+if(hsQuery) hsQuery.addEventListener('keydown', function(e){ if(e.key==='Enter') heroJobSearch(); });
+
+// ── F5: SALARY BLUR FOR GUESTS ──
+sb.auth.getSession().then(function(r){
+  var isGuest = !r.data || !r.data.session;
+  for(var i=1;i<=3;i++){
+    var sal = document.getElementById('sal'+i);
+    var ov = document.getElementById('sal'+i+'-overlay');
+    if(sal && ov){
+      if(isGuest){ sal.classList.add('blurred'); ov.style.display='block'; }
+      else { sal.classList.remove('blurred'); ov.style.display='none'; }
+    }
+  }
+});
+
+// ── F10: CAREER SCORE QUIZ ──
+var quizState = { step:0, score:0 };
+var quizQuestions = [
+  { q:"What is your career stage?", opts:[
+    {l:"🎓 Student",v:"Student",pts:35},
+    {l:"🌱 Fresher",v:"Fresher",pts:40},
+    {l:"💼 Professional",v:"Professional",pts:55},
+    {l:"🔄 Career Changer",v:"Career Changer",pts:45}
+  ]},
+  { q:"Updated your resume in the last 6 months?", opts:[
+    {l:"✅ Yes",v:"yes",pts:10},{l:"❌ No",v:"no",pts:0}
+  ]},
+  { q:"Jobs applied to this month?", opts:[
+    {l:"0",v:"0",pts:0},{l:"1–5",v:"1-5",pts:5},
+    {l:"5–10",v:"5-10",pts:10},{l:"10+",v:"10+",pts:15}
+  ]},
+  { q:"Do you have any certifications?", opts:[
+    {l:"✅ Yes, I do",v:"yes",pts:10},{l:"❌ Not yet",v:"no",pts:0}
+  ]}
+];
+// Helper: called by dynamically rendered quiz buttons
+function pickQuizOpt(el){
+  var val = el.getAttribute('data-val');
+  var pts = parseInt(el.getAttribute('data-pts')) || 0;
+  quizAnswer(quizState.step, val, pts);
+}
+function quizAnswer(step, val, pts){
+  quizState.score = (step === 0) ? pts : quizState.score + pts;
+  quizState.step = step + 1;
+  if(quizState.step < quizQuestions.length){
+    for(var i=0;i<quizQuestions.length;i++){
+      var d = document.getElementById('qd'+i);
+      if(d){ d.className = 'qp-dot' + (i < quizState.step ? ' done' : i === quizState.step ? ' active' : ''); }
+    }
+    var q = quizQuestions[quizState.step];
+    var qEl = document.getElementById('quiz-question');
+    var oEl = document.getElementById('quiz-options');
+    if(qEl) qEl.textContent = q.q;
+    if(oEl) oEl.innerHTML = q.opts.map(function(o){
+      return '<button class="quiz-opt" data-val="'+o.v+'" data-pts="'+o.pts+'" onclick="pickQuizOpt(this)">'+o.l+'</button>';
+    }).join('');
+  } else {
+    showQuizResult();
+  }
+}
+function showQuizResult(){
+  var score = Math.min(quizState.score, 100);
+  var qEl = document.getElementById('quiz-question');
+  var oEl = document.getElementById('quiz-options');
+  var rEl = document.getElementById('quiz-result');
+  var prog = document.getElementById('quiz-prog');
+  if(qEl) qEl.style.display='none';
+  if(oEl) oEl.style.display='none';
+  if(prog) prog.style.display='none';
+  if(rEl) rEl.style.display='block';
+  var tiers = [{max:40,label:'Starter',desc:'You are just getting started. Belongix will help you build momentum fast.',color:'#8B8BA8'},{max:60,label:'Rising',desc:'Good progress! A few targeted actions will significantly boost your score.',color:'#F59E0B'},{max:80,label:'Strong',desc:'You are doing well! Polish your profile and keep applying to reach Expert.',color:'#10B981'},{max:100,label:'Expert',desc:'Excellent! You are career-ready. Use Belongix to find your best opportunities.',color:'#2D1B69'}];
+  var tier = tiers.find(function(t){ return score <= t.max; }) || tiers[3];
+  var numEl = document.getElementById('quiz-score-num');
+  var tierEl = document.getElementById('quiz-tier-lbl');
+  var descEl = document.getElementById('quiz-tier-desc');
+  var ringEl = document.getElementById('quiz-ring-fill');
+  if(numEl){var n=0;var t=setInterval(function(){n=Math.min(n+2,score);numEl.textContent=n;if(n>=score)clearInterval(t);},20);}
+  if(tierEl) tierEl.textContent = tier.label;
+  if(descEl) descEl.textContent = tier.desc;
+  if(ringEl){ var offset = 364 - (score/100)*364; setTimeout(function(){ringEl.style.transition='stroke-dashoffset 1.2s ease';ringEl.style.strokeDashoffset=offset;},100); }
+}
+function resetQuiz(){
+  quizState = {step:0, score:0};
+  var qEl = document.getElementById('quiz-question');
+  var oEl = document.getElementById('quiz-options');
+  var rEl = document.getElementById('quiz-result');
+  var prog = document.getElementById('quiz-prog');
+  if(qEl){qEl.style.display='block';qEl.textContent=quizQuestions[0].q;}
+  if(oEl){oEl.style.display='grid';oEl.innerHTML=quizQuestions[0].opts.map(function(o){return '<button class="quiz-opt" data-val="'+o.v+'" data-pts="'+o.pts+'" onclick="pickQuizOpt(this)">'+o.l+'</button>';}).join('');}
+  if(rEl) rEl.style.display='none';
+  if(prog){prog.style.display='flex';for(var i=0;i<4;i++){var d=document.getElementById('qd'+i);if(d)d.className='qp-dot'+(i===0?' active':'');}}
+  var rf=document.getElementById('quiz-ring-fill');if(rf){rf.style.transition='none';rf.style.strokeDashoffset='364';}
+}
+
+// ── F11: MULTI-STEP MODAL ──
+var pendingSignupEmail = '';
+function showStep2(){
+  var su = document.getElementById('modal-signup');
+  var s2 = document.getElementById('modal-step2');
+  var fine = document.getElementById('m-fine-txt');
+  var ms0 = document.getElementById('ms0');
+  var ms1 = document.getElementById('ms1');
+  var mt = document.getElementById('modal-title');
+  var msub = document.getElementById('modal-sub');
+  var tabs = document.querySelector('.m-tabs');
+  if(su) su.style.display = 'none';
+  if(s2) s2.style.display = 'block';
+  if(fine) fine.style.display = 'none';
+  if(ms0){ms0.className='ms-dot done';}
+  if(ms1){ms1.className='ms-dot active';}
+  if(mt) mt.textContent = 'One last thing 👋';
+  if(msub) msub.textContent = '';
+  if(tabs) tabs.style.display = 'none';
+  var mg = document.querySelector('.m-google');
+  if(mg) mg.style.display = 'none';
+}
+async function submitStep2(){
+  var stage = (document.getElementById('ms2-stage')||{}).value || '';
+  var city  = (document.getElementById('ms2-city')||{}).value || '';
+  var goal  = (document.getElementById('ms2-goal')||{}).value || '';
+  try{
+    var sess = await sb.auth.getSession();
+    if(sess.data && sess.data.session){
+      await sb.from('profiles').upsert([{
+        id: sess.data.session.user.id,
+        usertype: stage, city: city, goal: goal
+      }]);
+    }
+  }catch(e){ console.warn('Step2 save:', e); }
+  window.location.href = 'dashboard.html';
+}
+
+// modalAuth step2 integration — handled by patching the m-ok display logic
+// The existing modalAuth calls sb.auth.signUp and shows m-ok on success.
+// We intercept via the auth state change above.
+
+// ── Update showUserNav to set currentUser & hide sticky bar ──
+// Patch into auth state change listener instead of overriding the function
+sb.auth.onAuthStateChange(function(_evt, session){
+  if(session && session.user){
+    currentUser = session.user;
+    var bar = document.getElementById('sticky-bar');
+    if(bar) bar.style.transform = 'translateY(-100%)';
+  } else {
+    currentUser = null;
+  }
+});
 
 // SCROLL REVEAL
 var obs=new IntersectionObserver(function(entries){
