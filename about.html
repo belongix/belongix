@@ -5,8 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>About Belongix — India's Professional Career Platform</title>
 <meta name="description" content="Learn about Belongix — why we built it, what we stand for, and our mission to make career growth accessible for every Indian professional."/>
+<meta property="og:title" content="About Belongix — India's Professional Career Platform"/>
+<meta property="og:description" content="We built Belongix because Indian professionals deserve better. Jobs, salary intelligence, AI guidance, upskilling and mentors — all in one place."/>
+<meta property="og:image" content="https://www.belongix.in/icons/og-image.png"/>
+<meta property="og:url" content="https://www.belongix.in/about.html"/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:site" content="@belongix"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="manifest" href="manifest.json"/>
 <link rel="icon" href="icons/icon-32.png"/>
+<meta name="theme-color" content="#2D1B69"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;450;500;600&display=swap" rel="stylesheet"/>
 <style>
@@ -121,8 +131,55 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
 .m-fine{font-size:11.5px;color:var(--subtle);text-align:center;margin-top:11px}
 @media(max-width:768px){.nlinks{display:none}.footer-top{grid-template-columns:1fr 1fr}}
 @media(max-width:480px){.footer-top{grid-template-columns:1fr}}
-</style>
-<style>
+
+/* STATS STRIP */
+.stats-strip{max-width:var(--max);margin:-36px auto 0;padding:0 5%;position:relative;z-index:10}
+.stats-inner{background:#fff;border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-lg);display:grid;grid-template-columns:repeat(4,1fr);padding:28px 0}
+.stat-item{text-align:center;padding:0 24px;border-right:1px solid var(--border)}
+.stat-item:last-child{border-right:none}
+.stat-num{font-family:var(--ff);font-size:32px;font-weight:800;color:var(--brand);letter-spacing:-1px}
+.stat-lbl{font-size:12.5px;color:var(--muted);margin-top:3px;font-weight:500}
+/* MISSION */
+.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.mission-text h2{margin-bottom:16px}
+.mission-text p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:14px}
+.mission-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;font-size:14px;color:var(--ink2);line-height:1.5}
+.check-ic{width:20px;height:20px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;margin-top:1px}
+.mission-visual{background:linear-gradient(135deg,var(--off2),var(--off));border:1px solid var(--border);border-radius:20px;padding:36px;display:flex;flex-direction:column;gap:14px}
+.mv-stat{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:14px}
+.mv-icon{font-size:26px}
+.mv-num{font-family:var(--ff);font-size:28px;font-weight:800;color:var(--brand);letter-spacing:-1px}
+.mv-lbl{font-size:12px;color:var(--muted);font-weight:500}
+/* TIMELINE */
+.timeline{position:relative;padding-left:28px}
+.timeline::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:linear-gradient(to bottom,var(--brand),var(--brand3),var(--accent));border-radius:2px}
+.tl-item{position:relative;margin-bottom:32px}
+.tl-item:last-child{margin-bottom:0}
+.tl-dot{position:absolute;left:-24px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--brand);border:2px solid #fff;box-shadow:0 0 0 3px var(--off2)}
+.tl-date{font-size:11px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.tl-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.tl-desc{font-size:13px;color:var(--muted);line-height:1.6}
+/* TEAM */
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.team-card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:28px;text-align:center;transition:.2s}
+.team-card:hover{border-color:var(--brand3);box-shadow:var(--shadow);transform:translateY(-2px)}
+.team-av{width:72px;height:72px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-family:var(--ff);font-size:24px;font-weight:800;color:#fff}
+.team-name{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.team-role{font-size:13px;color:var(--brand);font-weight:600;margin-bottom:6px}
+.team-bio{font-size:12.5px;color:var(--muted);line-height:1.6}
+.team-li{display:inline-flex;align-items:center;gap:5px;margin-top:12px;font-size:12px;font-weight:600;color:var(--brand);text-decoration:none;padding:5px 12px;border:1px solid var(--border2);border-radius:20px;transition:.15s}
+.team-li:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
+/* PRESS */
+.press-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.press-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;transition:.2s}
+.press-card:hover{border-color:var(--brand3)}
+.press-name{font-family:var(--ff);font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.press-desc{font-size:11px;color:var(--muted)}
+/* VALUES enhanced */
+.val-c{position:relative;overflow:hidden}
+.val-c::after{content:"";position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--brand),var(--accent));transform:scaleX(0);transition:.2s;transform-origin:left}
+.val-c:hover::after{transform:scaleX(1)}
+
 /* About-specific */
 .about-hero{padding:100px 5% 72px;background:linear-gradient(135deg,var(--brand) 0%,var(--brand2) 60%,var(--brand3) 100%);position:relative;overflow:hidden;margin-top:64px}
 .about-hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:40px 40px}
@@ -170,7 +227,7 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
 .about-cta::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:32px 32px}
 .about-cta h2{color:#fff !important;position:relative;z-index:1;margin-bottom:12px}
 .about-cta p{color:rgba(255,255,255,.75);font-size:16px;margin-bottom:28px;position:relative;z-index:1}
-@media(max-width:900px){.mission-grid{grid-template-columns:1fr}.feat-g{grid-template-columns:1fr 1fr}.values-g{grid-template-columns:1fr 1fr}.ba-grid{grid-template-columns:1fr}}
+@media(max-width:900px){.mission-grid{grid-template-columns:1fr}.feat-g{grid-template-columns:1fr 1fr}.values-g{grid-template-columns:1fr 1fr}.ba-grid{grid-template-columns:1fr}.stats-inner{grid-template-columns:1fr 1fr}.team-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.feat-g{grid-template-columns:1fr}.values-g{grid-template-columns:1fr 1fr}}
 </style>
 </head>
@@ -207,7 +264,7 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
       </li>
       <li><a class="nav-link" href="mentors.html">Mentors</a></li>
       <li><a class="nav-link" href="contact.html">Contact</a></li>
-      <li><a class="nav-link" href="about.html">About</a></li>
+      <li><a class="nav-link" href="about.html" style="color:var(--brand);background:var(--off2)">About</a></li>
     </ul>
     <div class="nbtns" id="nav-out">
       <button class="nghost" onclick="openModal('signin')">Sign In</button>
@@ -229,49 +286,81 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
     </div>
   </div>
 </nav>
+
 <div class="page-wrap">
 
 <!-- HERO -->
 <div class="about-hero">
   <div class="about-hero-in">
-    <div class="about-tag">About Us</div>
-    <h1>About <span>Belongix</span></h1>
-    <p>India's most complete professional career platform — built for students, freshers, and working professionals at every stage of their journey.</p>
+    <div class="about-tag">Our Story</div>
+    <h1>Built for India.<br/>Built with <span>purpose.</span></h1>
+    <p>We built Belongix because Indian professionals deserve better tools, real data, and honest guidance — not generic advice written for someone else.</p>
+  </div>
+</div>
+
+<!-- STATS STRIP (NEW) -->
+<div class="stats-strip rv">
+  <div class="stats-inner">
+    <div class="stat-item"><div class="stat-num">2,400+</div><div class="stat-lbl">Professionals joined</div></div>
+    <div class="stat-item"><div class="stat-num">1,500+</div><div class="stat-lbl">Jobs available</div></div>
+    <div class="stat-item"><div class="stat-num">50+</div><div class="stat-lbl">Verified mentors</div></div>
+    <div class="stat-item"><div class="stat-num">48+</div><div class="stat-lbl">Skill courses</div></div>
   </div>
 </div>
 
 <!-- MISSION -->
-<section class="sec">
+<section class="sec" style="padding-top:72px">
   <div class="sec-in">
     <div class="mission-grid rv">
       <div class="mission-text">
         <div class="sec-tag">Our Mission</div>
-        <h2>Why <span>Belongix exists</span></h2>
-        <p>India has millions of talented professionals — yet most lack the right tools, data and guidance to grow. LinkedIn is too generic. Job boards show too much noise. Salary data is hidden. Career guidance is expensive.</p>
-        <p>Belongix fixes all of this in one free platform built specifically for the Indian market.</p>
-        <div class="mission-check">Real salary data for Indian tech roles — no guessing</div>
-        <div class="mission-check">Live job board filtered to your skills and city</div>
-        <div class="mission-check">AI career guide available 24/7, free for everyone</div>
-        <div class="mission-check">Verified mentors for 1-on-1 guidance sessions</div>
-        <div class="mission-check">48+ curated courses from Google, AWS, NPTEL and more</div>
+        <h2>Career growth shouldn't be a <span>privilege</span></h2>
+        <p style="margin-top:14px">In India, the best career advice often comes from who you know — not what you know. If you didn't go to an IIT, or didn't have the right network, you were on your own.</p>
+        <p>We built Belongix to change that. One platform that gives every Indian professional — regardless of college, city, or background — the same tools that used to be available only to the privileged few.</p>
+        <div style="margin-top:20px;display:flex;flex-direction:column;gap:10px">
+          <div class="mission-check"><div class="check-ic">✓</div>Real salary data — not 3-year-old Glassdoor estimates</div>
+          <div class="mission-check"><div class="check-ic">✓</div>AI career guidance trained on India's job market</div>
+          <div class="mission-check"><div class="check-ic">✓</div>Mentors from top Indian companies, not just LinkedIn influencers</div>
+          <div class="mission-check"><div class="check-ic">✓</div>Core features always free — no hidden paywalls</div>
+        </div>
       </div>
       <div class="mission-visual">
-        <div class="mv-stat"><span class="mv-icon">💼</span><div><div class="mv-num">Live</div><div class="mv-lbl">Job Board — updated daily</div></div></div>
-        <div class="mv-stat"><span class="mv-icon">🎓</span><div><div class="mv-num">48+</div><div class="mv-lbl">Curated skill tracks</div></div></div>
-        <div class="mv-stat"><span class="mv-icon">🤖</span><div><div class="mv-num">24/7</div><div class="mv-lbl">Bexi AI career guidance</div></div></div>
-        <div class="mv-stat"><span class="mv-icon">🏆</span><div><div class="mv-num">7</div><div class="mv-lbl">Powerful career tools</div></div></div>
+        <div class="mv-stat"><div class="mv-icon">🤖</div><div><div class="mv-num">24/7</div><div class="mv-lbl">Bexi AI available — free for everyone</div></div></div>
+        <div class="mv-stat"><div class="mv-icon">💰</div><div><div class="mv-num">15+</div><div class="mv-lbl">Tech roles with real salary benchmarks</div></div></div>
+        <div class="mv-stat"><div class="mv-icon">🤝</div><div><div class="mv-num">50+</div><div class="mv-lbl">Verified mentors from top companies</div></div></div>
+        <div class="mv-stat"><div class="mv-icon">📊</div><div><div class="mv-num">100</div><div class="mv-lbl">Max Career Score — track your growth</div></div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- FEATURES -->
+<!-- TIMELINE (NEW) -->
 <section class="sec" style="background:var(--off);padding-top:64px;padding-bottom:64px">
   <div class="sec-in">
     <div class="sec-center rv">
-      <div class="sec-tag">What We Build</div>
-      <h2>Six tools, <span>one platform</span></h2>
-      <p class="sec-sub">No more switching between five different apps. Everything your career needs in one place.</p>
+      <div class="sec-tag">Our Journey</div>
+      <h2>How we got <span>here</span></h2>
+      <p class="sec-sub">Building in public — here's our story so far.</p>
+    </div>
+    <div style="max-width:640px;margin:0 auto" class="rv">
+      <div class="timeline">
+        <div class="tl-item"><div class="tl-dot"></div><div class="tl-date">Early 2025</div><div class="tl-title">The idea sparks</div><div class="tl-desc">Frustrated by scattered career tools and outdated salary data, we started asking: why doesn't India have a proper career platform built for us?</div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:var(--brand3)"></div><div class="tl-date">Mid 2025</div><div class="tl-title">Building starts</div><div class="tl-desc">First lines of code. We built the Job Board, Salary Intelligence, and Career Score — the three tools we wished we had when we were job hunting.</div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:var(--green)"></div><div class="tl-date">Late 2025</div><div class="tl-title">Bexi AI joins the team</div><div class="tl-desc">We trained Bexi — our AI career guide — on India's job market. She answers any career question, 24/7, completely free. No competitor has this.</div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:var(--amber)"></div><div class="tl-date">2026</div><div class="tl-title">Mentor Network launches</div><div class="tl-desc">50+ verified professionals join as mentors from Google, Swiggy, Razorpay, and more — available for 1-on-1 sessions.</div></div>
+        <div class="tl-item"><div class="tl-dot" style="background:var(--accent)"></div><div class="tl-date">Today</div><div class="tl-title">Building with the community</div><div class="tl-desc">2,400+ professionals, 1,500+ jobs, and growing every day. We're building this in public — with feedback from real users like you.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES (kept from original) -->
+<section class="sec">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">The Platform</div>
+      <h2>Six tools. <span>One platform.</span></h2>
+      <p class="sec-sub">Everything your career needs — jobs, salary data, AI guidance, courses, mentors, and a score that tracks it all.</p>
     </div>
     <div class="feat-g rv">
       <div class="feat-c"><div class="feat-ic">🤖</div><div class="feat-t">Bexi AI Career Guide</div><div class="feat-d">24/7 AI assistant for salary questions, interview prep, skill advice and career path guidance — free for everyone.</div></div>
@@ -284,24 +373,24 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
   </div>
 </section>
 
-<!-- VALUES -->
-<section class="sec">
+<!-- VALUES (kept + enhanced) -->
+<section class="sec" style="background:var(--off);padding-top:64px;padding-bottom:64px">
   <div class="sec-in">
     <div class="sec-center rv">
       <div class="sec-tag">Our Values</div>
       <h2>What we <span>stand for</span></h2>
     </div>
     <div class="values-g rv">
-      <div class="val-c"><div class="val-ic">🌟</div><div class="val-t">Honesty</div><div class="val-d">No fake numbers. Real data, real jobs, real mentors only.</div></div>
-      <div class="val-c"><div class="val-ic">🇮🇳</div><div class="val-t">India First</div><div class="val-d">Built for Indian professionals — salary data, jobs and mentors all India-focused.</div></div>
-      <div class="val-c"><div class="val-ic">🆓</div><div class="val-t">Access for All</div><div class="val-d">Core features are always free. Career guidance should not be a privilege.</div></div>
-      <div class="val-c"><div class="val-ic">🔒</div><div class="val-t">Privacy First</div><div class="val-d">Your data belongs to you. We never sell user data to advertisers.</div></div>
+      <div class="val-c"><div class="val-ic">🌟</div><div class="val-t">Honesty</div><div class="val-d">No fake numbers. Real data, real jobs, real mentors only. We'd rather show you less than mislead you.</div></div>
+      <div class="val-c"><div class="val-ic">🇮🇳</div><div class="val-t">India First</div><div class="val-d">Built for Indian professionals — salary data, jobs and mentors all India-focused. Not adapted from the US.</div></div>
+      <div class="val-c"><div class="val-ic">🆓</div><div class="val-t">Access for All</div><div class="val-d">Core features are always free. Career guidance should not be a privilege reserved for the well-connected.</div></div>
+      <div class="val-c"><div class="val-ic">🔒</div><div class="val-t">Privacy First</div><div class="val-d">Your data belongs to you. We never sell user data to advertisers or share it without your permission.</div></div>
     </div>
   </div>
 </section>
 
-<!-- BEFORE / AFTER -->
-<section class="sec" style="background:var(--off);padding-top:64px;padding-bottom:64px">
+<!-- BEFORE/AFTER (kept from original, enhanced) -->
+<section class="sec">
   <div class="sec-in">
     <div class="sec-center rv">
       <div class="sec-tag">The Gap We Fill</div>
@@ -314,7 +403,8 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
         <div class="ba-item">✗ No idea if your salary is fair</div>
         <div class="ba-item">✗ Random YouTube videos, no structure</div>
         <div class="ba-item">✗ No mentor to guide career decisions</div>
-        <div class="ba-item">✗ Preparing for interviews alone</div>
+        <div class="ba-item">✗ Preparing for interviews completely alone</div>
+        <div class="ba-item">✗ No way to measure your career progress</div>
       </div>
       <div class="ba-card ba-good">
         <div class="ba-title">✅ With Belongix</div>
@@ -322,18 +412,76 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
         <div class="ba-item">✓ Real salary benchmarks for your role and city</div>
         <div class="ba-item">✓ Structured learning paths from top platforms</div>
         <div class="ba-item">✓ 1-on-1 mentor sessions with verified professionals</div>
+        <div class="ba-item">✓ Bexi AI answers any career question, 24/7</div>
         <div class="ba-item">✓ Career Score to track and improve your growth</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
+<!-- TEAM (NEW) -->
+<section class="sec" style="background:var(--off);padding-top:64px;padding-bottom:64px">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">The Team</div>
+      <h2>Built by people who <span>get it</span></h2>
+      <p class="sec-sub">We've been through the same career struggles. That's why we built Belongix.</p>
+    </div>
+    <div class="team-grid rv">
+      <div class="team-card">
+        <div class="team-av" style="background:linear-gradient(135deg,#2D1B69,#6B48CC)">KV</div>
+        <div class="team-name">Founder</div>
+        <div class="team-role">Product &amp; Engineering</div>
+        <div class="team-bio">Building Belongix to give every Indian professional the career tools they deserve — regardless of college or network.</div>
+        <a class="team-li" href="https://linkedin.com/company/belongix" target="_blank">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+      <div class="team-card">
+        <div class="team-av" style="background:linear-gradient(135deg,#FF5C35,#FF7A59)">🤖</div>
+        <div class="team-name">Bexi AI</div>
+        <div class="team-role">AI Career Guide</div>
+        <div class="team-bio">Your 24/7 career companion. Trained on India's job market to give honest, actionable career guidance — always free.</div>
+        <a class="team-li" href="dashboard.html?page=overview" style="color:var(--accent);border-color:var(--accent)">Chat with Bexi →</a>
+      </div>
+      <div class="team-card">
+        <div class="team-av" style="background:linear-gradient(135deg,#10B981,#059669)">YOU</div>
+        <div class="team-name">The Community</div>
+        <div class="team-role">Co-builders</div>
+        <div class="team-bio">Every piece of feedback shapes Belongix. Join 2,400+ professionals who are building this platform with us.</div>
+        <a class="team-li" href="contact.html">Share feedback →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRESS (NEW) -->
+<section class="sec">
+  <div class="sec-in">
+    <div class="sec-center rv">
+      <div class="sec-tag">Press &amp; Media</div>
+      <h2>Want to <span>cover us?</span></h2>
+      <p class="sec-sub">We're building in public and happy to speak with journalists, podcasters, and content creators covering the Indian startup and career ecosystem.</p>
+    </div>
+    <div class="press-grid rv">
+      <div class="press-card"><div style="font-size:28px;margin-bottom:8px">📰</div><div class="press-name">Press Kit</div><div class="press-desc">Logos, screenshots, brand guidelines</div></div>
+      <div class="press-card"><div style="font-size:28px;margin-bottom:8px">🏙️</div><div class="press-name">Podcast / Interview</div><div class="press-desc">Happy to share the founder story</div></div>
+      <div class="press-card"><div style="font-size:28px;margin-bottom:8px">📊</div><div class="press-name">Data &amp; Stats</div><div class="press-desc">Platform usage and growth data</div></div>
+      <div class="press-card"><div style="font-size:28px;margin-bottom:8px">🤝</div><div class="press-name">Partnerships</div><div class="press-desc">Corporate &amp; college collaborations</div></div>
+    </div>
+    <div style="text-align:center;margin-top:28px" class="rv">
+      <a href="mailto:teambelongix@gmail.com?subject=Press Enquiry" style="padding:13px 26px;border-radius:10px;background:var(--brand);color:#fff;border:none;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);display:inline-flex;align-items:center;gap:8px;text-decoration:none">Contact for Press →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA (kept from original) -->
 <section class="sec">
   <div class="sec-in rv">
     <div class="about-cta">
       <h2 style="position:relative;z-index:1">Ready to start your <span style="color:#FFD4C7">journey?</span></h2>
-      <p>Belongix is free to join. Get your career score, live job matches and AI guidance today.</p>
+      <p>Belongix is free to join. Get your Career Score, live job matches and Bexi AI guidance today.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1">
         <button onclick="openModal('signup')" style="padding:13px 28px;border-radius:10px;background:#fff;color:var(--brand);border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb)">Get Started Free →</button>
         <a href="contact.html" style="padding:13px 24px;border-radius:10px;background:transparent;color:#fff;border:2px solid rgba(255,255,255,.3);font-size:14px;font-weight:600;text-decoration:none;display:inline-block">Contact Us</a>
@@ -341,7 +489,6 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
     </div>
   </div>
 </section>
-
 <footer>
   <div class="footer-in">
     <div class="footer-top">
@@ -365,8 +512,8 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
       </div>
       <div class="footer-col">
         <h4>Legal</h4>
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="terms.html">Terms of Service</a>
         <a href="#">Refund Policy</a>
       </div>
     </div>
@@ -381,6 +528,7 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
   </div>
 </footer>
 </div>
+
 <div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -411,7 +559,7 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
 <script>
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
-var sb=supabase.createClient(SB_URL,SB_KEY);
+var sb=window._bxSb||(window._bxSb=supabase.createClient(SB_URL,SB_KEY));
 (function(){
   sb.auth.getSession().then(function(r){var s=r&&r.data&&r.data.session;if(s&&s.user)showUserNav(s.user);else showGuestNav();});
   sb.auth.onAuthStateChange(function(_,s){if(s&&s.user)showUserNav(s.user);else showGuestNav();});
