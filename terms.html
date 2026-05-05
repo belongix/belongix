@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Terms of Service — Belongix</title>
+<meta name="description" content="Belongix Terms of Service — the rules and guidelines for using the Belongix career platform."/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://www.belongix.in/terms.html"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="manifest" href="manifest.json"/>
+<link rel="icon" href="icons/icon-32.png"/>
+<link rel="apple-touch-icon" href="icons/icon-192.png"/>
+<meta name="theme-color" content="#2D1B69"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;450;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{--brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;--ink:#0D0D1A;--muted:#5A5A7A;--subtle:#8B8BA8;--border:#E4E4F0;--off:#F7F7FC;--off2:#EFEFF8;--ff:'Sora',sans-serif;--ffb:'DM Sans',sans-serif;--max:800px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+body{font-family:var(--ffb);color:var(--ink);background:#FAFAFE;background-image:linear-gradient(rgba(45,27,105,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(45,27,105,.04) 1px,transparent 1px);background-size:52px 52px;background-attachment:fixed}
+nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;padding:0 5%;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-in{max-width:1200px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+.nlogo{font-family:var(--ff);font-size:21px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.4px}
+.nlogo span{color:var(--accent)}
+.nav-back{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);text-decoration:none;font-weight:500;transition:.15s}
+.nav-back:hover{color:var(--brand)}
+.page-wrap{padding-top:64px}
+.legal-hero{background:linear-gradient(135deg,#2D1B69 0%,#4C2FAA 100%);padding:56px 5% 48px;text-align:center}
+.legal-hero h1{font-family:var(--ff);font-size:clamp(28px,4vw,42px);font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:10px}
+.legal-hero p{font-size:15px;color:rgba(255,255,255,.7);max-width:520px;margin:0 auto}
+.legal-meta{display:flex;gap:16px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.legal-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85)}
+.legal-wrap{max-width:var(--max);margin:0 auto;padding:48px 5% 80px}
+.toc{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:40px}
+.toc-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px}
+.toc-list{display:flex;flex-direction:column;gap:6px}
+.toc-link{font-size:13.5px;color:var(--brand);text-decoration:none;font-weight:500;padding:4px 0;display:flex;align-items:center;gap:8px;transition:.15s}
+.toc-link:hover{color:var(--brand2)}
+.toc-link::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--brand);flex-shrink:0}
+.legal-section{margin-bottom:40px;scroll-margin-top:84px}
+.legal-section h2{font-family:var(--ff);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--off2);display:flex;align-items:center;gap:10px}
+.legal-section h2 .sec-num{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--ff)}
+.legal-section p{font-size:14.5px;line-height:1.85;color:var(--muted);margin-bottom:12px}
+.legal-section ul{padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
+.legal-section li{font-size:14px;line-height:1.75;color:var(--muted);padding-left:20px;position:relative}
+.legal-section li::before{content:'•';position:absolute;left:0;color:var(--brand);font-weight:700}
+.legal-section strong{color:var(--ink);font-weight:600}
+.highlight-box{background:linear-gradient(135deg,rgba(45,27,105,.05),rgba(107,72,204,.05));border:1px solid rgba(45,27,105,.12);border-radius:12px;padding:16px 20px;margin:16px 0}
+.highlight-box p{margin-bottom:0;font-size:14px;color:var(--ink2)}
+.warn-box{background:#FFF7ED;border:1px solid #FED7AA;border-radius:12px;padding:16px 20px;margin:16px 0}
+.warn-box p{margin-bottom:0;font-size:14px;color:#92400E}
+.contact-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:24px;margin-top:24px;display:flex;gap:16px;align-items:flex-start}
+.contact-icon{width:44px;height:44px;border-radius:12px;background:var(--off2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.contact-info h4{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.contact-info p{font-size:13.5px;color:var(--muted);margin:0;line-height:1.6}
+.contact-info a{color:var(--brand);text-decoration:none;font-weight:600}
+footer{background:#0D0D1A;padding:32px 5%;text-align:center}
+footer p{font-size:13px;color:rgba(255,255,255,.35)}
+footer a{color:rgba(255,255,255,.5);text-decoration:none;margin:0 10px}
+footer a:hover{color:#fff}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-in">
+    <a href="index.html" class="nlogo">Belong<span>ix</span></a>
+    <a href="index.html" class="nav-back">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5m0 0l7 7m-7-7l7-7"/></svg>
+      Back to Home
+    </a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="legal-hero">
+    <h1>Terms of Service</h1>
+    <p>The rules and guidelines for using the Belongix career platform</p>
+    <div class="legal-meta">
+      <span class="legal-badge">📅 Effective: 1 May 2026</span>
+      <span class="legal-badge">🔄 Last Updated: 1 May 2026</span>
+      <span class="legal-badge">🇮🇳 Governed by Indian Law</span>
+    </div>
+  </div>
+
+  <div class="legal-wrap">
+    <div class="toc">
+      <div class="toc-title">📋 Table of Contents</div>
+      <div class="toc-list">
+        <a href="#t1" class="toc-link">1. Acceptance of Terms</a>
+        <a href="#t2" class="toc-link">2. Eligibility</a>
+        <a href="#t3" class="toc-link">3. Your Account</a>
+        <a href="#t4" class="toc-link">4. Platform Services</a>
+        <a href="#t5" class="toc-link">5. Mentor Network Rules</a>
+        <a href="#t6" class="toc-link">6. Payments & Refunds</a>
+        <a href="#t7" class="toc-link">7. Acceptable Use</a>
+        <a href="#t8" class="toc-link">8. Intellectual Property</a>
+        <a href="#t9" class="toc-link">9. Disclaimers & Limitations</a>
+        <a href="#t10" class="toc-link">10. Termination</a>
+        <a href="#t11" class="toc-link">11. Governing Law</a>
+        <a href="#t12" class="toc-link">12. Contact Us</a>
+      </div>
+    </div>
+
+    <div class="highlight-box">
+      <p><strong>Plain language summary:</strong> By using Belongix you agree to these terms. Be respectful, be honest about your credentials, and don't misuse the platform. Mentors are independent professionals — we facilitate connections but don't guarantee outcomes. Read the full policy for details.</p>
+    </div>
+
+    <div class="legal-section" id="t1">
+      <h2><span class="sec-num">1</span> Acceptance of Terms</h2>
+      <p>By accessing or using Belongix ("the Platform"), you agree to be bound by these Terms of Service ("Terms") and our <a href="privacy.html" style="color:var(--brand)">Privacy Policy</a>. If you do not agree, please do not use the Platform.</p>
+      <p>These Terms constitute a legally binding agreement between you and Belongix Technologies Pvt. Ltd. ("Belongix", "we", "us", or "our"), a company incorporated under the laws of India.</p>
+      <p>We reserve the right to update these Terms at any time. We will notify you of material changes via email and in-app notification at least 14 days before they take effect. Continued use of the Platform after that date constitutes acceptance.</p>
+    </div>
+
+    <div class="legal-section" id="t2">
+      <h2><span class="sec-num">2</span> Eligibility</h2>
+      <p>You may use Belongix if you:</p>
+      <ul>
+        <li>Are at least 16 years of age</li>
+        <li>Have the legal capacity to enter into a binding agreement under Indian law</li>
+        <li>Are not prohibited from using the Platform under any applicable law</li>
+        <li>Provide accurate and truthful information during registration</li>
+      </ul>
+      <p>By creating an account, you confirm that all information you provide is accurate and complete. Providing false information is grounds for immediate account termination.</p>
+    </div>
+
+    <div class="legal-section" id="t3">
+      <h2><span class="sec-num">3</span> Your Account</h2>
+      <p>You are responsible for:</p>
+      <ul>
+        <li>Keeping your account credentials secure and confidential</li>
+        <li>All activity that occurs under your account</li>
+        <li>Notifying us immediately at <a href="mailto:security@belongix.in" style="color:var(--brand)">security@belongix.in</a> if you suspect unauthorised access</li>
+        <li>Ensuring your profile information remains accurate and up to date</li>
+      </ul>
+      <p>You may not share your account with others, create multiple accounts for the same person, or use automated tools to create accounts. One account per person.</p>
+    </div>
+
+    <div class="legal-section" id="t4">
+      <h2><span class="sec-num">4</span> Platform Services</h2>
+      <p>Belongix provides the following services, subject to these Terms:</p>
+      <ul>
+        <li><strong>Job Board:</strong> We aggregate and display job listings from various sources. We do not guarantee the accuracy, completeness, or availability of any listing. Apply directly through the employer's own process.</li>
+        <li><strong>Salary Intelligence:</strong> Salary data is sourced from publicly available market reports and user-reported data. It is indicative only and not a guarantee of compensation.</li>
+        <li><strong>Bexi AI Career Guide:</strong> Bexi provides general career guidance based on available data. It is not a substitute for professional HR, legal, or financial advice.</li>
+        <li><strong>Upskilling Hub:</strong> We curate and link to third-party courses. Belongix is not responsible for the content, quality, or changes to third-party course materials.</li>
+        <li><strong>Career Score:</strong> Your Career Score is a platform-specific metric based on your activity. It has no formal recognition outside the Belongix platform.</li>
+        <li><strong>Mentor Network:</strong> Governed by Section 5 below.</li>
+      </ul>
+      <p>We reserve the right to modify, suspend, or discontinue any feature of the Platform at any time with reasonable notice where possible.</p>
+    </div>
+
+    <div class="legal-section" id="t5">
+      <h2><span class="sec-num">5</span> Mentor Network Rules</h2>
+      <p>The Belongix Mentor Network connects mentees with independent mentors. By participating, you agree to the following:</p>
+      <p><strong>For Mentors:</strong></p>
+      <ul>
+        <li>You must accurately represent your professional credentials, experience, and company affiliations</li>
+        <li>You must not misrepresent your identity or fabricate qualifications</li>
+        <li>You are an independent professional, not an employee or agent of Belongix</li>
+        <li>You are responsible for the quality and content of your sessions</li>
+        <li>You must honour confirmed bookings or cancel with at least 24 hours' notice</li>
+        <li>You may not solicit mentees to engage outside the platform to avoid platform fees</li>
+      </ul>
+      <p><strong>For Mentees:</strong></p>
+      <ul>
+        <li>Session fees are set by mentors. Belongix facilitates payment but does not set or guarantee rates.</li>
+        <li>Belongix does not guarantee specific outcomes from mentor sessions</li>
+        <li>You must treat mentors with professional respect</li>
+        <li>You may not record sessions without the mentor's explicit consent</li>
+      </ul>
+      <div class="warn-box">
+        <p>⚠️ <strong>Disclaimer:</strong> Mentors on Belongix are independent professionals. Belongix verifies mentor profiles but does not warrant the accuracy of mentor credentials. Career outcomes depend on many factors and cannot be guaranteed.</p>
+      </div>
+    </div>
+
+    <div class="legal-section" id="t6">
+      <h2><span class="sec-num">6</span> Payments & Refunds</h2>
+      <p>All payments on Belongix are processed securely by Razorpay. By making a payment, you also agree to Razorpay's Terms of Service.</p>
+      <p><strong>Pro Plan (₹499/month):</strong></p>
+      <ul>
+        <li>Billed monthly. Cancel any time from Settings — your Pro access continues until the end of the billing period</li>
+        <li>No refunds for partial months, but you will not be charged again after cancellation</li>
+        <li>If you cancel within 7 days of your first purchase and have not extensively used Pro features, contact us for a full refund</li>
+      </ul>
+      <p><strong>Mentor Sessions:</strong></p>
+      <ul>
+        <li>Full refund if the mentor cancels or does not show up</li>
+        <li>Full refund if cancelled by the mentee more than 24 hours before the session</li>
+        <li>50% refund if cancelled between 12–24 hours before the session</li>
+        <li>No refund for cancellations less than 12 hours before the session</li>
+        <li>Disputes should be raised at <a href="mailto:support@belongix.in" style="color:var(--brand)">support@belongix.in</a> within 7 days of the session date</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="t7">
+      <h2><span class="sec-num">7</span> Acceptable Use</h2>
+      <p>You agree not to use Belongix to:</p>
+      <ul>
+        <li>Post false, misleading, or fraudulent information on your profile or in any review</li>
+        <li>Harass, threaten, or abuse other users or mentors</li>
+        <li>Scrape, crawl, or systematically extract data from the platform</li>
+        <li>Reverse-engineer, decompile, or attempt to access source code</li>
+        <li>Use the platform to spam, phish, or distribute malware</li>
+        <li>Impersonate another person or misrepresent your affiliation with any company</li>
+        <li>Attempt to circumvent authentication or security measures</li>
+        <li>Use automated bots or scripts to create accounts or interact with the platform</li>
+        <li>Violate any applicable Indian or international law or regulation</li>
+      </ul>
+      <p>Violations may result in immediate account suspension or termination, and we reserve the right to report illegal activity to appropriate authorities.</p>
+    </div>
+
+    <div class="legal-section" id="t8">
+      <h2><span class="sec-num">8</span> Intellectual Property</h2>
+      <p>All content on Belongix — including the logo, design, code, text, graphics, and data compilations — is owned by Belongix Technologies Pvt. Ltd. or its licensors, protected by Indian copyright and intellectual property law.</p>
+      <p>You may not copy, reproduce, distribute, or create derivative works from any platform content without our express written permission.</p>
+      <p><strong>Your content:</strong> You retain ownership of any content you submit to Belongix (profile, reviews, mentor bio). By submitting content, you grant Belongix a non-exclusive, royalty-free licence to display and use that content within the platform for the purpose of providing the service. We will not use your personal content for marketing without your explicit consent.</p>
+    </div>
+
+    <div class="legal-section" id="t9">
+      <h2><span class="sec-num">9</span> Disclaimers & Limitations</h2>
+      <div class="warn-box">
+        <p>⚠️ The Platform is provided "as is" without warranties of any kind. Belongix does not guarantee employment outcomes, salary increases, or any specific career results from use of the platform.</p>
+      </div>
+      <p>To the maximum extent permitted by applicable Indian law:</p>
+      <ul>
+        <li>Belongix is not liable for indirect, incidental, consequential, or punitive damages</li>
+        <li>Our total liability to you for any claim arising from use of the platform shall not exceed the amount you paid us in the 3 months preceding the claim</li>
+        <li>We are not responsible for third-party content, job listings posted by employers, or mentor session outcomes</li>
+        <li>Job listings on the platform are not endorsements of those employers</li>
+      </ul>
+    </div>
+
+    <div class="legal-section" id="t10">
+      <h2><span class="sec-num">10</span> Termination</h2>
+      <p><strong>By you:</strong> You may close your account at any time from Settings → Delete Account. This will remove your profile and personal data within 30 days. Payment records are retained as required by law.</p>
+      <p><strong>By Belongix:</strong> We may suspend or terminate your account immediately if you:</p>
+      <ul>
+        <li>Violate these Terms or our community guidelines</li>
+        <li>Provide false or misleading information</li>
+        <li>Engage in fraudulent, abusive, or illegal activity</li>
+        <li>Fail to pay for Pro plan or mentor sessions</li>
+      </ul>
+      <p>Where possible and appropriate, we will provide advance notice and an opportunity to respond before account termination. In cases of serious violations, we may terminate without prior notice.</p>
+    </div>
+
+    <div class="legal-section" id="t11">
+      <h2><span class="sec-num">11</span> Governing Law & Disputes</h2>
+      <p>These Terms are governed by the laws of India. Any dispute arising from or related to these Terms or your use of Belongix shall be subject to the exclusive jurisdiction of the courts in Bangalore, Karnataka, India.</p>
+      <p>Before initiating legal proceedings, you agree to first attempt to resolve disputes informally by contacting us at <a href="mailto:legal@belongix.in" style="color:var(--brand)">legal@belongix.in</a>. We will make reasonable efforts to resolve disputes within 30 days.</p>
+    </div>
+
+    <div class="legal-section" id="t12">
+      <h2><span class="sec-num">12</span> Contact Us</h2>
+      <p>If you have questions about these Terms, please contact us:</p>
+      <div class="contact-card">
+        <div class="contact-icon">⚖️</div>
+        <div class="contact-info">
+          <h4>Legal — Belongix</h4>
+          <p>Email: <a href="mailto:legal@belongix.in">legal@belongix.in</a><br/>
+          For support: <a href="mailto:support@belongix.in">support@belongix.in</a><br/>
+          Response time: Within 30 days</p>
+        </div>
+      </div>
+      <div class="contact-card">
+        <div class="contact-icon">🏢</div>
+        <div class="contact-info">
+          <h4>Registered Office</h4>
+          <p>Belongix Technologies Pvt. Ltd.<br/>
+          Bangalore, Karnataka, India<br/>
+          <a href="contact.html">Contact form →</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p style="margin-bottom:12px"><a href="index.html">Home</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a><a href="contact.html">Contact</a></p>
+  <p>© 2026 Belongix. All rights reserved. Built with ❤️ in India.</p>
+</footer>
+<script src="bexi.js"></script>
+</body>
+</html>
