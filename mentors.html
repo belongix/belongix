@@ -758,6 +758,8 @@ async function loadMentors(){
   try{
     var r=await sb.from('mentors').select('*').order('created_at',{ascending:false});
     allMentors=r.data||[];
+    var statEl=document.getElementById('stat-mentors');
+    if(statEl&&allMentors.length>0)statEl.textContent=allMentors.length+(allMentors.length>=10?'+':'');
     renderMentors(allMentors);
   }catch(e){
     grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px"><div style="font-size:36px;margin-bottom:12px">🤝</div><div style="font-size:15px;font-weight:600;color:var(--ink2);margin-bottom:16px">No mentors listed yet</div><p style="color:var(--muted);font-size:13px;margin-bottom:20px">Be the first to join!</p><button onclick="switchTab(\'register\')" style="background:var(--brand);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb)">Become a Mentor →</button></div>';
@@ -893,7 +895,7 @@ async function submitBooking(){
   if(selectedSession.price===0){
     try{
       await sb.from('mentor_bookings').insert([{mentor_id:currentMentor.id,mentee_name:name,mentee_email:email,session_type:selectedSession.type,help_needed:msg,amount:0,status:'pending'}]);
-    }catch(e){console.warn('Booking save failed (table may not exist yet):',e.message);}
+    }catch(e){/* booking save non-fatal */}
     // Fallback: email
     var subj=encodeURIComponent('[Belongix] Free Intro Request from '+name);
     var body=encodeURIComponent('Mentor: '+currentMentor.name+'\nName: '+name+'\nEmail: '+email+'\nMessage: '+msg);
@@ -917,7 +919,7 @@ async function submitBooking(){
       handler:async function(response){
         try{
           await sb.from('mentor_bookings').insert([{mentor_id:currentMentor.id,mentee_name:name,mentee_email:email,session_type:selectedSession.type,help_needed:msg,amount:selectedSession.price,status:'confirmed',payment_id:response.razorpay_payment_id}]);
-        }catch(e){console.warn('Booking record failed:',e.message);}
+        }catch(e){/* booking record non-fatal */}
         closeBooking();
         showToast('🎉 Session booked! '+currentMentor.name+' will confirm within 24h.');
         if(btn){btn.disabled=false;}
@@ -1023,9 +1025,8 @@ async function submitMentorApplication(){
       var subj=encodeURIComponent('[Belongix] New Mentor Application: '+name+' | '+role+' at '+company);
       var body=encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nRole: '+role+'\nCompany: '+company+'\nExperience: '+exp+'\nCity: '+gv('m-city')+'\nField: '+gv('m-field')+'\nLinkedIn: '+li+'\nSpecialisations: '+skills.join(', ')+'\nRate: '+gv('m-rate')+'\nAvailability: '+gv('m-availability')+'\n\nBio:\n'+bio);
       window.open('mailto:teambelongix@gmail.com?subject='+subj+'&body='+body,'_blank');
-    }catch(mailErr){console.warn('Email open failed:',mailErr);}
+    }catch(mailErr){/* email open non-fatal */}
   }catch(e){
-    console.error('Mentor application error:',e);
     showToast('Submission failed: '+e.message);
     if(btn){btn.disabled=false;btn.textContent='Submit Application \u2192';}
   }
