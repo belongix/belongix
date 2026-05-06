@@ -586,7 +586,7 @@ async function submitContact(){
   // Save to Supabase (optional — graceful fail)
   try{
     await sb.from('contact_messages').insert([{name:n,email:e,subject:s,message:m,phone:phone}]);
-  }catch(ex){console.log('Supabase contact save failed (table may not exist):',ex.message);}
+  }catch(ex){/* contact_messages table non-fatal */}
   // Mailto fallback
   var subj=encodeURIComponent('[Belongix] '+s+' from '+n);
   var body=encodeURIComponent('Name: '+n+'\nEmail: '+e+(phone?'\nPhone: '+phone:'')+'\nSubject: '+s+'\n\nMessage:\n'+m);
