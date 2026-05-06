@@ -1,10 +1,11 @@
 /* Belongix Service Worker v1.0 */
-var CACHE = "belongix-v2";
+var CACHE = "belongix-v3";
 var OFFLINE_URL = "/offline.html";
 
 var PRECACHE = [
   "/",
   "/index.html",
+  "/app.html",
   "/dashboard.html",
   "/about.html",
   "/contact.html",

@@ -59,8 +59,8 @@
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function () {
       navigator.serviceWorker.register("/sw.js")
-        .then(function (reg) { console.log("Belongix SW registered"); })
-        .catch(function (e) { console.log("SW error:", e); });
+        .then(function (reg) { /* SW registered */ })
+        .catch(function (e) { /* SW registration failed */ });
     });
   }
 
