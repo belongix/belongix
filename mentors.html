@@ -988,25 +988,46 @@ async function submitMentorApplication(){
   var skills=[];
   document.querySelectorAll('.checkbox-item input:checked').forEach(function(cb){skills.push(cb.value);});
   if(!skills.length){showToast('Please select at least one skill you can help with');return;}
-  // LinkedIn validation
   var li=gv('m-linkedin');
   if(li&&!li.includes('linkedin.com/in/')){showToast('Please enter a valid LinkedIn URL (linkedin.com/in/...)');return;}
   var btn=document.getElementById('register-btn');
   if(btn){btn.disabled=true;btn.textContent='Submitting...';}
   try{
-    var data={name:name,email:email,phone:gv('m-phone'),city:gv('m-city'),role:role,company:company,experience:exp,field:gv('m-field'),linkedin:li,skills:skills.join(', '),bio:bio,rate:gv('m-rate'),availability:gv('m-availability'),status:'pending'};
-    var res=await sb.from('mentors').insert([data]);
+    // Insert into mentor_applications (pending review queue), NOT the mentors display table
+    var payload={
+      applicant_name: name,
+      applicant_email: email,
+      phone: gv('m-phone'),
+      city: gv('m-city'),
+      job_role: role,
+      company: company,
+      experience: exp,
+      field: gv('m-field'),
+      linkedin_url: li,
+      specialisations: skills.join(', '),
+      bio: bio,
+      session_rate: gv('m-rate'),
+      availability: gv('m-availability'),
+      status: 'pending',
+      submitted_at: new Date().toISOString()
+    };
+    var res=await sb.from('mentor_applications').insert([payload]);
     if(res.error)throw res.error;
-    var form=document.getElementById('mentor-form');var success=document.getElementById('success-box');
+    var form=document.getElementById('mentor-form');
+    var success=document.getElementById('success-box');
     if(form)form.style.display='none';
     if(success)success.style.display='block';
-    showToast('🎉 Application submitted! We\'ll review within 48 hours.');
-    var subj=encodeURIComponent('[Belongix] New Mentor Application from '+name);
-    var body=encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nRole: '+role+'\nCompany: '+company+'\nSkills: '+skills.join(', ')+'\n\nBio:\n'+bio);
-    window.open('mailto:teambelongix@gmail.com?subject='+subj+'&body='+body,'_blank');
+    showToast('Application submitted!');
+    // Email notification
+    try{
+      var subj=encodeURIComponent('[Belongix] New Mentor Application: '+name+' | '+role+' at '+company);
+      var body=encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nRole: '+role+'\nCompany: '+company+'\nExperience: '+exp+'\nCity: '+gv('m-city')+'\nField: '+gv('m-field')+'\nLinkedIn: '+li+'\nSpecialisations: '+skills.join(', ')+'\nRate: '+gv('m-rate')+'\nAvailability: '+gv('m-availability')+'\n\nBio:\n'+bio);
+      window.open('mailto:teambelongix@gmail.com?subject='+subj+'&body='+body,'_blank');
+    }catch(mailErr){console.warn('Email open failed:',mailErr);}
   }catch(e){
+    console.error('Mentor application error:',e);
     showToast('Submission failed: '+e.message);
-    if(btn){btn.disabled=false;btn.textContent='Submit Application →';}
+    if(btn){btn.disabled=false;btn.textContent='Submit Application \u2192';}
   }
 }
 
