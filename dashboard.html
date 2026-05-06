@@ -909,7 +909,7 @@ async function fetchPartnerJobs() {
       });
       extraJobs = extraJobs.concat(mapped1.slice(0,8));
     }
-  } catch(e) { console.log('Remotive unavailable'); }
+  } catch(e) { /* Remotive unavailable */ }
   // Source 2: Arbeitnow
   try {
     var r2 = await fetch('https://www.arbeitnow.com/api/job-board-api');
@@ -923,7 +923,7 @@ async function fetchPartnerJobs() {
       });
       extraJobs = extraJobs.concat(mapped2.slice(0,5));
     }
-  } catch(e) { console.log('Arbeitnow unavailable'); }
+  } catch(e) { /* Arbeitnow unavailable */ }
   if (extraJobs.length > 0) {
     var combined = ALL_JOBS.concat(extraJobs);
     window._lastRenderedJobs = combined;
@@ -1315,7 +1315,7 @@ function uploadAvatar(input) {
     try{localStorage.setItem(avKey,b64);}catch(e){}
     showToast('Saving photo...');
     if(!currentUser)return;
-    try{await supaClient.from('profiles').update({avatar_url:b64}).eq('id',currentUser.id);showToast('Photo saved!');}catch(e){console.warn(e);}
+    try{await supaClient.from('profiles').update({avatar_url:b64}).eq('id',currentUser.id);showToast('Photo saved!');}catch(e){showToast('Photo save failed.');}
   };
   img.src=obj;
 }
@@ -1604,7 +1604,7 @@ async function submitEasyApply() {
         applied_at: new Date().toISOString(),
         status: 'applied'
       }]);
-    } catch(e) { console.warn('applications table:', e.message); }
+    } catch(e) { /* applications table not yet created */ }
     // Increment career score +15
     var sc = 30;
     try {
@@ -1612,7 +1612,7 @@ async function submitEasyApply() {
       if (pr.data) sc = (pr.data.career_score || 30);
       await supaClient.from('profiles').update({career_score: sc + 15}).eq('id',currentUser.id);
       var sbSc = document.getElementById('sb-score'); if (sbSc) sbSc.textContent = 'Score: '+(sc+15);
-    } catch(e) { console.warn('score update:', e.message); }
+    } catch(e) { /* score update non-fatal */ }
     // Track in localStorage
     var appliedIds = [];
     try { appliedIds = JSON.parse(localStorage.getItem('bx_applied_'+currentUser.id))||[]; } catch(e) {}
