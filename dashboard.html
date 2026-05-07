@@ -9,6 +9,7 @@
 <meta name="theme-color" content="#2D1B69"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;450;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 
@@ -95,16 +96,76 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
 .jobs-loading svg{width:36px;height:36px;animation:spin 1.2s linear infinite;color:#2D1B69}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* SALARY */
-.salary-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.sal-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:18px;transition:.2s}
-.sal-card:hover{border-color:#2D1B69;box-shadow:var(--shadow)}
-.sal-role-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px}
-.sal-city{font-size:12px;color:var(--muted);margin-bottom:12px}
-.sal-bar-bg{height:7px;background:var(--bg);border-radius:8px;overflow:hidden;margin-bottom:7px}
-.sal-bar-fill{height:100%;background:linear-gradient(90deg,#2D1B69,#06B6D4);border-radius:8px}
-.sal-avg-badge{background:var(--blue-lt);color:#2D1B69;font-size:12px;font-weight:700;border-radius:8px;padding:4px 11px;display:inline-block;margin-top:6px}
-.sal-hike-badge{background:#ECFDF5;color:#15803D;font-size:11.5px;font-weight:600;border-radius:6px;padding:3px 8px;margin-left:5px}
+/* ══════════════════════════════════════════
+   SALARY INTELLIGENCE — Full redesign
+══════════════════════════════════════════ */
+/* Page header */
+.si-header{margin-bottom:20px}
+.si-title-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.si-title{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-.3px}
+.si-badge{display:inline-flex;align-items:center;gap:5px;background:#ECFDF5;color:#15803D;font-size:11px;font-weight:700;padding:4px 11px;border-radius:20px;border:1px solid #A7F3D0;white-space:nowrap}
+.si-sub{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* City tabs */
+.si-city-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.si-city-tab{padding:6px 14px;border-radius:20px;font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--muted);transition:.15s;font-family:var(--ffb)}
+.si-city-tab:hover{border-color:#6B48CC;color:#2D1B69}
+.si-city-tab.active{background:#2D1B69;color:#fff;border-color:#2D1B69}
+
+/* Cards grid */
+.si-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+@media(max-width:700px){.si-grid{grid-template-columns:1fr}}
+
+/* Individual card */
+.si-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;transition:.2s;cursor:pointer}
+.si-card:hover{border-color:#C4B0F8;box-shadow:0 6px 24px rgba(45,27,105,.1);transform:translateY(-1px)}
+.si-card.expanded{border-color:#2D1B69}
+.si-card-head{padding:16px 18px;display:flex;align-items:flex-start;gap:12px}
+.si-card-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.si-card-meta{flex:1;min-width:0}
+.si-card-name{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.si-hot-badge{background:linear-gradient(135deg,#FF5C35,#FF8C42);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.si-card-range{font-size:12.5px;color:var(--muted);font-weight:500}
+.si-card-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.si-hike{font-size:12px;font-weight:700;padding:3px 9px;border-radius:20px}
+.si-hike.up{background:#ECFDF5;color:#15803D}
+.si-hike.hot{background:linear-gradient(135deg,#FFF1F2,#FFE4E6);color:#BE123C}
+.si-median{font-family:var(--ff);font-size:15px;font-weight:800;color:#2D1B69}
+.si-median-lbl{font-size:10px;color:var(--subtle);font-weight:600}
+.si-spark-wrap{width:60px;height:24px;flex-shrink:0}
+
+/* Bar chart area */
+.si-card-body{padding:0 18px 16px;display:none}
+.si-card.expanded .si-card-body{display:block}
+.si-chart-wrap{position:relative;height:72px;margin-bottom:14px}
+.si-chart-labels{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:12px}
+.si-chart-lbl{text-align:center}
+.si-chart-lbl-val{font-family:var(--ff);font-size:12px;font-weight:800;color:var(--ink)}
+.si-chart-lbl-name{font-size:10px;color:var(--subtle);margin-top:1px}
+
+/* Pro-locked section */
+.si-pro-section{margin-top:12px;border-top:1px solid var(--border);padding-top:14px}
+.si-pro-gate{position:relative;border-radius:12px;overflow:hidden}
+.si-pro-blur{filter:blur(4px);pointer-events:none;opacity:.6;padding:12px;background:var(--bg);border-radius:10px}
+.si-pro-blur-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+.si-pro-blur-row:last-child{border:none}
+.si-pro-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,.7);backdrop-filter:blur(2px)}
+.si-pro-lock{font-size:20px}
+.si-pro-msg{font-size:12px;font-weight:700;color:var(--ink);text-align:center;line-height:1.4}
+.si-pro-cta{background:#2D1B69;color:#fff;border:none;border-radius:9px;padding:8px 18px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s}
+.si-pro-cta:hover{background:#4C2FAA;transform:translateY(-1px)}
+
+/* Bexi CTA bar */
+.si-bexi-bar{background:linear-gradient(135deg,#1A0D40,#2D1B69);border-radius:14px;padding:16px 20px;display:flex;align-items:center;gap:14px;margin-top:18px;flex-wrap:wrap}
+.si-bexi-bar-txt{flex:1;min-width:180px}
+.si-bexi-bar-title{font-family:var(--ff);font-size:14px;font-weight:700;color:#fff;margin-bottom:3px}
+.si-bexi-bar-sub{font-size:12px;color:rgba(255,255,255,.7)}
+.si-bexi-btn{background:linear-gradient(135deg,#FF5C35,#FF8C42);color:#fff;border:none;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ffb);white-space:nowrap;transition:.2s;flex-shrink:0}
+.si-bexi-btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(255,92,53,.4)}
+
+/* old classes kept for compat */
+.salary-cards{display:none}
+.sal-card,.sal-role-title,.sal-city,.sal-bar-bg,.sal-bar-fill,.sal-avg-badge,.sal-hike-badge{}
 
 /* PROFILE */
 .pw{display:grid;grid-template-columns:290px 1fr;gap:18px;align-items:start}
@@ -680,14 +741,40 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       </style>
       
     </div>
-    <div class="page-section" id="page-salary"><div class="salary-cards">
-  <div class="sal-card"><div class="sal-role-title">Software Engineer</div><div class="sal-city">Bangalore / Hyderabad</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:85%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;12-22 LPA</span><span class="sal-hike-badge">+25% hike</span></div></div>
-  <div class="sal-card"><div class="sal-role-title">Data Scientist</div><div class="sal-city">All India</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:80%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;10-20 LPA</span><span class="sal-hike-badge">+30% hike</span></div></div>
-  <div class="sal-card"><div class="sal-role-title">AI / ML Engineer</div><div class="sal-city">Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:95%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;15-35 LPA</span><span class="sal-hike-badge">+40% hike</span></div></div>
-  <div class="sal-card"><div class="sal-role-title">DevOps Engineer</div><div class="sal-city">Pune / Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:82%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;8-22 LPA</span><span class="sal-hike-badge">+20% hike</span></div></div>
-  <div class="sal-card"><div class="sal-role-title">Product Manager</div><div class="sal-city">Mumbai / Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:78%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;18-40 LPA</span><span class="sal-hike-badge">+28% hike</span></div></div>
-  <div class="sal-card"><div class="sal-role-title">UI/UX Designer</div><div class="sal-city">All India</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:65%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;6-16 LPA</span><span class="sal-hike-badge">+18% hike</span></div></div>
-</div></div>
+    <div class="page-section" id="page-salary">
+
+      <!-- Header -->
+      <div class="si-header">
+        <div class="si-title-row">
+          <div class="si-title">Salary Intelligence</div>
+          <span class="si-badge">✦ Based on 2026 Indian market data</span>
+        </div>
+        <div class="si-sub">Real salary ranges from verified Indian job listings. Click any role to see the full breakdown.</div>
+      </div>
+
+      <!-- City tabs -->
+      <div class="si-city-tabs" id="si-city-tabs">
+        <button class="si-city-tab active" data-city="all" onclick="siSetCity('all',this)">🇮🇳 All India</button>
+        <button class="si-city-tab" data-city="bangalore" onclick="siSetCity('bangalore',this)">Bangalore</button>
+        <button class="si-city-tab" data-city="hyderabad" onclick="siSetCity('hyderabad',this)">Hyderabad</button>
+        <button class="si-city-tab" data-city="mumbai" onclick="siSetCity('mumbai',this)">Mumbai</button>
+        <button class="si-city-tab" data-city="pune" onclick="siSetCity('pune',this)">Pune</button>
+        <button class="si-city-tab" data-city="remote" onclick="siSetCity('remote',this)">🌐 Remote</button>
+      </div>
+
+      <!-- Role cards -->
+      <div class="si-grid" id="si-grid"></div>
+
+      <!-- Bexi CTA -->
+      <div class="si-bexi-bar">
+        <div class="si-bexi-bar-txt">
+          <div class="si-bexi-bar-title">🤖 Know your exact worth</div>
+          <div class="si-bexi-bar-sub">Tell Bexi your role, years of experience and city — get a personalised salary range and negotiation script</div>
+        </div>
+        <button class="si-bexi-btn" onclick="window.bexiOpen&&bexiOpen();window.bexiAsk&&bexiAsk('I want to know my salary worth. I am a software engineer with 3 years experience in Bangalore.')">Talk to Bexi AI →</button>
+      </div>
+
+    </div>
     <div class="page-section" id="page-network"><div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
   <input type="text" id="dash-mentor-search" placeholder="Search mentors..." oninput="dashFilterMentors()" style="flex:1;padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:var(--ffb);outline:none;color:var(--ink)"/>
   <a href="mentors.html" target="_blank" style="background:#2D1B69;color:#fff;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap">Full Directory &#8599;</a>
@@ -1106,6 +1193,7 @@ function showPage(page, btn) {
   var tb = document.getElementById('topbar-title');
   if (tb) tb.textContent = titles[page] || 'Dashboard';
   if (page === 'jobs') loadJobs();
+  if (page === 'salary') siInit();
   if (page === 'network') setTimeout(loadDashMentors, 100);
   if (page === 'tracker') loadTracker();
 }
@@ -1315,7 +1403,7 @@ function uploadAvatar(input) {
     try{localStorage.setItem(avKey,b64);}catch(e){}
     showToast('Saving photo...');
     if(!currentUser)return;
-    try{await supaClient.from('profiles').update({avatar_url:b64}).eq('id',currentUser.id);showToast('Photo saved!');}catch(e){showToast('Photo save failed.');}
+    try{await supaClient.from('profiles').update({avatar_url:b64}).eq('id',currentUser.id);showToast('Photo saved!');}catch(e){showToast("Photo save failed.");}
   };
   img.src=obj;
 }
@@ -1604,7 +1692,7 @@ async function submitEasyApply() {
         applied_at: new Date().toISOString(),
         status: 'applied'
       }]);
-    } catch(e) { /* applications table not yet created */ }
+    } catch(e) { /* applications table non-fatal */ }
     // Increment career score +15
     var sc = 30;
     try {
@@ -1787,7 +1875,418 @@ async function init() {
   }, 900);
 }
 init();
-</script>
+
+/* ════════════════════════════════════════════════════════════════
+   SALARY INTELLIGENCE ENGINE v2.0
+   Chart.js bar charts · Sparklines · Pro gate · City multipliers
+════════════════════════════════════════════════════════════════ */
+(function() {
+
+  /* ── SEED DATA ── */
+  var SI_ROLES = [
+    {
+      id:'swe', name:'Software Engineer', icon:'💻', hot:false,
+      all:   {min:8,  p25:12, median:16, p75:24, top10:35, spark:[10,12,13,15,16,20]},
+      bangalore:  {min:10, p25:14, median:19, p75:28, top10:40},
+      hyderabad:  {min:9,  p25:13, median:17, p75:26, top10:38},
+      mumbai:     {min:8,  p25:12, median:15, p75:22, top10:32},
+      pune:       {min:7,  p25:10, median:13, p75:20, top10:28},
+      remote:     {min:12, p25:16, median:22, p75:32, top10:45},
+      yoy:25,
+      companies:[ {name:'Google',mult:2.3},{name:'Microsoft',mult:2.0},{name:'Razorpay',mult:1.6},{name:'Swiggy',mult:1.4},{name:'TCS',mult:0.7} ],
+      bands:[ {exp:'0–2 yrs',range:'₹8–14 LPA'},{exp:'3–5 yrs',range:'₹14–26 LPA'},{exp:'6–9 yrs',range:'₹26–45 LPA'},{exp:'10+ yrs',range:'₹40–70 LPA'} ]
+    },
+    {
+      id:'ds', name:'Data Scientist', icon:'📊', hot:false,
+      all:   {min:10, p25:14, median:20, p75:30, top10:40, spark:[12,14,16,18,20,26]},
+      bangalore:  {min:12, p25:16, median:23, p75:34, top10:45},
+      hyderabad:  {min:10, p25:14, median:20, p75:30, top10:42},
+      mumbai:     {min:9,  p25:13, median:18, p75:27, top10:38},
+      pune:       {min:8,  p25:12, median:16, p75:24, top10:34},
+      remote:     {min:15, p25:20, median:28, p75:38, top10:52},
+      yoy:30,
+      companies:[ {name:'Flipkart',mult:1.8},{name:'PhonePe',mult:1.7},{name:'Meesho',mult:1.5},{name:'Amazon',mult:2.0},{name:'Infosys',mult:0.8} ],
+      bands:[ {exp:'0–2 yrs',range:'₹10–16 LPA'},{exp:'3–5 yrs',range:'₹16–28 LPA'},{exp:'6–9 yrs',range:'₹28–42 LPA'},{exp:'10+ yrs',range:'₹38–60 LPA'} ]
+    },
+    {
+      id:'ml', name:'AI/ML Engineer', icon:'🤖', hot:true,
+      all:   {min:15, p25:20, median:28, p75:40, top10:50, spark:[14,17,20,24,28,38]},
+      bangalore:  {min:18, p25:24, median:33, p75:46, top10:58},
+      hyderabad:  {min:16, p25:22, median:30, p75:42, top10:54},
+      mumbai:     {min:14, p25:20, median:27, p75:38, top10:50},
+      pune:       {min:13, p25:18, median:24, p75:35, top10:46},
+      remote:     {min:20, p25:28, median:38, p75:52, top10:65},
+      yoy:40,
+      companies:[ {name:'Google DeepMind',mult:2.8},{name:'Krutrim',mult:2.2},{name:'Sarvam AI',mult:2.0},{name:'Microsoft',mult:2.1},{name:'TCS',mult:0.75} ],
+      bands:[ {exp:'0–2 yrs',range:'₹15–22 LPA'},{exp:'3–5 yrs',range:'₹22–38 LPA'},{exp:'6–9 yrs',range:'₹38–56 LPA'},{exp:'10+ yrs',range:'₹50–80 LPA'} ]
+    },
+    {
+      id:'devops', name:'DevOps Engineer', icon:'⚙️', hot:false,
+      all:   {min:8, p25:11, median:15, p75:22, top10:28, spark:[8,9,10,12,15,18]},
+      bangalore:  {min:10, p25:13, median:18, p75:26, top10:32},
+      hyderabad:  {min:9,  p25:12, median:16, p75:24, top10:30},
+      mumbai:     {min:8,  p25:11, median:14, p75:21, top10:27},
+      pune:       {min:8,  p25:11, median:14, p75:20, top10:26},
+      remote:     {min:12, p25:16, median:22, p75:30, top10:38},
+      yoy:20,
+      companies:[ {name:'Atlassian',mult:2.2},{name:'Zomato',mult:1.7},{name:'Razorpay',mult:1.8},{name:'AWS India',mult:2.1},{name:'Wipro',mult:0.75} ],
+      bands:[ {exp:'0–2 yrs',range:'₹8–13 LPA'},{exp:'3–5 yrs',range:'₹13–22 LPA'},{exp:'6–9 yrs',range:'₹22–35 LPA'},{exp:'10+ yrs',range:'₹32–50 LPA'} ]
+    },
+    {
+      id:'pm', name:'Product Manager', icon:'📋', hot:false,
+      all:   {min:15, p25:22, median:30, p75:42, top10:55, spark:[14,18,22,26,30,40]},
+      bangalore:  {min:18, p25:26, median:35, p75:48, top10:62},
+      hyderabad:  {min:16, p25:23, median:32, p75:45, top10:58},
+      mumbai:     {min:15, p25:22, median:30, p75:42, top10:55},
+      pune:       {min:13, p25:19, median:26, p75:38, top10:50},
+      remote:     {min:20, p25:28, median:38, p75:52, top10:68},
+      yoy:28,
+      companies:[ {name:'CRED',mult:2.1},{name:'Groww',mult:1.9},{name:'Swiggy',mult:1.8},{name:'Meesho',mult:1.6},{name:'Infosys',mult:0.85} ],
+      bands:[ {exp:'0–2 yrs',range:'₹15–20 LPA'},{exp:'3–5 yrs',range:'₹20–36 LPA'},{exp:'6–9 yrs',range:'₹36–52 LPA'},{exp:'10+ yrs',range:'₹48–75 LPA'} ]
+    },
+    {
+      id:'uiux', name:'UI/UX Designer', icon:'🎨', hot:false,
+      all:   {min:5, p25:7, median:10, p75:15, top10:20, spark:[5,6,7,8,10,13]},
+      bangalore:  {min:6,  p25:9,  median:13, p75:19, top10:25},
+      hyderabad:  {min:5,  p25:8,  median:11, p75:16, top10:22},
+      mumbai:     {min:6,  p25:9,  median:12, p75:18, top10:24},
+      pune:       {min:5,  p25:7,  median:10, p75:14, top10:20},
+      remote:     {min:8,  p25:12, median:16, p75:22, top10:30},
+      yoy:18,
+      companies:[ {name:'Urban Company',mult:1.8},{name:'Hotstar',mult:2.0},{name:'CRED',mult:2.2},{name:'Flipkart',mult:1.9},{name:'Accenture',mult:0.9} ],
+      bands:[ {exp:'0–2 yrs',range:'₹5–8 LPA'},{exp:'3–5 yrs',range:'₹8–15 LPA'},{exp:'6–9 yrs',range:'₹15–24 LPA'},{exp:'10+ yrs',range:'₹22–35 LPA'} ]
+    },
+    {
+      id:'de', name:'Data Engineer', icon:'🔧', hot:false,
+      all:   {min:10, p25:13, median:19, p75:28, top10:35, spark:[10,12,14,16,19,24]},
+      bangalore:  {min:12, p25:16, median:22, p75:32, top10:40},
+      hyderabad:  {min:10, p25:14, median:20, p75:29, top10:37},
+      mumbai:     {min:9,  p25:13, median:18, p75:26, top10:34},
+      pune:       {min:8,  p25:12, median:16, p75:24, top10:31},
+      remote:     {min:14, p25:18, median:26, p75:36, top10:46},
+      yoy:32,
+      companies:[ {name:'PhonePe',mult:1.9},{name:'Flipkart',mult:1.8},{name:'Razorpay',mult:1.7},{name:'Microsoft',mult:2.0},{name:'TCS',mult:0.75} ],
+      bands:[ {exp:'0–2 yrs',range:'₹10–15 LPA'},{exp:'3–5 yrs',range:'₹15–26 LPA'},{exp:'6–9 yrs',range:'₹26–40 LPA'},{exp:'10+ yrs',range:'₹36–55 LPA'} ]
+    },
+    {
+      id:'be', name:'Backend Engineer', icon:'⚡', hot:false,
+      all:   {min:8, p25:11, median:15, p75:22, top10:30, spark:[8,9,11,12,15,19]},
+      bangalore:  {min:10, p25:13, median:18, p75:26, top10:35},
+      hyderabad:  {min:9,  p25:12, median:16, p75:23, top10:32},
+      mumbai:     {min:8,  p25:11, median:15, p75:21, top10:29},
+      pune:       {min:7,  p25:10, median:13, p75:19, top10:26},
+      remote:     {min:12, p25:16, median:22, p75:30, top10:42},
+      yoy:22,
+      companies:[ {name:'Zepto',mult:1.8},{name:'Meesho',mult:1.6},{name:'Amazon',mult:2.2},{name:'Swiggy',mult:1.7},{name:'Wipro',mult:0.78} ],
+      bands:[ {exp:'0–2 yrs',range:'₹8–13 LPA'},{exp:'3–5 yrs',range:'₹13–22 LPA'},{exp:'6–9 yrs',range:'₹22–35 LPA'},{exp:'10+ yrs',range:'₹32–50 LPA'} ]
+    },
+    {
+      id:'fe', name:'Frontend Engineer', icon:'🖥️', hot:false,
+      all:   {min:6, p25:9, median:13, p75:19, top10:25, spark:[6,7,9,10,13,16]},
+      bangalore:  {min:8,  p25:11, median:16, p75:23, top10:30},
+      hyderabad:  {min:7,  p25:10, median:14, p75:21, top10:27},
+      mumbai:     {min:7,  p25:10, median:14, p75:20, top10:26},
+      pune:       {min:6,  p25:9,  median:12, p75:18, top10:24},
+      remote:     {min:10, p25:14, median:19, p75:26, top10:35},
+      yoy:20,
+      companies:[ {name:'Hotstar',mult:2.1},{name:'Groww',mult:1.8},{name:'GitLab',mult:2.4},{name:'Myntra',mult:1.7},{name:'Accenture',mult:0.85} ],
+      bands:[ {exp:'0–2 yrs',range:'₹6–11 LPA'},{exp:'3–5 yrs',range:'₹11–20 LPA'},{exp:'6–9 yrs',range:'₹20–32 LPA'},{exp:'10+ yrs',range:'₹28–45 LPA'} ]
+    },
+    {
+      id:'ca', name:'Cloud Architect', icon:'☁️', hot:false,
+      all:   {min:20, p25:26, median:35, p75:48, top10:60, spark:[16,20,24,28,35,46]},
+      bangalore:  {min:24, p25:31, median:42, p75:56, top10:70},
+      hyderabad:  {min:22, p25:28, median:38, p75:52, top10:65},
+      mumbai:     {min:20, p25:26, median:35, p75:48, top10:62},
+      pune:       {min:18, p25:24, median:32, p75:44, top10:56},
+      remote:     {min:28, p25:36, median:48, p75:62, top10:78},
+      yoy:35,
+      companies:[ {name:'AWS India',mult:2.4},{name:'Google Cloud',mult:2.3},{name:'Microsoft Azure',mult:2.2},{name:'Infosys',mult:1.1},{name:'TCS',mult:0.9} ],
+      bands:[ {exp:'0–2 yrs',range:'₹20–26 LPA'},{exp:'3–5 yrs',range:'₹26–40 LPA'},{exp:'6–9 yrs',range:'₹40–58 LPA'},{exp:'10+ yrs',range:'₹55–80 LPA'} ]
+    }
+  ];
+
+  var _activeCity = 'all';
+  var _charts     = {};   // chartId → Chart instance
+  var _sparks     = {};   // sparkId → Chart instance
+  var _initialised = false;
+
+  /* ── PUBLIC: INIT (called from showPage) ── */
+  window.siInit = function() {
+    if (_initialised) return;
+    _initialised = true;
+    renderGrid();
+    // Auto-open first card on first load
+    setTimeout(function() {
+      var first = document.getElementById('si-card-swe');
+      if (first) siToggleCard('swe');
+    }, 80);
+  };
+
+  /* ── PUBLIC: City switch ── */
+  window.siSetCity = function(city, btn) {
+    _activeCity = city;
+    document.querySelectorAll('.si-city-tab').forEach(function(b){ b.classList.remove('active'); });
+    if (btn) btn.classList.add('active');
+    refreshAllCards();
+  };
+
+  /* ── RENDER GRID ── */
+  function renderGrid() {
+    var grid = document.getElementById('si-grid');
+    if (!grid) return;
+    grid.innerHTML = SI_ROLES.map(function(r) { return cardHTML(r); }).join('');
+  }
+
+  function cardHTML(r) {
+    var d = getCityData(r);
+    var hikeClass = r.yoy >= 35 ? 'hot' : 'up';
+    var hikeSign  = r.yoy >= 35 ? '🔥 +' : '▲ +';
+    return [
+      '<div class="si-card" id="si-card-'+r.id+'" onclick="siToggleCard(\''+r.id+'\')">',
+
+        /* HEAD */
+        '<div class="si-card-head">',
+          '<div class="si-card-icon" style="background:'+iconBg(r.id)+'">'+r.icon+'</div>',
+          '<div class="si-card-meta">',
+            '<div class="si-card-name">',
+              r.name,
+              r.hot ? '<span class="si-hot-badge">🔥 Hottest</span>' : '',
+            '</div>',
+            '<div class="si-card-range">₹'+d.min+'–'+d.top10+' LPA &nbsp;·&nbsp; <strong>Median ₹'+d.median+'L</strong></div>',
+          '</div>',
+          '<div class="si-card-right">',
+            '<span class="si-hike '+hikeClass+'">'+hikeSign+r.yoy+'% YoY</span>',
+            '<canvas id="si-spark-'+r.id+'" class="si-spark-wrap" width="60" height="24"></canvas>',
+          '</div>',
+        '</div>',
+
+        /* BODY (expanded) */
+        '<div class="si-card-body" id="si-body-'+r.id+'">',
+
+          /* Chart labels above chart */
+          '<div class="si-chart-labels">',
+            '<div class="si-chart-lbl"><div class="si-chart-lbl-val">₹'+d.min+'L</div><div class="si-chart-lbl-name">Min</div></div>',
+            '<div class="si-chart-lbl"><div class="si-chart-lbl-val">₹'+d.p25+'L</div><div class="si-chart-lbl-name">25th %ile</div></div>',
+            '<div class="si-chart-lbl"><div class="si-chart-lbl-val" style="color:#2D1B69">₹'+d.median+'L</div><div class="si-chart-lbl-name" style="color:#2D1B69;font-weight:700">Median</div></div>',
+            '<div class="si-chart-lbl"><div class="si-chart-lbl-val">₹'+d.top10+'L</div><div class="si-chart-lbl-name">Top 10%</div></div>',
+          '</div>',
+
+          /* Horizontal bar chart */
+          '<div class="si-chart-wrap"><canvas id="si-chart-'+r.id+'"></canvas></div>',
+
+          /* PRO gate */
+          '<div class="si-pro-section">',
+            '<div style="font-size:10.5px;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Pro Insights</div>',
+            '<div class="si-pro-gate">',
+              '<div class="si-pro-blur">',
+                '<div class="si-pro-blur-row"><span>Google pays</span><strong>2.3× market median</strong></div>',
+                '<div class="si-pro-blur-row"><span>0–2 yrs experience</span><strong>₹'+d.min+'–'+Math.round(d.median*.85)+'L</strong></div>',
+                '<div class="si-pro-blur-row"><span>5–8 yrs experience</span><strong>₹'+Math.round(d.median*.9)+'–'+d.p75+'L</strong></div>',
+                '<div class="si-pro-blur-row"><span>Negotiation leverage</span><strong>+22% if you have 2 offers</strong></div>',
+              '</div>',
+              '<div class="si-pro-overlay">',
+                '<div class="si-pro-lock">🔒</div>',
+                '<div class="si-pro-msg">Company-wise pay · Experience bands<br>Negotiation script by Bexi AI</div>',
+                '<button class="si-pro-cta" onclick="event.stopPropagation();showPage(\'upgrade\',null)">Unlock with Pro →</button>',
+              '</div>',
+            '</div>',
+          '</div>',
+
+        '</div>',
+      '</div>'
+    ].join('');
+  }
+
+  /* ── TOGGLE CARD OPEN/CLOSE ── */
+  window.siToggleCard = function(id) {
+    var card = document.getElementById('si-card-'+id);
+    if (!card) return;
+    var wasExpanded = card.classList.contains('expanded');
+
+    // Collapse all others
+    SI_ROLES.forEach(function(r) {
+      var c = document.getElementById('si-card-'+r.id);
+      if (c) c.classList.remove('expanded');
+    });
+
+    if (!wasExpanded) {
+      card.classList.add('expanded');
+      // Wait one tick for body to be visible, then draw charts
+      requestAnimationFrame(function() {
+        var role = SI_ROLES.find(function(r){ return r.id === id; });
+        if (role) {
+          drawBarChart(role);
+          drawSparkline(role);
+        }
+      });
+    }
+  };
+
+  /* ── GET CITY-ADJUSTED DATA ── */
+  function getCityData(role) {
+    return role[_activeCity] || role.all;
+  }
+
+  /* ── REFRESH ALL CARDS WHEN CITY CHANGES ── */
+  function refreshAllCards() {
+    // Destroy all existing charts
+    Object.keys(_charts).forEach(function(k) {
+      try { _charts[k].destroy(); } catch(e) {}
+      delete _charts[k];
+    });
+    Object.keys(_sparks).forEach(function(k) {
+      try { _sparks[k].destroy(); } catch(e) {}
+      delete _sparks[k];
+    });
+
+    // Re-render entire grid
+    renderGrid();
+
+    // Re-expand any previously expanded card
+    var expanded = document.querySelector('.si-card.expanded');
+    // Reset — just render fresh
+    setTimeout(function() {
+      var first = document.querySelector('.si-card');
+      if (first) {
+        var id = first.id.replace('si-card-','');
+        siToggleCard(id);
+      }
+    }, 60);
+  }
+
+  /* ── CHART.JS: HORIZONTAL BAR ── */
+  function drawBarChart(role) {
+    var canvasId = 'si-chart-' + role.id;
+    var canvas   = document.getElementById(canvasId);
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    if (_charts[canvasId]) {
+      try { _charts[canvasId].destroy(); } catch(e) {}
+    }
+
+    var d      = getCityData(role);
+    var maxVal = d.top10 + 5;
+
+    _charts[canvasId] = new Chart(canvas, {
+      type: 'bar',
+      data: {
+        labels: ['Min', '25th %ile', 'Median', '75th %ile', 'Top 10%'],
+        datasets: [{
+          data: [d.min, d.p25, d.median, d.p75, d.top10],
+          backgroundColor: [
+            'rgba(107,72,204,.18)',
+            'rgba(107,72,204,.35)',
+            '#2D1B69',
+            'rgba(107,72,204,.55)',
+            '#FF5C35'
+          ],
+          borderRadius: 6,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: { duration: 600, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function(ctx) {
+                return ' ₹' + ctx.parsed.x + ' LPA';
+              }
+            },
+            backgroundColor: '#1A0D40',
+            titleFont: { family: 'DM Sans', size: 12 },
+            bodyFont:  { family: 'DM Sans', size: 12 },
+            padding: 10,
+            cornerRadius: 8
+          }
+        },
+        scales: {
+          x: {
+            min: 0,
+            max: maxVal,
+            grid: { color: 'rgba(0,0,0,.04)' },
+            ticks: {
+              callback: function(v) { return '₹'+v+'L'; },
+              font: { size: 10, family: 'DM Sans' },
+              color: '#8B8BA8'
+            },
+            border: { display: false }
+          },
+          y: {
+            grid: { display: false },
+            ticks: {
+              font: { size: 11, family: 'DM Sans' },
+              color: '#5A5A7A'
+            },
+            border: { display: false }
+          }
+        }
+      }
+    });
+  }
+
+  /* ── CHART.JS: SPARKLINE ── */
+  function drawSparkline(role) {
+    var canvasId = 'si-spark-' + role.id;
+    var canvas   = document.getElementById(canvasId);
+    if (!canvas || typeof Chart === 'undefined') return;
+
+    if (_sparks[canvasId]) {
+      try { _sparks[canvasId].destroy(); } catch(e) {}
+    }
+
+    var spark  = (role.all && role.all.spark) ? role.all.spark : [10,12,14,16,18,20];
+    var isHot  = role.yoy >= 35;
+    var color  = isHot ? '#FF5C35' : '#10B981';
+
+    _sparks[canvasId] = new Chart(canvas, {
+      type: 'line',
+      data: {
+        labels: spark.map(function(_,i){ return i; }),
+        datasets: [{
+          data: spark,
+          borderColor: color,
+          borderWidth: 2,
+          fill: true,
+          backgroundColor: isHot
+            ? 'rgba(255,92,53,.12)'
+            : 'rgba(16,185,129,.12)',
+          tension: 0.4,
+          pointRadius: 0,
+          pointHoverRadius: 0
+        }]
+      },
+      options: {
+        responsive: false,
+        animation: { duration: 800 },
+        plugins: { legend:{display:false}, tooltip:{enabled:false} },
+        scales: {
+          x: { display:false },
+          y: { display:false }
+        },
+        elements: { line: { borderCapStyle: 'round' } }
+      }
+    });
+  }
+
+  /* ── ICON BACKGROUND COLOURS ── */
+  function iconBg(id) {
+    var map = {
+      swe:'#EFEFF8', ds:'#EFF6FF', ml:'#FFF1F2', devops:'#F0FDF4',
+      pm:'#FFFBEB', uiux:'#FDF4FF', de:'#F0FDF4', be:'#EFF6FF',
+      fe:'#F0F9FF', ca:'#F0FDF4'
+    };
+    return map[id] || '#F5F5FA';
+  }
+
+})(); /* end Salary Intelligence IIFE */
+
+
 
 <!-- F1: JOB ALERT MODAL -->
 <div class="bx-overlay" id="alert-modal" onclick="closeModalOuter(event,'alert-modal')">

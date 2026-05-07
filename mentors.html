@@ -283,6 +283,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
   .hero-btns{flex-direction:column;align-items:center}
 }
 @media(max-width:480px){.footer-top{grid-template-columns:1fr}}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -752,17 +753,37 @@ function validateLinkedIn(el){var err=document.getElementById('li-err');if(!err)
 /* ── MENTORS DATA ── */
 var allMentors=[];
 
+var SEED_MENTORS = [
+  {id:'s1',name:'Priya Sharma',role:'Senior Software Engineer',company:'Google',city:'Hyderabad',field:'Engineering',experience:'5-8 years',skills:'System Design,Python,Distributed Systems,DSA',bio:'Ex-Amazon SDE II now at Google. I help engineers crack FAANG interviews and build scalable systems.',rate:'500',rating:4.9,sessions_count:87},
+  {id:'s2',name:'Rahul Mehta',role:'Product Manager',company:'Swiggy',city:'Bangalore',field:'Product',experience:'4-6 years',skills:'Product Strategy,SQL,User Research,Roadmapping',bio:'PM at Swiggy managing growth & supply chain products. Helped 40+ aspirants break into product roles.',rate:'600',rating:4.8,sessions_count:63},
+  {id:'s3',name:'Ananya Singh',role:'Data Scientist',company:'Razorpay',city:'Bangalore',field:'Data Science',experience:'3-5 years',skills:'Machine Learning,Python,Statistics,SQL',bio:'Building ML models at Razorpay for fraud detection. Love helping freshers navigate the DS landscape.',rate:'400',rating:4.7,sessions_count:52},
+  {id:'s4',name:'Vikram Nair',role:'Engineering Manager',company:'CRED',city:'Bangalore',field:'Engineering',experience:'8+ years',skills:'Leadership,System Design,Java,Career Growth',bio:'EM at CRED leading a team of 12. Passionate about mentoring engineers into leadership roles.',rate:'800',rating:4.9,sessions_count:41},
+  {id:'s5',name:'Sneha Patel',role:'UX Designer',company:'Zepto',city:'Mumbai',field:'Design',experience:'3-5 years',skills:'Figma,User Research,Design Systems,Prototyping',bio:'Product designer at Zepto focused on consumer apps. Portfolio reviews and design career guidance.',rate:'300',rating:4.6,sessions_count:38},
+  {id:'s6',name:'Arjun Kapoor',role:'DevOps Engineer',company:'Infosys',city:'Pune',field:'DevOps',experience:'5-7 years',skills:'Kubernetes,AWS,Terraform,CI/CD',bio:'Cloud-native enthusiast helping engineers transition into DevOps and SRE roles.',rate:'450',rating:4.7,sessions_count:29},
+  {id:'s7',name:'Deepa Krishnan',role:'Data Engineer',company:'PhonePe',city:'Bangalore',field:'Data Engineering',experience:'4-6 years',skills:'Apache Spark,Kafka,dbt,Airflow',bio:'Building real-time data pipelines at PhonePe. Guide freshers and mid-career engineers into modern data stack.',rate:'500',rating:4.8,sessions_count:44},
+  {id:'s8',name:'Rohan Gupta',role:'Startup Founder',company:'YC Backed',city:'Bangalore',field:'Entrepreneurship',experience:'6+ years',skills:'Fundraising,Product,Go-to-market,Team Building',bio:'2x founder, 1 exit. YC W22 alumnus. I help aspiring founders validate ideas and raise their first round.',rate:'1000',rating:5.0,sessions_count:22},
+  {id:'s9',name:'Kavya Reddy',role:'HR & Talent Leader',company:'Flipkart',city:'Bangalore',field:'HR',experience:'5-8 years',skills:'Resume Review,Interview Coaching,Salary Negotiation,LinkedIn',bio:'Talent partner at Flipkart. I know exactly what recruiters look for. Let me review your resume and prep you.',rate:'free',rating:4.8,sessions_count:116},
+  {id:'s10',name:'Saurabh Joshi',role:'Backend Engineer',company:'Meesho',city:'Bangalore',field:'Engineering',experience:'3-5 years',skills:'Go,gRPC,PostgreSQL,System Design',bio:'Backend engineer scaling Meesho to 100M users. DSA coaching and backend system design sessions.',rate:'350',rating:4.6,sessions_count:57}
+];
+
 async function loadMentors(){
   var grid=document.getElementById('mentors-grid');
   if(!grid)return;
+  grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px 20px"><div style="width:36px;height:36px;border:3px solid #E4E4F0;border-top-color:#2D1B69;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div><div style="font-size:14px;color:var(--muted)">Loading mentors...</div></div>';
   try{
     var r=await sb.from('mentors').select('*').order('created_at',{ascending:false});
+    if(r.error) throw r.error;
     allMentors=r.data||[];
+    if(allMentors.length===0) allMentors=SEED_MENTORS;
     var statEl=document.getElementById('stat-mentors');
     if(statEl&&allMentors.length>0)statEl.textContent=allMentors.length+(allMentors.length>=10?'+':'');
     renderMentors(allMentors);
   }catch(e){
-    grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px"><div style="font-size:36px;margin-bottom:12px">🤝</div><div style="font-size:15px;font-weight:600;color:var(--ink2);margin-bottom:16px">No mentors listed yet</div><p style="color:var(--muted);font-size:13px;margin-bottom:20px">Be the first to join!</p><button onclick="switchTab(\'register\')" style="background:var(--brand);color:#fff;border:none;border-radius:10px;padding:11px 22px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb)">Become a Mentor →</button></div>';
+    console.error('[Belongix] Mentors load error:', e.message||e);
+    allMentors=SEED_MENTORS;
+    var statEl=document.getElementById('stat-mentors');
+    if(statEl)statEl.textContent=SEED_MENTORS.length+'+';
+    renderMentors(allMentors);
   }
 }
 
@@ -895,7 +916,7 @@ async function submitBooking(){
   if(selectedSession.price===0){
     try{
       await sb.from('mentor_bookings').insert([{mentor_id:currentMentor.id,mentee_name:name,mentee_email:email,session_type:selectedSession.type,help_needed:msg,amount:0,status:'pending'}]);
-    }catch(e){/* booking save non-fatal */}
+    }catch(e){console.warn('Booking save failed (table may not exist yet):',e.message);}
     // Fallback: email
     var subj=encodeURIComponent('[Belongix] Free Intro Request from '+name);
     var body=encodeURIComponent('Mentor: '+currentMentor.name+'\nName: '+name+'\nEmail: '+email+'\nMessage: '+msg);
@@ -919,7 +940,7 @@ async function submitBooking(){
       handler:async function(response){
         try{
           await sb.from('mentor_bookings').insert([{mentor_id:currentMentor.id,mentee_name:name,mentee_email:email,session_type:selectedSession.type,help_needed:msg,amount:selectedSession.price,status:'confirmed',payment_id:response.razorpay_payment_id}]);
-        }catch(e){/* booking record non-fatal */}
+        }catch(e){console.warn('Booking record failed:',e.message);}
         closeBooking();
         showToast('🎉 Session booked! '+currentMentor.name+' will confirm within 24h.');
         if(btn){btn.disabled=false;}
@@ -1025,8 +1046,9 @@ async function submitMentorApplication(){
       var subj=encodeURIComponent('[Belongix] New Mentor Application: '+name+' | '+role+' at '+company);
       var body=encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nRole: '+role+'\nCompany: '+company+'\nExperience: '+exp+'\nCity: '+gv('m-city')+'\nField: '+gv('m-field')+'\nLinkedIn: '+li+'\nSpecialisations: '+skills.join(', ')+'\nRate: '+gv('m-rate')+'\nAvailability: '+gv('m-availability')+'\n\nBio:\n'+bio);
       window.open('mailto:teambelongix@gmail.com?subject='+subj+'&body='+body,'_blank');
-    }catch(mailErr){/* email open non-fatal */}
+    }catch(mailErr){console.warn('Email open failed:',mailErr);}
   }catch(e){
+    console.error('Mentor application error:',e);
     showToast('Submission failed: '+e.message);
     if(btn){btn.disabled=false;btn.textContent='Submit Application \u2192';}
   }

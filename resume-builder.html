@@ -1,0 +1,1895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Resume Builder — Belongix</title>
+<link rel="icon" href="icons/icon-32.png"/>
+<meta name="theme-color" content="#2D1B69"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════
+   BELONGIX RESUME BUILDER — Design System
+═══════════════════════════════════════════════ */
+:root {
+  --brand:    #2D1B69;
+  --brand2:   #4C2FAA;
+  --brand3:   #6B48CC;
+  --accent:   #FF5C35;
+  --accent2:  #FF8C42;
+  --green:    #10B981;
+  --amber:    #F59E0B;
+  --red:      #EF4444;
+  --ink:      #0D0D1A;
+  --ink2:     #1A1A2E;
+  --muted:    #5A5A7A;
+  --subtle:   #8B8BA8;
+  --border:   #E4E4F0;
+  --border2:  #D0D0E8;
+  --bg:       #F7F7FC;
+  --off:      #F0F0F8;
+  --white:    #FFFFFF;
+  --ff:  'Sora', sans-serif;
+  --ffb: 'DM Sans', sans-serif;
+  --shadow: 0 2px 8px rgba(45,27,105,.08), 0 8px 32px rgba(45,27,105,.06);
+  --shadow-lg: 0 8px 40px rgba(45,27,105,.14);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--ffb);
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPBAR ── */
+.rb-topbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  gap: 12px;
+}
+.rb-logo {
+  font-family: var(--ff);
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--brand);
+  letter-spacing: -.4px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.rb-logo span { color: var(--accent); }
+.rb-topbar-center {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rb-topbar-title {
+  font-family: var(--ff);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.rb-autosave-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: savePulse 2s infinite;
+  flex-shrink: 0;
+}
+@keyframes savePulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.rb-autosave-txt {
+  font-size: 11px;
+  color: var(--subtle);
+  font-weight: 500;
+}
+.rb-topbar-actions { display: flex; align-items: center; gap: 8px; }
+.rb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--ffb);
+  border: 1.5px solid var(--border);
+  background: var(--white);
+  color: var(--ink2);
+  transition: .15s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.rb-btn:hover { border-color: var(--brand3); color: var(--brand); }
+.rb-btn.primary {
+  background: var(--brand);
+  color: #fff;
+  border-color: var(--brand);
+}
+.rb-btn.primary:hover { background: var(--brand2); }
+.rb-btn.accent {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border: none;
+}
+.rb-btn.accent:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(255,92,53,.4); }
+.rb-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
+
+/* ── MAIN LAYOUT ── */
+.rb-layout {
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 0;
+  flex: 1;
+  height: calc(100vh - 56px);
+  overflow: hidden;
+}
+
+/* ── LEFT PANEL (form) ── */
+.rb-form-panel {
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.rb-form-panel::-webkit-scrollbar { width: 4px; }
+.rb-form-panel::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+/* Template picker */
+.rb-tpl-bar {
+  padding: 14px 20px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--off);
+  flex-shrink: 0;
+}
+.rb-tpl-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--subtle);
+  text-transform: uppercase;
+  letter-spacing: .6px;
+  margin-bottom: 8px;
+}
+.rb-tpl-row { display: flex; gap: 8px; }
+.rb-tpl-btn {
+  flex: 1;
+  padding: 7px 0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 2px solid var(--border);
+  background: var(--white);
+  color: var(--muted);
+  transition: .15s;
+  font-family: var(--ffb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.rb-tpl-btn.active { border-color: var(--brand); color: var(--brand); background: #EFEFF8; }
+.rb-tpl-swatch { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+/* Scrollable sections */
+.rb-sections { padding: 16px 20px 80px; flex: 1; }
+
+/* Section accordion */
+.rb-section {
+  margin-bottom: 4px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.rb-sec-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  cursor: pointer;
+  background: var(--white);
+  user-select: none;
+  transition: .15s;
+}
+.rb-sec-hd:hover { background: var(--off); }
+.rb-sec-hd-left { display: flex; align-items: center; gap: 8px; }
+.rb-sec-icon { font-size: 15px; }
+.rb-sec-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  font-family: var(--ff);
+}
+.rb-sec-status {
+  font-size: 10.5px;
+  color: var(--subtle);
+  font-weight: 500;
+}
+.rb-sec-arrow {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--off);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: var(--subtle);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.rb-section.open .rb-sec-arrow { transform: rotate(180deg); }
+.rb-sec-body {
+  display: none;
+  padding: 4px 14px 14px;
+  background: var(--white);
+}
+.rb-section.open .rb-sec-body { display: block; }
+
+/* Inputs */
+.rb-field { margin-bottom: 10px; }
+.rb-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  margin-bottom: 4px;
+}
+.rb-inp, .rb-ta {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  font-size: 13px;
+  font-family: var(--ffb);
+  color: var(--ink);
+  background: #FAFAFE;
+  outline: none;
+  transition: .15s;
+  resize: none;
+}
+.rb-inp:focus, .rb-ta:focus {
+  border-color: var(--brand3);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(107,72,204,.1);
+}
+.rb-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* AI enhance button */
+.rb-ai-row { display: flex; gap: 8px; align-items: flex-start; }
+.rb-ai-row .rb-ta { flex: 1; }
+.rb-ai-btn {
+  flex-shrink: 0;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #2D1B69, #6B48CC);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--ffb);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: .15s;
+  margin-top: 0;
+  white-space: nowrap;
+  line-height: 1.3;
+  text-align: center;
+}
+.rb-ai-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(45,27,105,.4); }
+.rb-ai-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.rb-undo-btn {
+  font-size: 11px;
+  color: var(--brand);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--ffb);
+  font-weight: 600;
+  padding: 2px 0;
+  display: none;
+}
+
+/* Skills tag input */
+.rb-tags-wrap {
+  border: 1.5px solid var(--border);
+  border-radius: 9px;
+  padding: 7px 10px;
+  background: #FAFAFE;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-height: 42px;
+  cursor: text;
+  transition: .15s;
+}
+.rb-tags-wrap:focus-within { border-color: var(--brand3); background: #fff; box-shadow: 0 0 0 3px rgba(107,72,204,.1); }
+.rb-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #EFEFF8;
+  color: var(--brand);
+  border-radius: 20px;
+  padding: 3px 10px 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  animation: tagPop .15s ease;
+}
+@keyframes tagPop { from { opacity:0; transform:scale(.85); } to { opacity:1; transform:scale(1); } }
+.rb-tag-x {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--brand3);
+  font-size: 14px;
+  line-height: 1;
+  padding: 0;
+  opacity: .7;
+}
+.rb-tag-x:hover { opacity: 1; }
+.rb-tag-inp {
+  border: none;
+  outline: none;
+  font-family: var(--ffb);
+  font-size: 13px;
+  color: var(--ink);
+  background: transparent;
+  min-width: 120px;
+  flex: 1;
+}
+
+/* Experience / Education repeater */
+.rb-rep-item {
+  background: var(--off);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 8px;
+  position: relative;
+}
+.rb-rep-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.rb-rep-num {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--subtle);
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.rb-rep-del {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--subtle);
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px;
+  border-radius: 4px;
+  transition: .15s;
+}
+.rb-rep-del:hover { color: var(--red); background: #FEF2F2; }
+.rb-add-btn {
+  width: 100%;
+  padding: 9px;
+  border: 2px dashed var(--border);
+  border-radius: 9px;
+  background: none;
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--ffb);
+  transition: .15s;
+  margin-top: 4px;
+}
+.rb-add-btn:hover { border-color: var(--brand3); color: var(--brand); background: var(--off); }
+
+/* ── RIGHT PANEL ── */
+.rb-preview-panel {
+  background: #EEEEF6;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 24px 100px;
+  gap: 20px;
+}
+.rb-preview-panel::-webkit-scrollbar { width: 4px; }
+.rb-preview-panel::-webkit-scrollbar-thumb { background: #D0D0E8; border-radius: 4px; }
+
+/* Resume sheet */
+.rb-sheet {
+  background: #fff;
+  width: 100%;
+  max-width: 680px;
+  min-height: 900px;
+  box-shadow: 0 4px 32px rgba(45,27,105,.14), 0 1px 4px rgba(45,27,105,.06);
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: #111;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── TEMPLATE: MODERN (purple accent) ── */
+.tpl-modern .rv-header {
+  background: linear-gradient(135deg, #2D1B69, #4C2FAA);
+  padding: 28px 32px 24px;
+  color: #fff;
+}
+.tpl-modern .rv-name {
+  font-family: 'Sora', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -.5px;
+  margin-bottom: 3px;
+}
+.tpl-modern .rv-jobtitle {
+  font-size: 13px;
+  font-weight: 500;
+  opacity: .82;
+  margin-bottom: 12px;
+}
+.tpl-modern .rv-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 11px;
+  opacity: .78;
+}
+.tpl-modern .rv-contact-item { display: flex; align-items: center; gap: 4px; }
+.tpl-modern .rv-body { padding: 24px 32px; }
+.tpl-modern .rv-sec-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #2D1B69;
+  margin: 20px 0 10px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #2D1B69;
+}
+.tpl-modern .rv-sec-title:first-child { margin-top: 0; }
+
+/* ── TEMPLATE: CLASSIC (black serif) ── */
+.tpl-classic .rv-header {
+  padding: 28px 32px 16px;
+  border-bottom: 2px solid #111;
+  text-align: center;
+}
+.tpl-classic .rv-name {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: .5px;
+  color: #111;
+  margin-bottom: 4px;
+}
+.tpl-classic .rv-jobtitle {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 14px;
+  font-style: italic;
+  color: #444;
+  margin-bottom: 8px;
+}
+.tpl-classic .rv-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px 16px;
+  font-size: 11px;
+  color: #555;
+}
+.tpl-classic .rv-contact-item { display: flex; align-items: center; gap: 4px; }
+.tpl-classic .rv-body { padding: 20px 32px; }
+.tpl-classic .rv-sec-title {
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: #111;
+  margin: 18px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* ── TEMPLATE: MINIMAL (slate gray) ── */
+.tpl-minimal .rv-header {
+  padding: 32px 32px 20px;
+  border-left: 4px solid #64748B;
+}
+.tpl-minimal .rv-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: #0F172A;
+  letter-spacing: -.3px;
+  margin-bottom: 2px;
+}
+.tpl-minimal .rv-jobtitle {
+  font-size: 13px;
+  color: #64748B;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.tpl-minimal .rv-contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 11px;
+  color: #64748B;
+}
+.tpl-minimal .rv-contact-item { display: flex; align-items: center; gap: 4px; }
+.tpl-minimal .rv-body { padding: 24px 32px; }
+.tpl-minimal .rv-sec-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #64748B;
+  margin: 18px 0 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #E2E8F0;
+}
+
+/* ── SHARED RESUME CONTENT STYLES ── */
+.rv-summary-text {
+  font-size: 12px;
+  line-height: 1.75;
+  color: inherit;
+}
+.rv-exp-item, .rv-edu-item, .rv-cert-item {
+  margin-bottom: 14px;
+}
+.rv-exp-item:last-child, .rv-edu-item:last-child { margin-bottom: 0; }
+.rv-exp-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.rv-exp-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: inherit;
+}
+.rv-exp-dates {
+  font-size: 11px;
+  color: #888;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.rv-exp-company {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 4px;
+}
+.rv-exp-bullets {
+  list-style: none;
+  padding: 0;
+}
+.rv-exp-bullets li {
+  font-size: 12px;
+  line-height: 1.65;
+  padding-left: 12px;
+  position: relative;
+  margin-bottom: 2px;
+  color: inherit;
+}
+.rv-exp-bullets li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #999;
+  font-size: 9px;
+  top: 3px;
+}
+.rv-skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.rv-skill-tag {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+.tpl-modern .rv-skill-tag { background: #EFEFF8; color: #2D1B69; }
+.tpl-classic .rv-skill-tag { background: #F1F5F9; color: #334155; border: 1px solid #CBD5E1; }
+.tpl-minimal .rv-skill-tag { background: #F8FAFC; color: #475569; border: 1px solid #E2E8F0; }
+
+.rv-link {
+  color: inherit;
+  text-decoration: none;
+  font-size: 11px;
+  word-break: break-all;
+}
+.rv-placeholder {
+  font-size: 12px;
+  color: #ccc;
+  font-style: italic;
+  padding: 8px 0;
+}
+
+/* ── ATS SCORE PANEL ── */
+.rb-ats-panel {
+  width: 100%;
+  max-width: 680px;
+  background: var(--white);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+.rb-ats-title {
+  font-family: var(--ff);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.rb-ats-inner {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+/* Circular gauge */
+.rb-gauge-wrap { position: relative; flex-shrink: 0; }
+.rb-gauge-svg { transform: rotate(-90deg); }
+.rb-gauge-bg { fill: none; stroke: #E8E8F4; stroke-width: 10; }
+.rb-gauge-fill { fill: none; stroke-width: 10; stroke-linecap: round; transition: stroke-dashoffset .8s ease, stroke .5s; }
+.rb-gauge-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.rb-gauge-score {
+  font-family: var(--ff);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1;
+}
+.rb-gauge-lbl { font-size: 10px; color: var(--subtle); font-weight: 600; margin-top: 2px; }
+/* Tips list */
+.rb-ats-tips { flex: 1; min-width: 200px; }
+.rb-ats-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  border-bottom: 1px solid var(--border);
+}
+.rb-ats-item:last-child { border: none; }
+.rb-ats-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.rb-ats-dot.done { background: var(--green); }
+.rb-ats-dot.miss { background: var(--amber); }
+.rb-ats-dot.crit { background: var(--red); }
+.rb-ats-text { flex: 1; }
+.rb-ats-boost { font-size: 11px; color: var(--brand); font-weight: 700; margin-left: 4px; }
+
+/* ── TOAST ── */
+#rb-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: #0D0D1A;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  z-index: 9000;
+  transition: transform .3s, opacity .3s;
+  opacity: 0;
+  white-space: nowrap;
+  font-family: var(--ffb);
+}
+#rb-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+/* ── LOADING SPINNER ── */
+.rb-spin {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 900px) {
+  .rb-layout { grid-template-columns: 1fr; height: auto; overflow: visible; }
+  .rb-form-panel { height: auto; overflow: visible; border-right: none; border-bottom: 1px solid var(--border); }
+  .rb-preview-panel { padding: 16px 12px 60px; }
+  .rb-sheet { font-size: 11px; }
+  .rb-topbar { padding: 0 14px; }
+  .rb-logo { font-size: 16px; }
+  .rb-topbar-center { display: none; }
+}
+@media (max-width: 600px) {
+  .rb-topbar-actions .rb-btn:not(.primary):not(.accent) { display: none; }
+}
+
+/* Print */
+@media print {
+  .rb-topbar, .rb-form-panel, .rb-ats-panel { display: none !important; }
+  .rb-preview-panel { background: #fff !important; padding: 0 !important; }
+  .rb-sheet { box-shadow: none !important; max-width: 100% !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOPBAR ── -->
+<div class="rb-topbar">
+  <a href="index.html" class="rb-logo">Belong<span>ix</span></a>
+
+  <div class="rb-topbar-center">
+    <div class="rb-topbar-title">📄 Resume Builder</div>
+    <div class="rb-autosave-dot" id="rb-save-dot"></div>
+    <div class="rb-autosave-txt" id="rb-save-txt">Auto-saved</div>
+  </div>
+
+  <div class="rb-topbar-actions">
+    <button class="rb-btn" onclick="rbCopyText()" title="Copy as plain text">📋 Copy Text</button>
+    <button class="rb-btn" onclick="rbClearAll()" title="Start fresh">🗑 Clear</button>
+    <button class="rb-btn primary" onclick="rbDownloadPDF()" id="rb-pdf-btn">⬇ Download PDF</button>
+  </div>
+</div>
+
+<!-- ── MAIN LAYOUT ── -->
+<div class="rb-layout">
+
+  <!-- ══ LEFT: FORM PANEL ══ -->
+  <div class="rb-form-panel">
+
+    <!-- Template picker -->
+    <div class="rb-tpl-bar">
+      <div class="rb-tpl-lbl">Template</div>
+      <div class="rb-tpl-row">
+        <button class="rb-tpl-btn active" id="tpl-btn-modern" onclick="rbSetTemplate('modern')">
+          <span class="rb-tpl-swatch" style="background:#2D1B69"></span> Modern
+        </button>
+        <button class="rb-tpl-btn" id="tpl-btn-classic" onclick="rbSetTemplate('classic')">
+          <span class="rb-tpl-swatch" style="background:#111"></span> Classic
+        </button>
+        <button class="rb-tpl-btn" id="tpl-btn-minimal" onclick="rbSetTemplate('minimal')">
+          <span class="rb-tpl-swatch" style="background:#64748B"></span> Minimal
+        </button>
+      </div>
+    </div>
+
+    <div class="rb-sections">
+
+      <!-- 1. Personal Info -->
+      <div class="rb-section open" id="sec-personal">
+        <div class="rb-sec-hd" onclick="rbToggleSec('personal')">
+          <div class="rb-sec-hd-left">
+            <span class="rb-sec-icon">👤</span>
+            <span class="rb-sec-name">Personal Info</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="rb-sec-status" id="stat-personal"></span>
+            <span class="rb-sec-arrow">▼</span>
+          </div>
+        </div>
+        <div class="rb-sec-body">
+          <div class="rb-field">
+            <label class="rb-label">Full Name *</label>
+            <input class="rb-inp" id="rb-name" placeholder="e.g. Arjun Kumar" oninput="rbUpdate()"/>
+          </div>
+          <div class="rb-field">
+            <label class="rb-label">Job Title / Role</label>
+            <input class="rb-inp" id="rb-title" placeholder="e.g. Senior Software Engineer" oninput="rbUpdate()"/>
+          </div>
+          <div class="rb-row2">
+            <div class="rb-field">
+              <label class="rb-label">Email *</label>
+              <input class="rb-inp" type="email" id="rb-email" placeholder="you@email.com" oninput="rbUpdate()"/>
+            </div>
+            <div class="rb-field">
+              <label class="rb-label">Phone</label>
+              <input class="rb-inp" type="tel" id="rb-phone" placeholder="+91 98765 43210" oninput="rbUpdate()"/>
+            </div>
+          </div>
+          <div class="rb-row2">
+            <div class="rb-field">
+              <label class="rb-label">City</label>
+              <input class="rb-inp" id="rb-city" placeholder="Bangalore" oninput="rbUpdate()"/>
+            </div>
+            <div class="rb-field">
+              <label class="rb-label">LinkedIn</label>
+              <input class="rb-inp" id="rb-linkedin" placeholder="linkedin.com/in/..." oninput="rbUpdate()"/>
+            </div>
+          </div>
+          <div class="rb-field">
+            <label class="rb-label">GitHub / Portfolio</label>
+            <input class="rb-inp" id="rb-github" placeholder="github.com/username" oninput="rbUpdate()"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Summary -->
+      <div class="rb-section" id="sec-summary">
+        <div class="rb-sec-hd" onclick="rbToggleSec('summary')">
+          <div class="rb-sec-hd-left">
+            <span class="rb-sec-icon">✍️</span>
+            <span class="rb-sec-name">Professional Summary</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="rb-sec-status" id="stat-summary"></span>
+            <span class="rb-sec-arrow">▼</span>
+          </div>
+        </div>
+        <div class="rb-sec-body">
+          <div class="rb-field">
+            <label class="rb-label">Summary <span style="color:var(--subtle);text-transform:none;font-weight:500">(aim for 40–60 words)</span></label>
+            <div class="rb-ai-row">
+              <textarea class="rb-ta" id="rb-summary" rows="4"
+                placeholder="Results-driven engineer with 4+ years building scalable systems. Led backend migration at Swiggy, reducing latency by 40%. Passionate about distributed systems, cloud architecture, and mentoring junior engineers."
+                oninput="rbUpdate()"></textarea>
+              <button class="rb-ai-btn" onclick="rbEnhanceSummary()" id="rb-ai-btn" title="Enhance with Bexi AI">
+                ✨<br/>Enhance<br/>with AI
+              </button>
+            </div>
+            <button class="rb-undo-btn" id="rb-undo-btn" onclick="rbUndoSummary()">↩ Undo AI change</button>
+            <div style="font-size:11px;color:var(--subtle);margin-top:5px" id="rb-summary-wc"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Work Experience -->
+      <div class="rb-section" id="sec-experience">
+        <div class="rb-sec-hd" onclick="rbToggleSec('experience')">
+          <div class="rb-sec-hd-left">
+            <span class="rb-sec-icon">💼</span>
+            <span class="rb-sec-name">Work Experience</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="rb-sec-status" id="stat-experience"></span>
+            <span class="rb-sec-arrow">▼</span>
+          </div>
+        </div>
+        <div class="rb-sec-body">
+          <div id="rb-exp-list"></div>
+          <button class="rb-add-btn" onclick="rbAddExp()">+ Add Work Experience</button>
+        </div>
+      </div>
+
+      <!-- 4. Education -->
+      <div class="rb-section" id="sec-education">
+        <div class="rb-sec-hd" onclick="rbToggleSec('education')">
+          <div class="rb-sec-hd-left">
+            <span class="rb-sec-icon">🎓</span>
+            <span class="rb-sec-name">Education</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="rb-sec-status" id="stat-education"></span>
+            <span class="rb-sec-arrow">▼</span>
+          </div>
+        </div>
+        <div class="rb-sec-body">
+          <div id="rb-edu-list"></div>
+          <button class="rb-add-btn" onclick="rbAddEdu()">+ Add Education</button>
+        </div>
+      </div>
+
+      <!-- 5. Skills -->
+      <div class="rb-section" id="sec-skills">
+        <div class="rb-sec-hd" onclick="rbToggleSec('skills')">
+          <div class="rb-sec-hd-left">
+            <span class="rb-sec-icon">⚡</span>
+            <span class="rb-sec-name">Skills</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="rb-sec-status" id="stat-skills"></span>
+            <span class="rb-sec-arrow">▼</span>
+          </div>
+        </div>
+        <div class="rb-sec-body">
+          <div class="rb-field">
+            <label class="rb-label">Add skills — press Enter or comma after each</label>
+            <div class="rb-tags-wrap" id="rb-tags-wrap" onclick="document.getElementById('rb-skill-inp').focus()">
+              <input class="rb-tag-inp" id="rb-skill-inp" placeholder="e.g. Python" onkeydown="rbSkillKey(event)" oninput="rbUpdate()"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Certifications -->
+      <div class="rb-section" id="sec-certs">
+        <div class="rb-sec-hd" onclick="rbToggleSec('certs')">
+          <div class="rb-sec-hd-left">
+            <span class="rb-sec-icon">🏅</span>
+            <span class="rb-sec-name">Certifications</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="rb-sec-status" id="stat-certs"></span>
+            <span class="rb-sec-arrow">▼</span>
+          </div>
+        </div>
+        <div class="rb-sec-body">
+          <div id="rb-cert-list"></div>
+          <button class="rb-add-btn" onclick="rbAddCert()">+ Add Certification</button>
+        </div>
+      </div>
+
+      <!-- 7. Links -->
+      <div class="rb-section" id="sec-links">
+        <div class="rb-sec-hd" onclick="rbToggleSec('links')">
+          <div class="rb-sec-hd-left">
+            <span class="rb-sec-icon">🔗</span>
+            <span class="rb-sec-name">Links & Projects</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="rb-sec-status" id="stat-links"></span>
+            <span class="rb-sec-arrow">▼</span>
+          </div>
+        </div>
+        <div class="rb-sec-body">
+          <div id="rb-link-list"></div>
+          <button class="rb-add-btn" onclick="rbAddLink()">+ Add Link / Project</button>
+        </div>
+      </div>
+
+    </div><!-- /rb-sections -->
+  </div><!-- /rb-form-panel -->
+
+  <!-- ══ RIGHT: PREVIEW + ATS ══ -->
+  <div class="rb-preview-panel">
+
+    <!-- Resume sheet -->
+    <div class="rb-sheet tpl-modern" id="rb-sheet">
+      <div class="rv-header" id="rv-header">
+        <div class="rv-name" id="rv-name">Your Name</div>
+        <div class="rv-jobtitle" id="rv-jobtitle"></div>
+        <div class="rv-contact-row" id="rv-contact-row"></div>
+      </div>
+      <div class="rv-body" id="rv-body">
+        <div id="rv-summary-sec"></div>
+        <div id="rv-exp-sec"></div>
+        <div id="rv-edu-sec"></div>
+        <div id="rv-skills-sec"></div>
+        <div id="rv-certs-sec"></div>
+        <div id="rv-links-sec"></div>
+        <div class="rv-placeholder" id="rv-empty-hint">Start filling in your details on the left →</div>
+      </div>
+    </div>
+
+    <!-- ATS Score panel -->
+    <div class="rb-ats-panel">
+      <div class="rb-ats-title">
+        🎯 ATS Score
+        <span style="font-family:var(--ffb);font-size:11.5px;color:var(--muted);font-weight:500">How well will this pass Applicant Tracking Systems?</span>
+      </div>
+      <div class="rb-ats-inner">
+        <div class="rb-gauge-wrap">
+          <svg class="rb-gauge-svg" width="90" height="90" viewBox="0 0 90 90">
+            <circle class="rb-gauge-bg" cx="45" cy="45" r="35"/>
+            <circle class="rb-gauge-fill" id="rb-gauge-fill" cx="45" cy="45" r="35"
+              stroke="#2D1B69"
+              stroke-dasharray="220"
+              stroke-dashoffset="220"/>
+          </svg>
+          <div class="rb-gauge-center">
+            <div class="rb-gauge-score" id="rb-ats-score">0</div>
+            <div class="rb-gauge-lbl">/100</div>
+          </div>
+        </div>
+        <div class="rb-ats-tips" id="rb-ats-tips">
+          <div class="rb-ats-item">
+            <div class="rb-ats-dot miss"></div>
+            <div class="rb-ats-text">Fill in your details to get your ATS score</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /rb-preview-panel -->
+</div><!-- /rb-layout -->
+
+<div id="rb-toast"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   BELONGIX RESUME BUILDER — JS Engine v1.0
+═══════════════════════════════════════════════ */
+
+/* ── STATE ── */
+var RB = {
+  template: 'modern',
+  skills:   [],
+  exps:     [],
+  edus:     [],
+  certs:    [],
+  links:    [],
+  prevSummary: null,    // for undo
+  saveTimer: null,
+  expCount: 0,
+  eduCount: 0,
+  certCount: 0,
+  linkCount: 0
+};
+
+var LS_KEY = 'bx_resume_builder_v2';
+
+/* ── INIT ── */
+window.addEventListener('DOMContentLoaded', function() {
+  rbLoad();
+  rbAddExp();   // seed one empty experience
+  rbAddEdu();   // seed one empty education
+  rbLoad();     // load again so saved data overwrites seeds
+  rbUpdate();
+  rbAutoSave();
+
+  // Prefill from dashboard profile if coming from there
+  try {
+    var dp = JSON.parse(sessionStorage.getItem('bx_profile_prefill') || '{}');
+    if (dp.name)     document.getElementById('rb-name').value  = dp.name;
+    if (dp.email)    document.getElementById('rb-email').value = dp.email;
+    if (dp.phone)    document.getElementById('rb-phone').value = dp.phone;
+    if (dp.city)     document.getElementById('rb-city').value  = dp.city;
+    if (dp.title)    document.getElementById('rb-title').value = dp.title;
+    if (dp.summary)  document.getElementById('rb-summary').value = dp.summary;
+    if (dp.linkedin) document.getElementById('rb-linkedin').value = dp.linkedin;
+    if (dp.skills)   dp.skills.split(',').forEach(function(s){ if(s.trim()) rbAddSkillTag(s.trim()); });
+    rbUpdate();
+  } catch(e) {}
+});
+
+/* ── AUTOSAVE every 30s ── */
+function rbAutoSave() {
+  setInterval(function() {
+    rbSave();
+    var dot = document.getElementById('rb-save-dot');
+    var txt = document.getElementById('rb-save-txt');
+    if (dot) { dot.style.background = '#10B981'; }
+    if (txt) txt.textContent = 'Saved ' + new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+    setTimeout(function() { if(dot) dot.style.background = '#10B981'; }, 1500);
+  }, 30000);
+}
+
+function rbSave() {
+  try {
+    var data = rbCollect();
+    data._template = RB.template;
+    data._skills   = RB.skills;
+    localStorage.setItem(LS_KEY, JSON.stringify(data));
+  } catch(e) {}
+}
+
+function rbLoad() {
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if (!raw) return;
+    var data = JSON.parse(raw);
+    var sv = function(id, v) { var e = document.getElementById(id); if(e && v) e.value = v; };
+    sv('rb-name',     data.name);
+    sv('rb-title',    data.title);
+    sv('rb-email',    data.email);
+    sv('rb-phone',    data.phone);
+    sv('rb-city',     data.city);
+    sv('rb-linkedin', data.linkedin);
+    sv('rb-github',   data.github);
+    sv('rb-summary',  data.summary);
+
+    // Skills
+    if (Array.isArray(data.skills)) {
+      RB.skills = [];
+      var wrap = document.getElementById('rb-tags-wrap');
+      // clear existing tags
+      wrap.querySelectorAll('.rb-tag').forEach(function(t){ t.remove(); });
+      data.skills.forEach(function(s){ rbAddSkillTag(s); });
+    }
+    // Template
+    if (data._template) rbSetTemplate(data._template, true);
+
+    // Experiences
+    if (Array.isArray(data.exps) && data.exps.length > 0) {
+      document.getElementById('rb-exp-list').innerHTML = '';
+      RB.exps = []; RB.expCount = 0;
+      data.exps.forEach(function(e) { rbAddExp(e); });
+    }
+    // Educations
+    if (Array.isArray(data.edus) && data.edus.length > 0) {
+      document.getElementById('rb-edu-list').innerHTML = '';
+      RB.edus = []; RB.eduCount = 0;
+      data.edus.forEach(function(e) { rbAddEdu(e); });
+    }
+    // Certs
+    if (Array.isArray(data.certs) && data.certs.length > 0) {
+      document.getElementById('rb-cert-list').innerHTML = '';
+      RB.certs = []; RB.certCount = 0;
+      data.certs.forEach(function(c) { rbAddCert(c); });
+    }
+    // Links
+    if (Array.isArray(data.links) && data.links.length > 0) {
+      document.getElementById('rb-link-list').innerHTML = '';
+      RB.links = []; RB.linkCount = 0;
+      data.links.forEach(function(l) { rbAddLink(l); });
+    }
+  } catch(e) {}
+}
+
+/* ── COLLECT ALL DATA ── */
+function rbCollect() {
+  var g = function(id) { var e = document.getElementById(id); return e ? e.value.trim() : ''; };
+
+  // Experiences
+  var exps = [];
+  document.querySelectorAll('.rb-exp-item').forEach(function(item) {
+    var id = item.dataset.id;
+    exps.push({
+      role:     g('exp-role-'    + id),
+      company:  g('exp-company-' + id),
+      dates:    g('exp-dates-'   + id),
+      location: g('exp-loc-'     + id),
+      bullets:  g('exp-bullets-' + id)
+    });
+  });
+
+  // Educations
+  var edus = [];
+  document.querySelectorAll('.rb-edu-item').forEach(function(item) {
+    var id = item.dataset.id;
+    edus.push({
+      degree:  g('edu-degree-' + id),
+      school:  g('edu-school-' + id),
+      dates:   g('edu-dates-'  + id),
+      grade:   g('edu-grade-'  + id)
+    });
+  });
+
+  // Certs
+  var certs = [];
+  document.querySelectorAll('.rb-cert-item').forEach(function(item) {
+    var id = item.dataset.id;
+    certs.push({
+      name:   g('cert-name-' + id),
+      issuer: g('cert-issuer-' + id),
+      year:   g('cert-year-'  + id)
+    });
+  });
+
+  // Links
+  var links = [];
+  document.querySelectorAll('.rb-link-item').forEach(function(item) {
+    var id = item.dataset.id;
+    links.push({
+      label: g('link-label-' + id),
+      url:   g('link-url-'   + id)
+    });
+  });
+
+  return {
+    name:     g('rb-name'),
+    title:    g('rb-title'),
+    email:    g('rb-email'),
+    phone:    g('rb-phone'),
+    city:     g('rb-city'),
+    linkedin: g('rb-linkedin'),
+    github:   g('rb-github'),
+    summary:  g('rb-summary'),
+    skills:   RB.skills.slice(),
+    exps:     exps,
+    edus:     edus,
+    certs:    certs,
+    links:    links
+  };
+}
+
+/* ── TEMPLATE ── */
+function rbSetTemplate(tpl, silent) {
+  RB.template = tpl;
+  var sheet = document.getElementById('rb-sheet');
+  sheet.className = 'rb-sheet tpl-' + tpl;
+  ['modern','classic','minimal'].forEach(function(t) {
+    var btn = document.getElementById('tpl-btn-' + t);
+    if (btn) btn.classList.toggle('active', t === tpl);
+  });
+  if (!silent) rbUpdate();
+}
+
+/* ── SECTION ACCORDION ── */
+function rbToggleSec(id) {
+  var sec = document.getElementById('sec-' + id);
+  if (sec) sec.classList.toggle('open');
+}
+
+/* ── REPEATER: EXPERIENCE ── */
+function rbAddExp(data) {
+  var id = ++RB.expCount;
+  var list = document.getElementById('rb-exp-list');
+  var div = document.createElement('div');
+  div.className = 'rb-rep-item rb-exp-item';
+  div.dataset.id = id;
+  div.innerHTML = [
+    '<div class="rb-rep-item-head">',
+      '<span class="rb-rep-num">Experience #'+id+'</span>',
+      '<button class="rb-rep-del" onclick="rbDelItem(this,\'rb-exp-list\')" title="Remove">×</button>',
+    '</div>',
+    '<div class="rb-row2">',
+      '<div class="rb-field"><label class="rb-label">Job Title</label>',
+        '<input class="rb-inp" id="exp-role-'+id+'" placeholder="Software Engineer" oninput="rbUpdate()"/></div>',
+      '<div class="rb-field"><label class="rb-label">Company</label>',
+        '<input class="rb-inp" id="exp-company-'+id+'" placeholder="Swiggy" oninput="rbUpdate()"/></div>',
+    '</div>',
+    '<div class="rb-row2">',
+      '<div class="rb-field"><label class="rb-label">Dates</label>',
+        '<input class="rb-inp" id="exp-dates-'+id+'" placeholder="Jan 2022 – Present" oninput="rbUpdate()"/></div>',
+      '<div class="rb-field"><label class="rb-label">Location</label>',
+        '<input class="rb-inp" id="exp-loc-'+id+'" placeholder="Bangalore" oninput="rbUpdate()"/></div>',
+    '</div>',
+    '<div class="rb-field"><label class="rb-label">Key Achievements <span style="color:var(--subtle);text-transform:none;font-weight:500">(one per line, use numbers/₹/%)</span></label>',
+      '<textarea class="rb-ta" id="exp-bullets-'+id+'" rows="3" ',
+        'placeholder="Reduced API latency by 40% serving 5M daily requests\nBuilt checkout flow increasing conversion by ₹2.3Cr/month" ',
+        'oninput="rbUpdate()"></textarea></div>'
+  ].join('');
+  list.appendChild(div);
+  if (data) {
+    var sv = function(id, v) { var e = document.getElementById(id); if(e && v) e.value = v; };
+    sv('exp-role-'    + id, data.role);
+    sv('exp-company-' + id, data.company);
+    sv('exp-dates-'   + id, data.dates);
+    sv('exp-loc-'     + id, data.location);
+    sv('exp-bullets-' + id, data.bullets);
+  }
+  rbUpdate();
+}
+
+/* ── REPEATER: EDUCATION ── */
+function rbAddEdu(data) {
+  var id = ++RB.eduCount;
+  var list = document.getElementById('rb-edu-list');
+  var div = document.createElement('div');
+  div.className = 'rb-rep-item rb-edu-item';
+  div.dataset.id = id;
+  div.innerHTML = [
+    '<div class="rb-rep-item-head">',
+      '<span class="rb-rep-num">Education #'+id+'</span>',
+      '<button class="rb-rep-del" onclick="rbDelItem(this,\'rb-edu-list\')" title="Remove">×</button>',
+    '</div>',
+    '<div class="rb-field"><label class="rb-label">Degree / Course</label>',
+      '<input class="rb-inp" id="edu-degree-'+id+'" placeholder="B.Tech Computer Science" oninput="rbUpdate()"/></div>',
+    '<div class="rb-field"><label class="rb-label">College / University</label>',
+      '<input class="rb-inp" id="edu-school-'+id+'" placeholder="IIT Bombay" oninput="rbUpdate()"/></div>',
+    '<div class="rb-row2">',
+      '<div class="rb-field"><label class="rb-label">Year / Duration</label>',
+        '<input class="rb-inp" id="edu-dates-'+id+'" placeholder="2018 – 2022" oninput="rbUpdate()"/></div>',
+      '<div class="rb-field"><label class="rb-label">GPA / Grade</label>',
+        '<input class="rb-inp" id="edu-grade-'+id+'" placeholder="8.4 / 10" oninput="rbUpdate()"/></div>',
+    '</div>'
+  ].join('');
+  list.appendChild(div);
+  if (data) {
+    var sv = function(id, v) { var e = document.getElementById(id); if(e && v) e.value = v; };
+    sv('edu-degree-' + id, data.degree);
+    sv('edu-school-' + id, data.school);
+    sv('edu-dates-'  + id, data.dates);
+    sv('edu-grade-'  + id, data.grade);
+  }
+  rbUpdate();
+}
+
+/* ── REPEATER: CERTIFICATIONS ── */
+function rbAddCert(data) {
+  var id = ++RB.certCount;
+  var list = document.getElementById('rb-cert-list');
+  var div = document.createElement('div');
+  div.className = 'rb-rep-item rb-cert-item';
+  div.dataset.id = id;
+  div.innerHTML = [
+    '<div class="rb-rep-item-head">',
+      '<span class="rb-rep-num">Cert #'+id+'</span>',
+      '<button class="rb-rep-del" onclick="rbDelItem(this,\'rb-cert-list\')" title="Remove">×</button>',
+    '</div>',
+    '<div class="rb-field"><label class="rb-label">Certification Name</label>',
+      '<input class="rb-inp" id="cert-name-'+id+'" placeholder="AWS Solutions Architect Associate" oninput="rbUpdate()"/></div>',
+    '<div class="rb-row2">',
+      '<div class="rb-field"><label class="rb-label">Issuer</label>',
+        '<input class="rb-inp" id="cert-issuer-'+id+'" placeholder="Amazon Web Services" oninput="rbUpdate()"/></div>',
+      '<div class="rb-field"><label class="rb-label">Year</label>',
+        '<input class="rb-inp" id="cert-year-'+id+'" placeholder="2024" oninput="rbUpdate()"/></div>',
+    '</div>'
+  ].join('');
+  list.appendChild(div);
+  if (data) {
+    var sv = function(id, v) { var e = document.getElementById(id); if(e && v) e.value = v; };
+    sv('cert-name-'   + id, data.name);
+    sv('cert-issuer-' + id, data.issuer);
+    sv('cert-year-'   + id, data.year);
+  }
+  rbUpdate();
+}
+
+/* ── REPEATER: LINKS ── */
+function rbAddLink(data) {
+  var id = ++RB.linkCount;
+  var list = document.getElementById('rb-link-list');
+  var div = document.createElement('div');
+  div.className = 'rb-rep-item rb-link-item';
+  div.dataset.id = id;
+  div.innerHTML = [
+    '<div class="rb-rep-item-head">',
+      '<span class="rb-rep-num">Link #'+id+'</span>',
+      '<button class="rb-rep-del" onclick="rbDelItem(this,\'rb-link-list\')" title="Remove">×</button>',
+    '</div>',
+    '<div class="rb-row2">',
+      '<div class="rb-field"><label class="rb-label">Label</label>',
+        '<input class="rb-inp" id="link-label-'+id+'" placeholder="Portfolio" oninput="rbUpdate()"/></div>',
+      '<div class="rb-field"><label class="rb-label">URL</label>',
+        '<input class="rb-inp" id="link-url-'+id+'" placeholder="https://arjun.dev" oninput="rbUpdate()"/></div>',
+    '</div>'
+  ].join('');
+  list.appendChild(div);
+  if (data) {
+    var sv = function(id, v) { var e = document.getElementById(id); if(e && v) e.value = v; };
+    sv('link-label-' + id, data.label);
+    sv('link-url-'   + id, data.url);
+  }
+  rbUpdate();
+}
+
+/* ── DELETE REPEATER ITEM ── */
+function rbDelItem(btn, listId) {
+  var item = btn.closest('.rb-rep-item');
+  if (item) item.remove();
+  rbUpdate();
+}
+
+/* ── SKILLS TAG INPUT ── */
+function rbSkillKey(e) {
+  if (e.key === 'Enter' || e.key === ',') {
+    e.preventDefault();
+    var inp = document.getElementById('rb-skill-inp');
+    var val = inp.value.replace(',', '').trim();
+    if (val && !RB.skills.includes(val)) {
+      rbAddSkillTag(val);
+      inp.value = '';
+      rbUpdate();
+    }
+  }
+  if (e.key === 'Backspace' && !e.target.value && RB.skills.length) {
+    var last = RB.skills[RB.skills.length - 1];
+    rbRemoveSkillTag(last);
+    rbUpdate();
+  }
+}
+
+function rbAddSkillTag(skill) {
+  if (!skill || RB.skills.includes(skill)) return;
+  RB.skills.push(skill);
+  var wrap = document.getElementById('rb-tags-wrap');
+  var inp  = document.getElementById('rb-skill-inp');
+  var tag  = document.createElement('span');
+  tag.className = 'rb-tag';
+  tag.dataset.skill = skill;
+  tag.innerHTML = escHtml(skill) + '<button class="rb-tag-x" onclick="rbRemoveSkillTag(\'' + escHtml(skill).replace(/'/g,"\\'") + '\');rbUpdate()">×</button>';
+  wrap.insertBefore(tag, inp);
+}
+
+function rbRemoveSkillTag(skill) {
+  RB.skills = RB.skills.filter(function(s){ return s !== skill; });
+  var tag = document.querySelector('.rb-tag[data-skill="' + CSS.escape(skill) + '"]');
+  if (tag) tag.remove();
+}
+
+/* ── MAIN UPDATE (called on every input) ── */
+function rbUpdate() {
+  var data = rbCollect();
+  rbRenderPreview(data);
+  rbUpdateATS(data);
+  rbUpdateSectionStatus(data);
+  rbUpdateWordCount();
+
+  // Debounced save
+  clearTimeout(RB.saveTimer);
+  RB.saveTimer = setTimeout(rbSave, 2000);
+}
+
+/* ── SECTION STATUS BADGES ── */
+function rbUpdateSectionStatus(data) {
+  var st = function(id, txt) { var e = document.getElementById('stat-' + id); if(e) e.textContent = txt; };
+  st('personal',   data.name ? '✓' : '');
+  st('summary',    data.summary ? (data.summary.split(/\s+/).length + ' words') : '');
+  st('experience', data.exps.filter(function(e){return e.role||e.company;}).length + ' added');
+  st('education',  data.edus.filter(function(e){return e.degree||e.school;}).length + ' added');
+  st('skills',     data.skills.length ? data.skills.length + ' skills' : '');
+  st('certs',      data.certs.filter(function(c){return c.name;}).length || '');
+  st('links',      data.links.filter(function(l){return l.url;}).length || '');
+}
+
+function rbUpdateWordCount() {
+  var ta = document.getElementById('rb-summary');
+  var el = document.getElementById('rb-summary-wc');
+  if (!ta || !el) return;
+  var words = ta.value.trim() ? ta.value.trim().split(/\s+/).length : 0;
+  var color = words < 20 ? 'var(--amber)' : words <= 65 ? 'var(--green)' : 'var(--red)';
+  el.innerHTML = '<span style="color:'+color+';font-weight:600">'+words+' words</span>' +
+    (words < 20 ? ' — aim for 40–60' : words > 65 ? ' — try to shorten' : ' — good length ✓');
+}
+
+/* ── RENDER PREVIEW ── */
+function rbRenderPreview(data) {
+  var hasContent = data.name || data.email || data.summary ||
+    data.exps.some(function(e){return e.role;}) || data.skills.length;
+
+  var emptyHint = document.getElementById('rv-empty-hint');
+  if (emptyHint) emptyHint.style.display = hasContent ? 'none' : 'block';
+
+  // Header
+  el('rv-name',    data.name || 'Your Name');
+  el('rv-jobtitle', data.title || '');
+
+  // Contact row
+  var contactItems = [];
+  if (data.email)    contactItems.push({ icon:'✉', val: data.email });
+  if (data.phone)    contactItems.push({ icon:'📞', val: data.phone });
+  if (data.city)     contactItems.push({ icon:'📍', val: data.city });
+  if (data.linkedin) contactItems.push({ icon:'in', val: data.linkedin });
+  if (data.github)   contactItems.push({ icon:'⌨', val: data.github });
+  var crEl = document.getElementById('rv-contact-row');
+  if (crEl) crEl.innerHTML = contactItems.map(function(c) {
+    return '<span class="rv-contact-item"><span style="opacity:.6;font-size:9px">' + c.icon + '</span> ' + escHtml(c.val) + '</span>';
+  }).join('');
+
+  // Summary
+  var sumSec = document.getElementById('rv-summary-sec');
+  if (sumSec) sumSec.innerHTML = data.summary
+    ? secTitle('SUMMARY') + '<p class="rv-summary-text">' + escHtml(data.summary) + '</p>'
+    : '';
+
+  // Experience
+  var expSec = document.getElementById('rv-exp-sec');
+  var expItems = data.exps.filter(function(e){ return e.role || e.company; });
+  if (expSec) expSec.innerHTML = expItems.length ? secTitle('EXPERIENCE') + expItems.map(function(e) {
+    var bullets = e.bullets ? e.bullets.split('\n').filter(function(b){return b.trim();}) : [];
+    return '<div class="rv-exp-item">' +
+      '<div class="rv-exp-head">' +
+        '<div class="rv-exp-title">' + escHtml(e.role||'') + '</div>' +
+        (e.dates ? '<div class="rv-exp-dates">' + escHtml(e.dates) + '</div>' : '') +
+      '</div>' +
+      '<div class="rv-exp-company">' + [e.company, e.location].filter(Boolean).map(escHtml).join(' · ') + '</div>' +
+      (bullets.length ? '<ul class="rv-exp-bullets">' + bullets.map(function(b){
+        return '<li>' + escHtml(b.replace(/^[-•▸]\s*/, '')) + '</li>';
+      }).join('') + '</ul>' : '') +
+    '</div>';
+  }).join('') : '';
+
+  // Education
+  var eduSec = document.getElementById('rv-edu-sec');
+  var eduItems = data.edus.filter(function(e){ return e.degree || e.school; });
+  if (eduSec) eduSec.innerHTML = eduItems.length ? secTitle('EDUCATION') + eduItems.map(function(e) {
+    return '<div class="rv-edu-item">' +
+      '<div class="rv-exp-head">' +
+        '<div class="rv-exp-title">' + escHtml(e.degree||'') + '</div>' +
+        (e.dates ? '<div class="rv-exp-dates">' + escHtml(e.dates) + '</div>' : '') +
+      '</div>' +
+      '<div class="rv-exp-company">' + [e.school, e.grade?'Grade: '+e.grade:''].filter(Boolean).map(escHtml).join(' · ') + '</div>' +
+    '</div>';
+  }).join('') : '';
+
+  // Skills
+  var skillSec = document.getElementById('rv-skills-sec');
+  if (skillSec) skillSec.innerHTML = data.skills.length
+    ? secTitle('SKILLS') + '<div class="rv-skills-grid">' +
+      data.skills.map(function(s){ return '<span class="rv-skill-tag">' + escHtml(s) + '</span>'; }).join('') +
+      '</div>' : '';
+
+  // Certifications
+  var certSec = document.getElementById('rv-certs-sec');
+  var certItems = data.certs.filter(function(c){ return c.name; });
+  if (certSec) certSec.innerHTML = certItems.length ? secTitle('CERTIFICATIONS') + certItems.map(function(c) {
+    return '<div class="rv-cert-item">' +
+      '<div class="rv-exp-head">' +
+        '<div class="rv-exp-title">' + escHtml(c.name) + '</div>' +
+        (c.year ? '<div class="rv-exp-dates">' + escHtml(c.year) + '</div>' : '') +
+      '</div>' +
+      (c.issuer ? '<div class="rv-exp-company">' + escHtml(c.issuer) + '</div>' : '') +
+    '</div>';
+  }).join('') : '';
+
+  // Links
+  var linkSec = document.getElementById('rv-links-sec');
+  var linkItems = data.links.filter(function(l){ return l.url; });
+  if (linkSec) linkSec.innerHTML = linkItems.length ? secTitle('LINKS & PROJECTS') + linkItems.map(function(l) {
+    return '<div style="font-size:12px;margin-bottom:5px">' +
+      (l.label ? '<strong>' + escHtml(l.label) + ':</strong> ' : '') +
+      '<a class="rv-link" href="' + escHtml(l.url) + '">' + escHtml(l.url) + '</a>' +
+    '</div>';
+  }).join('') : '';
+}
+
+function secTitle(txt) {
+  return '<div class="rv-sec-title">' + txt + '</div>';
+}
+
+function el(id, txt) {
+  var e = document.getElementById(id);
+  if (e) e.textContent = txt || '';
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  return String(s)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+/* ── ATS SCORE ENGINE ── */
+function rbUpdateATS(data) {
+  var score = 0;
+  var tips  = [];
+  var done  = [];
+
+  // Has summary? (+15)
+  if (data.summary && data.summary.split(/\s+/).length >= 20) {
+    score += 15;
+    done.push({ txt: 'Professional summary present', pts: 15 });
+  } else if (data.summary) {
+    score += 7;
+    tips.push({ txt: 'Expand summary to 40+ words for full score', pts: '+8', crit: false });
+  } else {
+    tips.push({ txt: 'Add a professional summary', pts: '+15', crit: true });
+  }
+
+  // 3+ work experiences? (+20)
+  var expCount = data.exps.filter(function(e){ return e.role && e.company; }).length;
+  if (expCount >= 3) {
+    score += 20;
+    done.push({ txt: expCount + ' work experiences added', pts: 20 });
+  } else if (expCount >= 1) {
+    score += 10;
+    var need = 3 - expCount;
+    tips.push({ txt: 'Add ' + need + ' more work experience' + (need>1?'s':''), pts: '+' + (need*3), crit: false });
+  } else {
+    tips.push({ txt: 'Add at least 1 work experience', pts: '+20', crit: true });
+  }
+
+  // 5+ skills? (+15)
+  if (data.skills.length >= 5) {
+    score += 15;
+    done.push({ txt: data.skills.length + ' skills listed', pts: 15 });
+  } else {
+    var need2 = 5 - data.skills.length;
+    tips.push({ txt: 'Add ' + need2 + ' more skill' + (need2>1?'s':''), pts: '+15', crit: need2 >= 4 });
+  }
+
+  // Quantified achievements? (+20)
+  var allBullets = data.exps.map(function(e){ return e.bullets||''; }).join(' ');
+  var hasQuant = /[\d₹%]+/.test(allBullets);
+  if (hasQuant) {
+    var numCount = (allBullets.match(/[\d₹%]+/g) || []).length;
+    score += numCount >= 3 ? 20 : 10;
+    done.push({ txt: 'Quantified achievements found (' + numCount + ')', pts: numCount >= 3 ? 20 : 10 });
+    if (numCount < 3) tips.push({ txt: 'Add more numbers/₹/% in achievements', pts: '+10', crit: false });
+  } else {
+    tips.push({ txt: 'Add numbers, ₹ or % to achievements (e.g. reduced latency by 40%)', pts: '+20', crit: true });
+  }
+
+  // Contact info complete? (+10)
+  var contactScore = [data.name, data.email, data.phone, data.city].filter(Boolean).length;
+  if (contactScore === 4) {
+    score += 10;
+    done.push({ txt: 'Contact info complete', pts: 10 });
+  } else {
+    tips.push({ txt: 'Complete contact info (' + (4-contactScore) + ' fields missing)', pts: '+' + ((4-contactScore)*2), crit: false });
+  }
+
+  // Education? (+10)
+  var hasEdu = data.edus.some(function(e){ return e.degree && e.school; });
+  if (hasEdu) {
+    score += 10;
+    done.push({ txt: 'Education section filled', pts: 10 });
+  } else {
+    tips.push({ txt: 'Fill in your education details', pts: '+10', crit: false });
+  }
+
+  // Certifications? (+10)
+  var hasCerts = data.certs.some(function(c){ return c.name; });
+  if (hasCerts) {
+    score += 10;
+    done.push({ txt: data.certs.filter(function(c){return c.name;}).length + ' certification(s) listed', pts: 10 });
+  } else {
+    tips.push({ txt: 'Add certifications (AWS, Google, etc.)', pts: '+10', crit: false });
+  }
+
+  score = Math.min(100, score);
+
+  // Render gauge
+  var gaugeEl = document.getElementById('rb-gauge-fill');
+  var scoreEl = document.getElementById('rb-ats-score');
+  var circumference = 220;
+  if (gaugeEl) {
+    var offset = circumference - (circumference * score / 100);
+    gaugeEl.style.strokeDashoffset = offset;
+    gaugeEl.style.stroke = score >= 80 ? '#10B981' : score >= 60 ? '#F59E0B' : score >= 40 ? '#6B48CC' : '#EF4444';
+  }
+  if (scoreEl) scoreEl.textContent = score;
+
+  // Render tips
+  var tipsEl = document.getElementById('rb-ats-tips');
+  if (!tipsEl) return;
+  var html = '';
+  tips.slice(0, 5).forEach(function(t) {
+    html += '<div class="rb-ats-item">' +
+      '<div class="rb-ats-dot ' + (t.crit ? 'crit' : 'miss') + '"></div>' +
+      '<div class="rb-ats-text">' + t.txt + '<span class="rb-ats-boost">' + t.pts + ' pts</span></div>' +
+    '</div>';
+  });
+  done.slice(0, 4).forEach(function(d) {
+    html += '<div class="rb-ats-item">' +
+      '<div class="rb-ats-dot done"></div>' +
+      '<div class="rb-ats-text" style="color:var(--muted)">' + d.txt + '</div>' +
+    '</div>';
+  });
+  if (!html) html = '<div class="rb-ats-item"><div class="rb-ats-dot done"></div><div class="rb-ats-text">Perfect ATS score! 🎉</div></div>';
+  tipsEl.innerHTML = html;
+}
+
+/* ── AI ENHANCE SUMMARY ── */
+async function rbEnhanceSummary() {
+  var ta  = document.getElementById('rb-summary');
+  var btn = document.getElementById('rb-ai-btn');
+  var undoBtn = document.getElementById('rb-undo-btn');
+  if (!ta || !btn) return;
+
+  var current = ta.value.trim();
+  if (!current) {
+    rbToast('Please write a summary first, then I can enhance it ✍️');
+    return;
+  }
+
+  // Store undo state
+  RB.prevSummary = current;
+  if (undoBtn) undoBtn.style.display = 'none';
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="rb-spin"></div>';
+
+  try {
+    var data = rbCollect();
+    var contextHint = [
+      data.title ? 'Role: ' + data.title : '',
+      data.exps.length ? 'Experience at: ' + data.exps.map(function(e){return e.company;}).filter(Boolean).join(', ') : '',
+      data.skills.length ? 'Skills: ' + data.skills.slice(0,6).join(', ') : ''
+    ].filter(Boolean).join('. ');
+
+    var prompt = 'Rewrite this resume summary for an Indian job seeker applying to tech companies. Make it ATS-optimized, impactful, under 60 words. Highlight measurable impact if any numbers are present. Use strong action verbs. ' +
+      (contextHint ? 'Context: ' + contextHint + '. ' : '') +
+      'Return ONLY the improved summary text, nothing else, no preamble. Current summary: ' + current;
+
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 200,
+        system: 'You are a professional resume writer specialising in Indian tech job seekers. You return ONLY the improved summary text with no preamble, no quotes, no explanation.',
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) throw new Error('API error ' + res.status);
+    var json = await res.json();
+    var improved = (json.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('').trim();
+    if (!improved) throw new Error('Empty response');
+
+    ta.value = improved;
+    rbUpdate();
+    rbToast('✨ Summary enhanced by Bexi AI!');
+    if (undoBtn) undoBtn.style.display = 'inline';
+
+  } catch(e) {
+    rbToast('AI enhancement failed — check your connection and try again');
+    RB.prevSummary = null;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '✨<br/>Enhance<br/>with AI';
+  }
+}
+
+function rbUndoSummary() {
+  if (!RB.prevSummary) return;
+  var ta = document.getElementById('rb-summary');
+  if (ta) ta.value = RB.prevSummary;
+  RB.prevSummary = null;
+  var undoBtn = document.getElementById('rb-undo-btn');
+  if (undoBtn) undoBtn.style.display = 'none';
+  rbUpdate();
+  rbToast('Summary restored ↩');
+}
+
+/* ── EXPORT: PDF ── */
+async function rbDownloadPDF() {
+  var btn = document.getElementById('rb-pdf-btn');
+  if (btn) { btn.disabled = true; btn.textContent = '⏳ Generating...'; }
+
+  try {
+    var sheet = document.getElementById('rb-sheet');
+    if (!sheet) throw new Error('No sheet');
+
+    // Use html2canvas → jsPDF
+    var canvas = await html2canvas(sheet, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#fff',
+      logging: false
+    });
+
+    var imgData  = canvas.toDataURL('image/jpeg', 0.95);
+    var { jsPDF } = window.jspdf;
+    var pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    var pdfW = pdf.internal.pageSize.getWidth();
+    var pdfH = pdf.internal.pageSize.getHeight();
+    var ratio = canvas.width / canvas.height;
+    var imgH = pdfW / ratio;
+
+    if (imgH <= pdfH) {
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, imgH);
+    } else {
+      // Multi-page
+      var pageCount = Math.ceil(imgH / pdfH);
+      for (var p = 0; p < pageCount; p++) {
+        if (p > 0) pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, -(p * pdfH), pdfW, imgH);
+      }
+    }
+
+    var name = (document.getElementById('rb-name')||{}).value || 'resume';
+    pdf.save(name.replace(/\s+/g,'-').toLowerCase() + '-resume.pdf');
+    rbToast('📄 PDF downloaded!');
+  } catch(e) {
+    // Fallback: print dialog
+    window.print();
+    rbToast('Opening print dialog as fallback');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '⬇ Download PDF'; }
+  }
+}
+
+/* ── EXPORT: PLAIN TEXT ── */
+function rbCopyText() {
+  var data = rbCollect();
+  var lines = [];
+
+  if (data.name)  lines.push(data.name.toUpperCase());
+  if (data.title) lines.push(data.title);
+  var contact = [data.email, data.phone, data.city, data.linkedin].filter(Boolean).join(' | ');
+  if (contact) lines.push(contact);
+  lines.push('');
+
+  if (data.summary) {
+    lines.push('SUMMARY');
+    lines.push('─'.repeat(40));
+    lines.push(data.summary);
+    lines.push('');
+  }
+
+  var expItems = data.exps.filter(function(e){ return e.role || e.company; });
+  if (expItems.length) {
+    lines.push('EXPERIENCE');
+    lines.push('─'.repeat(40));
+    expItems.forEach(function(e) {
+      lines.push(e.role + (e.dates ? '  |  ' + e.dates : ''));
+      if (e.company) lines.push(e.company + (e.location ? ', ' + e.location : ''));
+      if (e.bullets) e.bullets.split('\n').filter(Boolean).forEach(function(b){ lines.push('• ' + b.trim()); });
+      lines.push('');
+    });
+  }
+
+  var eduItems = data.edus.filter(function(e){ return e.degree || e.school; });
+  if (eduItems.length) {
+    lines.push('EDUCATION');
+    lines.push('─'.repeat(40));
+    eduItems.forEach(function(e) {
+      lines.push(e.degree + (e.dates ? '  |  ' + e.dates : ''));
+      if (e.school) lines.push(e.school + (e.grade ? '  |  ' + e.grade : ''));
+      lines.push('');
+    });
+  }
+
+  if (data.skills.length) {
+    lines.push('SKILLS');
+    lines.push('─'.repeat(40));
+    lines.push(data.skills.join(' · '));
+    lines.push('');
+  }
+
+  var certItems = data.certs.filter(function(c){ return c.name; });
+  if (certItems.length) {
+    lines.push('CERTIFICATIONS');
+    lines.push('─'.repeat(40));
+    certItems.forEach(function(c) {
+      lines.push(c.name + (c.issuer ? ' — ' + c.issuer : '') + (c.year ? ' (' + c.year + ')' : ''));
+    });
+    lines.push('');
+  }
+
+  var txt = lines.join('\n');
+  navigator.clipboard.writeText(txt).then(function() {
+    rbToast('📋 Plain text copied to clipboard!');
+  }).catch(function() {
+    // Fallback
+    var ta = document.createElement('textarea');
+    ta.value = txt;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    rbToast('📋 Copied!');
+  });
+}
+
+/* ── CLEAR ALL ── */
+function rbClearAll() {
+  if (!confirm('Clear all resume data? This cannot be undone.')) return;
+  try { localStorage.removeItem(LS_KEY); } catch(e) {}
+  window.location.reload();
+}
+
+/* ── TOAST ── */
+function rbToast(msg) {
+  var t = document.getElementById('rb-toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3500);
+}
+</script>
+</body>
+</html>
