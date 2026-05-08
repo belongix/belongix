@@ -12,7 +12,7 @@
   'use strict';
 
   /* ─── ✏️  PASTE YOUR FREE GEMINI KEY HERE ────────────────── */
-  var GEMINI_KEY = 'YOUR_GEMINI_API_KEY_HERE';
+  var GEMINI_KEY = 'AIzaSyAbl2QB3rdLgO7ZL2YEfsp1xrGCVBzKSRE';
   /* ─────────────────────────────────────────────────────────── */
 
   /* Gemini endpoint — free tier, no credit card needed */
