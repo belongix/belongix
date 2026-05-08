@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Negotiate Your Salary Like a Pro | Belongix</title>
+<meta name="description" content="Learn how to negotiate a 20–40% salary increase at your next job change using proven scripts, market data, and total comp strategy."/>
+<link rel="icon" href="../icons/icon-32.png"/>
+<meta name="theme-color" content="#2D1B69"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+:root{--brand:#2D1B69;--brand2:#4C2FAA;--brand3:#6B48CC;--accent:#FF5C35;--green:#10B981;--amber:#F59E0B;--ink:#0D0D1A;--muted:#5A5A7A;--bg:#F7F7FC;--off:#F0F0F8;--off2:#EFEFF8;--white:#FFFFFF;--border:#E4E4F0;--ff:'Sora',sans-serif;--ffb:'DM Sans',sans-serif;--max:780px}
+html{scroll-behavior:smooth}
+body{font-family:var(--ffb);color:var(--ink);background:var(--bg);min-height:100vh}
+nav{background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 5%;height:60px;display:flex;align-items:center;position:sticky;top:0;z-index:200}
+.nav-in{max-width:var(--max);width:100%;margin:0 auto;display:flex;align-items:center;gap:12px}
+.nav-logo{font-family:var(--ff);font-size:18px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.3px;margin-right:auto}
+.nav-logo span{color:var(--accent)}
+.nb{padding:7px 15px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);color:var(--ink);font-size:13px;font-weight:500;text-decoration:none;transition:.15s;cursor:pointer;font-family:var(--ffb)}
+.nb.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.nb.primary:hover{background:var(--brand2)}
+.course-hero{background:linear-gradient(135deg,#1A0D40,#2D1B69);padding:44px 5% 36px;text-align:center}
+.course-badge{display:inline-block;background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.2);margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.course-hero h1{font-family:var(--ff);font-size:clamp(22px,4vw,34px);font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:10px}
+.course-hero p{font-size:14.5px;color:rgba(255,255,255,.72);max-width:500px;margin:0 auto 20px}
+.course-meta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.cmeta{font-size:12.5px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:5px}
+.course-wrap{max-width:var(--max);margin:0 auto;padding:28px 5% 80px;display:grid;grid-template-columns:1fr 240px;gap:24px;align-items:start}
+@media(max-width:700px){.course-wrap{grid-template-columns:1fr}}
+.progress-bar-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:20px}
+.prog-label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between}
+.prog-track{height:8px;background:var(--off);border-radius:8px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--brand3));border-radius:8px;transition:width .5s ease}
+.section-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;transition:.2s}
+.section-card.done{border-color:var(--green)}
+.section-card.active{border-color:var(--brand)}
+.sec-head{display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer;user-select:none}
+.sec-head:hover{background:var(--off)}
+.sec-num{width:32px;height:32px;border-radius:50%;background:var(--off2);color:var(--brand);font-family:var(--ff);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-card.done .sec-num{background:var(--green);color:#fff}
+.section-card.active .sec-num{background:var(--brand);color:#fff}
+.sec-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);flex:1}
+.sec-dur{font-size:11.5px;color:var(--muted)}
+.sec-body{display:none;padding:0 16px 16px;border-top:1px solid var(--border)}
+.section-card.active .sec-body{display:block}
+.sec-body h3{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin:14px 0 8px}
+.sec-body p{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:12px}
+.sec-body ul,.sec-body ol{padding-left:20px;margin-bottom:12px}
+.sec-body li{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:4px}
+.sec-body strong{color:var(--ink)}
+.checklist{list-style:none;padding:0;margin:10px 0}
+.checklist li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)}
+.checklist li:last-child{border:none}
+.checklist input[type=checkbox]{width:16px;height:16px;accent-color:var(--brand);cursor:pointer;flex-shrink:0;margin-top:2px}
+.callout{border-radius:11px;padding:14px 16px;margin:14px 0;border:1px solid}
+.callout.tip{background:#F0FDF4;border-color:#86EFAC}
+.callout.tip p{color:#15803D;font-size:13.5px;margin:0}
+.callout.info{background:#EFF6FF;border-color:#93C5FD}
+.callout.info p{color:#1E40AF;font-size:13.5px;margin:0}
+.mark-done-btn{margin-top:14px;width:100%;padding:11px;background:linear-gradient(135deg,var(--brand),var(--brand3));color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s}
+.mark-done-btn:hover{opacity:.9}
+.mark-done-btn.done{background:#10B981;cursor:default}
+.sidebar-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;position:sticky;top:76px}
+.sc-title{font-family:var(--ff);font-size:12px;font-weight:700;color:var(--ink);margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px}
+.toc-link{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);text-decoration:none;cursor:pointer;transition:.15s}
+.toc-link:last-child{border:none}
+.toc-link:hover{color:var(--brand)}
+.toc-link .toc-check{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px}
+.toc-link.done-link .toc-check{background:var(--green);border-color:var(--green);color:#fff}
+.cert-card{background:linear-gradient(135deg,#1A0D40,#2D1B69);border-radius:14px;padding:20px;text-align:center;display:none}
+.cert-card.show{display:block}
+.cert-card h3{font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px}
+.cert-card p{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:16px}
+.cert-btn{display:inline-block;padding:10px 20px;background:var(--accent);color:#fff;border-radius:9px;font-size:13px;font-weight:700;text-decoration:none;transition:.2s;cursor:pointer;border:none;font-family:var(--ffb)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#0D0D1A;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;transition:.3s;opacity:0;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body id="course-root" data-course-id="course_salary_neg">
+
+<nav>
+  <div class="nav-in">
+    <a href="../index.html" class="nav-logo">Belong<span>ix</span></a>
+    <a href="../dashboard.html?page=upskill" class="nb">← All Courses</a>
+    <a href="../dashboard.html" class="nb primary">Dashboard</a>
+  </div>
+</nav>
+
+<div class="course-hero">
+  <div class="course-badge">Belongix Original · Free Course</div>
+  <h1>💰 Negotiate Your Salary Like a Pro</h1>
+  <p>A step-by-step playbook for negotiating ₹3–8 LPA more at every stage of your career</p>
+  <div class="course-meta">
+    <span class="cmeta">⏱ 45 minutes</span>
+    <span class="cmeta">📋 5 sections</span>
+    <span class="cmeta">🏅 Certificate on completion</span>
+    <span class="cmeta">⚡ +20 Career Score</span>
+  </div>
+</div>
+
+<div class="course-wrap">
+  <main>
+    <div class="progress-bar-wrap">
+      <div class="prog-label"><span>Your Progress</span><span id="prog-pct">0%</span></div>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+
+    
+<div class="section-card" id="sec-sn1">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-num">1</div>
+    <div class="sec-title">Why most Indians don't negotiate (and lose ₹lakhs)</div>
+    <div class="sec-dur">5 min</div>
+  </div>
+  <div class="sec-body">
+    
+<p>Research shows that <strong>72% of Indian professionals accept the first offer they receive</strong> without negotiating. The average money left on the table: ₹2.8 LPA per job change. Over a career, that compounds to ₹1 crore+.</p>
+<h3>Why we don't negotiate</h3>
+<ul><li>Fear of offer being rescinded (this almost never happens — &lt;0.1%)</li><li>Don't know market rate (fixable in 20 minutes)</li><li>"They said the budget is fixed" (always a negotiating tactic)</li><li>Imposter syndrome — "I don't deserve more"</li></ul>
+<div class="callout tip"><p>💡 <strong>Key insight:</strong> Companies expect you to negotiate. The first offer is almost never the best offer. Recruiters have a range — your job is to anchor closer to the top of it.</p></div>
+<ul class="checklist">
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I understand why negotiating is safe and expected</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I commit to negotiating my next offer</li>
+</ul>
+    <button class="mark-done-btn" onclick="markDone('sn1',this)">✓ Mark Section Complete</button>
+  </div>
+</div>
+<div class="section-card" id="sec-sn2">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-num">2</div>
+    <div class="sec-title">Research: Know your market rate in 20 minutes</div>
+    <div class="sec-dur">8 min</div>
+  </div>
+  <div class="sec-body">
+    
+<h3>Your 3 data sources</h3>
+<ol>
+  <li><strong>Belongix Salary Intelligence</strong> — Dashboard → Salary Insights → filter your role + city. Shows P25, median, P75, and top 10%.</li>
+  <li><strong>AmbitionBox</strong> — search your target company + role. Note: self-reported data, skews 10-15% low, but useful for company-specific ranges.</li>
+  <li><strong>LinkedIn Salary</strong> — requires 5+ connections at the company but gives the most accurate data.</li>
+</ol>
+<h3>What number to use in negotiation</h3>
+<p>Use the <strong>P75 (75th percentile)</strong> for your target number. This is what top performers earn — you're not below average. Your counter-offer should be at or slightly above P75.</p>
+<div class="callout info"><p>📊 <strong>Example:</strong> If the market range for "Backend Engineer, 4 yrs, Bangalore" is ₹18–32 LPA, the median is ~₹24L and P75 is ~₹28L. Counter at ₹28–30L.</p></div>
+<ul class="checklist">
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> Checked Belongix Salary Intelligence for my role + city</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I know my P25, median, and P75 salary range</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I have my target counter-offer number ready</li>
+</ul>
+    <button class="mark-done-btn" onclick="markDone('sn2',this)">✓ Mark Section Complete</button>
+  </div>
+</div>
+<div class="section-card" id="sec-sn3">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-num">3</div>
+    <div class="sec-title">The negotiation conversation — scripts that work</div>
+    <div class="sec-dur">10 min</div>
+  </div>
+  <div class="sec-body">
+    
+<h3>Rule 1: Never give a number first</h3>
+<p>When asked "What is your expected CTC?", respond:<br><em>"I'm focused on finding the right fit and compensation that reflects the market and my experience. Could you share the budgeted range for this role?"</em></p>
+<h3>Rule 2: Counter 15–20% above their first offer</h3>
+<p>When they give you an offer of ₹20 LPA and you want ₹24L:<br><em>"Thank you for the offer — I'm genuinely excited about this role. Based on my research into market rates for this position in Bangalore, and given my [X specific skill/achievement], I was expecting something closer to ₹24–26 LPA. Is there flexibility to get there?"</em></p>
+<h3>Rule 3: "The budget is fixed" rebuttal</h3>
+<p><em>"I understand, and I appreciate you being transparent. If the base is fixed, could we explore other components — joining bonus, ESOPs, or a performance review at 6 months? I want to make this work."</em></p>
+<div class="callout tip"><p>💡 <strong>Always negotiate total comp, not just base:</strong> Joining bonus (1–3 months salary), ESOPs, WFH allowance (₹5,000–15,000/month), learning budget (₹30,000–1L/year), flexible timelines.</p></div>
+<ul class="checklist">
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I have my counter-offer script memorised or written</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I know 3 non-base components to negotiate</li>
+</ul>
+    <button class="mark-done-btn" onclick="markDone('sn3',this)">✓ Mark Section Complete</button>
+  </div>
+</div>
+<div class="section-card" id="sec-sn4">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-num">4</div>
+    <div class="sec-title">Salary negotiation via email — the template</div>
+    <div class="sec-dur">7 min</div>
+  </div>
+  <div class="sec-body">
+    
+<h3>When to negotiate by email vs phone</h3>
+<p>Email negotiation is <strong>underrated and often more effective</strong> — you have time to think, it creates a paper trail, and the recruiter can take it to their manager more easily.</p>
+<h3>The email template</h3>
+<div style="background:#F7F7FC;border:1px solid var(--border);border-radius:10px;padding:14px;font-size:13.5px;line-height:1.7;font-family:monospace;margin-bottom:14px">
+<p>Subject: Re: Offer — [Your Name] — [Role]</p><br>
+<p>Hi [Recruiter Name],</p><br>
+<p>Thank you for the offer — I'm genuinely excited about joining [Company] and contributing to [specific team/product].</p><br>
+<p>I've reviewed the offer carefully and researched the market rate for this role in [City]. Based on my [X years] of experience in [skill], and benchmarking against similar roles, I was expecting the total compensation to be closer to ₹[X] LPA.</p><br>
+<p>Is there flexibility to adjust the base, or explore a joining bonus to bridge the gap? I'm committed to joining and want to make this work.</p><br>
+<p>Looking forward to your response.<br>Best,<br>[Your Name]</p>
+</div>
+<ul class="checklist">
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I have the email template saved and personalised</li>
+</ul>
+    <button class="mark-done-btn" onclick="markDone('sn4',this)">✓ Mark Section Complete</button>
+  </div>
+</div>
+<div class="section-card" id="sec-sn5">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-num">5</div>
+    <div class="sec-title">Negotiating as a fresher — it works too</div>
+    <div class="sec-dur">5 min</div>
+  </div>
+  <div class="sec-body">
+    
+<p>Many freshers assume they can't negotiate. This is wrong. Even entry-level negotiation works — especially at product companies and startups.</p>
+<h3>What freshers can negotiate</h3>
+<ul>
+  <li><strong>Joining bonus:</strong> ₹50,000–2,00,000 is common at startups. Ask: "Is there a joining bonus available?"</li>
+  <li><strong>Start date:</strong> More time before joining = more time to negotiate competing offers</li>
+  <li><strong>Role title:</strong> "Junior Engineer" vs "Software Engineer" affects future negotiations significantly</li>
+  <li><strong>Review timeline:</strong> Ask for a 3-month vs 6-month review for a salary correction</li>
+</ul>
+<div class="callout tip"><p>💡 <strong>Best fresher negotiation script:</strong> "I'm very excited about this offer. I received another offer for ₹[X] — is there any flexibility to match or come closer to that? I'm strongly leaning toward [Company]."</p></div>
+<ul class="checklist">
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I know what I will negotiate for in my next offer</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I've bookmarked Belongix Salary Intelligence for my role</li>
+</ul>
+    <button class="mark-done-btn" onclick="markDone('sn5',this)">✓ Mark Section Complete</button>
+  </div>
+</div>
+
+    <div class="cert-card" id="cert-card">
+      <h3>🎉 Course Complete!</h3>
+      <p>You've completed <strong>Negotiate Your Salary Like a Pro</strong>. Your Belongix Certificate is ready and +20 Career Score has been added to your profile.</p>
+      <button class="cert-btn" onclick="downloadCert()">Download Certificate →</button>
+    </div>
+  </main>
+
+  <aside>
+    <div class="sidebar-card">
+      <div class="sc-title">📋 Sections</div>
+      <div class="toc-link" id="toc-sn1" onclick="document.getElementById('sec-sn1').scrollIntoView({behavior:'smooth'});toggleSection(document.getElementById('sec-sn1').querySelector('.sec-head'))"><div class="toc-check"></div><span>Why most Indians don't negotiate (and lose ₹lakhs)</span></div>
+<div class="toc-link" id="toc-sn2" onclick="document.getElementById('sec-sn2').scrollIntoView({behavior:'smooth'});toggleSection(document.getElementById('sec-sn2').querySelector('.sec-head'))"><div class="toc-check"></div><span>Research: Know your market rate in 20 minutes</span></div>
+<div class="toc-link" id="toc-sn3" onclick="document.getElementById('sec-sn3').scrollIntoView({behavior:'smooth'});toggleSection(document.getElementById('sec-sn3').querySelector('.sec-head'))"><div class="toc-check"></div><span>The negotiation conversation — scripts that work</span></div>
+<div class="toc-link" id="toc-sn4" onclick="document.getElementById('sec-sn4').scrollIntoView({behavior:'smooth'});toggleSection(document.getElementById('sec-sn4').querySelector('.sec-head'))"><div class="toc-check"></div><span>Salary negotiation via email — the template</span></div>
+<div class="toc-link" id="toc-sn5" onclick="document.getElementById('sec-sn5').scrollIntoView({behavior:'smooth'});toggleSection(document.getElementById('sec-sn5').querySelector('.sec-head'))"><div class="toc-check"></div><span>Negotiating as a fresher — it works too</span></div>
+    </div>
+    <div class="sidebar-card" style="background:linear-gradient(135deg,#1A0D40,#2D1B69);border-color:#2D1B69">
+      <div style="font-family:var(--ff);font-size:13px;font-weight:700;color:#fff;margin-bottom:6px">🤖 Ask Bexi AI</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:12px;line-height:1.6">Have questions about this topic? Bexi can give you personalised advice.</div>
+      <a href="../dashboard.html?page=overview" style="display:block;text-align:center;padding:8px;background:var(--accent);color:#fff;border-radius:8px;font-size:12.5px;font-weight:700;text-decoration:none">Ask Bexi →</a>
+    </div>
+    <div class="sidebar-card">
+      <div class="sc-title">🔗 Related</div>
+      <a href="../dashboard.html?page=jobs" style="display:block;font-size:13px;color:var(--muted);text-decoration:none;padding:6px 0;border-bottom:1px solid var(--border)">🔍 Browse jobs</a>
+      <a href="../salary/software-engineer-salary-india.html" style="display:block;font-size:13px;color:var(--muted);text-decoration:none;padding:6px 0;border-bottom:1px solid var(--border)">💰 Salary guide</a>
+      <a href="../mentors.html" style="display:block;font-size:13px;color:var(--muted);text-decoration:none;padding:6px 0">🤝 Find a mentor</a>
+    </div>
+  </aside>
+</div>
+
+<div id="toast"></div>
+<script>
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb=supabase.createClient(SB_URL,SB_KEY);
+var COURSE_ID=document.getElementById('course-root').dataset.courseId;
+var _user=null;
+var _completed=[];
+
+window.addEventListener('DOMContentLoaded',function(){
+  sb.auth.getSession().then(function(r){
+    if(r.data&&r.data.session)_user=r.data.session.user;
+    loadProgress();
+  });
+  // Open first section
+  var first=document.querySelector('.section-card');
+  if(first)first.classList.add('active');
+});
+
+function toggleSection(el){
+  var card=el.closest('.section-card');
+  var isActive=card.classList.contains('active');
+  document.querySelectorAll('.section-card').forEach(function(c){c.classList.remove('active');});
+  if(!isActive)card.classList.add('active');
+}
+
+function markDone(secId,btn){
+  if(_completed.includes(secId))return;
+  _completed.push(secId);
+  // Mark card done
+  var card=document.getElementById('sec-'+secId);
+  if(card){card.classList.add('done');card.classList.remove('active');}
+  // Update TOC
+  var tocLink=document.getElementById('toc-'+secId);
+  if(tocLink)tocLink.classList.add('done-link');
+  if(tocLink){var chk=tocLink.querySelector('.toc-check');if(chk)chk.textContent='✓';}
+  // Update progress
+  updateProgress();
+  // Move to next section
+  var cards=Array.from(document.querySelectorAll('.section-card'));
+  var idx=cards.indexOf(card);
+  if(idx<cards.length-1){cards[idx+1].classList.add('active');cards[idx+1].scrollIntoView({behavior:'smooth',block:'start'});}
+  // Mark btn
+  if(btn){btn.textContent='✓ Done';btn.classList.add('done');}
+  // Save to Supabase
+  saveProgress(secId);
+  showToast('✅ Section complete! Progress saved.');
+}
+
+function updateProgress(){
+  var total=document.querySelectorAll('.section-card').length;
+  var pct=total>0?Math.round((_completed.length/total)*100):0;
+  var fill=document.getElementById('prog-fill');
+  var label=document.getElementById('prog-pct');
+  if(fill)fill.style.width=pct+'%';
+  if(label)label.textContent=pct+'%';
+  // Show certificate on completion
+  if(pct>=100){
+    var cert=document.getElementById('cert-card');
+    if(cert){cert.classList.add('show');cert.scrollIntoView({behavior:'smooth'});}
+    showToast('🎉 Course complete! Certificate earned.');
+    // Award +20 Career Score
+    awardScoreBoost();
+  }
+}
+
+async function saveProgress(secId){
+  if(!_user)return;
+  try{
+    await sb.from('course_progress').upsert([{
+      user_id:_user.id,course_id:COURSE_ID,
+      status:_completed.length>=document.querySelectorAll('.section-card').length?'completed':'in_progress',
+      started_at:new Date().toISOString(),
+      completed_at:_completed.length>=document.querySelectorAll('.section-card').length?new Date().toISOString():null
+    }],{onConflict:'user_id,course_id'});
+  }catch(e){}
+}
+
+async function loadProgress(){
+  if(!_user)return;
+  try{
+    var r=await sb.from('course_progress').select('*').eq('user_id',_user.id).eq('course_id',COURSE_ID).maybeSingle();
+    if(r.data&&r.data.completed_sections){
+      _completed=r.data.completed_sections||[];
+      _completed.forEach(function(sid){
+        var card=document.getElementById('sec-'+sid);
+        if(card){card.classList.add('done');}
+        var tl=document.getElementById('toc-'+sid);
+        if(tl){tl.classList.add('done-link');var c=tl.querySelector('.toc-check');if(c)c.textContent='✓';}
+      });
+      updateProgress();
+    }
+  }catch(e){}
+}
+
+async function awardScoreBoost(){
+  if(!_user)return;
+  try{
+    var p=await sb.from('profiles').select('career_score').eq('id',_user.id).maybeSingle();
+    var sc=(p.data&&p.data.career_score)||30;
+    await sb.from('profiles').update({career_score:Math.min(sc+20,100)}).eq('id',_user.id);
+  }catch(e){}
+}
+
+function downloadCert(){
+  showToast('📜 Certificate downloaded! +20 Career Score added.');
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3200);
+}
+</script>
+<script src="../bexi.js"></script>
+</body>
+</html>

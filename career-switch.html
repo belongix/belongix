@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>How to Switch Careers in 90 Days | Belongix</title>
+<meta name="description" content="Step-by-step 90-day roadmap to switch careers in India — from non-tech to data, IT services to product, or any field to tech. With real timelines, portfolio ideas, and interview scripts."/>
+<link rel="icon" href="../icons/icon-32.png"/>
+<meta name="theme-color" content="#2D1B69"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+:root{--brand:#2D1B69;--brand2:#4C2FAA;--brand3:#6B48CC;--accent:#FF5C35;--green:#10B981;--amber:#F59E0B;--ink:#0D0D1A;--muted:#5A5A7A;--bg:#F7F7FC;--off:#F0F0F8;--off2:#EFEFF8;--white:#FFFFFF;--border:#E4E4F0;--ff:'Sora',sans-serif;--ffb:'DM Sans',sans-serif;--max:780px}
+html{scroll-behavior:smooth}
+body{font-family:var(--ffb);color:var(--ink);background:var(--bg);min-height:100vh}
+nav{background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 5%;height:60px;display:flex;align-items:center;position:sticky;top:0;z-index:200}
+.nav-in{max-width:var(--max);width:100%;margin:0 auto;display:flex;align-items:center;gap:12px}
+.nav-logo{font-family:var(--ff);font-size:18px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.3px;margin-right:auto}
+.nav-logo span{color:var(--accent)}
+.nb{padding:7px 15px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);color:var(--ink);font-size:13px;font-weight:500;text-decoration:none;transition:.15s;cursor:pointer;font-family:var(--ffb)}
+.nb.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.nb.primary:hover{background:var(--brand2)}
+.course-hero{background:linear-gradient(135deg,#1A0D40,#2D1B69);padding:44px 5% 36px;text-align:center}
+.course-badge{display:inline-block;background:rgba(255,255,255,.15);color:rgba(255,255,255,.9);font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid rgba(255,255,255,.2);margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.course-hero h1{font-family:var(--ff);font-size:clamp(22px,4vw,34px);font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:10px}
+.course-hero p{font-size:14.5px;color:rgba(255,255,255,.72);max-width:500px;margin:0 auto 20px}
+.course-meta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+.cmeta{font-size:12.5px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:5px}
+.course-wrap{max-width:var(--max);margin:0 auto;padding:28px 5% 80px;display:grid;grid-template-columns:1fr 240px;gap:24px;align-items:start}
+@media(max-width:700px){.course-wrap{grid-template-columns:1fr}}
+.progress-bar-wrap{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:20px}
+.prog-label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between}
+.prog-track{height:8px;background:var(--off);border-radius:8px;overflow:hidden}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--brand),var(--brand3));border-radius:8px;transition:width .5s ease}
+.section-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;margin-bottom:12px;overflow:hidden;transition:.2s}
+.section-card.done{border-color:var(--green)}
+.section-card.active{border-color:var(--brand)}
+.sec-head{display:flex;align-items:center;gap:12px;padding:16px;cursor:pointer;user-select:none}
+.sec-head:hover{background:var(--off)}
+.sec-num{width:32px;height:32px;border-radius:50%;background:var(--off2);color:var(--brand);font-family:var(--ff);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.section-card.done .sec-num{background:var(--green);color:#fff}
+.section-card.active .sec-num{background:var(--brand);color:#fff}
+.sec-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);flex:1}
+.sec-dur{font-size:11.5px;color:var(--muted)}
+.sec-body{display:none;padding:0 16px 16px;border-top:1px solid var(--border)}
+.section-card.active .sec-body{display:block}
+.sec-body h3{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin:14px 0 8px}
+.sec-body p{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:12px}
+.sec-body ul,.sec-body ol{padding-left:20px;margin-bottom:12px}
+.sec-body li{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:4px}
+.sec-body strong{color:var(--ink)}
+.checklist{list-style:none;padding:0;margin:10px 0}
+.checklist li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--muted)}
+.checklist li:last-child{border:none}
+.checklist input[type=checkbox]{width:16px;height:16px;accent-color:var(--brand);cursor:pointer;flex-shrink:0;margin-top:2px}
+.callout{border-radius:11px;padding:14px 16px;margin:14px 0;border:1px solid}
+.callout.tip{background:#F0FDF4;border-color:#86EFAC}
+.callout.tip p{color:#15803D;font-size:13.5px;margin:0}
+.callout.info{background:#EFF6FF;border-color:#93C5FD}
+.callout.info p{color:#1E40AF;font-size:13.5px;margin:0}
+.mark-done-btn{margin-top:14px;width:100%;padding:11px;background:linear-gradient(135deg,var(--brand),var(--brand3));color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s}
+.mark-done-btn:hover{opacity:.9}
+.mark-done-btn.done{background:#10B981;cursor:default}
+.sidebar-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px;position:sticky;top:76px}
+.sc-title{font-family:var(--ff);font-size:12px;font-weight:700;color:var(--ink);margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px}
+.toc-link{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--muted);text-decoration:none;cursor:pointer;transition:.15s}
+.toc-link:last-child{border:none}
+.toc-link:hover{color:var(--brand)}
+.toc-link .toc-check{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:9px}
+.toc-link.done-link .toc-check{background:var(--green);border-color:var(--green);color:#fff}
+.cert-card{background:linear-gradient(135deg,#1A0D40,#2D1B69);border-radius:14px;padding:20px;text-align:center;display:none}
+.cert-card.show{display:block}
+.cert-card h3{font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px}
+.cert-card p{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:16px}
+.cert-btn{display:inline-block;padding:10px 20px;background:var(--accent);color:#fff;border-radius:9px;font-size:13px;font-weight:700;text-decoration:none;transition:.2s;cursor:pointer;border:none;font-family:var(--ffb)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#0D0D1A;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;transition:.3s;opacity:0;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body id="course-root" data-course-id="course_career_switch">
+
+<nav>
+  <div class="nav-in">
+    <a href="../index.html" class="nav-logo">Belong<span>ix</span></a>
+    <a href="../dashboard.html?page=upskill" class="nb">← All Courses</a>
+    <a href="../dashboard.html" class="nb primary">Dashboard</a>
+  </div>
+</nav>
+
+<div class="course-hero">
+  <div class="course-badge">Belongix Original · Free Course</div>
+  <h1>🔄 How to Switch Careers in 90 Days</h1>
+  <p>The proven 90-day roadmap for switching industries, roles, or moving from IT services to product companies in India</p>
+  <div class="course-meta">
+    <span class="cmeta">⏱ 2 hours</span>
+    <span class="cmeta">📋 5 sections</span>
+    <span class="cmeta">🏅 Certificate on completion</span>
+    <span class="cmeta">⚡ +20 Career Score</span>
+  </div>
+</div>
+
+<div class="course-wrap">
+  <main>
+    <div class="progress-bar-wrap">
+      <div class="prog-label"><span>Your Progress</span><span id="prog-pct">0%</span></div>
+      <div class="prog-track"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+    </div>
+
+    
+<div class="section-card" id="sec-cs1">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-num">1</div>
+    <div class="sec-title">Is a career switch right for you? Honest self-assessment</div>
+    <div class="sec-dur">10 min</div>
+  </div>
+  <div class="sec-body">
+    
+<p>Not every frustration requires a career switch. Before investing 90 days, do an honest audit.</p>
+<h3>Signs a switch is the right move</h3>
+<ul>
+  <li>You've been in the same role for 3+ years with no meaningful skill growth</li>
+  <li>The salary ceiling in your current path is significantly lower than your target</li>
+  <li>You've genuinely tried improving your current situation (new team, new company) and it's structural</li>
+  <li>The skills you want to develop are not available in your current role</li>
+</ul>
+<h3>Signs you might just need a different company, not a new career</h3>
+<ul>
+  <li>You enjoy the work but hate your manager / team</li>
+  <li>The problem is compensation, not the domain</li>
+  <li>You've been in the role for less than 18 months</li>
+</ul>
+<h3>The 3 most successful switch paths in India (2026)</h3>
+<ol>
+  <li>Non-tech → Data Analytics (SQL + Python + Tableau, 6–9 months)</li>
+  <li>IT Services → Product Company (same tech, 3–6 months preparation)</li>
+  <li>Any → Cloud/DevOps (AWS + Kubernetes, 8–12 months)</li>
+</ol>
+<ul class="checklist">
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I've completed the honest self-assessment</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I've identified my target switch path</li>
+</ul>
+    <button class="mark-done-btn" onclick="markDone('cs1',this)">✓ Mark Section Complete</button>
+  </div>
+</div>
+<div class="section-card" id="sec-cs2">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-num">2</div>
+    <div class="sec-title">Month 1: Build the foundation (skill + evidence)</div>
+    <div class="sec-dur">20 min</div>
+  </div>
+  <div class="sec-body">
+    
+<h3>The #1 mistake career switchers make</h3>
+<p>Taking online courses → getting certificates → applying for jobs. This doesn't work because certificates without evidence of application are meaningless.</p>
+<h3>What month 1 should look like</h3>
+<p><strong>Week 1–2:</strong> Identify the 2–3 core skills for your target role. For data analytics: SQL + Python + one BI tool. For DevOps: Linux + Docker + one cloud provider. Start with the free track (Kaggle, A Cloud Guru free tier, YouTube).</p>
+<p><strong>Week 3–4:</strong> Build something. The most important decision of your switch. Pick a problem from your current industry/domain and solve it with the new skill. A supply chain analyst learning Python should analyse supply chain data. A finance professional learning SQL should query financial data.</p>
+<h3>Domain expertise + new skill = hired faster than pure freshers</h3>
+<p>This is your moat. A fintech company hiring a data analyst would rather hire someone with 3 years of finance experience who learned SQL than a pure fresher. Emphasise this constantly.</p>
+<ul class="checklist">
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I've identified my 2–3 core skills to learn</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I've started my free learning resource</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I've defined my portfolio project idea</li>
+</ul>
+    <button class="mark-done-btn" onclick="markDone('cs2',this)">✓ Mark Section Complete</button>
+  </div>
+</div>
+<div class="section-card" id="sec-cs3">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-num">3</div>
+    <div class="sec-title">Month 2: Build credibility (portfolio + network)</div>
+    <div class="sec-dur">20 min</div>
+  </div>
+  <div class="sec-body">
+    
+<h3>The portfolio project (your most important asset)</h3>
+<p>One well-executed project beats 10 certifications. Requirements:</p>
+<ul>
+  <li>Solves a real business problem (not a tutorial dataset)</li>
+  <li>Uses your previous domain knowledge</li>
+  <li>Has a live demo or deployed version</li>
+  <li>Has a clear README on GitHub explaining the problem and your approach</li>
+</ul>
+<h3>Examples by switch type</h3>
+<ul>
+  <li><strong>Finance → Data Analytics:</strong> Analyse 5 years of NSE/BSE stock data, identify patterns, build a Tableau dashboard</li>
+  <li><strong>IT Services → Product:</strong> Clone a feature of a product company's app (e.g. Swiggy's menu filtering), document the system design decisions you made</li>
+  <li><strong>Non-tech → DevOps:</strong> Deploy a 3-tier application on AWS, document the architecture, costs, and trade-offs</li>
+</ul>
+<h3>Building your target network</h3>
+<p>Connect with 5 people per week who have made the same switch you're attempting. Message them: "I'm making the same switch from [X] to [Y]. Would you be open to a 15-minute call to share your experience?" Response rate: 20–30%.</p>
+<ul class="checklist">
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> My portfolio project is deployed and on GitHub</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I've connected with 10+ people who made the same switch</li>
+</ul>
+    <button class="mark-done-btn" onclick="markDone('cs3',this)">✓ Mark Section Complete</button>
+  </div>
+</div>
+<div class="section-card" id="sec-cs4">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-num">4</div>
+    <div class="sec-title">Month 3: Job search strategy for career switchers</div>
+    <div class="sec-dur">15 min</div>
+  </div>
+  <div class="sec-body">
+    
+<h3>Where to apply (different from standard job search)</h3>
+<p><strong>Target companies that value domain expertise</strong> — if you're switching from healthcare to data, target Practo, 1mg, Niramai, Portea. Your healthcare knowledge is a plus there.</p>
+<p><strong>Apply to roles that combine old + new skills</strong> — "Business Analyst", "Operations Data Analyst", "Associate Product Manager" often require domain knowledge + new skill rather than pure technical background.</p>
+<h3>How to position the switch in your resume</h3>
+<p>Don't hide your previous experience — reframe it. If you were in finance for 5 years and you're now a data analyst:<br>"5 years in financial analysis + 8 months building data analytics skills → uniquely positioned to turn financial complexity into actionable insights"</p>
+<h3>The cover letter (actually matters for switchers)</h3>
+<p>For career switchers, the cover letter is more important than for direct applicants. Use it to explain: what triggered the switch, what you've done to bridge the gap (your project), and why this company specifically.</p>
+<ul class="checklist">
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I've identified 20 companies where my domain knowledge is an asset</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> My resume reframes previous experience as an advantage</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I have a career switch cover letter template ready</li>
+</ul>
+    <button class="mark-done-btn" onclick="markDone('cs4',this)">✓ Mark Section Complete</button>
+  </div>
+</div>
+<div class="section-card" id="sec-cs5">
+  <div class="sec-head" onclick="toggleSection(this)">
+    <div class="sec-num">5</div>
+    <div class="sec-title">Handling the "why are you switching?" interview question</div>
+    <div class="sec-dur">8 min</div>
+  </div>
+  <div class="sec-body">
+    
+<p>This is the question every career switcher fears. Answer it wrong and you're done. Answer it right and you stand out.</p>
+<h3>The framework: Past → Present → Future</h3>
+<p><strong>Past (what you did and what it taught you):</strong> "I spent 4 years in finance operations where I worked extensively with data — building Excel models, analysing trends, and presenting insights to leadership."</p>
+<p><strong>Present (the bridge — what you did to switch):</strong> "Over the past 8 months, I've been building my data analytics skills — SQL, Python, and Tableau. I built a project analysing [specific thing] that [specific result]."</p>
+<p><strong>Future (why this role/company specifically):</strong> "I want to work at a company where I can combine my domain knowledge with data analytics. [Company]'s work in [specific area] is exactly the intersection I'm looking for."</p>
+<div class="callout tip"><p>💡 <strong>Never say:</strong> "I was bored", "I wanted more money", "My manager was bad". Always frame it as moving toward something, not away from something.</p></div>
+<ul class="checklist">
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> I've practised my Past → Present → Future answer out loud</li>
+  <li><input type="checkbox" onchange="this.closest('li').style.textDecoration=this.checked?'line-through':'none'"> My answer is under 2 minutes and ends with enthusiasm</li>
+</ul>
+    <button class="mark-done-btn" onclick="markDone('cs5',this)">✓ Mark Section Complete</button>
+  </div>
+</div>
+
+    <div class="cert-card" id="cert-card">
+      <h3>🎉 Course Complete!</h3>
+      <p>You've completed <strong>How to Switch Careers in 90 Days</strong>. Your Belongix Certificate is ready and +20 Career Score has been added to your profile.</p>
+      <button class="cert-btn" onclick="downloadCert()">Download Certificate →</button>
+    </div>
+  </main>
+
+  <aside>
+    <div class="sidebar-card">
+      <div class="sc-title">📋 Sections</div>
+      <div class="toc-link" id="toc-cs1" onclick="document.getElementById('sec-cs1').scrollIntoView({behavior:'smooth'});toggleSection(document.getElementById('sec-cs1').querySelector('.sec-head'))"><div class="toc-check"></div><span>Is a career switch right for you? Honest self-assessment</span></div>
+<div class="toc-link" id="toc-cs2" onclick="document.getElementById('sec-cs2').scrollIntoView({behavior:'smooth'});toggleSection(document.getElementById('sec-cs2').querySelector('.sec-head'))"><div class="toc-check"></div><span>Month 1: Build the foundation (skill + evidence)</span></div>
+<div class="toc-link" id="toc-cs3" onclick="document.getElementById('sec-cs3').scrollIntoView({behavior:'smooth'});toggleSection(document.getElementById('sec-cs3').querySelector('.sec-head'))"><div class="toc-check"></div><span>Month 2: Build credibility (portfolio + network)</span></div>
+<div class="toc-link" id="toc-cs4" onclick="document.getElementById('sec-cs4').scrollIntoView({behavior:'smooth'});toggleSection(document.getElementById('sec-cs4').querySelector('.sec-head'))"><div class="toc-check"></div><span>Month 3: Job search strategy for career switchers</span></div>
+<div class="toc-link" id="toc-cs5" onclick="document.getElementById('sec-cs5').scrollIntoView({behavior:'smooth'});toggleSection(document.getElementById('sec-cs5').querySelector('.sec-head'))"><div class="toc-check"></div><span>Handling the "why are you switching?" interview question</span></div>
+    </div>
+    <div class="sidebar-card" style="background:linear-gradient(135deg,#1A0D40,#2D1B69);border-color:#2D1B69">
+      <div style="font-family:var(--ff);font-size:13px;font-weight:700;color:#fff;margin-bottom:6px">🤖 Ask Bexi AI</div>
+      <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:12px;line-height:1.6">Have questions about this topic? Bexi can give you personalised advice.</div>
+      <a href="../dashboard.html?page=overview" style="display:block;text-align:center;padding:8px;background:var(--accent);color:#fff;border-radius:8px;font-size:12.5px;font-weight:700;text-decoration:none">Ask Bexi →</a>
+    </div>
+    <div class="sidebar-card">
+      <div class="sc-title">🔗 Related</div>
+      <a href="../dashboard.html?page=jobs" style="display:block;font-size:13px;color:var(--muted);text-decoration:none;padding:6px 0;border-bottom:1px solid var(--border)">🔍 Browse jobs</a>
+      <a href="../salary/software-engineer-salary-india.html" style="display:block;font-size:13px;color:var(--muted);text-decoration:none;padding:6px 0;border-bottom:1px solid var(--border)">💰 Salary guide</a>
+      <a href="../mentors.html" style="display:block;font-size:13px;color:var(--muted);text-decoration:none;padding:6px 0">🤝 Find a mentor</a>
+    </div>
+  </aside>
+</div>
+
+<div id="toast"></div>
+<script>
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb=supabase.createClient(SB_URL,SB_KEY);
+var COURSE_ID=document.getElementById('course-root').dataset.courseId;
+var _user=null;
+var _completed=[];
+
+window.addEventListener('DOMContentLoaded',function(){
+  sb.auth.getSession().then(function(r){
+    if(r.data&&r.data.session)_user=r.data.session.user;
+    loadProgress();
+  });
+  // Open first section
+  var first=document.querySelector('.section-card');
+  if(first)first.classList.add('active');
+});
+
+function toggleSection(el){
+  var card=el.closest('.section-card');
+  var isActive=card.classList.contains('active');
+  document.querySelectorAll('.section-card').forEach(function(c){c.classList.remove('active');});
+  if(!isActive)card.classList.add('active');
+}
+
+function markDone(secId,btn){
+  if(_completed.includes(secId))return;
+  _completed.push(secId);
+  // Mark card done
+  var card=document.getElementById('sec-'+secId);
+  if(card){card.classList.add('done');card.classList.remove('active');}
+  // Update TOC
+  var tocLink=document.getElementById('toc-'+secId);
+  if(tocLink)tocLink.classList.add('done-link');
+  if(tocLink){var chk=tocLink.querySelector('.toc-check');if(chk)chk.textContent='✓';}
+  // Update progress
+  updateProgress();
+  // Move to next section
+  var cards=Array.from(document.querySelectorAll('.section-card'));
+  var idx=cards.indexOf(card);
+  if(idx<cards.length-1){cards[idx+1].classList.add('active');cards[idx+1].scrollIntoView({behavior:'smooth',block:'start'});}
+  // Mark btn
+  if(btn){btn.textContent='✓ Done';btn.classList.add('done');}
+  // Save to Supabase
+  saveProgress(secId);
+  showToast('✅ Section complete! Progress saved.');
+}
+
+function updateProgress(){
+  var total=document.querySelectorAll('.section-card').length;
+  var pct=total>0?Math.round((_completed.length/total)*100):0;
+  var fill=document.getElementById('prog-fill');
+  var label=document.getElementById('prog-pct');
+  if(fill)fill.style.width=pct+'%';
+  if(label)label.textContent=pct+'%';
+  // Show certificate on completion
+  if(pct>=100){
+    var cert=document.getElementById('cert-card');
+    if(cert){cert.classList.add('show');cert.scrollIntoView({behavior:'smooth'});}
+    showToast('🎉 Course complete! Certificate earned.');
+    // Award +20 Career Score
+    awardScoreBoost();
+  }
+}
+
+async function saveProgress(secId){
+  if(!_user)return;
+  try{
+    await sb.from('course_progress').upsert([{
+      user_id:_user.id,course_id:COURSE_ID,
+      status:_completed.length>=document.querySelectorAll('.section-card').length?'completed':'in_progress',
+      started_at:new Date().toISOString(),
+      completed_at:_completed.length>=document.querySelectorAll('.section-card').length?new Date().toISOString():null
+    }],{onConflict:'user_id,course_id'});
+  }catch(e){}
+}
+
+async function loadProgress(){
+  if(!_user)return;
+  try{
+    var r=await sb.from('course_progress').select('*').eq('user_id',_user.id).eq('course_id',COURSE_ID).maybeSingle();
+    if(r.data&&r.data.completed_sections){
+      _completed=r.data.completed_sections||[];
+      _completed.forEach(function(sid){
+        var card=document.getElementById('sec-'+sid);
+        if(card){card.classList.add('done');}
+        var tl=document.getElementById('toc-'+sid);
+        if(tl){tl.classList.add('done-link');var c=tl.querySelector('.toc-check');if(c)c.textContent='✓';}
+      });
+      updateProgress();
+    }
+  }catch(e){}
+}
+
+async function awardScoreBoost(){
+  if(!_user)return;
+  try{
+    var p=await sb.from('profiles').select('career_score').eq('id',_user.id).maybeSingle();
+    var sc=(p.data&&p.data.career_score)||30;
+    await sb.from('profiles').update({career_score:Math.min(sc+20,100)}).eq('id',_user.id);
+  }catch(e){}
+}
+
+function downloadCert(){
+  showToast('📜 Certificate downloaded! +20 Career Score added.');
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  if(!t)return;
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},3200);
+}
+</script>
+<script src="../bexi.js"></script>
+</body>
+</html>
