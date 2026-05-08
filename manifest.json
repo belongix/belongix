@@ -1,7 +1,7 @@
 {
-  "name": "Belongix — Professional Career Platform",
+  "name": "Belongix \u2014 Professional Career Platform",
   "short_name": "Belongix",
-  "description": "India's professional career platform — Jobs, Salary Insights, AI Career Guide, Mentors & Upskilling",
+  "description": "India's professional career platform \u2014 Jobs, Salary Insights, AI Career Guide, Mentors & Upskilling",
   "start_url": "/app.html",
   "display": "standalone",
   "orientation": "portrait",
@@ -112,6 +112,18 @@
           "sizes": "96x96"
         }
       ]
+    },
+    {
+      "name": "Ask Bexi AI",
+      "short_name": "Bexi",
+      "description": "Get instant career guidance from Bexi AI",
+      "url": "/dashboard.html?page=overview&bexi=open",
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
     }
   ],
   "screenshots": [
@@ -123,5 +135,10 @@
       "label": "Belongix Dashboard"
     }
   ],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "gcm_sender_id": "103953800507",
+  "display_override": [
+    "standalone",
+    "minimal-ui"
+  ]
 }
