@@ -340,7 +340,8 @@
   /* ════════ HTML ════════ */
   function buildHTML() {
     var chips = STARTERS.map(function (q) {
-      return '<button class="bx-starter" onclick="bexiAsk(' + JSON.stringify(q) + ')">' + esc(q) + '</button>';
+      return '<button class="bx-starter" onclick="bexiAsk(\'' + q.replace(/'/g, "\\'") + '\')">'
+        + esc(q) + '</button>';
     }).join('');
 
     return [
