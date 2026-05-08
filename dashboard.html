@@ -417,6 +417,18 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings
       </button>
     </div>
+    <div class="sb-group">
+      <div class="sb-group-label">Tools</div>
+      <a class="sb-link" href="resume-builder.html" target="_blank" style="text-decoration:none">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Resume Builder
+      </a>
+      <a class="sb-link" href="post-job.html" target="_blank" style="text-decoration:none">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>Post a Job
+      </a>
+      <a class="sb-link" href="recruiter-dashboard.html" target="_blank" style="text-decoration:none">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Recruiter Portal
+      </a>
+    </div>
   </nav>
   <button class="sb-upgrade" onclick="showPage('upgrade',null)">
     <div class="sb-upgrade-title">&#9889; Upgrade your plan</div>
@@ -523,6 +535,9 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <div class="ql-row" onclick="showPage('salary',document.querySelector('[onclick*=salary]'))"><div class="ql-ic" style="background:#ECFDF5">&#128176;</div><span class="ql-name">Salary Insights</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))"><div class="ql-ic" style="background:#FEF9C3">&#127891;</div><span class="ql-name">Upskilling Hub</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="showPage('network',document.querySelector('[onclick*=network]'))"><div class="ql-ic" style="background:#FFF1F2">&#129309;</div><span class="ql-name">Find a Mentor</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-row" onclick="window.open('resume-builder.html','_blank')"><div class="ql-ic" style="background:#EFF6FF">&#128196;</div><span class="ql-name">Resume Builder</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-row" onclick="window.open('post-job.html','_blank')"><div class="ql-ic" style="background:#FFF7ED">&#128188;</div><span class="ql-name">Post a Job</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-row" onclick="window.open('recruiter-dashboard.html','_blank')"><div class="ql-ic" style="background:#F0FDF4">&#128101;</div><span class="ql-name">Recruiter Portal</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="showPage('upgrade',null)"><div class="ql-ic" style="background:#F5F3FF">&#9889;</div><span class="ql-name">Upgrade Pro</span><span class="ql-arr">&#8250;</span></div>
     </div>
   </div>
@@ -726,11 +741,6 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <div class="psbar-bg"><div class="psbar-fill" id="ppct-fill" style="width:0%"></div></div>
       <div class="pstip" id="ppct-tip">Fill your profile to boost your score</div>
     </div>
-    <!-- Dynamic Score Action Plan -->
-    <div id="score-action-plan" style="margin-top:12px;background:#F0F0F8;border:1px solid #D0D0E8;border-radius:11px;padding:12px;display:none">
-      <div style="font-size:11px;font-weight:700;color:#2D1B69;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">⚡ 3 actions to boost your score</div>
-      <div id="score-actions-list" style="display:flex;flex-direction:column;gap:6px"></div>
-    </div>
   </div>
   <div class="pr">
     <div class="psec"><div class="psect">Profile Summary</div>
@@ -765,21 +775,17 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
 </div></div>
 
     <div class="page-section" id="page-tracker">
-      <div class="tracker-stats" style="grid-template-columns:repeat(6,1fr)">
+      <div class="tracker-stats">
         <div class="tstat"><div class="tstat-v" id="tr-total">0</div><div class="tstat-l">Total Applied</div></div>
+        <div class="tstat"><div class="tstat-v" id="tr-viewed">0</div><div class="tstat-l">Viewed</div></div>
         <div class="tstat"><div class="tstat-v" id="tr-interview">0</div><div class="tstat-l">Interviews</div></div>
         <div class="tstat"><div class="tstat-v" id="tr-offer">0</div><div class="tstat-l">Offers</div></div>
-        <div class="tstat"><div class="tstat-v" id="tr-viewed">0</div><div class="tstat-l">Viewed</div></div>
-        <div class="tstat"><div class="tstat-v" id="tr-rejected">0</div><div class="tstat-l">Rejected</div></div>
-        <div class="tstat"><div class="tstat-v" id="tr-ghosted">0</div><div class="tstat-l">Ghosted</div></div>
       </div>
-      <div class="kanban" id="kanban-board" style="grid-template-columns:repeat(6,1fr)">
+      <div class="kanban" id="kanban-board">
         <div class="kol"><div class="kol-head"><div class="kol-title">&#128235; Applied</div><span class="kol-count" id="kc-applied">0</span></div><div id="kol-applied"></div></div>
         <div class="kol"><div class="kol-head"><div class="kol-title">&#128064; Viewed</div><span class="kol-count" id="kc-viewed">0</span></div><div id="kol-viewed"></div></div>
         <div class="kol"><div class="kol-head"><div class="kol-title">&#129309; Interview</div><span class="kol-count" id="kc-interview">0</span></div><div id="kol-interview"></div></div>
         <div class="kol"><div class="kol-head"><div class="kol-title">&#127881; Offer</div><span class="kol-count" id="kc-offer">0</span></div><div id="kol-offer"></div></div>
-        <div class="kol"><div class="kol-head"><div class="kol-title">&#10060; Rejected</div><span class="kol-count" id="kc-rejected">0</span></div><div id="kol-rejected"></div></div>
-        <div class="kol"><div class="kol-head"><div class="kol-title">&#128123; Ghosted</div><span class="kol-count" id="kc-ghosted">0</span></div><div id="kol-ghosted"></div></div>
       </div>
       <div id="tracker-empty" style="text-align:center;padding:40px;color:var(--subtle);display:none">
         <div style="font-size:32px;margin-bottom:10px">&#128203;</div>
@@ -811,7 +817,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     <div class="upg-feats">
       <div class="upg-feat"><div class="upg-check">&#10003;</div>Career Score &amp; Profile</div>
       <div class="upg-feat"><div class="upg-check">&#10003;</div>Live Job Board</div>
-      <div class="upg-feat"><div class="upg-check">&#10003;</div>Bexi AI career guide</div>
+      <div class="upg-feat"><div class="upg-check">&#10003;</div>Bexi AI (10/day)</div>
       <div class="upg-feat"><div class="upg-check no">-</div><span style="color:var(--subtle)">Mentor Sessions</span></div>
     </div>
     <button class="upg-btn">Current Plan</button>
@@ -1885,199 +1891,6 @@ init();
     </div>
   </div>
 </div>
-
-
-// ════════════════════════════════════════════════════════
-// SPRINT 1 ADDITIONS — Score Action Plan + Bexi Nudges
-// + Extended kanban (Rejected / Ghosted) support
-// ════════════════════════════════════════════════════════
-
-// ── SCORE ACTION PLAN ──
-// Shows 3 specific next actions with exact point gains based on profile gaps
-function renderScoreActionPlan(profile, appsCount) {
-  var plan = document.getElementById('score-action-plan');
-  var list = document.getElementById('score-actions-list');
-  if (!plan || !list) return;
-
-  var actions = [];
-  var score = profile.career_score || 30;
-
-  // Evaluate gaps
-  if (!profile.about || profile.about.length < 30)
-    actions.push({ icon:'📝', label:'Complete your profile summary', pts:'+10 pts', page:'profile', color:'#EFF6FF' });
-  if (!profile.skills || profile.skills.length === 0)
-    actions.push({ icon:'⚡', label:'Add 5+ skills to your profile', pts:'+15 pts', page:'profile', color:'#F0FDF4' });
-  if (appsCount < 1)
-    actions.push({ icon:'🔍', label:'Apply to 1 job — first application', pts:'+15 pts', page:'jobs', color:'#FFF7ED' });
-  if (appsCount < 3 && appsCount >= 1)
-    actions.push({ icon:'🔍', label:'Apply to 2 more jobs', pts:'+10 pts', page:'jobs', color:'#FFF7ED' });
-  if (!profile.linkedin)
-    actions.push({ icon:'💼', label:'Add your LinkedIn URL', pts:'+5 pts', page:'profile', color:'#EFF6FF' });
-  if (score < 70)
-    actions.push({ icon:'📚', label:'Complete one upskilling course', pts:'+20 pts', page:'upskill', color:'#F5F3FF' });
-
-  if (actions.length === 0) {
-    plan.style.display = 'none'; return;
-  }
-
-  list.innerHTML = actions.slice(0, 3).map(function(a) {
-    return '<div onclick="showPage('' + a.page + '',null)" style="display:flex;align-items:center;gap:10px;background:'
-      + a.color + ';border-radius:8px;padding:8px 11px;cursor:pointer;transition:.15s" '
-      + 'onmouseover="this.style.opacity='.8'" onmouseout="this.style.opacity='1'">'
-      + '<span style="font-size:15px">' + a.icon + '</span>'
-      + '<span style="flex:1;font-size:12.5px;color:#0D0D1A;font-weight:500">' + a.label + '</span>'
-      + '<span style="font-size:11.5px;font-weight:700;color:#2D1B69;white-space:nowrap">' + a.pts + '</span>'
-      + '</div>';
-  }).join('');
-
-  plan.style.display = 'block';
-}
-
-// ── BEXI PROACTIVE NUDGE ──
-// Shows one contextual tip card above the dashboard based on user gaps
-function showBexiNudge(profile, appsCount, lastAppliedAt) {
-  var card = document.getElementById('bexi-nudge-card');
-  var title = document.getElementById('bexi-nudge-title');
-  var text  = document.getElementById('bexi-nudge-text');
-  var acts  = document.getElementById('bexi-nudge-actions');
-  var icon  = document.getElementById('bexi-nudge-icon');
-  if (!card || !title || !text || !acts) return;
-
-  // Check localStorage to avoid showing same nudge twice per session
-  var dismissKey = 'bexi_nudge_dismissed_' + new Date().toDateString();
-  if (localStorage.getItem(dismissKey)) return;
-
-  var score = profile.career_score || 30;
-  var nudge = null;
-
-  // Priority 1: No applications in 7+ days
-  if (lastAppliedAt) {
-    var daysSince = Math.floor((Date.now() - new Date(lastAppliedAt)) / 86400000);
-    if (daysSince >= 7) {
-      nudge = {
-        icon: '🔍',
-        title: 'You haven't applied in ' + daysSince + ' days',
-        text: 'Job search momentum matters — consistent applications get 3× more responses. Want me to find 5 matching jobs for your profile right now?',
-        actions: [
-          { label: 'Find matching jobs', page: 'jobs' },
-        ]
-      };
-    }
-  }
-
-  // Priority 2: Score below 50
-  if (!nudge && score < 50) {
-    nudge = {
-      icon: '📊',
-      title: 'Your Career Score is ' + score + '/100',
-      text: 'A score above 70 gets 3× more recruiter responses. You're just ' + (70 - score) + ' points away — here are 3 quick actions to get there.',
-      actions: [
-        { label: 'Boost my score', page: 'profile' },
-        { label: 'View action plan', page: 'profile' }
-      ]
-    };
-  }
-
-  // Priority 3: No skills added
-  if (!nudge && (!profile.skills || profile.skills.length === 0)) {
-    nudge = {
-      icon: '⚡',
-      title: 'Add your skills for better job matches',
-      text: 'Your profile has no skills listed yet. Recruiters search by skills — adding 5+ skills unlocks AI-matched job recommendations and boosts your Career Score by +15 pts.',
-      actions: [
-        { label: 'Add skills now', page: 'profile' }
-      ]
-    };
-  }
-
-  // Priority 4: Profile incomplete
-  if (!nudge && score < 60 && !profile.about) {
-    nudge = {
-      icon: '✍️',
-      title: 'Complete your profile summary',
-      text: 'Profiles with a summary get 4× more recruiter views. It takes 2 minutes and adds +10 to your Career Score.',
-      actions: [
-        { label: 'Complete profile', page: 'profile' }
-      ]
-    };
-  }
-
-  if (!nudge) return;
-
-  icon.textContent  = nudge.icon;
-  title.textContent = nudge.title;
-  text.textContent  = nudge.text;
-  acts.innerHTML = nudge.actions.map(function(a) {
-    return '<button onclick="showPage('' + a.page + '',null);document.getElementById('bexi-nudge-card').style.display='none'" '
-      + 'style="padding:5px 12px;border-radius:7px;background:#2D1B69;color:#fff;border:none;font-size:11.5px;font-weight:600;cursor:pointer;font-family:inherit">'
-      + a.label + '</button>';
-  }).join('');
-
-  // Dismiss button saves to localStorage
-  card.querySelector('button').onclick = function() {
-    card.style.display = 'none';
-    localStorage.setItem(dismissKey, '1');
-  };
-
-  card.style.display = 'flex';
-}
-
-// ── KANBAN: Extended status support for Rejected + Ghosted ──
-// Patch the existing loadTracker function to handle new statuses
-var _origLoadTracker = typeof loadTracker === 'function' ? loadTracker : null;
-function loadTrackerExtended() {
-  // Call existing tracker logic first
-  if (_origLoadTracker) {
-    try { _origLoadTracker(); } catch(e) {}
-  }
-  // Auto-ghost applications with no update in 21+ days
-  if (currentUser) {
-    var cutoff = new Date(Date.now() - 21 * 86400000).toISOString();
-    supaClient.from('applications')
-      .update({ status: 'ghosted' })
-      .eq('user_id', currentUser.id)
-      .eq('status', 'applied')
-      .lt('applied_at', cutoff)
-      .then(function() {})
-      .catch(function() {});
-  }
-}
-
-// ── HOOK: run score plan + nudge after profile loads ──
-// Patch the existing loadProfile / showAnalytics to also render these
-var _origShowAnalytics = typeof showAnalytics === 'function' ? showAnalytics : null;
-function showAnalyticsPatched() {
-  if (_origShowAnalytics) _origShowAnalytics.apply(this, arguments);
-  // Run after a tick so profile data is set
-  setTimeout(async function() {
-    if (!currentUser || !profile) return;
-    // Get application count + last applied date
-    var appsCount = 0, lastAppliedAt = null;
-    try {
-      var r = await supaClient.from('applications')
-        .select('applied_at')
-        .eq('user_id', currentUser.id)
-        .order('applied_at', { ascending: false })
-        .limit(50);
-      if (r.data) {
-        appsCount = r.data.length;
-        lastAppliedAt = r.data[0] ? r.data[0].applied_at : null;
-      }
-    } catch(e) {}
-    renderScoreActionPlan(profile, appsCount);
-    showBexiNudge(profile, appsCount, lastAppliedAt);
-  }, 400);
-}
-// Override showAnalytics if it exists
-if (typeof showAnalytics !== 'undefined') { showAnalytics = showAnalyticsPatched; }
-document.addEventListener('DOMContentLoaded', function() {
-  // Also trigger on initial load
-  setTimeout(function() {
-    if (currentUser && profile) {
-      showAnalyticsPatched();
-    }
-  }, 1500);
-});
 
 <script src="bexi.js"></script>
 <script src="pwa-install.js"></script>
