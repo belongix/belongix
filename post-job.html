@@ -472,6 +472,11 @@ footer{background:#0D0D1A;padding:48px 5% 28px;border-top:1px solid rgba(255,255
         <div class="form-success-title">Job posted successfully!</div>
         <div class="form-success-sub">We've received your job listing. You'll get an email confirmation shortly with a link to manage your applicants. Your job will go live after a quick review (usually under 1 hour).</div>
         <a href="recruiter-dashboard.html" class="nav-btn primary" style="display:inline-flex;margin:0 auto">View Recruiter Dashboard →</a>
+        <div style="margin-top:10px;font-size:12.5px;color:var(--muted)">
+          💡 <strong>Tip:</strong> Create your
+          <a href="mailto:teambelongix@gmail.com?subject=Company%20Brand%20Page%20Request" style="color:var(--brand);font-weight:600">Company Brand Page</a>
+          to show off your culture and attract better candidates.
+        </div>
         <div style="margin-top:12px"><button onclick="resetForm()" class="nav-btn">Post Another Job</button></div>
       </div>
 
@@ -608,6 +613,21 @@ footer{background:#0D0D1A;padding:48px 5% 28px;border-top:1px solid rgba(255,255
             <label class="field-label">Company Website</label>
             <input class="finp" id="pj-website" placeholder="https://yourcompany.com"/>
           </div>
+        </div>
+
+        <!-- FEATURE 35: Custom Screening Questions (up to 5) -->
+        <div class="field" style="margin-bottom:20px">
+          <label class="field-label">Screening Questions
+            <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--subtle)">(optional — up to 5 questions applicants must answer)</span>
+          </label>
+          <div id="screening-questions-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:8px"></div>
+          <button type="button" onclick="addScreeningQuestion()" id="add-sq-btn"
+            style="width:100%;padding:9px;border:2px dashed var(--border);border-radius:9px;background:none;color:var(--muted);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s"
+            onmouseover="this.style.borderColor='var(--brand3)';this.style.color='var(--brand)'"
+            onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">
+            + Add Screening Question
+          </button>
+          <div style="font-size:11.5px;color:var(--subtle);margin-top:5px">e.g. "How many years of Python experience do you have?" · "Are you open to relocation?" · "Notice period?"</div>
         </div>
 
         <button class="submit-btn" id="pj-submit-btn" onclick="submitJob()">
@@ -790,10 +810,11 @@ async function submitJob() {
     website:     website || '',
     tags:        tagArr,
     plan:        _selectedPlan,
-    status:      'pending',
-    posted_date: new Date().toISOString(),
-    created_at:  new Date().toISOString(),
-    badge:       _selectedPlan === 'pro' ? 'featured' : ''
+    status:              'pending',
+    posted_date:         new Date().toISOString(),
+    created_at:          new Date().toISOString(),
+    badge:               _selectedPlan === 'pro' ? 'featured' : '',
+    screening_questions: getScreeningQuestions()   /* Feature 35 */
   };
 
   try {
@@ -854,6 +875,43 @@ function processPayment(amount, plan, company, email) {
 function gv(id) {
   var e = document.getElementById(id);
   return e ? e.value.trim() : '';
+}
+
+// ── SCREENING QUESTIONS (Feature 35) ──
+var _sqCount = 0;
+function addScreeningQuestion() {
+  var list = document.getElementById('screening-questions-list');
+  var btn  = document.getElementById('add-sq-btn');
+  if (!list || _sqCount >= 5) {
+    if (_sqCount >= 5) pjToast('Maximum 5 screening questions allowed');
+    return;
+  }
+  _sqCount++;
+  var id = 'sq-' + _sqCount;
+  var div = document.createElement('div');
+  div.id = id;
+  div.style.cssText = 'display:flex;gap:8px;align-items:center';
+  div.innerHTML = '<input class="finp" type="text" id="sq-inp-'+_sqCount+'" placeholder="Question '+_sqCount+': e.g. How many years of React experience?" style="flex:1"/>'
+    + '<button type="button" onclick="removeScreeningQuestion(\\"'+id+'\\")" style="padding:8px 11px;border-radius:8px;border:1px solid #FECACA;background:#FEF2F2;color:#EF4444;font-size:14px;cursor:pointer;flex-shrink:0">×</button>';
+  list.appendChild(div);
+  if (_sqCount >= 5 && btn) btn.style.display = 'none';
+}
+
+function removeScreeningQuestion(divId) {
+  var el = document.getElementById(divId);
+  if (el) el.remove();
+  _sqCount = Math.max(0, _sqCount - 1);
+  var btn = document.getElementById('add-sq-btn');
+  if (btn) btn.style.display = 'block';
+}
+
+function getScreeningQuestions() {
+  var qs = [];
+  for (var i = 1; i <= 5; i++) {
+    var el = document.getElementById('sq-inp-' + i);
+    if (el && el.value.trim()) qs.push(el.value.trim());
+  }
+  return qs;
 }
 
 function pjToast(msg) {
