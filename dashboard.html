@@ -106,6 +106,56 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
 .sal-avg-badge{background:var(--blue-lt);color:#2D1B69;font-size:12px;font-weight:700;border-radius:8px;padding:4px 11px;display:inline-block;margin-top:6px}
 .sal-hike-badge{background:#ECFDF5;color:#15803D;font-size:11.5px;font-weight:600;border-radius:6px;padding:3px 8px;margin-left:5px}
 
+/* ── FIX #16: OFFER COMPARISON ── */
+.sal-tab-bar{display:flex;gap:6px;margin-bottom:16px;border-bottom:2px solid var(--border);padding-bottom:0}
+.sal-tab{padding:8px 16px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--ffb);border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
+.sal-tab:hover{color:#2D1B69}
+.sal-tab.active{color:#2D1B69;border-bottom-color:#2D1B69}
+.oc-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.oc-col{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:16px;transition:.2s}
+.oc-col:focus-within{border-color:#2D1B69;box-shadow:0 0 0 3px rgba(45,27,105,.07)}
+.oc-col-head{font-family:var(--ff);font-size:13px;font-weight:700;color:#2D1B69;margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.oc-badge{padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.oc-badge.a{background:#EDE9FE;color:#2D1B69}
+.oc-badge.b{background:#FFF7ED;color:#EA580C}
+.oc-field{margin-bottom:10px}
+.oc-label{font-size:11.5px;font-weight:600;color:var(--muted);margin-bottom:4px}
+.oc-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:7px 11px;font-size:13px;font-family:var(--ffb);color:var(--ink);background:var(--bg);outline:none;transition:.15s}
+.oc-input:focus{border-color:#2D1B69;background:#fff}
+.oc-select{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:7px 11px;font-size:13px;font-family:var(--ffb);color:var(--ink);background:var(--bg);outline:none;cursor:pointer}
+.oc-compare-btn{width:100%;padding:11px;background:linear-gradient(135deg,#2D1B69,#6B48CC);color:#fff;border:none;border-radius:10px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:var(--ff);transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.oc-compare-btn:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.oc-compare-btn:disabled{opacity:.6;transform:none;cursor:not-allowed}
+.oc-result{margin-top:18px;display:none}
+.oc-result.show{display:block}
+.oc-winner-banner{background:linear-gradient(135deg,#2D1B69,#6B48CC);border-radius:14px;padding:16px 20px;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:14px}
+.oc-winner-icon{font-size:32px;flex-shrink:0}
+.oc-winner-title{font-family:var(--ff);font-size:16px;font-weight:800}
+.oc-winner-sub{font-size:12.5px;opacity:.8;margin-top:3px}
+.oc-scores-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.oc-score-card{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.oc-score-card.winner-card{border-color:#2D1B69;box-shadow:0 0 0 3px rgba(45,27,105,.1)}
+.oc-score-num{font-family:var(--ff);font-size:28px;font-weight:800;color:#2D1B69}
+.oc-score-label{font-size:11px;color:var(--muted);margin-top:2px;font-weight:600}
+.oc-score-bar-bg{height:6px;background:var(--border);border-radius:6px;margin-top:8px;overflow:hidden}
+.oc-score-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#2D1B69,#06B6D4);transition:width 1s ease}
+.oc-breakdown{background:var(--white);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px}
+.oc-breakdown-title{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px}
+.oc-dim-row{display:grid;grid-template-columns:90px 1fr 1fr;gap:8px;align-items:center;margin-bottom:8px;font-size:12px}
+.oc-dim-label{color:var(--muted);font-weight:600}
+.oc-dim-bar-wrap{display:flex;align-items:center;gap:6px}
+.oc-dim-bar{flex:1;height:5px;background:var(--border);border-radius:5px;overflow:hidden}
+.oc-dim-fill-a{height:100%;background:#2D1B69;border-radius:5px;transition:width .8s ease}
+.oc-dim-fill-b{height:100%;background:#EA580C;border-radius:5px;transition:width .8s ease}
+.oc-dim-val{font-size:11px;font-weight:700;white-space:nowrap}
+.oc-reasoning{background:rgba(45,27,105,.04);border:1px solid rgba(45,27,105,.12);border-radius:10px;padding:12px 14px;font-size:12.5px;color:var(--ink);line-height:1.7}
+.oc-reasoning strong{color:#2D1B69}
+.oc-reset-btn{margin-top:10px;padding:8px 18px;background:none;border:1.5px solid var(--border);border-radius:8px;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--ffb);transition:.15s}
+.oc-reset-btn:hover{border-color:#2D1B69;color:#2D1B69}
+.oc-loading{text-align:center;padding:28px 20px;color:var(--muted);font-size:13px}
+.oc-spin{display:inline-block;width:20px;height:20px;border:2px solid rgba(45,27,105,.2);border-top-color:#2D1B69;border-radius:50%;animation:spin .7s linear infinite;margin-bottom:8px}
+@media(max-width:600px){.oc-grid{grid-template-columns:1fr}.oc-scores-row{grid-template-columns:1fr 1fr}.oc-dim-row{grid-template-columns:80px 1fr 1fr;font-size:11px}}
+
 /* PROFILE */
 .pw{display:grid;grid-template-columns:290px 1fr;gap:18px;align-items:start}
 .pl{display:flex;flex-direction:column;gap:12px;position:sticky;top:70px}
@@ -695,14 +745,154 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       </style>
       
     </div>
-    <div class="page-section" id="page-salary"><div class="salary-cards">
-  <div class="sal-card"><div class="sal-role-title">Software Engineer</div><div class="sal-city">Bangalore / Hyderabad</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:85%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;12-22 LPA</span><span class="sal-hike-badge">+25% hike</span></div></div>
-  <div class="sal-card"><div class="sal-role-title">Data Scientist</div><div class="sal-city">All India</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:80%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;10-20 LPA</span><span class="sal-hike-badge">+30% hike</span></div></div>
-  <div class="sal-card"><div class="sal-role-title">AI / ML Engineer</div><div class="sal-city">Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:95%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;15-35 LPA</span><span class="sal-hike-badge">+40% hike</span></div></div>
-  <div class="sal-card"><div class="sal-role-title">DevOps Engineer</div><div class="sal-city">Pune / Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:82%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;8-22 LPA</span><span class="sal-hike-badge">+20% hike</span></div></div>
-  <div class="sal-card"><div class="sal-role-title">Product Manager</div><div class="sal-city">Mumbai / Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:78%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;18-40 LPA</span><span class="sal-hike-badge">+28% hike</span></div></div>
-  <div class="sal-card"><div class="sal-role-title">UI/UX Designer</div><div class="sal-city">All India</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:65%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;6-16 LPA</span><span class="sal-hike-badge">+18% hike</span></div></div>
-</div></div>
+    <!-- ✅ FIX #16: Salary section with tabs — Benchmarks + Compare Offers -->
+    <div class="page-section" id="page-salary">
+
+      <!-- Tab bar -->
+      <div class="sal-tab-bar">
+        <button class="sal-tab active" id="sal-tab-bench" onclick="salSwitchTab('bench')">📊 Salary Benchmarks</button>
+        <button class="sal-tab" id="sal-tab-compare" onclick="salSwitchTab('compare')">⚖️ Compare Two Offers</button>
+      </div>
+
+      <!-- Tab 1: Existing salary benchmark cards (unchanged) -->
+      <div id="sal-panel-bench">
+        <div class="salary-cards">
+          <div class="sal-card"><div class="sal-role-title">Software Engineer</div><div class="sal-city">Bangalore / Hyderabad</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:85%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;12-22 LPA</span><span class="sal-hike-badge">+25% hike</span></div></div>
+          <div class="sal-card"><div class="sal-role-title">Data Scientist</div><div class="sal-city">All India</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:80%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;10-20 LPA</span><span class="sal-hike-badge">+30% hike</span></div></div>
+          <div class="sal-card"><div class="sal-role-title">AI / ML Engineer</div><div class="sal-city">Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:95%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;15-35 LPA</span><span class="sal-hike-badge">+40% hike</span></div></div>
+          <div class="sal-card"><div class="sal-role-title">DevOps Engineer</div><div class="sal-city">Pune / Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:82%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;8-22 LPA</span><span class="sal-hike-badge">+20% hike</span></div></div>
+          <div class="sal-card"><div class="sal-role-title">Product Manager</div><div class="sal-city">Mumbai / Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:78%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;18-40 LPA</span><span class="sal-hike-badge">+28% hike</span></div></div>
+          <div class="sal-card"><div class="sal-role-title">UI/UX Designer</div><div class="sal-city">All India</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:65%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;6-16 LPA</span><span class="sal-hike-badge">+18% hike</span></div></div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Offer Comparison Widget -->
+      <div id="sal-panel-compare" style="display:none">
+        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">Fill in the details for both offers. Bexi AI will score each one across 5 dimensions and tell you which to pick.</p>
+
+        <!-- Two-column input form -->
+        <div class="oc-grid">
+          <!-- Job A -->
+          <div class="oc-col">
+            <div class="oc-col-head">
+              <span class="oc-badge a">A</span> Offer A
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">Company</div>
+              <input class="oc-input" id="oc-a-company" type="text" placeholder="e.g. Razorpay"/>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">Role</div>
+              <input class="oc-input" id="oc-a-role" type="text" placeholder="e.g. SDE-2"/>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">Total CTC (LPA)</div>
+              <input class="oc-input" id="oc-a-ctc" type="number" placeholder="e.g. 22" min="1" max="500"/>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">City</div>
+              <select class="oc-select" id="oc-a-city">
+                <option value="">Select city</option>
+                <option>Bangalore</option><option>Hyderabad</option><option>Mumbai</option>
+                <option>Pune</option><option>Delhi/NCR</option><option>Chennai</option>
+                <option>Remote</option><option>Other</option>
+              </select>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">WFH days/week</div>
+              <select class="oc-select" id="oc-a-wfh">
+                <option value="0">0 — Full office</option>
+                <option value="2">2 — Hybrid</option>
+                <option value="3">3 — Mostly remote</option>
+                <option value="5">5 — Fully remote</option>
+              </select>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">Growth potential</div>
+              <select class="oc-select" id="oc-a-growth">
+                <option value="3">Average</option>
+                <option value="4">Good</option>
+                <option value="5">Excellent</option>
+                <option value="2">Limited</option>
+              </select>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">ESOPs / equity</div>
+              <select class="oc-select" id="oc-a-esops">
+                <option value="none">None</option>
+                <option value="small">Small grant (&lt;₹10L)</option>
+                <option value="medium">Medium (₹10L–₹50L)</option>
+                <option value="large">Large (&gt;₹50L)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Job B -->
+          <div class="oc-col">
+            <div class="oc-col-head">
+              <span class="oc-badge b">B</span> Offer B
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">Company</div>
+              <input class="oc-input" id="oc-b-company" type="text" placeholder="e.g. Zepto"/>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">Role</div>
+              <input class="oc-input" id="oc-b-role" type="text" placeholder="e.g. SDE-2"/>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">Total CTC (LPA)</div>
+              <input class="oc-input" id="oc-b-ctc" type="number" placeholder="e.g. 26" min="1" max="500"/>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">City</div>
+              <select class="oc-select" id="oc-b-city">
+                <option value="">Select city</option>
+                <option>Bangalore</option><option>Hyderabad</option><option>Mumbai</option>
+                <option>Pune</option><option>Delhi/NCR</option><option>Chennai</option>
+                <option>Remote</option><option>Other</option>
+              </select>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">WFH days/week</div>
+              <select class="oc-select" id="oc-b-wfh">
+                <option value="0">0 — Full office</option>
+                <option value="2">2 — Hybrid</option>
+                <option value="3">3 — Mostly remote</option>
+                <option value="5">5 — Fully remote</option>
+              </select>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">Growth potential</div>
+              <select class="oc-select" id="oc-b-growth">
+                <option value="3">Average</option>
+                <option value="4">Good</option>
+                <option value="5">Excellent</option>
+                <option value="2">Limited</option>
+              </select>
+            </div>
+            <div class="oc-field">
+              <div class="oc-label">ESOPs / equity</div>
+              <select class="oc-select" id="oc-b-esops">
+                <option value="none">None</option>
+                <option value="small">Small grant (&lt;₹10L)</option>
+                <option value="medium">Medium (₹10L–₹50L)</option>
+                <option value="large">Large (&gt;₹50L)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compare button -->
+        <button class="oc-compare-btn" id="oc-compare-btn" onclick="ocCompare()">
+          <span id="oc-btn-text">⚖️ Compare with Bexi AI</span>
+        </button>
+
+        <!-- Result area -->
+        <div class="oc-result" id="oc-result"></div>
+      </div>
+
+    </div>
     <div class="page-section" id="page-network"><div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
   <input type="text" id="dash-mentor-search" placeholder="Search mentors..." oninput="dashFilterMentors()" style="flex:1;padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:var(--ffb);outline:none;color:var(--ink)"/>
   <a href="mentors.html" target="_blank" style="background:#2D1B69;color:#fff;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap">Full Directory &#8599;</a>
@@ -1891,6 +2081,289 @@ init();
     </div>
   </div>
 </div>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   FIX #16 — OFFER COMPARISON TOOL
+   ✅ Tab switching: Benchmarks ↔ Compare Two Offers
+   ✅ Two-column form: company, role, CTC, city, WFH, growth, ESOPs
+   ✅ Claude API scores each offer across 5 dimensions
+   ✅ Winner banner + side-by-side score cards + breakdown bars
+   ✅ Full reasoning paragraph from Bexi AI
+   ✅ Rule-based fallback if API unavailable
+═══════════════════════════════════════════════════════ */
+
+/* Switch between Benchmarks and Compare tabs */
+function salSwitchTab(tab) {
+  var bench   = document.getElementById('sal-panel-bench');
+  var compare = document.getElementById('sal-panel-compare');
+  var tBench  = document.getElementById('sal-tab-bench');
+  var tComp   = document.getElementById('sal-tab-compare');
+  if (!bench || !compare) return;
+
+  if (tab === 'bench') {
+    bench.style.display   = '';
+    compare.style.display = 'none';
+    tBench.classList.add('active');
+    tComp.classList.remove('active');
+  } else {
+    bench.style.display   = 'none';
+    compare.style.display = '';
+    tBench.classList.remove('active');
+    tComp.classList.add('active');
+  }
+}
+
+/* ESOP numeric value mapping */
+var OC_ESOP_MAP = { none: 0, small: 1, medium: 2, large: 3 };
+
+/* Read form values for one offer */
+function ocReadOffer(prefix) {
+  return {
+    company:  (document.getElementById('oc-' + prefix + '-company') || {}).value || '',
+    role:     (document.getElementById('oc-' + prefix + '-role')    || {}).value || '',
+    ctc:      parseFloat((document.getElementById('oc-' + prefix + '-ctc') || {}).value) || 0,
+    city:     (document.getElementById('oc-' + prefix + '-city')    || {}).value || '',
+    wfh:      parseInt((document.getElementById('oc-' + prefix + '-wfh')    || {}).value) || 0,
+    growth:   parseInt((document.getElementById('oc-' + prefix + '-growth') || {}).value) || 3,
+    esops:    (document.getElementById('oc-' + prefix + '-esops')   || {}).value || 'none'
+  };
+}
+
+/* Main compare handler */
+async function ocCompare() {
+  var a = ocReadOffer('a');
+  var b = ocReadOffer('b');
+
+  /* Validate minimums */
+  if (!a.company || !b.company) { alert('Please enter a company name for both offers.'); return; }
+  if (!a.ctc || !b.ctc)         { alert('Please enter the CTC for both offers.'); return; }
+
+  var btn    = document.getElementById('oc-compare-btn');
+  var btnTxt = document.getElementById('oc-btn-text');
+  var result = document.getElementById('oc-result');
+
+  btn.disabled  = true;
+  btnTxt.innerHTML = '<div class="oc-spin"></div> Bexi is analysing...';
+  result.classList.remove('show');
+  result.innerHTML = '';
+
+  var comparison = null;
+
+  try {
+    comparison = await ocCallClaude(a, b);
+  } catch(e) {
+    console.info('[OC] API unavailable, using fallback:', e.message);
+    comparison = ocFallback(a, b);
+  }
+
+  ocRenderResult(comparison, a, b);
+
+  btn.disabled  = false;
+  btnTxt.innerHTML = '⚖️ Compare Again';
+}
+
+/* Call Claude API for comparison */
+async function ocCallClaude(a, b) {
+  var systemPrompt = [
+    'You are Bexi, an expert career advisor for the Indian job market.',
+    'Compare two job offers and return ONLY valid JSON with this exact structure:',
+    '{',
+    '  "winner": "A" or "B",',
+    '  "winner_label": "short reason e.g. Better total comp + growth",',
+    '  "scores": {',
+    '    "A": { "total": 0-100, "compensation": 0-100, "growth": 0-100, "worklife": 0-100, "stability": 0-100, "equity": 0-100 },',
+    '    "B": { "total": 0-100, "compensation": 0-100, "growth": 0-100, "worklife": 0-100, "stability": 0-100, "equity": 0-100 }',
+    '  },',
+    '  "reasoning": "3-4 sentence explanation of the recommendation considering Indian job market factors like city cost of living, company stage, equity value, career trajectory. Use bold for key figures.",',
+    '  "watch_out": "One risk or caveat to consider for the winning offer"',
+    '}',
+    'Consider: Bangalore/Mumbai have higher cost of living. Remote adds ~10-15% effective value. ESOPs at late-stage startups are more valuable. Growth trajectory matters more than base for early career.'
+  ].join(' ');
+
+  var userMsg = 'Compare these two job offers:\n\n' +
+    'OFFER A: ' + a.company + ' | ' + (a.role || 'Not specified') + ' | ₹' + a.ctc + ' LPA | ' + (a.city || 'City not specified') +
+    ' | WFH: ' + a.wfh + ' days/week | Growth: ' + a.growth + '/5 | ESOPs: ' + a.esops + '\n\n' +
+    'OFFER B: ' + b.company + ' | ' + (b.role || 'Not specified') + ' | ₹' + b.ctc + ' LPA | ' + (b.city || 'City not specified') +
+    ' | WFH: ' + b.wfh + ' days/week | Growth: ' + b.growth + '/5 | ESOPs: ' + b.esops + '\n\n' +
+    'Return only JSON.';
+
+  var res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMsg }]
+    })
+  });
+
+  if (!res.ok) throw new Error('API ' + res.status);
+  var data = await res.json();
+  var text = (data.content || []).map(function(b){ return b.text || ''; }).join('').trim();
+  var clean = text.replace(/```json|```/g,'').trim();
+  return JSON.parse(clean);
+}
+
+/* Rule-based fallback scoring */
+function ocFallback(a, b) {
+  function score(o) {
+    var comp     = Math.min(100, Math.round((o.ctc / Math.max(a.ctc, b.ctc)) * 60));
+    var growth   = Math.round(o.growth * 14);
+    var worklife = Math.round(o.wfh * 8 + 20);
+    var equity   = OC_ESOP_MAP[o.esops] * 10;
+    /* City stability proxy: Bangalore/Hyderabad = known tech hubs */
+    var stability = (o.city === 'Bangalore' || o.city === 'Hyderabad') ? 70 : 60;
+    var total = Math.round(comp * 0.35 + growth * 0.25 + worklife * 0.15 + stability * 0.15 + equity * 0.10);
+    return { total: Math.min(100, total), compensation: comp, growth: growth, worklife: worklife, stability: stability, equity: Math.min(100, equity + 40) };
+  }
+
+  var sa = score(a);
+  var sb = score(b);
+  var winner = sa.total >= sb.total ? 'A' : 'B';
+  var wOffer = winner === 'A' ? a : b;
+  var diff   = Math.abs(a.ctc - b.ctc).toFixed(1);
+
+  return {
+    winner: winner,
+    winner_label: sa.total >= sb.total ? 'Higher overall score' : 'Better overall package',
+    scores: { A: sa, B: sb },
+    reasoning: (winner === 'A' ? a.company : b.company) + ' scores higher overall. ' +
+      (diff > 0 ? 'The CTC difference of ₹' + diff + ' LPA is significant over a 2-year horizon. ' : '') +
+      'Consider the WFH policy — remote days add effective value by saving commute time and costs. ' +
+      (wOffer.esops !== 'none' ? 'The equity component could add meaningful upside if the company grows.' : 'Neither offer has significant equity — negotiate for ESOPs if possible.'),
+    watch_out: 'Verify the variable component vs fixed split — high variable CTC can reduce predictable monthly income.'
+  };
+}
+
+/* Render the comparison result */
+function ocRenderResult(c, a, b) {
+  var result  = document.getElementById('oc-result');
+  if (!result) return;
+
+  var sa = c.scores.A;
+  var sb = c.scores.B;
+  var winOffer  = c.winner === 'A' ? a : b;
+  var loseOffer = c.winner === 'A' ? b : a;
+
+  /* Dimensions to show in breakdown */
+  var dims = [
+    { key: 'compensation', label: 'Compensation' },
+    { key: 'growth',       label: 'Growth'        },
+    { key: 'worklife',     label: 'Work-life'      },
+    { key: 'stability',    label: 'Stability'      },
+    { key: 'equity',       label: 'Equity'         }
+  ];
+
+  var dimsHtml = dims.map(function(d) {
+    var vA = sa[d.key] || 0;
+    var vB = sb[d.key] || 0;
+    return '<div class="oc-dim-row">' +
+      '<div class="oc-dim-label">' + d.label + '</div>' +
+      '<div class="oc-dim-bar-wrap">' +
+        '<div class="oc-dim-bar"><div class="oc-dim-fill-a" style="width:' + vA + '%"></div></div>' +
+        '<span class="oc-dim-val" style="color:#2D1B69">' + vA + '</span>' +
+      '</div>' +
+      '<div class="oc-dim-bar-wrap">' +
+        '<div class="oc-dim-bar"><div class="oc-dim-fill-b" style="width:' + vB + '%"></div></div>' +
+        '<span class="oc-dim-val" style="color:#EA580C">' + vB + '</span>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  /* Escape helper */
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  /* Format reasoning with bold support */
+  function fmt(s) {
+    return esc(s).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  }
+
+  result.innerHTML =
+    /* Winner banner */
+    '<div class="oc-winner-banner">' +
+      '<div class="oc-winner-icon">🏆</div>' +
+      '<div>' +
+        '<div class="oc-winner-title">Go with Offer ' + c.winner + ': ' + esc(winOffer.company) + '</div>' +
+        '<div class="oc-winner-sub">' + esc(c.winner_label || '') + '</div>' +
+      '</div>' +
+    '</div>' +
+
+    /* Score cards */
+    '<div class="oc-scores-row">' +
+      '<div class="oc-score-card' + (c.winner === 'A' ? ' winner-card' : '') + '">' +
+        '<div style="font-size:11px;font-weight:700;margin-bottom:6px"><span class="oc-badge a" style="margin-right:5px">A</span>' + esc(a.company) + '</div>' +
+        '<div class="oc-score-num">' + sa.total + '</div>' +
+        '<div class="oc-score-label">Overall Score</div>' +
+        '<div class="oc-score-bar-bg"><div class="oc-score-bar-fill" style="width:' + sa.total + '%"></div></div>' +
+        (c.winner === 'A' ? '<div style="margin-top:8px;font-size:11px;font-weight:700;color:#15803D">✓ Recommended</div>' : '') +
+      '</div>' +
+      '<div class="oc-score-card' + (c.winner === 'B' ? ' winner-card' : '') + '">' +
+        '<div style="font-size:11px;font-weight:700;margin-bottom:6px"><span class="oc-badge b" style="margin-right:5px">B</span>' + esc(b.company) + '</div>' +
+        '<div class="oc-score-num" style="color:#EA580C">' + sb.total + '</div>' +
+        '<div class="oc-score-label">Overall Score</div>' +
+        '<div class="oc-score-bar-bg"><div class="oc-score-bar-fill" style="background:linear-gradient(90deg,#EA580C,#F59E0B);width:' + sb.total + '%"></div></div>' +
+        (c.winner === 'B' ? '<div style="margin-top:8px;font-size:11px;font-weight:700;color:#15803D">✓ Recommended</div>' : '') +
+      '</div>' +
+    '</div>' +
+
+    /* Dimension breakdown */
+    '<div class="oc-breakdown">' +
+      '<div class="oc-breakdown-title">Score Breakdown</div>' +
+      '<div class="oc-dim-row" style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px">' +
+        '<div></div>' +
+        '<div style="color:#2D1B69">&#9632; ' + esc(a.company) + '</div>' +
+        '<div style="color:#EA580C">&#9632; ' + esc(b.company) + '</div>' +
+      '</div>' +
+      dimsHtml +
+    '</div>' +
+
+    /* Reasoning */
+    '<div style="margin-bottom:10px">' +
+      '<div style="font-size:11.5px;font-weight:700;color:var(--ink);margin-bottom:7px;text-transform:uppercase;letter-spacing:.4px">🤖 Bexi\'s Reasoning</div>' +
+      '<div class="oc-reasoning">' + fmt(c.reasoning || '') + '</div>' +
+    '</div>' +
+
+    /* Watch out */
+    (c.watch_out ?
+      '<div style="background:#FFF7ED;border:1px solid #FED7AA;border-radius:10px;padding:10px 13px;font-size:12.5px;color:#92400E;margin-bottom:12px">' +
+        '<strong>⚠ Watch out:</strong> ' + fmt(c.watch_out) +
+      '</div>' : '') +
+
+    /* Reset */
+    '<button class="oc-reset-btn" onclick="ocReset()">↩ Compare different offers</button>';
+
+  result.classList.add('show');
+  /* Smooth scroll to result */
+  setTimeout(function(){ result.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 100);
+}
+
+/* Reset the comparison form */
+function ocReset() {
+  var result = document.getElementById('oc-result');
+  if (result) { result.classList.remove('show'); result.innerHTML = ''; }
+  var btn    = document.getElementById('oc-compare-btn');
+  var btnTxt = document.getElementById('oc-btn-text');
+  if (btn)    btn.disabled = false;
+  if (btnTxt) btnTxt.innerHTML = '⚖️ Compare with Bexi AI';
+  /* Clear inputs */
+  ['a','b'].forEach(function(p){
+    ['company','role','ctc'].forEach(function(f){
+      var el = document.getElementById('oc-' + p + '-' + f);
+      if (el) el.value = '';
+    });
+    ['city','wfh','growth','esops'].forEach(function(f){
+      var el = document.getElementById('oc-' + p + '-' + f);
+      if (el) el.selectedIndex = 0;
+    });
+  });
+}
+</script>
 
 <script src="bexi.js"></script>
 <script src="pwa-install.js"></script>
