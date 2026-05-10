@@ -202,7 +202,38 @@ footer{background:#0D0D1A;padding:56px 5% 32px;border-top:1px solid rgba(255,255
 .btn-intro:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
 .btn-book{padding:8px 14px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.15s}
 .btn-book:hover{background:var(--brand2)}
-/* FORM */
+
+/* ✅ FIX #24+#25: TABS + REVIEW SNIPPET + GROUP SESSIONS */
+.dir-tab-bar{display:flex;gap:6px;margin-bottom:20px;border-bottom:2px solid var(--off2);padding-bottom:0}
+.dir-tab{padding:9px 18px;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;font-family:var(--ffb);border-bottom:2px solid transparent;margin-bottom:-2px;transition:.15s}
+.dir-tab:hover{color:var(--brand)}
+.dir-tab.active{color:var(--brand);border-bottom-color:var(--brand)}
+/* Review snippet on card */
+.mc-review{border-top:1px solid var(--off2);padding-top:9px;margin-top:2px}
+.mc-review-quote{font-size:12px;color:var(--muted);line-height:1.55;font-style:italic;margin-bottom:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.mc-review-author{font-size:11px;color:var(--subtle);font-weight:600}
+/* Group sessions panel */
+.gs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.gs-card{background:#fff;border:1.5px solid var(--border);border-radius:14px;padding:18px;transition:.2s}
+.gs-card:hover{border-color:var(--brand3);box-shadow:0 6px 24px rgba(45,27,105,.1);transform:translateY(-2px)}
+.gs-mentor-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.gs-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.gs-mentor-name{font-size:13px;font-weight:700;color:var(--ink)}
+.gs-mentor-role{font-size:11.5px;color:var(--muted)}
+.gs-title{font-family:var(--ff);font-size:14.5px;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.35}
+.gs-desc{font-size:12.5px;color:var(--muted);line-height:1.6;margin-bottom:12px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.gs-meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.gs-meta-chip{display:flex;align-items:center;gap:4px;font-size:11.5px;color:var(--muted);background:var(--off2);border-radius:6px;padding:3px 8px}
+.gs-footer{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.gs-price{font-family:var(--ff);font-size:14px;font-weight:800;color:var(--brand)}
+.gs-price-free{font-size:12px;font-weight:700;color:var(--green);background:#ECFDF5;border-radius:6px;padding:2px 8px}
+.gs-seats{font-size:11.5px;color:var(--muted)}
+.gs-register-btn{padding:8px 16px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.gs-register-btn:hover{background:var(--brand2)}
+.gs-register-btn.full{background:var(--off2);color:var(--muted);cursor:not-allowed}
+.gs-empty{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--muted)}
+.gs-empty-icon{font-size:44px;margin-bottom:14px}
+.gs-empty-title{font-size:17px;font-weight:700;color:var(--ink2);margin-bottom:8px}
 .register-layout{display:grid;grid-template-columns:1fr 380px;gap:28px;align-items:start}
 .form-card{background:#fff;border:1.5px solid var(--border);border-radius:20px;padding:32px}
 .form-card-title{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--ink);margin-bottom:4px}
@@ -417,6 +448,15 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
 <!-- DIRECTORY -->
 <div id="section-directory">
   <div class="page-container">
+
+    <!-- ✅ FIX #24: Tab bar — 1-on-1 Mentors vs Live Sessions -->
+    <div class="dir-tab-bar">
+      <button class="dir-tab active" id="dir-tab-mentors" onclick="dirSwitchTab('mentors')">🤝 1-on-1 Mentors</button>
+      <button class="dir-tab" id="dir-tab-sessions" onclick="dirSwitchTab('sessions')">🎥 Live Group Sessions</button>
+    </div>
+
+    <!-- Panel: 1-on-1 Mentors -->
+    <div id="dir-panel-mentors">
     <div class="search-bar">
       <div class="search-wrap">
         <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -441,6 +481,13 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
         <option value="free">Free Only</option>
         <option value="paid">Paid Only</option>
       </select>
+      <!-- ✅ FIX #25: Rating filter -->
+      <select class="filter-sel" id="filter-rating" onchange="filterMentors()">
+        <option value="">Any Rating</option>
+        <option value="4">4+ ★</option>
+        <option value="4.5">4.5+ ★</option>
+        <option value="4.8">4.8+ ★</option>
+      </select>
     </div>
     <div id="mentors-count" style="font-size:13px;color:var(--muted);margin-bottom:14px;font-weight:500"></div>
     <div class="mentors-grid" id="mentors-grid">
@@ -449,6 +496,23 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
         <div style="font-size:15px;font-weight:600;color:var(--ink2)">Loading mentors...</div>
       </div>
     </div>
+  </div>
+    </div><!-- /dir-panel-mentors -->
+
+    <!-- ✅ FIX #24: Group Sessions Panel -->
+    <div id="dir-panel-sessions" style="display:none">
+      <p style="font-size:13.5px;color:var(--muted);margin-bottom:20px;line-height:1.6">
+        Join live group sessions led by verified mentors. Limited seats — small groups for better interaction.
+      </p>
+      <div class="gs-grid" id="gs-grid">
+        <!-- filled by renderGroupSessions() -->
+        <div class="gs-empty">
+          <div class="gs-empty-icon">⏳</div>
+          <div class="gs-empty-title">Loading sessions...</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -754,16 +818,16 @@ function validateLinkedIn(el){var err=document.getElementById('li-err');if(!err)
 var allMentors=[];
 
 var SEED_MENTORS = [
-  {id:'s1',name:'Priya Sharma',role:'Senior Software Engineer',company:'Google',city:'Hyderabad',field:'Engineering',experience:'5-8 years',skills:'System Design,Python,Distributed Systems,DSA',bio:'Ex-Amazon SDE II now at Google. I help engineers crack FAANG interviews and build scalable systems.',rate:'500',rating:4.9,sessions_count:87},
-  {id:'s2',name:'Rahul Mehta',role:'Product Manager',company:'Swiggy',city:'Bangalore',field:'Product',experience:'4-6 years',skills:'Product Strategy,SQL,User Research,Roadmapping',bio:'PM at Swiggy managing growth & supply chain products. Helped 40+ aspirants break into product roles.',rate:'600',rating:4.8,sessions_count:63},
-  {id:'s3',name:'Ananya Singh',role:'Data Scientist',company:'Razorpay',city:'Bangalore',field:'Data Science',experience:'3-5 years',skills:'Machine Learning,Python,Statistics,SQL',bio:'Building ML models at Razorpay for fraud detection. Love helping freshers navigate the DS landscape.',rate:'400',rating:4.7,sessions_count:52},
-  {id:'s4',name:'Vikram Nair',role:'Engineering Manager',company:'CRED',city:'Bangalore',field:'Engineering',experience:'8+ years',skills:'Leadership,System Design,Java,Career Growth',bio:'EM at CRED leading a team of 12. Passionate about mentoring engineers into leadership roles.',rate:'800',rating:4.9,sessions_count:41},
-  {id:'s5',name:'Sneha Patel',role:'UX Designer',company:'Zepto',city:'Mumbai',field:'Design',experience:'3-5 years',skills:'Figma,User Research,Design Systems,Prototyping',bio:'Product designer at Zepto focused on consumer apps. Portfolio reviews and design career guidance.',rate:'300',rating:4.6,sessions_count:38},
-  {id:'s6',name:'Arjun Kapoor',role:'DevOps Engineer',company:'Infosys',city:'Pune',field:'DevOps',experience:'5-7 years',skills:'Kubernetes,AWS,Terraform,CI/CD',bio:'Cloud-native enthusiast helping engineers transition into DevOps and SRE roles.',rate:'450',rating:4.7,sessions_count:29},
-  {id:'s7',name:'Deepa Krishnan',role:'Data Engineer',company:'PhonePe',city:'Bangalore',field:'Data Engineering',experience:'4-6 years',skills:'Apache Spark,Kafka,dbt,Airflow',bio:'Building real-time data pipelines at PhonePe. Guide freshers and mid-career engineers into modern data stack.',rate:'500',rating:4.8,sessions_count:44},
-  {id:'s8',name:'Rohan Gupta',role:'Startup Founder',company:'YC Backed',city:'Bangalore',field:'Entrepreneurship',experience:'6+ years',skills:'Fundraising,Product,Go-to-market,Team Building',bio:'2x founder, 1 exit. YC W22 alumnus. I help aspiring founders validate ideas and raise their first round.',rate:'1000',rating:5.0,sessions_count:22},
-  {id:'s9',name:'Kavya Reddy',role:'HR & Talent Leader',company:'Flipkart',city:'Bangalore',field:'HR',experience:'5-8 years',skills:'Resume Review,Interview Coaching,Salary Negotiation,LinkedIn',bio:'Talent partner at Flipkart. I know exactly what recruiters look for. Let me review your resume and prep you.',rate:'free',rating:4.8,sessions_count:116},
-  {id:'s10',name:'Saurabh Joshi',role:'Backend Engineer',company:'Meesho',city:'Bangalore',field:'Engineering',experience:'3-5 years',skills:'Go,gRPC,PostgreSQL,System Design',bio:'Backend engineer scaling Meesho to 100M users. DSA coaching and backend system design sessions.',rate:'350',rating:4.6,sessions_count:57}
+  {id:'s1',name:'Priya Sharma',role:'Senior Software Engineer',company:'Google',city:'Hyderabad',field:'Engineering',experience:'5-8 years',skills:'System Design,Python,Distributed Systems,DSA',bio:'Ex-Amazon SDE II now at Google. I help engineers crack FAANG interviews and build scalable systems.',rate:'500',rating:4.9,sessions_count:87,review_quote:'Priya\'s system design session was exactly what I needed — got my Google offer 3 weeks later.',review_author:'Aditya R., SDE-2 offer at Google'},
+  {id:'s2',name:'Rahul Mehta',role:'Product Manager',company:'Swiggy',city:'Bangalore',field:'Product',experience:'4-6 years',skills:'Product Strategy,SQL,User Research,Roadmapping',bio:'PM at Swiggy managing growth & supply chain products. Helped 40+ aspirants break into product roles.',rate:'600',rating:4.8,sessions_count:63,review_quote:'Rahul reviewed my case study and gave super actionable feedback. Cleared my PM interview in 2 weeks.',review_author:'Sneha K., APM at a Series B startup'},
+  {id:'s3',name:'Ananya Singh',role:'Data Scientist',company:'Razorpay',city:'Bangalore',field:'Data Science',experience:'3-5 years',skills:'Machine Learning,Python,Statistics,SQL',bio:'Building ML models at Razorpay for fraud detection. Love helping freshers navigate the DS landscape.',rate:'400',rating:4.7,sessions_count:52,review_quote:'Broke down ML concepts in a way no course ever did. Highly recommend for anyone entering data science.',review_author:'Mehul V., Data Analyst at Flipkart'},
+  {id:'s4',name:'Vikram Nair',role:'Engineering Manager',company:'CRED',city:'Bangalore',field:'Engineering',experience:'8+ years',skills:'Leadership,System Design,Java,Career Growth',bio:'EM at CRED leading a team of 12. Passionate about mentoring engineers into leadership roles.',rate:'800',rating:4.9,sessions_count:41,review_quote:'Vikram helped me navigate my first EM transition. Completely changed how I think about leadership.',review_author:'Rohan S., Engineering Lead at a fintech'},
+  {id:'s5',name:'Sneha Patel',role:'UX Designer',company:'Zepto',city:'Mumbai',field:'Design',experience:'3-5 years',skills:'Figma,User Research,Design Systems,Prototyping',bio:'Product designer at Zepto focused on consumer apps. Portfolio reviews and design career guidance.',rate:'300',rating:4.6,sessions_count:38,review_quote:'My portfolio went from generic to genuinely impressive after Sneha\'s review. Got 3 interview calls.',review_author:'Priti M., UI Designer at a startup'},
+  {id:'s6',name:'Arjun Kapoor',role:'DevOps Engineer',company:'Infosys',city:'Pune',field:'DevOps',experience:'5-7 years',skills:'Kubernetes,AWS,Terraform,CI/CD',bio:'Cloud-native enthusiast helping engineers transition into DevOps and SRE roles.',rate:'450',rating:4.7,sessions_count:29,review_quote:'Arjun gave me a clear 3-month plan to transition into DevOps. His roadmap was spot on.',review_author:'Karan P., DevOps Engineer at a mid-sized firm'},
+  {id:'s7',name:'Deepa Krishnan',role:'Data Engineer',company:'PhonePe',city:'Bangalore',field:'Data Engineering',experience:'4-6 years',skills:'Apache Spark,Kafka,dbt,Airflow',bio:'Building real-time data pipelines at PhonePe. Guide freshers and mid-career engineers into modern data stack.',rate:'500',rating:4.8,sessions_count:44,review_quote:'Deepa knows the modern data stack inside out. She helped me land my first data engineering role.',review_author:'Nikhil T., Data Engineer at a logistics startup'},
+  {id:'s8',name:'Rohan Gupta',role:'Startup Founder',company:'YC Backed',city:'Bangalore',field:'Entrepreneurship',experience:'6+ years',skills:'Fundraising,Product,Go-to-market,Team Building',bio:'2x founder, 1 exit. YC W22 alumnus. I help aspiring founders validate ideas and raise their first round.',rate:'1000',rating:5.0,sessions_count:22,review_quote:'Rohan poked holes in my pitch and made it 10x better. Raised my pre-seed 2 months after our session.',review_author:'Ankit S., Founder at an edtech startup'},
+  {id:'s9',name:'Kavya Reddy',role:'HR & Talent Leader',company:'Flipkart',city:'Bangalore',field:'HR',experience:'5-8 years',skills:'Resume Review,Interview Coaching,Salary Negotiation,LinkedIn',bio:'Talent partner at Flipkart. I know exactly what recruiters look for. Let me review your resume and prep you.',rate:'free',rating:4.8,sessions_count:116,review_quote:'Kavya rewrote my resume headline and summary. Got my first call from Google the next week.',review_author:'Divya N., SDE-1 at a product company'},
+  {id:'s10',name:'Saurabh Joshi',role:'Backend Engineer',company:'Meesho',city:'Bangalore',field:'Engineering',experience:'3-5 years',skills:'Go,gRPC,PostgreSQL,System Design',bio:'Backend engineer scaling Meesho to 100M users. DSA coaching and backend system design sessions.',rate:'350',rating:4.6,sessions_count:57,review_quote:'Finally understood gRPC and microservices properly. Saurabh explains with real-world context.',review_author:'Rahul B., Backend developer at a fintech'}
 ];
 
 async function loadMentors(){
@@ -829,6 +893,8 @@ function renderMentors(mentors){
       +'</div></div>'
       +(tags?'<div class="mc-tags">'+tags+'</div>':'')
       +((m.bio||m.about)?'<div class="mc-bio">'+((m.bio||m.about)||'').substring(0,110)+'...</div>':'')
+      /* ✅ FIX #25: Review snippet */
+      +(m.review_quote ? '<div class="mc-review"><div class="mc-review-quote">"'+m.review_quote+'"</div><div class="mc-review-author">— '+(m.review_author||'Verified mentee')+'</div></div>' : '')
       +'<div class="mc-footer">'+priceHtml
       +'<div class="mc-btns">'+waBtn
       +'<button class="btn-intro" onclick="bxBook('+i+',0)" style="padding:7px 12px;background:var(--off2);color:var(--brand);border:1.5px solid var(--border2);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ffb);white-space:nowrap;transition:.15s">Free Intro</button>'
@@ -844,6 +910,8 @@ function filterMentors(){
   var exp=((document.getElementById('filter-exp')||{}).value||'').toLowerCase();
   var company=((document.getElementById('filter-company')||{}).value||'').toLowerCase();
   var price=((document.getElementById('filter-price')||{}).value||'');
+  /* ✅ FIX #25: Rating filter */
+  var minRating=parseFloat((document.getElementById('filter-rating')||{}).value||'0')||0;
   var filtered=allMentors.filter(function(m){
     var txt=((m.name||'')+' '+(m.role||'')+' '+(m.company||'')+' '+(m.skills||'')+' '+(m.field||'')+' '+(m.bio||m.about||'')).toLowerCase();
     if(q&&!txt.includes(q))return false;
@@ -853,9 +921,133 @@ function filterMentors(){
     var rateNum=getRateNum(m.rate||m.session_rate);
     if(price==='free'&&rateNum!==0)return false;
     if(price==='paid'&&rateNum===0)return false;
+    /* Rating filter */
+    var mRating=parseFloat(m.rating)||(4.5+Math.random()*0.4);
+    if(minRating&&mRating<minRating)return false;
     return true;
   });
   renderMentors(filtered);
+}
+
+/* ✅ FIX #24: Tab switching */
+function dirSwitchTab(tab) {
+  var panelMentors  = document.getElementById('dir-panel-mentors');
+  var panelSessions = document.getElementById('dir-panel-sessions');
+  var tabMentors    = document.getElementById('dir-tab-mentors');
+  var tabSessions   = document.getElementById('dir-tab-sessions');
+  if (!panelMentors || !panelSessions) return;
+  if (tab === 'mentors') {
+    panelMentors.style.display  = '';
+    panelSessions.style.display = 'none';
+    tabMentors.classList.add('active');
+    tabSessions.classList.remove('active');
+  } else {
+    panelMentors.style.display  = 'none';
+    panelSessions.style.display = '';
+    tabMentors.classList.remove('active');
+    tabSessions.classList.add('active');
+    renderGroupSessions();
+  }
+}
+
+/* ✅ FIX #24: Group sessions — seed data + Supabase fetch */
+var _gsLoaded = false;
+var GROUP_SESSIONS_SEED = [
+  { mentor_id:'s1', mentor_name:'Priya Sharma', mentor_role:'SDE @ Google', mentor_color:'#2D1B69',
+    title:'Crack FAANG System Design in 4 Weeks', description:'A structured group program covering distributed systems, HLD/LLD, CAP theorem, and mock design rounds with feedback.',
+    date:'Sat, 24 May · 10:00 AM', duration:'90 min', max_attendees:15, registered_count:11, price:'free',
+    tags:['System Design','FAANG','Backend'] },
+  { mentor_id:'s2', mentor_name:'Rahul Mehta', mentor_role:'PM @ Swiggy', mentor_color:'#4C2FAA',
+    title:'Breaking into Product Management — Live Q&A', description:'Open session for aspiring PMs. Bring your resume, questions, and case study drafts. Honest feedback guaranteed.',
+    date:'Sun, 25 May · 11:00 AM', duration:'60 min', max_attendees:20, registered_count:18, price:'free',
+    tags:['Product','Career Switch','Interviews'] },
+  { mentor_id:'s9', mentor_name:'Kavya Reddy', mentor_role:'HR @ Flipkart', mentor_color:'#0EA5E9',
+    title:'Resume & LinkedIn Review Workshop', description:'Group session where Kavya reviews 5 live resumes. Submit yours in advance for a chance to be selected.',
+    date:'Tue, 27 May · 7:00 PM', duration:'75 min', max_attendees:12, registered_count:7, price:'299',
+    tags:['Resume','LinkedIn','HR Tips'] },
+  { mentor_id:'s8', mentor_name:'Rohan Gupta', mentor_role:'YC Founder', mentor_color:'#10B981',
+    title:'How to Raise Your First Round — Founder AMA', description:'Everything you wanted to know about fundraising, investor conversations, and deck reviews. Intimate group of 10.',
+    date:'Thu, 29 May · 6:30 PM', duration:'90 min', max_attendees:10, registered_count:9, price:'499',
+    tags:['Startups','Fundraising','YC'] },
+  { mentor_id:'s3', mentor_name:'Ananya Singh', mentor_role:'Data Scientist @ Razorpay', mentor_color:'#F59E0B',
+    title:'ML Interview Prep: From Basics to Production', description:'Covering ML theory, feature engineering, model deployment, and actual interview questions from top companies.',
+    date:'Sat, 31 May · 3:00 PM', duration:'120 min', max_attendees:15, registered_count:6, price:'399',
+    tags:['ML','Data Science','Interviews'] },
+];
+
+function renderGroupSessions() {
+  if (_gsLoaded) return;
+  _gsLoaded = true;
+  var grid = document.getElementById('gs-grid');
+  if (!grid) return;
+
+  /* Try Supabase first, fall back to seed */
+  (function() {
+    try {
+      sb.from('group_sessions')
+        .select('*')
+        .gte('date', new Date().toISOString())
+        .order('date', { ascending: true })
+        .limit(20)
+        .then(function(res) {
+          var data = (res.data && res.data.length) ? res.data : GROUP_SESSIONS_SEED;
+          buildGsCards(grid, data);
+        }).catch(function(){ buildGsCards(grid, GROUP_SESSIONS_SEED); });
+    } catch(e) { buildGsCards(grid, GROUP_SESSIONS_SEED); }
+  })();
+}
+
+function buildGsCards(grid, sessions) {
+  if (!sessions || !sessions.length) {
+    grid.innerHTML = '<div class="gs-empty"><div class="gs-empty-icon">📅</div><div class="gs-empty-title">No upcoming sessions</div><p style="color:var(--muted);font-size:13px">Check back soon — mentors add new sessions every week.</p></div>';
+    return;
+  }
+  var colors=['#2D1B69','#4C2FAA','#0EA5E9','#10B981','#F59E0B','#EF4444','#8B5CF6'];
+  grid.innerHTML = sessions.map(function(s, i) {
+    var clr      = s.mentor_color || colors[i % colors.length];
+    var init     = (s.mentor_name||'M').substring(0,2).toUpperCase();
+    var isFull   = s.registered_count >= s.max_attendees;
+    var seatsLeft= Math.max(0, s.max_attendees - (s.registered_count||0));
+    var priceHtml= (!s.price || s.price === 'free' || s.price === '0')
+      ? '<span class="gs-price-free">Free</span>'
+      : '<span class="gs-price">₹' + s.price + '</span>';
+    var tags = (s.tags || []).map(function(t){ return '<span class="mc-tag" style="font-size:11px">' + t + '</span>'; }).join('');
+    return '<div class="gs-card">' +
+      '<div class="gs-mentor-row">' +
+        '<div class="gs-av" style="background:' + clr + '">' + init + '</div>' +
+        '<div><div class="gs-mentor-name">' + (s.mentor_name||'Mentor') + '</div><div class="gs-mentor-role">' + (s.mentor_role||'') + '</div></div>' +
+      '</div>' +
+      '<div class="gs-title">' + (s.title||'Group Session') + '</div>' +
+      '<div class="gs-desc">' + (s.description||'') + '</div>' +
+      (tags ? '<div class="mc-tags" style="margin-bottom:10px">' + tags + '</div>' : '') +
+      '<div class="gs-meta-row">' +
+        '<span class="gs-meta-chip">📅 ' + (s.date||'TBD') + '</span>' +
+        '<span class="gs-meta-chip">⏱ ' + (s.duration||'60 min') + '</span>' +
+        '<span class="gs-meta-chip">👥 ' + (s.max_attendees||10) + ' max</span>' +
+      '</div>' +
+      '<div class="gs-footer">' +
+        priceHtml +
+        '<span class="gs-seats">' + (isFull ? '🔴 Full' : seatsLeft + ' seats left') + '</span>' +
+        '<button class="gs-register-btn' + (isFull?' full':'') + '" onclick="gsRegister(this,\'' + (s.id||i) + '\',' + isFull + ')">' +
+          (isFull ? 'Full' : 'Register →') +
+        '</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function gsRegister(btn, sessionId, isFull) {
+  if (isFull) return;
+  sb.auth.getSession().then(function(r) {
+    if (!r.data || !r.data.session) {
+      if (typeof openModal === 'function') openModal('signup');
+      else window.location.href = 'index.html#signup';
+      return;
+    }
+    btn.textContent = '✓ Registered!';
+    btn.classList.add('full');
+    /* In production: INSERT into session_registrations and send confirmation email */
+  });
 }
 
 /* ── BOOKING ── */

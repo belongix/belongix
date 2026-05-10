@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Career Score History — Belongix</title>
+<link rel="icon" href="icons/icon-32.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --brand:#2D1B69; --brand2:#4C2FAA; --brand3:#7C5CDB;
+  --accent:#FF5C35; --green:#10B981; --amber:#F59E0B;
+  --ink:#0D0D1A; --muted:#5A5A7A; --subtle:#8B8BA8;
+  --bg:#F4F3FA; --white:#FFFFFF; --border:#E4E4F0;
+  --ff:'Sora',sans-serif; --ffb:'DM Sans',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;flex-shrink:0;background:var(--brand);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;box-shadow:4px 0 24px rgba(0,0,0,.15);overflow-y:auto}
+.sb-logo{padding:22px 20px 16px;font-family:var(--ff);font-size:20px;font-weight:800;color:#fff;letter-spacing:-.4px;border-bottom:1px solid rgba(255,255,255,.1);text-decoration:none;display:block}
+.sb-logo span{color:#FF7A59}
+.sb-section{padding:16px 12px 8px;font-size:10px;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.8px;text-transform:uppercase}
+.sb-link{display:flex;align-items:center;gap:9px;padding:9px 12px;margin:1px 8px;border-radius:9px;font-size:13px;font-weight:500;color:rgba(255,255,255,.65);text-decoration:none;transition:.15s;border:none;background:none;width:calc(100% - 16px);text-align:left;font-family:var(--ffb)}
+.sb-link .ico{width:18px;text-align:center;font-size:14px;flex-shrink:0}
+.sb-link:hover{background:rgba(255,255,255,.08);color:#fff}
+.sb-link.active{background:rgba(255,255,255,.14);color:#fff;font-weight:600}
+.sb-bottom{margin-top:auto;padding:12px 8px 20px;border-top:1px solid rgba(255,255,255,.1)}
+.sb-user{display:flex;align-items:center;gap:9px;padding:8px 12px}
+.sb-av{width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--ff)}
+.sb-uname{font-size:12.5px;font-weight:600;color:#fff}
+.sb-uemail{font-size:10.5px;color:rgba(255,255,255,.45);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:130px}
+
+/* ── MAIN ── */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column}
+.topbar{height:60px;flex-shrink:0;background:var(--white);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 32px;gap:16px;position:sticky;top:0;z-index:50}
+.topbar-title{font-family:var(--ff);font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-.4px}
+
+/* ── PAGE ── */
+.page-body{flex:1;padding:28px 32px;max-width:960px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+
+/* ── SCORE HERO ── */
+.score-hero{background:linear-gradient(135deg,#1A0F40,#3D2490);border-radius:18px;padding:28px 32px;display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center}
+.sh-ring{position:relative;width:100px;height:100px;flex-shrink:0}
+.sh-ring svg{transform:rotate(-90deg)}
+.sh-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.sh-score{font-family:var(--ff);font-size:28px;font-weight:800;color:#fff;line-height:1}
+.sh-label{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px}
+.sh-info{min-width:0}
+.sh-title{font-family:var(--ff);font-size:19px;font-weight:800;color:#fff;margin-bottom:4px}
+.sh-sub{font-size:13.5px;color:rgba(255,255,255,.7);line-height:1.55}
+.sh-pills{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.sh-pill{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:3px 12px;font-size:11.5px;font-weight:600;color:rgba(255,255,255,.85)}
+.sh-change{text-align:right;flex-shrink:0}
+.sh-change-n{font-family:var(--ff);font-size:32px;font-weight:800;line-height:1}
+.sh-change-l{font-size:11px;color:rgba(255,255,255,.6);margin-top:2px}
+.change-up{color:#34D399}
+.change-flat{color:rgba(255,255,255,.5)}
+
+/* ── CHART CARD ── */
+.chart-card{background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:24px 28px}
+.cc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.cc-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink)}
+.cc-controls{display:flex;gap:6px}
+.range-btn{padding:5px 14px;border-radius:20px;border:1.5px solid var(--border);font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ffb);color:var(--muted);background:#fff;transition:.15s}
+.range-btn.active{border-color:var(--brand);color:var(--brand);background:rgba(45,27,105,.06)}
+.chart-wrap{position:relative;height:240px}
+
+/* ── MILESTONES ── */
+.milestones{background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:24px 28px}
+.ml-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:16px}
+.ml-list{display:flex;flex-direction:column;gap:0}
+.ml-item{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)}
+.ml-item:last-child{border-bottom:none}
+.ml-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;margin-top:1px}
+.ml-dot.done{background:linear-gradient(135deg,var(--brand),var(--brand3))}
+.ml-dot.pending{background:var(--bg);border:2px solid var(--border)}
+.ml-body{flex:1;min-width:0}
+.ml-event{font-size:13.5px;font-weight:600;color:var(--ink)}
+.ml-meta{font-size:12px;color:var(--subtle);margin-top:2px}
+.ml-pts{font-family:var(--ff);font-size:14px;font-weight:800;color:var(--brand);flex-shrink:0;margin-top:4px}
+.ml-pts.neg{color:var(--accent)}
+
+/* ── ACTION PLAN ── */
+.action-plan{background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:24px 28px}
+.ap-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.ap-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+.ap-items{display:flex;flex-direction:column;gap:10px}
+.ap-item{display:flex;align-items:center;gap:14px;padding:13px 16px;background:var(--bg);border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:.2s;text-decoration:none}
+.ap-item:hover{border-color:var(--brand3);background:#fff;box-shadow:0 3px 12px rgba(45,27,105,.08)}
+.ap-item.done{opacity:.5;pointer-events:none}
+.ap-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ap-info{flex:1;min-width:0}
+.ap-action{font-size:13.5px;font-weight:600;color:var(--ink)}
+.ap-detail{font-size:12px;color:var(--muted);margin-top:2px}
+.ap-pts{font-family:var(--ff);font-size:13px;font-weight:800;color:var(--green);flex-shrink:0}
+.ap-check{width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;display:none}
+.ap-item.done .ap-check{display:flex}
+
+/* ── FIX #18: INDUSTRY BENCHMARKING ── */
+.benchmark-card{background:var(--white);border:1.5px solid var(--border);border-radius:18px;padding:24px 28px}
+.bm-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px}
+.bm-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink)}
+.bm-role-tag{font-size:11.5px;font-weight:600;color:var(--brand3);background:rgba(45,27,105,.07);padding:4px 10px;border-radius:20px}
+.bm-hero{background:linear-gradient(135deg,rgba(45,27,105,.05),rgba(107,72,204,.06));border:1.5px solid rgba(45,27,105,.12);border-radius:14px;padding:18px 22px;margin-bottom:16px;display:flex;align-items:center;gap:18px}
+.bm-percentile{font-family:var(--ff);font-size:42px;font-weight:800;color:var(--brand);line-height:1;flex-shrink:0}
+.bm-percentile sup{font-size:18px;vertical-align:super}
+.bm-hero-text{flex:1}
+.bm-hero-main{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;line-height:1.4}
+.bm-hero-sub{font-size:12.5px;color:var(--muted);line-height:1.5}
+.bm-dist{margin-bottom:10px}
+.bm-dist-label{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
+.bm-dist-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;font-size:12px}
+.bm-dist-tier{width:72px;font-weight:600;color:var(--ink2);flex-shrink:0}
+.bm-dist-bar-bg{flex:1;height:7px;background:var(--bg);border-radius:7px;overflow:hidden}
+.bm-dist-fill{height:100%;border-radius:7px;transition:width 1s ease}
+.bm-dist-pct{width:36px;text-align:right;color:var(--muted);font-weight:500;flex-shrink:0}
+.bm-you-marker{display:none;align-items:center;gap:8px;font-size:12.5px;font-weight:600;color:var(--brand);margin-top:8px}
+.bm-you-marker.show{display:flex}
+.bm-you-dot{width:10px;height:10px;border-radius:50%;background:var(--brand);flex-shrink:0}
+.bm-tips{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.bm-tip{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;background:var(--bg);border-radius:10px;font-size:12.5px;color:var(--ink)}
+.bm-tip-icon{flex-shrink:0;font-size:16px}
+
+/* ── SKELETON ── */
+.skeleton{background:linear-gradient(90deg,var(--bg) 25%,#E8E8F4 50%,var(--bg) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:8px}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ── GUEST GATE ── */
+#guest-gate{position:fixed;inset:0;background:rgba(13,13,26,.7);z-index:2000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(10px)}
+#guest-gate.show{display:flex}
+.gg-card{background:#fff;border-radius:22px;padding:40px;text-align:center;max-width:400px}
+.gg-icon{font-size:40px;margin-bottom:14px}
+.gg-title{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.gg-sub{font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.gg-btn{display:block;padding:12px 28px;background:var(--brand);color:#fff;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;margin-bottom:10px}
+.gg-back{font-size:13px;color:var(--subtle);text-decoration:none}
+
+@media(max-width:768px){
+  .sidebar{width:60px}
+  .sb-link span,.sb-logo,.sb-section,.sb-uname,.sb-uemail{display:none}
+  .sb-link{justify-content:center;padding:10px}
+  .main{margin-left:60px}
+  .topbar,.page-body{padding-left:16px;padding-right:16px}
+  .score-hero{grid-template-columns:auto 1fr;gap:16px}
+  .sh-change{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <a href="index.html" class="sb-logo">Belong<span>ix</span></a>
+  <div class="sb-section">Main</div>
+  <a href="dashboard.html?page=overview" class="sb-link"><span class="ico">📊</span><span>Overview</span></a>
+  <a href="dashboard.html?page=jobs" class="sb-link"><span class="ico">💼</span><span>Job Board</span></a>
+  <a href="application-tracker.html" class="sb-link"><span class="ico">🗂️</span><span>Applications</span></a>
+  <a href="salary-intelligence.html" class="sb-link"><span class="ico">💰</span><span>Salary Data</span></a>
+  <a href="dashboard.html?page=upskill" class="sb-link"><span class="ico">🎓</span><span>Upskill</span></a>
+  <div class="sb-section">Tools</div>
+  <a href="resume-builder.html" class="sb-link"><span class="ico">📄</span><span>Resume Builder</span></a>
+  <a href="mentors.html" class="sb-link"><span class="ico">🤝</span><span>Mentors</span></a>
+  <a href="job-alerts.html" class="sb-link"><span class="ico">🔔</span><span>Job Alerts</span></a>
+  <a href="career-score.html" class="sb-link active"><span class="ico">⭐</span><span>Career Score</span></a>
+  <div class="sb-bottom">
+    <div class="sb-user">
+      <div class="sb-av" id="sb-av">?</div>
+      <div>
+        <div class="sb-uname" id="sb-uname">Loading...</div>
+        <div class="sb-uemail" id="sb-uemail"></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <span class="topbar-title">Career Score History</span>
+  </div>
+
+  <div class="page-body">
+
+    <!-- SCORE HERO -->
+    <div class="score-hero">
+      <div class="sh-ring">
+        <svg width="100" height="100" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,.15)" stroke-width="10"/>
+          <circle cx="50" cy="50" r="42" fill="none" stroke="url(#scoreGrad)" stroke-width="10"
+            stroke-linecap="round" stroke-dasharray="264" id="score-ring" stroke-dashoffset="264"/>
+          <defs>
+            <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#7C5CDB"/>
+              <stop offset="100%" stop-color="#FF5C35"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="sh-ring-center">
+          <div class="sh-score" id="hero-score">—</div>
+          <div class="sh-label">/ 100</div>
+        </div>
+      </div>
+      <div class="sh-info">
+        <div class="sh-title" id="hero-tier">Your Career Score</div>
+        <div class="sh-sub" id="hero-sub">Loading your score history...</div>
+        <div class="sh-pills" id="hero-pills"></div>
+      </div>
+      <div class="sh-change">
+        <div class="sh-change-n" id="hero-change">—</div>
+        <div class="sh-change-l">pts this month</div>
+      </div>
+    </div>
+
+    <!-- CHART -->
+    <div class="chart-card">
+      <div class="cc-header">
+        <div class="cc-title">📈 Score over time</div>
+        <div class="cc-controls">
+          <button class="range-btn" onclick="setRange(7)">7D</button>
+          <button class="range-btn active" id="btn-30" onclick="setRange(30)">30D</button>
+          <button class="range-btn" onclick="setRange(90)">90D</button>
+          <button class="range-btn" onclick="setRange(365)">1Y</button>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="score-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- MILESTONES / EVENT LOG -->
+    <div class="milestones">
+      <div class="ml-title">📋 Score events</div>
+      <div class="ml-list" id="ml-list">
+        <!-- Skeleton -->
+        <div class="ml-item"><div class="ml-dot pending skeleton" style="width:32px;height:32px"></div><div class="ml-body"><div class="skeleton" style="height:14px;width:60%;margin-bottom:6px"></div><div class="skeleton" style="height:11px;width:40%"></div></div></div>
+        <div class="ml-item"><div class="ml-dot pending skeleton" style="width:32px;height:32px"></div><div class="ml-body"><div class="skeleton" style="height:14px;width:50%;margin-bottom:6px"></div><div class="skeleton" style="height:11px;width:35%"></div></div></div>
+        <div class="ml-item"><div class="ml-dot pending skeleton" style="width:32px;height:32px"></div><div class="ml-body"><div class="skeleton" style="height:14px;width:70%;margin-bottom:6px"></div><div class="skeleton" style="height:11px;width:45%"></div></div></div>
+      </div>
+    </div>
+
+    <!-- ✅ FIX #18: INDUSTRY BENCHMARKING -->
+    <div class="benchmark-card" id="benchmark-card">
+      <div class="bm-header">
+        <div class="bm-title">🏅 How you compare</div>
+        <div class="bm-role-tag" id="bm-role-tag">Loading...</div>
+      </div>
+
+      <!-- Percentile hero -->
+      <div class="bm-hero">
+        <div class="bm-percentile" id="bm-percentile">—<sup>th</sup></div>
+        <div class="bm-hero-text">
+          <div class="bm-hero-main" id="bm-hero-main">Calculating your percentile...</div>
+          <div class="bm-hero-sub" id="bm-hero-sub">Comparing against professionals in your field and city</div>
+        </div>
+      </div>
+
+      <!-- Distribution bar chart -->
+      <div class="bm-dist">
+        <div class="bm-dist-label">Score distribution in your field</div>
+        <div id="bm-dist-rows">
+          <!-- filled by JS -->
+        </div>
+        <div class="bm-you-marker" id="bm-you-marker">
+          <div class="bm-you-dot"></div>
+          <span id="bm-you-text">You are here</span>
+        </div>
+      </div>
+
+      <!-- Contextual tips based on tier -->
+      <div class="bm-tips" id="bm-tips">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- ACTION PLAN (Fix #19 preview) -->
+    <div class="action-plan" id="action-plan">
+      <div class="ap-title">🎯 Boost your score</div>
+      <div class="ap-sub" id="ap-sub">Complete these actions to reach the next tier</div>
+      <div class="ap-items" id="ap-items">
+        <div style="height:52px" class="skeleton" style="border-radius:12px;margin-bottom:8px"></div>
+        <div style="height:52px" class="skeleton" style="border-radius:12px;margin-bottom:8px"></div>
+        <div style="height:52px" class="skeleton" style="border-radius:12px"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- GUEST GATE -->
+<div id="guest-gate">
+  <div class="gg-card">
+    <div class="gg-icon">📊</div>
+    <div class="gg-title">Sign in to see your score</div>
+    <div class="gg-sub">Your Career Score tracks your growth over time. Sign in to see your history and personalised action plan.</div>
+    <a href="index.html" class="gg-btn">Sign In / Join Free →</a>
+    <br><a href="index.html" class="gg-back">← Back to homepage</a>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════════════════
+   BELONGIX — Career Score History (Fix #17)
+   ✅ Fetches career_score_history from Supabase
+   ✅ Chart.js line chart with smooth gradient fill
+   ✅ Range selector: 7D / 30D / 90D / 1Y
+   ✅ Score ring animation (hero)
+   ✅ Event log (what caused each score change)
+   ✅ Action plan (Fix #19 preview) — next steps to grow
+   ✅ Falls back to demo data if table empty/new account
+══════════════════════════════════════════════════════════ */
+
+var SB_URL = 'https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb = supabase.createClient(SB_URL, SB_KEY);
+
+var _userId  = null;
+var _history = [];   /* { score, delta, reason, created_at } */
+var _profile = null;
+var _chart   = null;
+var _range   = 30;
+
+/* ── AUTH ── */
+sb.auth.getSession().then(function(r) {
+  var session = r.data && r.data.session;
+  if (!session) { document.getElementById('guest-gate').classList.add('show'); return; }
+  _userId = session.user.id;
+  var meta = session.user.user_metadata || {};
+  var name = meta.full_name || session.user.email.split('@')[0];
+  document.getElementById('sb-av').textContent     = name.substring(0,2).toUpperCase();
+  document.getElementById('sb-uname').textContent  = name.split(' ')[0];
+  document.getElementById('sb-uemail').textContent = session.user.email;
+  loadData();
+});
+
+/* ── LOAD ── */
+async function loadData() {
+  /* Load profile + score history in parallel */
+  var [profRes, histRes] = await Promise.all([
+    sb.from('profiles').select('career_score, full_name, skills, city, role').eq('id', _userId).maybeSingle(),
+    sb.from('career_score_history').select('score, delta, reason, created_at').eq('user_id', _userId).order('created_at', { ascending: true }).limit(200)
+  ]);
+
+  _profile = (profRes.data) || { career_score: 30 };
+  var currentScore = _profile.career_score || 30;
+
+  /* If no history yet, generate demo milestones from current score */
+  if (!histRes.data || histRes.data.length === 0) {
+    _history = generateDemoHistory(currentScore);
+  } else {
+    _history = histRes.data;
+  }
+
+  renderHero(currentScore);
+  renderChart();
+  renderMilestones();
+  renderActionPlan(currentScore);
+  renderBenchmark(currentScore, _profile); /* ✅ FIX #18 */
+}
+
+/* Generate realistic demo history for new accounts */
+function generateDemoHistory(currentScore) {
+  var events = [
+    { reason: 'Account created', delta: 30 },
+    { reason: 'Email verified',  delta: 10 },
+  ];
+  if (currentScore >= 50) events.push({ reason: 'Profile completed',  delta: 10 });
+  if (currentScore >= 55) events.push({ reason: 'Skills added',        delta: 10 });
+  if (currentScore >= 65) events.push({ reason: 'First job applied',   delta: 15 });
+  if (currentScore >= 75) events.push({ reason: 'Course completed',    delta: 10 });
+  if (currentScore >= 85) events.push({ reason: 'Mentor session booked', delta: 20 });
+
+  var score = 0;
+  var now   = Date.now();
+  return events.map(function(e, i) {
+    score += e.delta;
+    return {
+      score:      Math.min(score, currentScore),
+      delta:      e.delta,
+      reason:     e.reason,
+      created_at: new Date(now - (events.length - i) * 5 * 86400000).toISOString()
+    };
+  });
+}
+
+/* ── HERO ── */
+var TIERS = [
+  { min:0,  max:39,  label:'Starter',  color:'#8B8BA8', tip:'Complete your profile to jump to Rising.' },
+  { min:40, max:59,  label:'Rising',   color:'#F59E0B', tip:'Apply to 3 jobs to reach Strong.' },
+  { min:60, max:79,  label:'Strong',   color:'#06B6D4', tip:'Complete a course to reach Expert.' },
+  { min:80, max:100, label:'Expert',   color:'#10B981', tip:"You're career-ready! Keep applying consistently." }
+];
+
+function getTier(score) {
+  return TIERS.find(function(t){ return score >= t.min && score <= t.max; }) || TIERS[0];
+}
+
+function renderHero(score) {
+  var tier  = getTier(score);
+  var ring  = document.getElementById('score-ring');
+  var pct   = score / 100;
+
+  document.getElementById('hero-score').textContent = score;
+  document.getElementById('hero-tier').textContent  = tier.label + ' · ' + score + '/100';
+  document.getElementById('hero-sub').textContent   = tier.tip;
+
+  /* Animate ring */
+  setTimeout(function() {
+    if (ring) ring.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)';
+    if (ring) ring.style.strokeDashoffset = String(264 - (264 * pct));
+  }, 200);
+
+  /* Month-over-month change */
+  if (_history.length >= 2) {
+    var monthAgo = Date.now() - 30 * 86400000;
+    var pastPoint = _history.slice().reverse().find(function(h){
+      return new Date(h.created_at).getTime() <= monthAgo;
+    });
+    var change = pastPoint ? score - pastPoint.score : _history[_history.length-1].delta || 0;
+    var changeEl = document.getElementById('hero-change');
+    if (changeEl) {
+      changeEl.textContent = (change >= 0 ? '+' : '') + change;
+      changeEl.className = 'sh-change-n ' + (change > 0 ? 'change-up' : 'change-flat');
+    }
+  }
+
+  /* Pills */
+  var pillsEl = document.getElementById('hero-pills');
+  var next = TIERS.find(function(t){ return t.min > score; });
+  if (pillsEl && next) {
+    pillsEl.innerHTML = '<span class="sh-pill">Next: ' + next.label + ' at ' + next.min + ' pts</span>' +
+      '<span class="sh-pill">Need ' + (next.min - score) + ' more points</span>';
+  }
+}
+
+/* ── CHART ── */
+function setRange(days) {
+  _range = days;
+  document.querySelectorAll('.range-btn').forEach(function(b){ b.classList.remove('active'); });
+  var btn = document.getElementById('btn-' + days);
+  if (!btn) {
+    /* find by onclick */
+    document.querySelectorAll('.range-btn').forEach(function(b){
+      if (b.getAttribute('onclick') && b.getAttribute('onclick').includes(days)) b.classList.add('active');
+    });
+  } else { btn.classList.add('active'); }
+  renderChart();
+}
+
+function renderChart() {
+  var cutoff  = Date.now() - _range * 86400000;
+  var data    = _history.filter(function(h){ return new Date(h.created_at).getTime() >= cutoff; });
+
+  /* Ensure at least 2 points for a visible line */
+  if (data.length === 0) data = _history.slice(-2);
+  if (data.length === 1) data = [Object.assign({}, data[0], { score: Math.max(0, data[0].score - 10), created_at: new Date(new Date(data[0].created_at).getTime() - 86400000).toISOString() }), data[0]];
+
+  var labels = data.map(function(h){ return new Date(h.created_at).toLocaleDateString('en-IN', { day:'numeric', month:'short' }); });
+  var scores = data.map(function(h){ return h.score; });
+
+  var ctx = document.getElementById('score-chart').getContext('2d');
+
+  /* Gradient fill */
+  var grad = ctx.createLinearGradient(0, 0, 0, 240);
+  grad.addColorStop(0, 'rgba(45,27,105,.25)');
+  grad.addColorStop(1, 'rgba(45,27,105,.0)');
+
+  if (_chart) _chart.destroy();
+  _chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Career Score',
+        data: scores,
+        borderColor: '#7C5CDB',
+        borderWidth: 2.5,
+        pointBackgroundColor: '#2D1B69',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: data.length <= 10 ? 5 : 3,
+        pointHoverRadius: 7,
+        fill: true,
+        backgroundColor: grad,
+        tension: 0.4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1A1A2E',
+          titleColor: '#fff',
+          bodyColor: 'rgba(255,255,255,.7)',
+          padding: 12,
+          cornerRadius: 10,
+          callbacks: {
+            label: function(ctx) { return ' Score: ' + ctx.raw + '/100'; }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: 'DM Sans', size: 11 }, color: '#8B8BA8', maxTicksLimit: 8 }
+        },
+        y: {
+          min: 0, max: 100,
+          grid: { color: 'rgba(0,0,0,.04)' },
+          ticks: {
+            font: { family: 'DM Sans', size: 11 }, color: '#8B8BA8',
+            callback: function(v){ return v + ' pts'; }
+          }
+        }
+      }
+    }
+  });
+}
+
+/* ── MILESTONES ── */
+var REASON_ICONS = {
+  'Account created':        '🎉',
+  'Email verified':         '✉️',
+  'Profile completed':      '👤',
+  'Skills added':           '⚡',
+  'First job applied':      '💼',
+  'Job applied':            '💼',
+  'Course completed':       '🎓',
+  'Mentor session booked':  '🤝',
+  'Resume uploaded':        '📄',
+  'Career Score milestone': '⭐',
+};
+
+function renderMilestones() {
+  var list = document.getElementById('ml-list');
+  if (!list) return;
+
+  var items = _history.slice().reverse().slice(0, 15);
+
+  list.innerHTML = items.map(function(h) {
+    var icon    = REASON_ICONS[h.reason] || '📊';
+    var dateStr = new Date(h.created_at).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'2-digit' });
+    var isPos   = !h.delta || h.delta >= 0;
+    var deltaStr = h.delta ? (h.delta > 0 ? '+' + h.delta : String(h.delta)) + ' pts' : '';
+
+    return '<div class="ml-item">' +
+      '<div class="ml-dot done">' + icon + '</div>' +
+      '<div class="ml-body">' +
+        '<div class="ml-event">' + esc(h.reason) + '</div>' +
+        '<div class="ml-meta">' + dateStr + ' · Score: ' + h.score + '/100</div>' +
+      '</div>' +
+      (deltaStr ? '<div class="ml-pts' + (isPos ? '' : ' neg') + '">' + deltaStr + '</div>' : '') +
+    '</div>';
+  }).join('');
+}
+
+/* ── FIX #18: INDUSTRY BENCHMARKING ── */
+/* Simulated distribution data — replace with real Supabase
+   aggregate query once you have enough users:
+   SELECT tier, COUNT(*) FROM profiles
+   WHERE role_group = $role GROUP BY tier             */
+var BM_DIST = {
+  'Starter':  { min:0,  max:39,  pct:28, color:'#E5E7EB' },
+  'Rising':   { min:40, max:64,  pct:35, color:'#C4B0F8' },
+  'Strong':   { min:65, max:84,  pct:24, color:'#7C5CDB' },
+  'Expert':   { min:85, max:100, pct:13, color:'#2D1B69' }
+};
+
+var BM_TIPS = {
+  'Starter': [
+    { icon:'💡', text:'Complete your profile — it\'s the fastest +30 pts action available.' },
+    { icon:'📄', text:'Upload your resume and get a Bexi AI critique to find quick wins.' }
+  ],
+  'Rising': [
+    { icon:'💼', text:'Apply to 3 jobs this week — each application adds to your score.' },
+    { icon:'🎓', text:'Finish one course to jump into the Strong tier.' }
+  ],
+  'Strong': [
+    { icon:'🤝', text:'Book a mentor session — it\'s the highest single action (+20 pts).' },
+    { icon:'⚡', text:'You\'re in the top 37%. One more push gets you to Expert tier.' }
+  ],
+  'Expert': [
+    { icon:'🏆', text:'You\'re in the top 13% of professionals on Belongix. Share your profile!' },
+    { icon:'🌟', text:'Consider becoming a mentor — give back and earn a Belongix badge.' }
+  ]
+};
+
+function renderBenchmark(score, profile) {
+  var card = document.getElementById('benchmark-card');
+  if (!card) return;
+
+  var role    = (profile && (profile.role || profile.job_title)) || 'Tech Professional';
+  var city    = (profile && profile.city) || 'India';
+  var tier    = getTier(score);
+
+  /* Percentile calculation based on distribution */
+  var below = 0;
+  var tierKeys = ['Starter','Rising','Strong','Expert'];
+  for (var i = 0; i < tierKeys.length; i++) {
+    var t = BM_DIST[tierKeys[i]];
+    if (score > t.max) { below += t.pct; }
+    else if (score >= t.min) {
+      /* interpolate within tier */
+      var frac = (score - t.min) / (t.max - t.min);
+      below += Math.round(t.pct * frac);
+      break;
+    }
+  }
+  var percentile = Math.min(99, Math.max(1, below));
+
+  /* Role tag */
+  var roleTag = document.getElementById('bm-role-tag');
+  if (roleTag) roleTag.textContent = role + ' · ' + city;
+
+  /* Percentile hero */
+  var pEl = document.getElementById('bm-percentile');
+  if (pEl) pEl.innerHTML = percentile + '<sup>th</sup>';
+
+  var heroMain = document.getElementById('bm-hero-main');
+  var heroSub  = document.getElementById('bm-hero-sub');
+  if (heroMain) heroMain.textContent = 'Better than ' + percentile + '% of ' + role + 's on Belongix';
+  if (heroSub)  heroSub.textContent  = 'Based on score distribution across professionals in your field' +
+    (city !== 'India' ? ' in ' + city : '');
+
+  /* Distribution bars */
+  var distRows = document.getElementById('bm-dist-rows');
+  if (distRows) {
+    distRows.innerHTML = tierKeys.map(function(tk) {
+      var t      = BM_DIST[tk];
+      var isYou  = score >= t.min && score <= t.max;
+      return '<div class="bm-dist-row">' +
+        '<div class="bm-dist-tier"' + (isYou ? ' style="color:var(--brand);font-weight:700"' : '') + '>' +
+          (isYou ? '▶ ' : '') + tk +
+        '</div>' +
+        '<div class="bm-dist-bar-bg">' +
+          '<div class="bm-dist-fill" style="width:' + t.pct + '%;background:' + t.color + (isYou ? ';box-shadow:0 0 0 1.5px var(--brand)' : '') + '"></div>' +
+        '</div>' +
+        '<div class="bm-dist-pct">' + t.pct + '%</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  /* You marker */
+  var marker = document.getElementById('bm-you-marker');
+  var youTxt  = document.getElementById('bm-you-text');
+  if (marker) marker.classList.add('show');
+  if (youTxt)  youTxt.textContent = 'Your score (' + score + ') places you in the ' + tier.label + ' tier';
+
+  /* Contextual tips */
+  var tipsEl  = document.getElementById('bm-tips');
+  var tips    = BM_TIPS[tier.label] || BM_TIPS['Rising'];
+  if (tipsEl) {
+    tipsEl.innerHTML = tips.map(function(t) {
+      return '<div class="bm-tip"><span class="bm-tip-icon">' + t.icon + '</span><span>' + t.text + '</span></div>';
+    }).join('');
+  }
+}
+
+/* ── FIX #19: ENHANCED ACTION PLAN ── */
+function renderActionPlan(score) {
+  /* All possible actions — done state inferred from actual profile data */
+  var ALL_ACTIONS = [
+    { icon:'👤', bg:'#EEF0FF', action:'Complete your profile',   detail:'Fill all fields including bio, skills and city', pts:30, done: score >= 60, href:'dashboard.html?page=profile' },
+    { icon:'✉️', bg:'#ECFDF5', action:'Verify your email',       detail:'Check your inbox for the verification link',     pts:10, done: score >= 40, href:'dashboard.html?page=profile' },
+    { icon:'⚡', bg:'#FFF7ED', action:'Add 5+ skills',           detail:'Makes Bexi advice more personalised',            pts:10, done: score >= 55, href:'dashboard.html?page=profile' },
+    { icon:'💼', bg:'#F0F9FF', action:'Apply to a job',           detail:'Use the Belongix Job Board to apply',            pts:15, done: score >= 65, href:'dashboard.html?page=jobs'    },
+    { icon:'🎓', bg:'#F5F3FF', action:'Complete a course',        detail:'Finish any course in the Upskilling Hub',        pts:20, done: score >= 75, href:'dashboard.html?page=upskill' },
+    { icon:'📄', bg:'#FFF1F2', action:'Upload your resume',       detail:'Get a Bexi AI critique for targeted feedback',   pts:5,  done: score >= 80, href:'resume-builder.html'         },
+    { icon:'🤝', bg:'#ECFDF5', action:'Book a mentor session',    detail:'1-on-1 career guidance from a verified mentor',  pts:20, done: score >= 95, href:'mentors.html'                },
+  ];
+
+  var pending  = ALL_ACTIONS.filter(function(a){ return !a.done; }).slice(0, 4);
+  var apSub    = document.getElementById('ap-sub');
+  var next     = TIERS.find(function(t){ return t.min > score; });
+  var ptsNeeded = next ? (next.min - score) : 0;
+
+  /* Dynamic subtitle showing exact points needed */
+  if (apSub) {
+    if (next) {
+      var pendingPts = pending.reduce(function(sum, a){ return sum + a.pts; }, 0);
+      apSub.innerHTML = 'You need <strong style="color:var(--brand)">' + ptsNeeded + ' more points</strong> to reach <strong style="color:var(--brand)">' + next.label + '</strong>. ' +
+        'These ' + pending.length + ' actions give you <strong style="color:var(--green)">+' + pendingPts + ' pts</strong> total.';
+    } else {
+      apSub.textContent = 'You\'ve reached Expert level! Keep applying and mentoring to maintain momentum.';
+    }
+  }
+
+  var apItems = document.getElementById('ap-items');
+  if (!apItems) return;
+
+  if (pending.length === 0) {
+    apItems.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:14px">🏆 All actions complete! You\'re at Expert level.</div>';
+    return;
+  }
+
+  apItems.innerHTML = pending.map(function(a) {
+    /* Progress bar width = pts / max_single_action (30) */
+    var barPct = Math.round((a.pts / 30) * 100);
+    return '<a href="' + a.href + '" class="ap-item">' +
+      '<div class="ap-icon" style="background:' + a.bg + '">' + a.icon + '</div>' +
+      '<div class="ap-info">' +
+        '<div class="ap-action">' + esc(a.action) + '</div>' +
+        '<div class="ap-detail">' + esc(a.detail) + '</div>' +
+        '<div style="margin-top:5px;height:3px;background:var(--border);border-radius:3px;overflow:hidden">' +
+          '<div style="height:100%;width:' + barPct + '%;background:linear-gradient(90deg,var(--brand),var(--brand3));border-radius:3px"></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="ap-pts">+' + a.pts + ' pts</div>' +
+      '<div class="ap-check">✓</div>' +
+    '</a>';
+  }).join('');
+}
+
+/* ── UTILS ── */
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* Range button IDs */
+document.querySelectorAll('.range-btn').forEach(function(b){
+  var match = (b.getAttribute('onclick') || '').match(/setRange\((\d+)\)/);
+  if (match) b.id = 'btn-' + match[1];
+});
+</script>
+</body>
+</html>

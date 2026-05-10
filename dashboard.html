@@ -728,7 +728,48 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
 </div></div>
     <div class="page-section" id="page-upskill"><div class="page-title">Upskilling Hub</div>
       <div class="page-subtitle">Real courses from Google, AWS, Meta, Kaggle, Scaler, NPTEL — trending in 2026</div>
+      <!-- ✅ FIX #21: Progress summary bar -->
+      <div class="up-summary-bar" id="up-summary-bar">
+        <div class="up-stat"><div class="up-stat-num" id="up-stat-total">0</div><div class="up-stat-lbl">Courses Started</div></div>
+        <div class="up-stat"><div class="up-stat-num" id="up-stat-done" style="color:#10B981">0</div><div class="up-stat-lbl">Completed</div></div>
+        <div class="up-stat"><div class="up-stat-num" id="up-stat-pts" style="color:#F59E0B">0</div><div class="up-stat-lbl">Score Pts Earned</div></div>
+        <div style="flex:1;display:flex;align-items:center;justify-content:flex-end">
+          <button onclick="upShowCompleted()" style="font-size:11.5px;font-weight:600;color:#2D1B69;background:none;border:1.5px solid rgba(45,27,105,.2);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:inherit" id="up-completed-btn">🏅 My Completed</button>
+        </div>
+      </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px" id="upskillFilters"></div>
+
+      <!-- ✅ FIX #22: SKILL GAP ANALYSER -->
+      <div class="sg-wrap" id="sg-wrap">
+        <div class="sg-head">
+          <div>
+            <div class="sg-title">🎯 Skill Gap Analyser</div>
+            <div class="sg-sub">Select a target role to see exactly which skills you have and which you need.</div>
+          </div>
+          <div class="sg-controls">
+            <select class="sg-select" id="sg-role-select">
+              <option value="">— Choose your target role —</option>
+              <option value="sde">Software Engineer (SDE)</option>
+              <option value="sde2">Senior Software Engineer (SDE-2)</option>
+              <option value="datascience">Data Scientist</option>
+              <option value="mlengineer">ML / AI Engineer</option>
+              <option value="dataengineer">Data Engineer</option>
+              <option value="devops">DevOps / SRE Engineer</option>
+              <option value="product">Product Manager</option>
+              <option value="ux">UI / UX Designer</option>
+              <option value="fullstack">Full Stack Developer</option>
+              <option value="backend">Backend Engineer</option>
+              <option value="frontend">Frontend Engineer</option>
+              <option value="cybersecurity">Cybersecurity Analyst</option>
+            </select>
+            <button class="sg-btn" onclick="sgAnalyse()">Analyse →</button>
+          </div>
+        </div>
+        <div class="sg-result" id="sg-result">
+          <!-- filled by sgAnalyse() -->
+        </div>
+      </div>
+
       <div id="tracksGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px"></div>
       <style>
         .cCard{background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.25s}
@@ -742,7 +783,58 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         .bCert{background:#FEF9C3;color:#A16207;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
         .bPaid{background:#F5F3FF;color:#7C3AED;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
         .bIndia{background:#FFF7ED;color:#C2410C;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
-      </style>
+        /* ✅ FIX #21: Course progress pills and start button */
+        .cLink-wrap{position:relative}
+        .cLink-prog{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s;margin-bottom:7px;gap:10px;cursor:pointer;background:#fff}
+        .cLink-prog:hover{background:#EFF6FF;border-color:#2563EB}
+        .cLink-prog.in-progress{border-color:#F59E0B;background:#FFFBEB}
+        .cLink-prog.completed{border-color:#10B981;background:#F0FDF4;opacity:.8}
+        .cp-pill{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;white-space:nowrap}
+        .cp-pill.not-started{background:#F1F5F9;color:#64748B}
+        .cp-pill.in-progress{background:#FEF9C3;color:#A16207}
+        .cp-pill.completed{background:#DCFCE7;color:#15803D}
+        .cp-bar-bg{height:3px;background:#E2E8F0;border-radius:3px;margin-top:4px;overflow:hidden}
+        .cp-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#2D1B69,#06B6D4);transition:width .6s ease}
+        .cp-start-btn{font-size:11px;font-weight:700;color:#2563EB;flex-shrink:0;white-space:nowrap}
+        .cp-start-btn.done{color:#10B981}
+        .up-summary-bar{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(45,27,105,.05),rgba(107,72,204,.04));border:1.5px solid rgba(45,27,105,.1);border-radius:14px}
+        .up-stat{text-align:center;min-width:60px}
+        .up-stat-num{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#2D1B69;line-height:1}
+        .up-stat-lbl{font-size:10.5px;color:#64748B;margin-top:3px;font-weight:500}
+        /* ✅ FIX #22: SKILL GAP ANALYSER */
+        .sg-wrap{background:linear-gradient(135deg,rgba(45,27,105,.04),rgba(107,72,204,.03));border:1.5px solid rgba(45,27,105,.12);border-radius:16px;padding:20px 22px;margin-bottom:20px}
+        .sg-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+        .sg-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#0D0D1A}
+        .sg-sub{font-size:12.5px;color:#64748B;margin-top:2px}
+        .sg-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+        .sg-select{border:1.5px solid #E2E8F0;border-radius:9px;padding:8px 12px;font-size:13px;font-family:inherit;color:#0D0D1A;background:#fff;outline:none;cursor:pointer;min-width:180px}
+        .sg-select:focus{border-color:#2D1B69}
+        .sg-btn{padding:8px 16px;background:#2D1B69;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+        .sg-btn:hover{filter:brightness(1.1)}
+        .sg-result{display:none;margin-top:16px}
+        .sg-result.show{display:block}
+        .sg-score-row{display:flex;align-items:center;gap:14px;margin-bottom:16px;flex-wrap:wrap}
+        .sg-pct-ring{position:relative;width:72px;height:72px;flex-shrink:0}
+        .sg-pct-svg{transform:rotate(-90deg)}
+        .sg-pct-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:16px;font-weight:800;color:#2D1B69}
+        .sg-score-info{flex:1}
+        .sg-score-label{font-size:14px;font-weight:700;color:#0D0D1A;margin-bottom:3px}
+        .sg-score-sub{font-size:12.5px;color:#64748B}
+        .sg-lists{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+        .sg-list-card{border-radius:12px;padding:14px}
+        .sg-list-card.have{background:#F0FDF4;border:1.5px solid #BBF7D0}
+        .sg-list-card.missing{background:#FFF7ED;border:1.5px solid #FED7AA}
+        .sg-list-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+        .sg-list-card.have .sg-list-title{color:#15803D}
+        .sg-list-card.missing .sg-list-title{color:#C2410C}
+        .sg-skill-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 0;border-bottom:1px solid rgba(0,0,0,.06);font-size:12.5px}
+        .sg-skill-row:last-child{border-bottom:none}
+        .sg-skill-name{font-weight:600;color:#0D0D1A}
+        .sg-have-dot{width:8px;height:8px;border-radius:50%;background:#10B981;flex-shrink:0}
+        .sg-miss-dot{width:8px;height:8px;border-radius:50%;background:#F59E0B;flex-shrink:0}
+        .sg-course-link{font-size:11px;font-weight:700;color:#2D1B69;text-decoration:none;white-space:nowrap;cursor:pointer}
+        .sg-course-link:hover{text-decoration:underline}
+        @media(max-width:560px){.sg-lists{grid-template-columns:1fr}}
       
     </div>
     <!-- ✅ FIX #16: Salary section with tabs — Benchmarks + Compare Offers -->
@@ -1289,7 +1381,261 @@ function renderJobs(jobs) {
         var BM={hot:"bHot",free:"bFree",cert:"bCert",paid:"bPaid",india:"bIndia"};
         var BL={hot:"HOT",free:"FREE",cert:"CERT",paid:"PAID",india:"INDIA"};
         function renderFilters(){var fc=document.getElementById("upskillFilters");if(!fc)return;fc.innerHTML="";FILTERS.forEach(function(f){var b=document.createElement("button");b.className="tTab"+(f.k===active?" active":"");b.textContent=f.l;b.onclick=function(){active=f.k;renderFilters();renderTracks();};fc.appendChild(b);});}
-        function renderTracks(){var grid=document.getElementById("tracksGrid");if(!grid)return;var list=active==="all"?T:T.filter(function(t){return t.tags.indexOf(active)!==-1;});grid.innerHTML="";list.forEach(function(t){var div=document.createElement("div");div.className="cCard";var courses=t.c.map(function(c){return "<a href='"+c.url+"' target='_blank' class='cLink'><div style='flex:1;min-width:0'><div style='font-size:13px;font-weight:600;color:#0F172A'>"+c.n+"</div><div style='font-size:11px;color:#64748B;margin-top:2px'>"+c.by+"</div></div><span class='"+(c.f?"bFree":"bPaid")+"' style='margin-right:6px'>"+(c.f?"FREE":"PAID")+"</span><span style='font-size:11px;color:#2563EB;font-weight:700;flex-shrink:0'>Start</span></a>";}).join("");div.innerHTML="<div style='display:flex;align-items:flex-start;gap:12px;margin-bottom:14px'><div style='width:50px;height:50px;border-radius:13px;background:"+t.ic+";display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#2563EB;flex-shrink:0'>"+t.e+"</div><div style='flex:1;min-width:0'><div style='font-weight:700;font-size:15px;color:#0F172A;margin-bottom:3px'>"+t.title+"</div><div style='font-size:12px;color:#64748B;line-height:1.5'>"+t.sub+"</div></div><span class='"+BM[t.b]+"'>"+BL[t.b]+"</span></div><div>"+courses+"</div>";grid.appendChild(div);});}
+        /* FIX #21: progress-aware renderTracks */
+        function renderTracks(){
+          var grid=document.getElementById("tracksGrid");if(!grid)return;
+          var list=active==="all"?T:T.filter(function(t){return t.tags.indexOf(active)!==-1;});
+          grid.innerHTML="";
+          list.forEach(function(t){
+            var div=document.createElement("div");div.className="cCard";
+            var courses=t.c.map(function(c){
+              var key=upCourseKey(c.url);
+              var st=upGetStatus(key);
+              var pillCls=st==="completed"?"completed":st==="in-progress"?"in-progress":"not-started";
+              var pillTxt=st==="completed"?"Done":st==="in-progress"?"In Progress":"Start";
+              var rowCls="cLink-prog"+(st==="in-progress"?" in-progress":st==="completed"?" completed":"");
+              var barW=st==="completed"?100:st==="in-progress"?45:0;
+              var enc=encodeURIComponent;
+              return "<div class='"+rowCls+"' onclick='upHandleClick(\""+key+"\",\""+enc(c.url)+"\",\""+enc(c.n)+"\",this)'>"
+                +"<div style='flex:1;min-width:0'>"
+                  +"<div style='font-size:13px;font-weight:600;color:#0F172A'>"+c.n+"</div>"
+                  +"<div style='font-size:11px;color:#64748B;margin-top:2px'>"+c.by+"</div>"
+                  +"<div class='cp-bar-bg'><div class='cp-bar-fill' style='width:"+barW+"%'></div></div>"
+                +"</div>"
+                +"<span class='"+(c.f?"bFree":"bPaid")+"' style='margin-right:4px'>"+(c.f?"FREE":"PAID")+"</span>"
+                +"<span class='cp-pill "+pillCls+"'>"+pillTxt+"</span>"
+              +"</div>";
+            }).join("");
+            div.innerHTML="<div style='display:flex;align-items:flex-start;gap:12px;margin-bottom:14px'><div style='width:50px;height:50px;border-radius:13px;background:"+t.ic+";display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#2563EB;flex-shrink:0'>"+t.e+"</div><div style='flex:1;min-width:0'><div style='font-weight:700;font-size:15px;color:#0F172A;margin-bottom:3px'>"+t.title+"</div><div style='font-size:12px;color:#64748B;line-height:1.5'>"+t.sub+"</div></div><span class='"+BM[t.b]+"'>"+BL[t.b]+"</span></div><div>"+courses+"</div>";
+            grid.appendChild(div);
+          });
+          upRefreshSummary();
+        }
+        /* Course progress helpers — localStorage backed, Supabase synced */
+        var UP_KEY="bx_course_progress";
+        function upCourseKey(url){try{return "c_"+btoa(url).replace(/[^a-zA-Z0-9]/g,"").slice(0,20);}catch(e){return "c_"+url.length;}}
+        function upGetAll(){try{return JSON.parse(localStorage.getItem(UP_KEY)||"{}");}catch(e){return {};}}
+        function upGetStatus(key){return (upGetAll()[key]||{}).status||"not-started";}
+        function upSetStatus(key,status,encName){
+          var all=upGetAll();
+          var prev=(all[key]||{}).status||"not-started";
+          all[key]={status:status,name:decodeURIComponent(encName||""),ts:Date.now()};
+          localStorage.setItem(UP_KEY,JSON.stringify(all));
+          if(status==="completed"&&prev!=="completed"){upAwardPoints();}
+          upRefreshSummary();
+        }
+        function upHandleClick(key,encUrl,encName,el){
+          var url=decodeURIComponent(encUrl);
+          var st=upGetStatus(key);
+          if(st==="not-started"){
+            upSetStatus(key,"in-progress",encName);
+            el.className="cLink-prog in-progress";
+            el.querySelector(".cp-pill").className="cp-pill in-progress";
+            el.querySelector(".cp-pill").textContent="In Progress";
+            el.querySelector(".cp-bar-fill").style.width="45%";
+            window.open(url,"_blank");
+          } else if(st==="in-progress"){
+            upShowCompletePrompt(key,encName,el,url);
+          } else {
+            window.open(url,"_blank");
+          }
+        }
+        function upShowCompletePrompt(key,encName,el,url){
+          var ex=document.getElementById("up-cprompt");if(ex)ex.remove();
+          var d=document.createElement("div");d.id="up-cprompt";
+          d.style.cssText="position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1A0F40;color:#fff;border-radius:14px;padding:14px 18px;z-index:9999;display:flex;align-items:center;gap:12px;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.3);max-width:92vw;flex-wrap:wrap";
+          d.innerHTML="<span>Did you complete this course?</span>"
+            +"<button onclick=\"upMarkDone('"+key+"','"+encName+"');document.getElementById('up-cprompt').remove()\" style=\"background:#10B981;color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit\">✓ Mark Complete (+20 pts)</button>"
+            +"<button onclick=\"window.open('"+url+"','_blank');document.getElementById('up-cprompt').remove()\" style=\"background:rgba(255,255,255,.15);color:#fff;border:none;border-radius:8px;padding:7px 13px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit\">Continue Course</button>"
+            +"<button onclick=\"document.getElementById('up-cprompt').remove()\" style=\"background:none;border:none;color:rgba(255,255,255,.5);font-size:18px;cursor:pointer;line-height:1\">×</button>";
+          document.body.appendChild(d);
+          setTimeout(function(){if(d.parentNode)d.remove();},9000);
+        }
+        function upMarkDone(key,encName){
+          upSetStatus(key,"completed",encName);
+          renderTracks();
+          var emojis=["🎉","🏅","⭐","✅"];
+          for(var i=0;i<6;i++){(function(i){setTimeout(function(){
+            var s=document.createElement("div");s.textContent=emojis[i%4];
+            s.style.cssText="position:fixed;font-size:26px;z-index:9999;pointer-events:none;left:"+(15+Math.random()*70)+"vw;top:25vh;animation:upFloat 1.6s ease forwards";
+            document.body.appendChild(s);setTimeout(function(){s.remove();},1700);
+          },i*130);})(i);}
+          if(!document.getElementById("up-float-kf")){var ks=document.createElement("style");ks.id="up-float-kf";ks.textContent="@keyframes upFloat{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-90px) scale(1.5)}}";document.head.appendChild(ks);}
+        }
+        function upAwardPoints(){
+          try{
+            supaClient.auth.getSession().then(function(r){
+              if(!r.data||!r.data.session)return;
+              var uid=r.data.session.user.id;
+              supaClient.from("profiles").select("career_score").eq("id",uid).maybeSingle().then(function(res){
+                if(!res.data)return;
+                var ns=Math.min(100,(res.data.career_score||30)+20);
+                supaClient.from("profiles").update({career_score:ns}).eq("id",uid).then(function(){
+                  supaClient.from("career_score_history").insert({user_id:uid,score:ns,delta:20,reason:"Course completed"}).then(function(){});
+                });
+              });
+            });
+          }catch(e){}
+        }
+        function upRefreshSummary(){
+          var all=upGetAll();var vals=Object.values(all);
+          var done=vals.filter(function(v){return v.status==="completed";}).length;
+          var inProg=vals.filter(function(v){return v.status==="in-progress";}).length;
+          var t=document.getElementById("up-stat-total");var d=document.getElementById("up-stat-done");var p=document.getElementById("up-stat-pts");
+          if(t)t.textContent=done+inProg;if(d)d.textContent=done;if(p)p.textContent=done*20;
+        }
+        function upShowCompleted(){
+          var all=upGetAll();
+          var done=Object.values(all).filter(function(v){return v.status==="completed";});
+          if(!done.length){alert("No completed courses yet.\n\nClick any course to start it, then mark it complete to earn +20 Career Score pts each!");return;}
+          alert("🏅 Your Completed Courses ("+done.length+"):\n\n"+done.map(function(v){return "✅ "+v.name;}).join("\n")+"\n\n+"+done.length*20+" Career Score points earned!");
+        }
+        /* ═══════════════════════════════════════════════
+           FIX #22 — SKILL GAP ANALYSER
+           ✅ 12 target roles with required skill sets
+           ✅ Reads user's profile skills from Supabase
+           ✅ Compares and shows Have / Missing lists
+           ✅ Direct course link for every missing skill
+           ✅ Match % ring chart
+        ═══════════════════════════════════════════════ */
+        var SG_ROLES = {
+          sde:          { label:'Software Engineer',        skills:['Data Structures','Algorithms','System Design','OOP','Git','SQL','REST APIs','Java or Python','Unit Testing','Linux'] },
+          sde2:         { label:'Senior Software Engineer', skills:['System Design','Distributed Systems','Microservices','CI/CD','Code Review','Mentoring','Cloud (AWS/GCP)','Databases','Performance Tuning','API Design'] },
+          datascience:  { label:'Data Scientist',           skills:['Python','Machine Learning','Statistics','SQL','Pandas','Scikit-learn','Data Visualization','Feature Engineering','A/B Testing','Deep Learning'] },
+          mlengineer:   { label:'ML / AI Engineer',         skills:['Python','TensorFlow or PyTorch','MLOps','Model Deployment','LLMs','Vector Databases','Cloud (AWS/GCP)','Docker','REST APIs','Data Pipelines'] },
+          dataengineer: { label:'Data Engineer',            skills:['SQL','Apache Spark','Kafka','Airflow','dbt','Python','Cloud Data Warehouses','ETL Pipelines','Data Modeling','Tableau or Power BI'] },
+          devops:       { label:'DevOps / SRE',             skills:['Kubernetes','Docker','CI/CD','Terraform','AWS or GCP','Linux','Bash Scripting','Monitoring (Prometheus)','Incident Management','Git'] },
+          product:      { label:'Product Manager',          skills:['Product Strategy','User Research','SQL','Data Analysis','Roadmapping','Wireframing','Stakeholder Management','A/B Testing','Agile','Presentation Skills'] },
+          ux:           { label:'UI / UX Designer',         skills:['Figma','User Research','Prototyping','Design Systems','Usability Testing','Information Architecture','Wireframing','Visual Design','Accessibility','Collaboration'] },
+          fullstack:    { label:'Full Stack Developer',     skills:['React or Vue','Node.js','REST APIs','SQL','MongoDB','Git','Authentication (JWT)','Deployment (Vercel/AWS)','CSS','TypeScript'] },
+          backend:      { label:'Backend Engineer',         skills:['Node.js or Go or Java','REST APIs','SQL','Redis','Message Queues','Microservices','Docker','Authentication','System Design','Unit Testing'] },
+          frontend:     { label:'Frontend Engineer',        skills:['React','TypeScript','CSS','Responsive Design','Web Performance','Accessibility','State Management','Testing (Jest)','Git','REST APIs'] },
+          cybersecurity:{ label:'Cybersecurity Analyst',   skills:['Network Security','SIEM Tools','Penetration Testing','Python','Linux','Incident Response','Cloud Security','Compliance (ISO27001)','Vulnerability Assessment','Risk Management'] }
+        };
+
+        /* Course links for missing skills */
+        var SG_COURSE_MAP = {
+          'Python':            'https://www.coursera.org/learn/python',
+          'Machine Learning':  'https://www.coursera.org/learn/machine-learning',
+          'SQL':               'https://www.kaggle.com/learn/intro-to-sql',
+          'Data Structures':   'https://www.coursera.org/learn/data-structures',
+          'Algorithms':        'https://www.coursera.org/learn/algorithms-part1',
+          'System Design':     'https://www.educative.io/courses/grokking-the-system-design-interview',
+          'Kubernetes':        'https://www.udemy.com/course/learn-kubernetes/',
+          'Docker':            'https://www.udemy.com/course/docker-mastery/',
+          'AWS or GCP':        'https://aws.amazon.com/training/',
+          'Cloud (AWS/GCP)':   'https://aws.amazon.com/training/',
+          'React':             'https://www.coursera.org/learn/front-end-react',
+          'TensorFlow or PyTorch': 'https://www.coursera.org/learn/introduction-tensorflow',
+          'Terraform':         'https://developer.hashicorp.com/terraform/tutorials',
+          'Figma':             'https://www.coursera.org/learn/ui-ux-design',
+          'User Research':     'https://www.coursera.org/learn/design-thinking-innovation',
+          'CI/CD':             'https://www.udemy.com/course/github-actions-the-complete-guide/',
+          'Deep Learning':     'https://www.coursera.org/specializations/deep-learning',
+          'Kafka':             'https://www.udemy.com/course/apache-kafka/',
+          'Apache Spark':      'https://www.udemy.com/course/apache-spark-programming-in-python-for-beginners/',
+          'dbt':               'https://courses.getdbt.com/courses/fundamentals',
+          'TypeScript':        'https://www.udemy.com/course/understanding-typescript/',
+          'Product Strategy':  'https://www.coursera.org/learn/product-management',
+          'Penetration Testing':'https://www.coursera.org/learn/ibm-penetration-testing',
+          'LLMs':              'https://www.deeplearning.ai/short-courses/large-language-models-semantic-search/',
+          'MLOps':             'https://www.coursera.org/specializations/machine-learning-engineering-for-production-mlops'
+        };
+        var SG_DEFAULT_COURSE = 'dashboard.html?page=upskill';
+
+        var _sgUserSkills = [];
+
+        /* Load user skills from profile or Supabase */
+        function sgLoadUserSkills(cb) {
+          /* Try from already-rendered profile skills first (fastest) */
+          var tags = document.querySelectorAll('#an-skills-row .skill-tag, #profile-skills-wrap .skill-tag, #skills-display .skill-tag');
+          var fromDom = Array.from(tags).map(function(t){ return t.textContent.trim().replace('×','').trim(); }).filter(Boolean);
+          if (fromDom.length) { _sgUserSkills = fromDom; if(cb) cb(); return; }
+
+          /* Fall back to Supabase */
+          try {
+            supaClient.auth.getSession().then(function(r) {
+              if (!r.data || !r.data.session) { if(cb) cb(); return; }
+              supaClient.from('profiles').select('skills').eq('id', r.data.session.user.id).maybeSingle().then(function(res) {
+                if (res.data && res.data.skills) {
+                  _sgUserSkills = Array.isArray(res.data.skills) ? res.data.skills :
+                    String(res.data.skills).split(',').map(function(s){ return s.trim(); }).filter(Boolean);
+                }
+                if(cb) cb();
+              }).catch(function(){ if(cb) cb(); });
+            });
+          } catch(e) { if(cb) cb(); }
+        }
+
+        function sgAnalyse() {
+          var roleKey = (document.getElementById('sg-role-select') || {}).value || '';
+          if (!roleKey) { alert('Please select a target role first.'); return; }
+          var result = document.getElementById('sg-result');
+          if (result) { result.innerHTML = '<div style="text-align:center;padding:20px;color:#64748B;font-size:13px">⏳ Analysing your skills...</div>'; result.classList.add('show'); }
+
+          sgLoadUserSkills(function() {
+            var role = SG_ROLES[roleKey];
+            if (!role || !result) return;
+
+            var required = role.skills;
+            var userNorm = _sgUserSkills.map(function(s){ return s.toLowerCase(); });
+
+            var have    = [];
+            var missing = [];
+
+            required.forEach(function(skill) {
+              var norm = skill.toLowerCase();
+              /* Fuzzy match — check if any user skill contains or is contained by required skill */
+              var matched = userNorm.some(function(us) {
+                return us.includes(norm) || norm.includes(us) ||
+                  us.split(/[\s\/]+/).some(function(w){ return norm.includes(w) && w.length > 3; });
+              });
+              if (matched) have.push(skill);
+              else missing.push(skill);
+            });
+
+            var pct = Math.round((have.length / required.length) * 100);
+            var pctColor = pct >= 70 ? '#10B981' : pct >= 40 ? '#F59E0B' : '#EF4444';
+            var label = pct >= 70 ? 'Strong match!' : pct >= 40 ? 'Good start — keep building' : 'Big opportunity ahead';
+
+            /* SVG ring */
+            var r = 28; var circ = 2 * Math.PI * r;
+            var dash = (pct / 100) * circ;
+            var ringHtml = '<svg class="sg-pct-svg" width="72" height="72" viewBox="0 0 72 72">'
+              + '<circle cx="36" cy="36" r="' + r + '" fill="none" stroke="#E2E8F0" stroke-width="7"/>'
+              + '<circle cx="36" cy="36" r="' + r + '" fill="none" stroke="' + pctColor + '" stroke-width="7" stroke-dasharray="' + dash + ' ' + (circ-dash) + '" stroke-linecap="round"/>'
+              + '</svg>';
+
+            var haveHtml = have.map(function(s) {
+              return '<div class="sg-skill-row"><div class="sg-have-dot"></div><span class="sg-skill-name">' + s + '</span><span style="font-size:10.5px;color:#10B981;font-weight:700">✓ Have</span></div>';
+            }).join('') || '<div style="font-size:12px;color:#64748B;padding:8px 0">No matching skills yet — time to start!</div>';
+
+            var missingHtml = missing.map(function(s) {
+              var courseUrl = SG_COURSE_MAP[s] || SG_DEFAULT_COURSE;
+              return '<div class="sg-skill-row"><div class="sg-miss-dot"></div><span class="sg-skill-name">' + s + '</span>'
+                + '<a class="sg-course-link" href="' + courseUrl + '" target="_blank">Learn →</a>'
+              + '</div>';
+            }).join('') || '<div style="font-size:12px;color:#15803D;padding:8px 0;font-weight:600">🎉 You have all required skills!</div>';
+
+            result.innerHTML =
+              '<div class="sg-score-row">'
+                + '<div class="sg-pct-ring">' + ringHtml + '<div class="sg-pct-num">' + pct + '%</div></div>'
+                + '<div class="sg-score-info">'
+                  + '<div class="sg-score-label">' + label + '</div>'
+                  + '<div class="sg-score-sub">You have <strong>' + have.length + '</strong> of <strong>' + required.length + '</strong> skills required for <strong>' + role.label + '</strong>'
+                  + (missing.length ? '. Fill the ' + missing.length + ' gaps to become job-ready.' : '!') + '</div>'
+                + '</div>'
+              + '</div>'
+              + '<div class="sg-lists">'
+                + '<div class="sg-list-card have"><div class="sg-list-title">✅ Skills you have (' + have.length + ')</div>' + haveHtml + '</div>'
+                + '<div class="sg-list-card missing"><div class="sg-list-title">📚 Skills to build (' + missing.length + ')</div>' + missingHtml + '</div>'
+              + '</div>';
+
+            result.classList.add('show');
+            result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          });
+        }
+
         if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){renderFilters();renderTracks();});}else{renderFilters();renderTracks();}
       })();
       

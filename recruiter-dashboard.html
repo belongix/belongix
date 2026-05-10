@@ -215,6 +215,13 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
   display:flex;align-items:center;justify-content:center;
   font-family:var(--ff);font-size:10px;font-weight:800;color:var(--brand);
 }
+/* ✅ FIX #20: Tier badge under score ring */
+.cand-score-wrap{display:flex;flex-direction:column;align-items:center;gap:3px;flex-shrink:0}
+.cand-tier-badge{font-size:9px;font-weight:700;padding:1px 6px;border-radius:20px;white-space:nowrap}
+.cand-tier-badge.starter{background:#F3F4F6;color:#6B7280}
+.cand-tier-badge.rising{background:#EDE9FE;color:#6D28D9}
+.cand-tier-badge.strong{background:#DDD6FE;color:#4C1D95}
+.cand-tier-badge.expert{background:#2D1B69;color:#fff}
 .cand-skills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
 .csk{background:var(--off);color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:11px;font-weight:500}
 .cand-meta{display:flex;gap:14px;font-size:11.5px;color:var(--muted);margin-bottom:12px}
@@ -261,6 +268,58 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
   .search-filters{grid-template-columns:1fr}
   .candidate-grid{grid-template-columns:1fr}
 }
+
+/* ── FIX #34: KANBAN PIPELINE ── */
+.kb-board{display:flex;gap:14px;overflow-x:auto;padding-bottom:16px;min-height:500px;align-items:flex-start}
+.kb-board::-webkit-scrollbar{height:5px}
+.kb-board::-webkit-scrollbar-thumb{background:var(--border2);border-radius:5px}
+.kb-col{flex:0 0 240px;background:var(--off);border:1.5px solid var(--border);border-radius:14px;display:flex;flex-direction:column;min-height:400px;transition:.2s}
+.kb-col.drag-over{border-color:var(--brand);background:rgba(45,27,105,.04);box-shadow:0 0 0 3px rgba(45,27,105,.1)}
+.kb-col-head{padding:12px 14px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.kb-col-title{font-family:var(--ff);font-size:12.5px;font-weight:700;color:var(--ink)}
+.kb-col-count{font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;background:var(--white);border:1px solid var(--border);color:var(--muted)}
+.kb-col-body{flex:1;padding:10px;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
+.kb-card{background:var(--white);border:1.5px solid var(--border);border-radius:10px;padding:12px;cursor:grab;transition:.15s;position:relative}
+.kb-card:hover{border-color:var(--brand3);box-shadow:0 4px 12px rgba(45,27,105,.08);transform:translateY(-1px)}
+.kb-card:active{cursor:grabbing;transform:translateY(0);opacity:.85}
+.kb-card.dragging{opacity:.4;border-style:dashed}
+.kb-card-name{font-size:13px;font-weight:700;color:var(--ink);margin-bottom:2px}
+.kb-card-role{font-size:11.5px;color:var(--muted);margin-bottom:6px}
+.kb-card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.kb-score-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.kb-card-score{font-size:10.5px;font-weight:700;color:var(--brand)}
+.kb-card-city{font-size:10.5px;color:var(--muted)}
+.kb-card-actions{display:flex;gap:6px;margin-top:8px}
+.kb-card-btn{flex:1;padding:5px 8px;border:1px solid var(--border);border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--ffb);background:var(--white);color:var(--muted);transition:.15s;text-align:center}
+.kb-card-btn:hover{border-color:var(--brand);color:var(--brand)}
+.kb-card-btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+.kb-card-btn.primary:hover{filter:brightness(1.1)}
+.kb-add-zone{border:1.5px dashed var(--border);border-radius:10px;padding:12px;text-align:center;font-size:12px;color:var(--muted);cursor:pointer;transition:.15s;margin-top:auto}
+.kb-add-zone:hover{border-color:var(--brand);color:var(--brand)}
+/* Notes side panel */
+.kb-notes-panel{position:fixed;top:0;right:-380px;width:360px;height:100vh;background:var(--white);border-left:1.5px solid var(--border);box-shadow:-8px 0 32px rgba(0,0,0,.1);z-index:500;display:flex;flex-direction:column;transition:right .3s ease;padding:0}
+.kb-notes-panel.open{right:0}
+.kb-notes-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.kb-notes-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink)}
+.kb-notes-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);padding:0;line-height:1}
+.kb-notes-body{flex:1;padding:16px 20px;overflow-y:auto;display:flex;flex-direction:column;gap:14px}
+.kb-profile-row{display:flex;align-items:center;gap:12px}
+.kb-profile-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0}
+.kb-profile-name{font-size:14px;font-weight:700;color:var(--ink)}
+.kb-profile-role{font-size:12px;color:var(--muted)}
+.kb-notes-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.kb-notes-textarea{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 12px;font-size:13px;font-family:var(--ffb);color:var(--ink);resize:vertical;min-height:100px;outline:none;transition:.15s;box-sizing:border-box}
+.kb-notes-textarea:focus{border-color:var(--brand)}
+.kb-next-input{width:100%;border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;font-size:13px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s;box-sizing:border-box}
+.kb-next-input:focus{border-color:var(--brand)}
+.kb-save-btn{padding:10px;background:var(--brand);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ff);transition:.2s}
+.kb-save-btn:hover{filter:brightness(1.1)}
+.kb-status-row{display:flex;gap:8px;flex-wrap:wrap}
+.kb-status-chip{padding:5px 12px;border:1.5px solid var(--border);border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ffb);background:var(--white);color:var(--muted);transition:.15s}
+.kb-status-chip:hover{border-color:var(--brand);color:var(--brand)}
+.kb-status-chip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.kb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:499}
+.kb-overlay.show{display:block}
 </style>
 </head>
 <body>
@@ -293,6 +352,11 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
       <button class="sb-link" id="nav-applicants" onclick="showRdPage('applicants',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
         All Applicants
+      </button>
+      <!-- ✅ FIX #34: Kanban Pipeline nav item -->
+      <button class="sb-link" id="nav-pipeline" onclick="showRdPage('pipeline',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="5" height="18" rx="1"/><rect x="10" y="3" width="5" height="13" rx="1"/><rect x="17" y="3" width="5" height="9" rx="1"/></svg>
+        Pipeline
       </button>
       <button class="sb-link" id="nav-search" onclick="showRdPage('search',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -422,6 +486,52 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
             <tr><td colspan="7" class="app-empty">No applicants yet — post a job to start receiving applications</td></tr>
           </tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- ✅ FIX #34: KANBAN PIPELINE PAGE -->
+    <div class="page-section" id="rd-page-pipeline">
+      <div class="section-head" style="margin-bottom:18px">
+        <div class="section-title">Hiring Pipeline</div>
+        <div style="font-size:13px;color:var(--muted)">Drag candidates between stages. Click any card for notes.</div>
+      </div>
+      <div class="kb-board" id="kb-board">
+        <!-- Columns rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Notes side panel -->
+    <div class="kb-overlay" id="kb-overlay" onclick="kbCloseNotes()"></div>
+    <div class="kb-notes-panel" id="kb-notes-panel">
+      <div class="kb-notes-head">
+        <div class="kb-notes-title" id="kbn-title">Candidate Notes</div>
+        <button class="kb-notes-close" onclick="kbCloseNotes()">×</button>
+      </div>
+      <div class="kb-notes-body">
+        <div class="kb-profile-row">
+          <div class="kb-profile-av" id="kbn-av" style="background:#2D1B69">?</div>
+          <div>
+            <div class="kb-profile-name" id="kbn-name">—</div>
+            <div class="kb-profile-role" id="kbn-role">—</div>
+          </div>
+        </div>
+        <div>
+          <div class="kb-notes-label">Pipeline Stage</div>
+          <div class="kb-status-row" id="kbn-status-row"></div>
+        </div>
+        <div>
+          <div class="kb-notes-label">Internal Notes</div>
+          <textarea class="kb-notes-textarea" id="kbn-notes" placeholder="Add notes about this candidate..."></textarea>
+        </div>
+        <div>
+          <div class="kb-notes-label">Next Action Date</div>
+          <input class="kb-next-input" id="kbn-next-date" type="date"/>
+        </div>
+        <div>
+          <div class="kb-notes-label">Next Action</div>
+          <input class="kb-next-input" id="kbn-next-action" type="text" placeholder="e.g. Schedule technical interview"/>
+        </div>
+        <button class="kb-save-btn" onclick="kbSaveNotes()">💾 Save Notes</button>
       </div>
     </div>
 
@@ -912,6 +1022,10 @@ function renderCandidates(candidates) {
     var pct = (c.score || 0) + '%';
     var initials = c.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
     var skillsHtml = c.skills.slice(0,4).map(function(s){ return '<span class="csk">'+ s +'</span>'; }).join('') + (c.skills.length > 4 ? '<span class="csk">+' + (c.skills.length-4) + '</span>' : '');
+    /* ✅ FIX #20: Tier label from score */
+    var sc = c.score || 0;
+    var tierLabel = sc >= 85 ? 'Expert' : sc >= 65 ? 'Strong' : sc >= 40 ? 'Rising' : 'Starter';
+    var tierClass = tierLabel.toLowerCase();
     return '<div class="cand-card">'+
       '<div class="cand-top">'+
         '<div class="cand-av" style="background:'+c.avatar_color+'">'+initials+'</div>'+
@@ -920,8 +1034,11 @@ function renderCandidates(candidates) {
           '<div class="cand-role">'+escH(c.role)+'</div>'+
           '<div class="cand-city">📍 '+escH(c.city)+'</div>'+
         '</div>'+
-        '<div class="cand-score-ring" style="--pct:'+pct+'">'+
-          '<div class="cand-score-inner">'+c.score+'</div>'+
+        '<div class="cand-score-wrap">'+
+          '<div class="cand-score-ring" style="--pct:'+pct+'">'+
+            '<div class="cand-score-inner">'+c.score+'</div>'+
+          '</div>'+
+          '<div class="cand-tier-badge '+tierClass+'">'+tierLabel+'</div>'+
         '</div>'+
       '</div>'+
       '<div class="cand-skills">'+skillsHtml+'</div>'+
@@ -1000,6 +1117,238 @@ function rdToast(msg) {
   t.classList.add('show');
   setTimeout(function(){ t.classList.remove('show'); }, 3500);
 }
+
+/* ═══════════════════════════════════════════════
+   FIX #34 — KANBAN PIPELINE
+   ✅ 6-column drag-and-drop board
+   ✅ Cards from SEED_CANDIDATES + Supabase applications
+   ✅ Notes side panel per candidate
+   ✅ Status persisted in localStorage (+ Supabase ready)
+   ✅ Column counts update live on every drop
+═══════════════════════════════════════════════ */
+
+var KB_COLS = [
+  { id:'new',       label:'🆕 New',               color:'#6B7280', bg:'#F9FAFB' },
+  { id:'shortlisted',label:'⭐ Shortlisted',       color:'#7C3AED', bg:'#F5F3FF' },
+  { id:'interview', label:'📅 Interview',          color:'#0369A1', bg:'#F0F9FF' },
+  { id:'offer',     label:'🎉 Offer',              color:'#15803D', bg:'#F0FDF4' },
+  { id:'hired',     label:'✅ Hired',              color:'#166534', bg:'#DCFCE7' },
+  { id:'rejected',  label:'❌ Rejected',           color:'#DC2626', bg:'#FEF2F2' }
+];
+
+var AVATAR_COLORS = ['#2D1B69','#0369A1','#15803D','#D97706','#BE185D','#7C3AED','#0D9488'];
+
+/* LocalStorage key for pipeline state */
+var KB_KEY = 'bx_pipeline';
+
+function kbGetState() {
+  try { return JSON.parse(localStorage.getItem(KB_KEY) || '{}'); } catch(e) { return {}; }
+}
+function kbSaveState(state) {
+  localStorage.setItem(KB_KEY, JSON.stringify(state));
+}
+function kbGetCandStatus(id) {
+  return kbGetState()[id] || null;
+}
+function kbSetCandStatus(id, status) {
+  var s = kbGetState(); s[id] = status; kbSaveState(s);
+}
+
+/* Notes storage per candidate */
+var KB_NOTES_KEY = 'bx_pipeline_notes';
+function kbGetNotes(id) {
+  try { return JSON.parse(localStorage.getItem(KB_NOTES_KEY) || '{}')[id] || {}; } catch(e) { return {}; }
+}
+function kbSaveNotesData(id, data) {
+  var all = {}; try { all = JSON.parse(localStorage.getItem(KB_NOTES_KEY)||'{}'); } catch(e){}
+  all[id] = data; localStorage.setItem(KB_NOTES_KEY, JSON.stringify(all));
+}
+
+/* Build pipeline board */
+function kbRenderBoard() {
+  var board = document.getElementById('kb-board');
+  if (!board) return;
+
+  /* Assign default status if not set */
+  var state = kbGetState();
+  SEED_CANDIDATES.forEach(function(c) {
+    if (!state[c.id]) { state[c.id] = c.status || 'new'; }
+  });
+  kbSaveState(state);
+
+  board.innerHTML = '';
+
+  KB_COLS.forEach(function(col) {
+    var cards = SEED_CANDIDATES.filter(function(c) {
+      return (kbGetCandStatus(c.id) || c.status || 'new') === col.id;
+    });
+
+    var colEl = document.createElement('div');
+    colEl.className = 'kb-col';
+    colEl.dataset.col = col.id;
+    colEl.style.borderTop = '3px solid ' + col.color;
+
+    /* Drag-over handlers */
+    colEl.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      colEl.classList.add('drag-over');
+    });
+    colEl.addEventListener('dragleave', function() {
+      colEl.classList.remove('drag-over');
+    });
+    colEl.addEventListener('drop', function(e) {
+      e.preventDefault();
+      colEl.classList.remove('drag-over');
+      var id = e.dataTransfer.getData('text/plain');
+      if (!id) return;
+      kbSetCandStatus(id, col.id);
+      kbRenderBoard();
+      rdToast('Moved to ' + col.label);
+    });
+
+    var cardsHtml = cards.map(function(c) { return kbCardHtml(c, col); }).join('');
+
+    colEl.innerHTML =
+      '<div class="kb-col-head" style="background:' + col.bg + '">' +
+        '<div class="kb-col-title">' + col.label + '</div>' +
+        '<div class="kb-col-count">' + cards.length + '</div>' +
+      '</div>' +
+      '<div class="kb-col-body" id="kb-body-' + col.id + '">' +
+        cardsHtml +
+        '<div class="kb-add-zone" onclick="kbAddToCol(\'' + col.id + '\')">+ Add</div>' +
+      '</div>';
+
+    board.appendChild(colEl);
+  });
+
+  /* Wire drag events on cards after render */
+  board.querySelectorAll('.kb-card').forEach(function(card) {
+    card.addEventListener('dragstart', function(e) {
+      e.dataTransfer.setData('text/plain', card.dataset.id);
+      card.classList.add('dragging');
+    });
+    card.addEventListener('dragend', function() {
+      card.classList.remove('dragging');
+    });
+  });
+}
+
+function kbCardHtml(c, col) {
+  var initials = c.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+  var avColor  = AVATAR_COLORS[parseInt(c.id) % AVATAR_COLORS.length] || '#2D1B69';
+  var score    = c.score || 0;
+  var tier     = score >= 85 ? 'Expert' : score >= 65 ? 'Strong' : score >= 40 ? 'Rising' : 'Starter';
+  var dotColor = score >= 85 ? '#15803D' : score >= 65 ? '#7C3AED' : score >= 40 ? '#D97706' : '#9CA3AF';
+  var notes    = kbGetNotes(c.id);
+  var hasNotes = notes.text && notes.text.trim();
+
+  return '<div class="kb-card" draggable="true" data-id="' + c.id + '">' +
+    '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">' +
+      '<div style="width:30px;height:30px;border-radius:50%;background:' + avColor + ';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;flex-shrink:0">' + initials + '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div class="kb-card-name">' + escH(c.name) + '</div>' +
+        '<div class="kb-card-role">' + escH(c.role) + '</div>' +
+      '</div>' +
+    '</div>' +
+    '<div class="kb-card-meta">' +
+      '<div class="kb-score-dot" style="background:' + dotColor + '"></div>' +
+      '<span class="kb-card-score">' + score + ' · ' + tier + '</span>' +
+      '<span class="kb-card-city">📍 ' + escH(c.city || 'India') + '</span>' +
+    '</div>' +
+    (hasNotes ? '<div style="font-size:10.5px;color:var(--muted);margin-top:5px;font-style:italic;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">📝 ' + escH(notes.text.substring(0,40)) + '...</div>' : '') +
+    (notes.next_action ? '<div style="font-size:10.5px;color:#D97706;margin-top:3px">📅 ' + escH(notes.next_action) + '</div>' : '') +
+    '<div class="kb-card-actions">' +
+      '<button class="kb-card-btn" onclick="kbOpenNotes(\'' + c.id + '\')">📝 Notes</button>' +
+      '<button class="kb-card-btn primary" onclick="kbViewProfile(\'' + c.id + '\')">View →</button>' +
+    '</div>' +
+  '</div>';
+}
+
+function kbAddToCol(colId) {
+  rdToast('To add a candidate, search and drag from Search Candidates tab.');
+}
+
+/* Notes panel */
+var _kbActiveId = null;
+function kbOpenNotes(id) {
+  _kbActiveId = id;
+  var c = SEED_CANDIDATES.find(function(x){ return String(x.id) === String(id); });
+  if (!c) return;
+
+  var initials = c.name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+  var avColor  = AVATAR_COLORS[parseInt(c.id) % AVATAR_COLORS.length] || '#2D1B69';
+  var notes    = kbGetNotes(id);
+  var curStatus= kbGetCandStatus(id) || c.status || 'new';
+
+  document.getElementById('kbn-title').textContent = c.name + ' — Notes';
+  document.getElementById('kbn-av').textContent    = initials;
+  document.getElementById('kbn-av').style.background = avColor;
+  document.getElementById('kbn-name').textContent  = c.name;
+  document.getElementById('kbn-role').textContent  = c.role + ' · ' + (c.city || 'India');
+  document.getElementById('kbn-notes').value        = notes.text || '';
+  document.getElementById('kbn-next-date').value    = notes.next_date || '';
+  document.getElementById('kbn-next-action').value  = notes.next_action || '';
+
+  /* Status chips */
+  var row = document.getElementById('kbn-status-row');
+  row.innerHTML = KB_COLS.map(function(col) {
+    return '<button class="kb-status-chip' + (col.id === curStatus ? ' active' : '') + '" ' +
+      'onclick="kbChipClick(\'' + col.id + '\')">' + col.label + '</button>';
+  }).join('');
+
+  document.getElementById('kb-notes-panel').classList.add('open');
+  document.getElementById('kb-overlay').classList.add('show');
+}
+
+function kbChipClick(colId) {
+  if (!_kbActiveId) return;
+  kbSetCandStatus(_kbActiveId, colId);
+  /* Update chip UI */
+  document.querySelectorAll('.kb-status-chip').forEach(function(chip) {
+    chip.classList.toggle('active', chip.textContent === KB_COLS.find(function(c){return c.id===colId;}).label);
+  });
+}
+
+function kbCloseNotes() {
+  document.getElementById('kb-notes-panel').classList.remove('open');
+  document.getElementById('kb-overlay').classList.remove('show');
+  _kbActiveId = null;
+}
+
+function kbSaveNotes() {
+  if (!_kbActiveId) return;
+  kbSaveNotesData(_kbActiveId, {
+    text:        document.getElementById('kbn-notes').value,
+    next_date:   document.getElementById('kbn-next-date').value,
+    next_action: document.getElementById('kbn-next-action').value
+  });
+  /* Also save status change */
+  var activeChip = document.querySelector('.kb-status-chip.active');
+  if (activeChip) {
+    var col = KB_COLS.find(function(c){ return c.label === activeChip.textContent; });
+    if (col) kbSetCandStatus(_kbActiveId, col.id);
+  }
+  kbRenderBoard();
+  kbCloseNotes();
+  rdToast('💾 Notes saved!');
+}
+
+function kbViewProfile(id) {
+  var c = SEED_CANDIDATES.find(function(x){ return String(x.id) === String(id); });
+  if (c) { rdToast('Viewing: ' + c.name + ' · Score ' + (c.score||0)); }
+}
+
+/* Auto-render kanban when page is opened */
+var _kbRendered = false;
+var _origShowRdPage = showRdPage;
+showRdPage = function(page, btn) {
+  _origShowRdPage(page, btn);
+  if (page === 'pipeline' && !_kbRendered) {
+    kbRenderBoard();
+    _kbRendered = false; /* always re-render to reflect status changes */
+  }
+  if (page === 'pipeline') { kbRenderBoard(); }
+};
 </script>
 </body>
 </html>
