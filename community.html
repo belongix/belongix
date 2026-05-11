@@ -1,501 +1,943 @@
 <!DOCTYPE html>
-<html lang="en-IN">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Community — Career Q&A | Belongix</title>
-<meta name="description" content="Ask career questions, share tips and success stories with India's tech community. Get answers from professionals and Bexi AI."/>
+<title>Community — Belongix</title>
+<meta name="description" content="Ask career questions, get answers from real Indian professionals and Bexi AI. India's #1 career Q&A community."/>
+<meta property="og:title" content="Belongix Community — Career Q&A for Indian Professionals"/>
+<meta property="og:description" content="Ask anything about jobs, salary, interviews, and career growth. Get answers from real professionals and Bexi AI."/>
+<meta property="og:image" content="https://www.belongix.in/icons/icon-512.png"/>
 <link rel="icon" href="icons/icon-32.png"/>
-<meta name="theme-color" content="#2D1B69"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;450;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
-:root{--brand:#2D1B69;--brand2:#4C2FAA;--brand3:#6B48CC;--accent:#FF5C35;--green:#10B981;--amber:#F59E0B;--ink:#0D0D1A;--ink2:#1A1A2E;--muted:#5A5A7A;--subtle:#8B8BA8;--bg:#F7F7FC;--off:#F0F0F8;--off2:#EFEFF8;--white:#FFFFFF;--border:#E4E4F0;--ff:'Sora',sans-serif;--ffb:'DM Sans',sans-serif;--max:900px;--shadow:0 2px 8px rgba(45,27,105,.07),0 8px 32px rgba(45,27,105,.05)}
-html{scroll-behavior:smooth}
-body{font-family:var(--ffb);color:var(--ink);background:var(--bg);min-height:100vh}
-/* NAV */
-nav{background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 5%;height:62px;display:flex;align-items:center;position:sticky;top:0;z-index:200}
-.nav-in{max-width:var(--max);width:100%;margin:0 auto;display:flex;align-items:center}
-.nav-logo{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.4px;margin-right:auto}
-.nav-logo span{color:var(--accent)}
-.nav-btn{padding:8px 18px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb);border:1.5px solid var(--border);background:var(--white);color:var(--ink2);text-decoration:none;transition:.15s;display:inline-flex;align-items:center;gap:6px;margin-left:10px}
-.nav-btn:hover{border-color:var(--brand);color:var(--brand)}
-.nav-btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
-.nav-btn.primary:hover{background:var(--brand2)}
-/* HERO */
-.community-hero{background:linear-gradient(135deg,#1A0D40,#2D1B69,#3D2890);padding:48px 5% 40px;text-align:center}
-.community-hero h1{font-family:var(--ff);font-size:clamp(26px,4vw,38px);font-weight:800;color:#fff;letter-spacing:-.5px;margin-bottom:10px}
-.community-hero p{font-size:15px;color:rgba(255,255,255,.72);max-width:500px;margin:0 auto 24px}
-.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-.btn-ask{padding:12px 24px;border-radius:10px;background:var(--accent);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s}
-.btn-ask:hover{background:#FF7A59;transform:translateY(-1px)}
-.btn-ghost{padding:12px 24px;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;border:1.5px solid rgba(255,255,255,.25);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ffb);text-decoration:none;display:inline-flex;align-items:center}
-/* LAYOUT */
-.community-wrap{max-width:var(--max);margin:0 auto;padding:28px 5% 80px;display:grid;grid-template-columns:1fr 280px;gap:24px;align-items:start}
-@media(max-width:768px){.community-wrap{grid-template-columns:1fr}}
-/* FILTERS */
-.filter-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
-.f-btn{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);color:var(--muted);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s}
-.f-btn.active,.f-btn:hover{background:var(--brand);color:#fff;border-color:var(--brand)}
-/* POST CARD */
-.post-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:20px;margin-bottom:12px;transition:.2s;cursor:pointer}
-.post-card:hover{border-color:#C4B0F8;box-shadow:var(--shadow)}
-.post-card.pinned{border-color:var(--amber);background:#FFFBEB}
-.post-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
-.post-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;font-family:var(--ff)}
-.post-meta{flex:1;min-width:0}
-.post-author{font-size:13px;font-weight:700;color:var(--ink)}
-.post-time{font-size:11.5px;color:var(--subtle);margin-top:1px}
-.post-type-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:6px}
-.post-type-badge.question{background:#EFF6FF;color:#1D4ED8}
-.post-type-badge.tip{background:#F0FDF4;color:#15803D}
-.post-type-badge.success{background:#FDF4FF;color:#7E22CE}
-.post-type-badge.bexi{background:var(--off2);color:var(--brand)}
-.post-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.4}
-.post-body{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:12px}
-.post-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
-.post-tag{font-size:11px;background:var(--off2);color:var(--brand);border-radius:20px;padding:3px 9px;font-weight:600}
-.post-footer{display:flex;align-items:center;gap:12px}
-.post-action{display:flex;align-items:center;gap:5px;font-size:12.5px;color:var(--muted);cursor:pointer;padding:4px 8px;border-radius:7px;transition:.15s;border:none;background:none;font-family:var(--ffb)}
-.post-action:hover{background:var(--off);color:var(--brand)}
-.post-action.voted{color:var(--brand);font-weight:700}
-.post-replies-count{margin-left:auto;font-size:12px;color:var(--subtle)}
-/* REPLIES */
-.replies-section{margin-top:14px;border-top:1px solid var(--border);padding-top:14px;display:none}
-.post-card.expanded .replies-section{display:block}
-.reply-item{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
-.reply-item:last-child{border:none;padding-bottom:0}
-.reply-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;flex-shrink:0;font-family:var(--ff)}
-.reply-body{flex:1;min-width:0}
-.reply-author{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px}
-.reply-text{font-size:13px;color:var(--muted);line-height:1.65}
-.reply-bexi{background:var(--off2);border-radius:10px;padding:10px 12px}
-.reply-inp-row{display:flex;gap:8px;margin-top:10px}
-.reply-inp{flex:1;border:1.5px solid var(--border);border-radius:9px;padding:8px 12px;font-size:13px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s}
-.reply-inp:focus{border-color:var(--brand3);box-shadow:0 0 0 2px rgba(107,72,204,.09)}
-.reply-send{padding:8px 14px;border-radius:9px;background:var(--brand);color:#fff;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s}
-.reply-send:hover{background:var(--brand2)}
-/* SIDEBAR */
-.sidebar-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px}
-.sc-title{font-family:var(--ff);font-size:13px;font-weight:700;color:var(--ink);margin-bottom:12px;text-transform:uppercase;letter-spacing:.4px}
-.trending-tag{display:inline-block;background:var(--off2);color:var(--brand);border-radius:20px;padding:4px 11px;font-size:12px;font-weight:600;margin:0 4px 6px 0;cursor:pointer;transition:.15s}
-.trending-tag:hover{background:var(--brand);color:#fff}
-/* ASK MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center;padding:20px}
-.modal-overlay.open{display:flex}
-.modal-box{background:var(--white);border-radius:20px;padding:28px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
-.modal-title{font-family:var(--ff);font-size:18px;font-weight:800;color:var(--ink);margin-bottom:6px}
-.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
-.field{margin-bottom:16px}
-.field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
-.finp,.fta,.fsel{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13.5px;font-family:var(--ffb);color:var(--ink);background:#FAFAFE;outline:none;transition:.15s}
-.finp:focus,.fta:focus,.fsel:focus{border-color:var(--brand3);background:#fff}
-.fta{resize:vertical;min-height:100px;line-height:1.65}
-.fsel{cursor:pointer;-webkit-appearance:none;appearance:none}
-.tag-inp-wrap{display:flex;flex-wrap:wrap;gap:5px;border:1.5px solid var(--border);border-radius:9px;padding:7px 10px;background:#FAFAFE;min-height:42px;cursor:text}
-.tag-inp-wrap:focus-within{border-color:var(--brand3);background:#fff}
-.tag-item{background:var(--off2);color:var(--brand);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:4px}
-.tag-item button{background:none;border:none;cursor:pointer;color:var(--brand);font-size:14px;padding:0;line-height:1}
-.tag-input-el{border:none;outline:none;font-family:var(--ffb);font-size:13px;color:var(--ink);background:transparent;min-width:100px;flex:1}
-.post-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--brand),var(--brand3));color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.2s;margin-top:8px}
-.post-btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(45,27,105,.3)}
-.post-btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
-/* TOAST */
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#0D0D1A;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;transition:.3s;opacity:0}
-#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-/* EMPTY STATE */
-.empty-state{text-align:center;padding:56px 20px}
-.empty-icon{font-size:40px;margin-bottom:12px}
-.empty-title{font-size:15px;font-weight:700;color:var(--ink2);margin-bottom:6px}
-.empty-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+:root {
+  --brand:  #2D1B69;
+  --brand2: #4C2FAA;
+  --brand3: #7C5CDB;
+  --accent: #06B6D4;
+  --green:  #10B981;
+  --amber:  #F59E0B;
+  --ink:    #0D0D1A;
+  --muted:  #64748B;
+  --subtle: #94A3B8;
+  --border: #E2E8F0;
+  --bg:     #F8F7FF;
+  --white:  #FFFFFF;
+  --off:    #F5F3FF;
+  --ff:     'Sora', sans-serif;
+  --ffb:    'DM Sans', sans-serif;
+  --shadow: 0 2px 16px rgba(45,27,105,.08);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--ffb); background: var(--bg); color: var(--ink); min-height: 100vh; }
+
+/* ── NAVBAR ── */
+.nav { position: sticky; top: 0; z-index: 200; background: rgba(255,255,255,.94); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 58px; }
+.nav-logo { font-family: var(--ff); font-size: 20px; font-weight: 800; color: var(--brand); text-decoration: none; letter-spacing: -.3px; }
+.nav-logo span { color: var(--brand3); }
+.nav-links { display: flex; align-items: center; gap: 4px; }
+.nav-link { padding: 6px 13px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; transition: .15s; }
+.nav-link:hover { color: var(--brand); background: var(--off); }
+.nav-link.active { color: var(--brand); background: var(--off); }
+.nav-right { display: flex; align-items: center; gap: 8px; }
+.nav-btn { padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--ffb); text-decoration: none; transition: .15s; }
+.nav-btn.ghost { border: 1.5px solid var(--border); background: none; color: var(--ink); }
+.nav-btn.ghost:hover { border-color: var(--brand); color: var(--brand); }
+.nav-btn.solid { background: var(--brand); color: #fff; border: none; }
+.nav-btn.solid:hover { filter: brightness(1.1); }
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 60%, #3B4DE8 100%);
+  padding: 44px 24px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M0 0h40v40H0V0zm40 40h40v40H40V40zm0-40h2l-2 2V0zm0 4l4-4h2l-6 6V4zm0 4l8-8h2L40 10V8zm0 4L52 0h2L40 14v-2zm0 4L56 0h2L40 18v-2zm0 4L60 0h2L40 22v-2zm0 4L64 0h2L40 26v-2zm0 4L68 0h2L40 30v-2zm0 4L72 0h2L40 34v-2zm0 4L76 0h2L40 38v-2zm0 4L80 0v2L42 40h-2zm4 0L80 4v2L46 40h-2zm4 0L80 8v2L50 40h-2zm4 0L80 12v2L54 40h-2zm4 0L80 16v2L58 40h-2zm4 0L80 20v2L62 40h-2zm4 0L80 24v2L66 40h-2zm4 0L80 28v2L70 40h-2zm4 0L80 32v2L74 40h-2zm4 0L80 36v2L78 40h-2zm4 0L80 40v-2h-2l2-2zM0 0h2L0 2V0zm4 0h2L0 6V4zm4 0h2L0 10V8zm4 0h2L0 14v-2zm4 0h2L0 18v-2zm4 0h2L0 22v-2zm4 0h2L0 26v-2zm4 0h2L0 30v-2zm4 0h2L0 34v-2zm4 0h2L0 38v-2zm4 0h2L0 42v-2zm4 0h2L0 46v-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.page-header-inner { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; }
+.page-header h1 { font-family: var(--ff); font-size: 30px; font-weight: 800; color: #fff; margin-bottom: 10px; letter-spacing: -.5px; }
+.page-header p { font-size: 14.5px; color: rgba(255,255,255,.8); line-height: 1.7; margin-bottom: 22px; }
+.ask-hero-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 26px; background: #fff; color: var(--brand); border: none; border-radius: 12px; font-family: var(--ff); font-size: 14px; font-weight: 700; cursor: pointer; transition: .2s; box-shadow: 0 4px 20px rgba(0,0,0,.15); }
+.ask-hero-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.2); }
+
+/* ── LAYOUT ── */
+.page-body { max-width: 1080px; margin: 0 auto; padding: 28px 20px 80px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
+@media(max-width:760px){ .page-body{grid-template-columns:1fr} .sidebar{display:none} }
+
+/* ── TAG FILTER BAR ── */
+.tag-bar { display: flex; gap: 7px; flex-wrap: nowrap; overflow-x: auto; margin-bottom: 18px; padding-bottom: 4px; }
+.tag-bar::-webkit-scrollbar { height: 3px; }
+.tag-bar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.tag-chip { padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); transition: .15s; white-space: nowrap; flex-shrink: 0; }
+.tag-chip:hover { border-color: var(--brand); color: var(--brand); }
+.tag-chip.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+/* ── SORT BAR ── */
+.sort-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
+.sort-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+.sort-btns { display: flex; gap: 6px; }
+.sort-btn { padding: 5px 13px; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); transition: .15s; font-family: var(--ffb); }
+.sort-btn.active { background: var(--off); color: var(--brand); border-color: var(--brand3); }
+.sort-btn:hover { border-color: var(--brand); color: var(--brand); }
+
+/* ── POST CARD ── */
+.post-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; cursor: pointer; transition: .2s; position: relative; }
+.post-card:hover { border-color: var(--brand3); box-shadow: var(--shadow); transform: translateY(-1px); }
+.post-card.expanded { border-color: var(--brand); box-shadow: 0 4px 24px rgba(45,27,105,.12); transform: none; cursor: default; }
+.post-top { display: flex; align-items: flex-start; gap: 12px; }
+.post-vote { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+.vote-btn { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: .15s; color: var(--muted); }
+.vote-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--off); }
+.vote-btn.voted { background: var(--brand); border-color: var(--brand); color: #fff; }
+.vote-count { font-family: var(--ff); font-size: 13px; font-weight: 800; color: var(--ink); }
+.post-body { flex: 1; min-width: 0; }
+.post-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px; }
+.post-tag { padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.post-title { font-family: var(--ff); font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; line-height: 1.4; }
+.post-body-text { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 10px; display: none; }
+.post-body-text.show { display: block; }
+.post-meta { display: flex; align-items: center; gap: 12px; font-size: 11.5px; color: var(--subtle); flex-wrap: wrap; }
+.post-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--subtle); flex-shrink: 0; }
+.post-av { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.post-author { font-weight: 600; color: var(--muted); }
+.answer-count { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: var(--green); }
+.unanswered-badge { font-size: 10.5px; font-weight: 700; color: var(--amber); background: #FEF9C3; border-radius: 5px; padding: 2px 7px; }
+
+/* ── ANSWERS SECTION (inline expanded) ── */
+.answers-section { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 14px; display: none; }
+.answers-section.show { display: block; }
+.answer-card { padding: 14px; border-radius: 10px; margin-bottom: 10px; border: 1.5px solid var(--border); background: var(--bg); }
+.answer-card.bexi { background: linear-gradient(135deg,rgba(45,27,105,.04),rgba(6,182,212,.04)); border-color: rgba(45,27,105,.15); }
+.answer-top { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
+.answer-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; flex-shrink: 0; }
+.answer-author { font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.answer-time { font-size: 11px; color: var(--subtle); margin-left: auto; }
+.bexi-badge { font-size: 10px; font-weight: 800; background: var(--brand); color: #fff; border-radius: 5px; padding: 2px 7px; }
+.answer-text { font-size: 13px; color: var(--ink); line-height: 1.7; }
+.answer-vote-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+.ans-vote-btn { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 11.5px; font-weight: 600; cursor: pointer; background: var(--white); color: var(--muted); transition: .15s; font-family: var(--ffb); }
+.ans-vote-btn:hover { border-color: var(--brand); color: var(--brand); }
+.ans-vote-btn.voted { background: var(--off); border-color: var(--brand3); color: var(--brand); }
+
+/* ── ADD ANSWER ── */
+.add-answer-wrap { margin-top: 12px; }
+.add-answer-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 13px; font-size: 13px; font-family: var(--ffb); color: var(--ink); resize: vertical; min-height: 80px; outline: none; transition: .15s; }
+.add-answer-textarea:focus { border-color: var(--brand); background: #fff; }
+.add-answer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; flex-wrap: wrap; gap: 8px; }
+.add-answer-hint { font-size: 11.5px; color: var(--subtle); }
+.add-answer-btn { padding: 8px 18px; background: var(--brand); color: #fff; border: none; border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--ff); transition: .15s; }
+.add-answer-btn:hover { filter: brightness(1.1); }
+.add-answer-btn:disabled { opacity: .6; cursor: not-allowed; }
+.login-prompt { background: var(--off); border-radius: 10px; padding: 13px 16px; font-size: 13px; color: var(--muted); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.login-prompt a { font-weight: 700; color: var(--brand); text-decoration: none; }
+
+/* ── EMPTY / LOADING ── */
+.feed-empty { text-align: center; padding: 60px 20px; color: var(--muted); }
+.feed-empty-icon { font-size: 48px; margin-bottom: 14px; }
+.feed-empty-title { font-family: var(--ff); font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.feed-loading { display: flex; flex-direction: column; gap: 12px; }
+.skel-card { height: 110px; border-radius: 14px; background: linear-gradient(90deg,#E2E8F0 25%,#EEF0F8 50%,#E2E8F0 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
+@keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
+
+/* ── ASK MODAL ── */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
+.modal-overlay.show { display: flex; }
+.modal-box { background: var(--white); border-radius: 20px; padding: 28px 28px 24px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+.modal-title { font-family: var(--ff); font-size: 18px; font-weight: 800; color: var(--ink); margin-bottom: 18px; }
+.modal-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.modal-label { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+.modal-inp { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 13px; font-size: 14px; font-family: var(--ffb); color: var(--ink); outline: none; transition: .15s; }
+.modal-inp:focus { border-color: var(--brand); }
+.modal-textarea { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 13px; font-size: 13.5px; font-family: var(--ffb); color: var(--ink); resize: vertical; min-height: 100px; outline: none; transition: .15s; }
+.modal-textarea:focus { border-color: var(--brand); }
+.modal-tags-grid { display: flex; flex-wrap: wrap; gap: 7px; }
+.modal-tag-opt { padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); transition: .15s; user-select: none; }
+.modal-tag-opt.selected { background: var(--brand); color: #fff; border-color: var(--brand); }
+.modal-btns { display: flex; gap: 10px; margin-top: 18px; }
+.modal-cancel { flex: 1; padding: 11px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--ffb); background: var(--white); color: var(--muted); }
+.modal-submit { flex: 2; padding: 11px; background: var(--brand); color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--ff); transition: .15s; }
+.modal-submit:hover { filter: brightness(1.1); }
+.modal-submit:disabled { opacity: .6; cursor: not-allowed; }
+.char-count { font-size: 11px; color: var(--subtle); text-align: right; margin-top: 3px; }
+
+/* ── SIDEBAR ── */
+.sidebar { display: flex; flex-direction: column; gap: 16px; }
+.side-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px 18px; }
+.side-card-title { font-family: var(--ff); font-size: 13px; font-weight: 800; color: var(--brand); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px; }
+.side-stat-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.side-stat-row:last-child { border-bottom: none; }
+.side-stat-num { font-family: var(--ff); font-weight: 800; color: var(--brand); }
+.side-rule { font-size: 12.5px; color: var(--muted); line-height: 1.65; display: flex; gap: 8px; margin-bottom: 8px; }
+.side-rule:last-child { margin-bottom: 0; }
+.side-rule-icon { flex-shrink: 0; }
+.trending-item { padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; cursor: pointer; transition: .15s; line-height: 1.4; }
+.trending-item:last-child { border-bottom: none; }
+.trending-item:hover { color: var(--brand); }
+.trending-tag { font-size: 10.5px; font-weight: 700; margin-bottom: 2px; }
+
+/* ── TOAST ── */
+.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1A0F40; color: #fff; padding: 11px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; opacity: 0; transition: .3s; z-index: 999; white-space: nowrap; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── LOAD MORE ── */
+.load-more-btn { width: 100%; padding: 12px; background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: var(--ffb); color: var(--muted); transition: .15s; margin-top: 8px; }
+.load-more-btn:hover { border-color: var(--brand); color: var(--brand); }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-in">
-    <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
-    <a href="dashboard.html" class="nav-btn">Dashboard</a>
-    <button class="nav-btn primary" onclick="openAskModal()">+ Ask Question</button>
+<!-- NAVBAR -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
+  <div class="nav-links">
+    <a href="dashboard.html" class="nav-link">Jobs</a>
+    <a href="mentors.html" class="nav-link">Mentors</a>
+    <a href="community.html" class="nav-link active">Community</a>
+  </div>
+  <div class="nav-right">
+    <a href="dashboard.html" class="nav-btn ghost">Dashboard</a>
+    <a href="index.html" class="nav-btn solid">Join Free →</a>
   </div>
 </nav>
 
-<div class="community-hero">
-  <h1>Career Community 🤝</h1>
-  <p>Ask questions, share wins, and help each other navigate India's job market.</p>
-  <div class="hero-btns">
-    <button class="btn-ask" onclick="openAskModal()">✍️ Ask a Question</button>
-    <a href="dashboard.html?page=overview" class="btn-ghost">🤖 Ask Bexi AI</a>
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1>👥 Belongix Community</h1>
+    <p>Ask career questions. Get answers from real Indian professionals and Bexi AI. No judgment, just honest guidance.</p>
+    <button class="ask-hero-btn" onclick="openAskModal()">✍️ Ask a Question</button>
   </div>
 </div>
 
-<div class="community-wrap">
-  <!-- MAIN FEED -->
-  <div>
-    <div class="filter-row">
-      <button class="f-btn active" onclick="filterPosts('all', this)">🔥 All</button>
-      <button class="f-btn" onclick="filterPosts('question', this)">❓ Questions</button>
-      <button class="f-btn" onclick="filterPosts('tip', this)">💡 Tips</button>
-      <button class="f-btn" onclick="filterPosts('success', this)">🎉 Success Stories</button>
+<!-- MAIN BODY -->
+<div class="page-body">
+
+  <!-- FEED COLUMN -->
+  <div class="feed-col">
+
+    <!-- Tag filter bar -->
+    <div class="tag-bar" id="tag-bar">
+      <div class="tag-chip active" data-tag="all" onclick="filterByTag('all',this)">🔥 All</div>
+      <div class="tag-chip" data-tag="Jobs" onclick="filterByTag('Jobs',this)">💼 Jobs</div>
+      <div class="tag-chip" data-tag="Salary" onclick="filterByTag('Salary',this)">💰 Salary</div>
+      <div class="tag-chip" data-tag="Resume" onclick="filterByTag('Resume',this)">📄 Resume</div>
+      <div class="tag-chip" data-tag="Interviews" onclick="filterByTag('Interviews',this)">🧠 Interviews</div>
+      <div class="tag-chip" data-tag="Skills" onclick="filterByTag('Skills',this)">⚡ Skills</div>
+      <div class="tag-chip" data-tag="Career Switch" onclick="filterByTag('Career Switch',this)">🔄 Career Switch</div>
+      <div class="tag-chip" data-tag="Mentorship" onclick="filterByTag('Mentorship',this)">🤝 Mentorship</div>
+      <div class="tag-chip" data-tag="Startups" onclick="filterByTag('Startups',this)">🚀 Startups</div>
     </div>
-    <div id="posts-feed">
-      <div class="empty-state">
-        <div class="empty-icon">⏳</div>
-        <div class="empty-title">Loading community posts...</div>
+
+    <!-- Sort bar -->
+    <div class="sort-bar">
+      <div class="sort-label" id="feed-count">Loading questions...</div>
+      <div class="sort-btns">
+        <button class="sort-btn active" id="sort-latest" onclick="setSort('latest',this)">Latest</button>
+        <button class="sort-btn" id="sort-top" onclick="setSort('top',this)">Most Upvoted</button>
+        <button class="sort-btn" id="sort-unanswered" onclick="setSort('unanswered',this)">Unanswered</button>
       </div>
     </div>
-  </div>
+
+    <!-- Feed -->
+    <div id="feed">
+      <div class="feed-loading">
+        <div class="skel-card"></div>
+        <div class="skel-card"></div>
+        <div class="skel-card"></div>
+      </div>
+    </div>
+
+    <!-- Load more -->
+    <button class="load-more-btn" id="load-more-btn" style="display:none" onclick="loadMore()">Load more questions ↓</button>
+
+  </div><!-- /feed-col -->
 
   <!-- SIDEBAR -->
-  <aside>
-    <div class="sidebar-card">
-      <div class="sc-title">📈 Trending Topics</div>
-      <div id="trending-tags">
-        <span class="trending-tag" onclick="filterByTag('salary negotiation')">💰 salary negotiation</span>
-        <span class="trending-tag" onclick="filterByTag('interview prep')">🎯 interview prep</span>
-        <span class="trending-tag" onclick="filterByTag('career switch')">🔄 career switch</span>
-        <span class="trending-tag" onclick="filterByTag('data analytics')">📊 data analytics</span>
-        <span class="trending-tag" onclick="filterByTag('system design')">🏗️ system design</span>
-        <span class="trending-tag" onclick="filterByTag('resume tips')">📄 resume tips</span>
-        <span class="trending-tag" onclick="filterByTag('fresher jobs')">🎓 fresher jobs</span>
-        <span class="trending-tag" onclick="filterByTag('AWS')">☁️ AWS</span>
-      </div>
+  <div class="sidebar">
+    <!-- Stats -->
+    <div class="side-card">
+      <div class="side-card-title">📊 Community Stats</div>
+      <div class="side-stat-row"><span>Questions asked</span><span class="side-stat-num" id="stat-posts">—</span></div>
+      <div class="side-stat-row"><span>Answers given</span><span class="side-stat-num" id="stat-answers">—</span></div>
+      <div class="side-stat-row"><span>Bexi AI answers</span><span class="side-stat-num" id="stat-bexi">—</span></div>
+      <div class="side-stat-row"><span>Active members</span><span class="side-stat-num">2,400+</span></div>
     </div>
 
-    <div class="sidebar-card">
-      <div class="sc-title">📊 Community Stats</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;justify-content:space-between;font-size:13px">
-          <span style="color:var(--muted)">Questions answered</span>
-          <span style="font-weight:700;color:var(--brand)" id="stat-answered">—</span>
+    <!-- Trending -->
+    <div class="side-card">
+      <div class="side-card-title">🔥 Trending Topics</div>
+      <div id="trending-list">
+        <div class="trending-item" onclick="filterByTag('Salary',document.querySelector('[data-tag=Salary]'))">
+          <div class="trending-tag" style="color:#15803D">💰 Salary</div>How to negotiate a 40%+ hike at Razorpay?
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px">
-          <span style="color:var(--muted)">Active members</span>
-          <span style="font-weight:700;color:var(--brand)" id="stat-members">2,400+</span>
+        <div class="trending-item" onclick="filterByTag('Interviews',document.querySelector('[data-tag=Interviews]'))">
+          <div class="trending-tag" style="color:#7C3AED">🧠 Interviews</div>FAANG DSA prep in 3 months — realistic?
         </div>
-        <div style="display:flex;justify-content:space-between;font-size:13px">
-          <span style="color:var(--muted)">Bexi AI answers</span>
-          <span style="font-weight:700;color:var(--brand)" id="stat-bexi">24/7</span>
+        <div class="trending-item" onclick="filterByTag('Career Switch',document.querySelector('[data-tag=Career Switch]'))">
+          <div class="trending-tag" style="color:#D97706">🔄 Career Switch</div>Dev to PM transition without an MBA
+        </div>
+        <div class="trending-item" onclick="filterByTag('Resume',document.querySelector('[data-tag=Resume]'))">
+          <div class="trending-tag" style="color:#0369A1">📄 Resume</div>ATS-friendly resume format for service to product
         </div>
       </div>
     </div>
 
-    <div class="sidebar-card" style="background:linear-gradient(135deg,#1A0D40,#2D1B69);border-color:#2D1B69">
-      <div style="font-family:var(--ff);font-size:14px;font-weight:700;color:#fff;margin-bottom:6px">🤖 Ask Bexi AI instead</div>
-      <div style="font-size:12.5px;color:rgba(255,255,255,.7);margin-bottom:14px;line-height:1.6">For instant answers on salary, interviews, or career switches — Bexi responds in seconds, 24/7.</div>
-      <a href="dashboard.html?page=overview" style="display:block;text-align:center;padding:9px;background:var(--accent);color:#fff;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none">Ask Bexi →</a>
+    <!-- Community rules -->
+    <div class="side-card">
+      <div class="side-card-title">📋 Community Rules</div>
+      <div class="side-rule"><span class="side-rule-icon">✅</span>Share real experiences — India-specific context is gold</div>
+      <div class="side-rule"><span class="side-rule-icon">🤝</span>Be kind — everyone is at a different career stage</div>
+      <div class="side-rule"><span class="side-rule-icon">🚫</span>No spam, self-promotion, or job postings here</div>
+      <div class="side-rule"><span class="side-rule-icon">🤖</span>Bexi AI auto-answers unanswered questions after 24 hrs</div>
     </div>
-  </aside>
-</div>
+
+    <!-- Ask CTA -->
+    <div style="background:linear-gradient(135deg,var(--brand),var(--brand2));border-radius:14px;padding:18px;text-align:center">
+      <div style="font-family:var(--ff);font-size:15px;font-weight:700;color:#fff;margin-bottom:6px">Have a question?</div>
+      <div style="font-size:12.5px;color:rgba(255,255,255,.75);margin-bottom:14px;line-height:1.5">2,400+ professionals are here to help.</div>
+      <button onclick="openAskModal()" style="width:100%;padding:10px;background:#fff;color:var(--brand);border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ff)">✍️ Ask Now</button>
+    </div>
+  </div>
+
+</div><!-- /page-body -->
 
 <!-- ASK MODAL -->
-<div class="modal-overlay" id="ask-modal" onclick="if(event.target===this)closeAskModal()">
+<div class="modal-overlay" id="ask-modal" onclick="handleModalClick(event)">
   <div class="modal-box">
-    <div class="modal-title">✍️ Post to Community</div>
-    <div class="modal-sub">Ask a question, share a tip, or post a win. Our community and Bexi AI will help.</div>
+    <div class="modal-title">✍️ Ask the Community</div>
 
-    <div class="field">
-      <label>Post Type</label>
-      <select class="fsel" id="post-type">
-        <option value="question">❓ Question — I need help with...</option>
-        <option value="tip">💡 Tip — Here's what worked for me...</option>
-        <option value="success">🎉 Success Story — I just...</option>
-      </select>
+    <div class="modal-field">
+      <div class="modal-label">Your Question *</div>
+      <input class="modal-inp" id="ask-title" type="text" placeholder="e.g. How do I negotiate salary at a startup?" maxlength="200"/>
+      <div class="char-count" id="title-char">0 / 200</div>
     </div>
 
-    <div class="field">
-      <label>Title <span style="color:var(--accent)">*</span></label>
-      <input class="finp" id="post-title" placeholder="e.g. How do I negotiate a 30% salary hike at a startup?"/>
+    <div class="modal-field">
+      <div class="modal-label">More details (optional)</div>
+      <textarea class="modal-textarea" id="ask-body" placeholder="Add context — your background, what you've tried, specific situation..." maxlength="1000"></textarea>
+      <div class="char-count" id="body-char">0 / 1000</div>
     </div>
 
-    <div class="field">
-      <label>Details</label>
-      <textarea class="fta" id="post-body" placeholder="Add more context — the more specific you are, the better answers you'll get..."></textarea>
-    </div>
-
-    <div class="field">
-      <label>Tags <span style="font-weight:500;text-transform:none;letter-spacing:0;color:var(--subtle)">(press Enter after each)</span></label>
-      <div class="tag-inp-wrap" onclick="document.getElementById('tag-input-el').focus()">
-        <input class="tag-input-el" id="tag-input-el" placeholder="e.g. salary negotiation"
-          onkeydown="handleTagKey(event)"/>
+    <div class="modal-field">
+      <div class="modal-label">Tags (pick 1–3)</div>
+      <div class="modal-tags-grid" id="modal-tags-grid">
+        <div class="modal-tag-opt" data-tag="Jobs" onclick="toggleModalTag(this)">💼 Jobs</div>
+        <div class="modal-tag-opt" data-tag="Salary" onclick="toggleModalTag(this)">💰 Salary</div>
+        <div class="modal-tag-opt" data-tag="Resume" onclick="toggleModalTag(this)">📄 Resume</div>
+        <div class="modal-tag-opt" data-tag="Interviews" onclick="toggleModalTag(this)">🧠 Interviews</div>
+        <div class="modal-tag-opt" data-tag="Skills" onclick="toggleModalTag(this)">⚡ Skills</div>
+        <div class="modal-tag-opt" data-tag="Career Switch" onclick="toggleModalTag(this)">🔄 Career Switch</div>
+        <div class="modal-tag-opt" data-tag="Mentorship" onclick="toggleModalTag(this)">🤝 Mentorship</div>
+        <div class="modal-tag-opt" data-tag="Startups" onclick="toggleModalTag(this)">🚀 Startups</div>
       </div>
-      <div id="tags-preview" style="margin-top:6px;display:flex;flex-wrap:wrap;gap:5px"></div>
     </div>
 
-    <button class="post-btn" id="post-submit-btn" onclick="submitPost()">Post to Community →</button>
-    <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--subtle)">
-      Posts are public. Be respectful and specific.
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeAskModal()">Cancel</button>
+      <button class="modal-submit" id="ask-submit-btn" onclick="submitQuestion()">Post Question →</button>
     </div>
   </div>
 </div>
 
-<div id="toast"></div>
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
 <script>
+/* ── SUPABASE ── */
 var SB_URL = 'https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
 var sb = supabase.createClient(SB_URL, SB_KEY);
-var _currentUser = null;
-var _allPosts = [];
-var _currentFilter = 'all';
-var _postTags = [];
 
-/* ── COLOURS for avatars ── */
-var COLORS = ['#2D1B69','#10B981','#FF5C35','#F59E0B','#6B48CC','#06B6D4','#EF4444','#8B5CF6'];
+/* ═══════════════════════════════════════════════
+   FIX #40 — COMMUNITY Q&A PAGE
+   ✅ Seed posts + Supabase community_posts table
+   ✅ Tag filter bar (9 tags)
+   ✅ Sort: Latest / Most Upvoted / Unanswered
+   ✅ Upvote posts and answers
+   ✅ Inline expand — click card to see answers
+   ✅ Add answer form (login required)
+   ✅ Bexi AI auto-answer for unanswered posts
+   ✅ Ask modal with tag picker + char count
+   ✅ Sidebar: stats, trending, rules
+   ✅ Load more pagination
+═══════════════════════════════════════════════ */
 
-/* ── INIT ── */
-window.addEventListener('DOMContentLoaded', function() {
-  sb.auth.getSession().then(function(r) {
-    if (r.data && r.data.session) _currentUser = r.data.session.user;
-  });
-  loadPosts();
-});
+var _user      = null;
+var _allPosts  = [];
+var _activeTag = 'all';
+var _activeSort= 'latest';
+var _page      = 0;
+var _perPage   = 8;
+var _expanded  = null; /* currently expanded post id */
 
-/* ── LOAD POSTS ── */
-async function loadPosts() {
-  var feed = document.getElementById('posts-feed');
-  try {
-    var r = await sb.from('community_posts')
-      .select('*, community_replies(count)')
-      .order('created_at', { ascending: false })
-      .limit(30);
+var AVATAR_COLORS = ['#2D1B69','#0369A1','#065F46','#BE185D','#D97706','#7C3AED','#0D9488','#DC2626'];
+var TAG_COLORS = {
+  'Jobs':          { bg:'#EFF6FF', color:'#1D4ED8' },
+  'Salary':        { bg:'#ECFDF5', color:'#15803D' },
+  'Resume':        { bg:'#F0F9FF', color:'#0369A1' },
+  'Interviews':    { bg:'#F5F3FF', color:'#7C3AED' },
+  'Skills':        { bg:'#FFF7ED', color:'#C2410C' },
+  'Career Switch': { bg:'#FEF9C3', color:'#A16207' },
+  'Mentorship':    { bg:'#FDF2F8', color:'#BE185D' },
+  'Startups':      { bg:'#F0FDF4', color:'#15803D' }
+};
 
-    _allPosts = (r.data || []);
-    if (!_allPosts.length) {
-      // Seed with realistic demo content so page isn't empty
-      _allPosts = SEED_POSTS;
-    }
-    // Update stats
-    var statEl = document.getElementById('stat-answered');
-    if (statEl) statEl.textContent = (_allPosts.length * 2) + '+';
-    renderPosts(_allPosts);
-  } catch(e) {
-    _allPosts = SEED_POSTS;
-    renderPosts(_allPosts);
-  }
-}
-
-/* ── SEED POSTS (shown when DB empty) ── */
+/* ── SEED DATA ── */
 var SEED_POSTS = [
-  { id:'seed1', type:'question', author_name:'Arjun Kumar', author_initials:'AK', author_color:'#2D1B69', title:'How do I negotiate salary when they say "the budget is fixed"?', body:'Got an offer of ₹18 LPA from a Series B startup in Bangalore. I was expecting ₹22 LPA. The recruiter said the budget is fixed. Is there any way to negotiate beyond base salary?', tags:['salary negotiation','startups','offer'], upvotes:42, reply_count:8, created_at:new Date(Date.now()-86400000*2).toISOString() },
-  { id:'seed2', type:'success', author_name:'Priya Sharma', author_initials:'PS', author_color:'#10B981', title:'Switched from QA to Data Analyst in 5 months — here\'s exactly how', body:'I was a manual QA engineer for 3 years. Everyone said it\'s too late to switch. I proved them wrong. Here\'s the exact plan I followed: Month 1-2: SQL on Mode Analytics (3hrs/day). Month 3: Python + Pandas on Kaggle. Month 4: Built a sales dashboard with public Zomato data. Month 5: Started applying. Got 3 offers.', tags:['career switch','data analytics','success story','SQL'], upvotes:156, reply_count:23, created_at:new Date(Date.now()-86400000*5).toISOString() },
-  { id:'seed3', type:'tip', author_name:'Rahul Mehta', author_initials:'RM', author_color:'#FF5C35', title:'The exact LinkedIn message that got me 8 recruiter responses in 2 weeks', body:'Instead of "Hi, I am looking for opportunities", I sent: "Hi [Name], I noticed [Company] just launched [Product]. I\'ve been building similar features at [My Company] — specifically [specific thing]. Would love to learn more about the [Role] position. 15 mins?" Response rate went from 2% to 40%.', tags:['linkedin','job search','outreach'], upvotes:89, reply_count:15, created_at:new Date(Date.now()-86400000*3).toISOString() },
-  { id:'seed4', type:'question', author_name:'Kavya Reddy', author_initials:'KR', author_color:'#F59E0B', title:'Is ₹14 LPA fair for a 3-year backend engineer in Bangalore?', body:'I have 3 years of experience with Java, Spring Boot, and AWS at a mid-size startup. My current CTC is ₹14 LPA. Got an offer from another company for ₹17 LPA. Is this a good jump or should I push for more?', tags:['salary','bangalore','backend'], upvotes:31, reply_count:12, created_at:new Date(Date.now()-3600000*18).toISOString() },
-  { id:'seed5', type:'tip', author_name:'Bexi AI 🤖', author_initials:'BX', author_color:'#6B48CC', title:'System design interview checklist — covers 90% of what\'s asked', body:'Before every system design round: (1) Clarify requirements for 5 mins — ask scale, users, SLA. (2) Define the API first — interviewer immediately knows you think in interfaces. (3) Draw the high-level components before going deep. (4) Discuss trade-offs — CAP theorem, SQL vs NoSQL, push vs pull. (5) Identify bottlenecks proactively. Recommended resources: ByteByteGo + Gaurav Sen YouTube.', tags:['system design','interview prep','tips'], upvotes:203, reply_count:18, created_at:new Date(Date.now()-86400000*7).toISOString(), is_bexi:true },
+  {
+    id:'p1', title:'How do I negotiate a 40% salary hike when switching from service to product?',
+    body:'I have 4 years of Java development at TCS and got an offer from a mid-stage fintech startup. My current CTC is ₹8 LPA and they are offering ₹14 LPA. Should I negotiate higher? What is the standard hike expectation for this kind of switch?',
+    tags:['Salary','Jobs'], author:'Vikram S.', author_id:'u1', upvotes:47, created_at: new Date(Date.now()-3600000*2).toISOString(),
+    answers:[
+      { id:'a1', author:'Priya M.', author_id:'u2', is_bexi:false, text:'Service to product switch typically commands 40–80% hike. With 4 years of Java and a fintech offer, you can absolutely counter at ₹16–17 LPA. Key: research their funding stage, mention competing timelines, and counter in writing. ₹14 LPA for a product company fintech role in Bangalore is on the lower side for 4 YOE.', upvotes:31, created_at: new Date(Date.now()-3600000).toISOString() },
+      { id:'a2', author:'Bexi AI', author_id:'bexi', is_bexi:true, text:'Great question! For a service-to-product switch with 4 years of experience in Bangalore, the typical hike range is 40–80%. At ₹8 LPA → ₹14 LPA you are already at 75%, which is strong. However, product companies often have ESOP components that can add significant value. My suggestion: counter at ₹16.5 LPA + ask about ESOP vesting. Your negotiation script: "I am very excited about this role. Based on my research and the market rate for product engineers with my background in Bangalore, I was expecting ₹16–17 LPA. Is there flexibility there?" Then stay silent.', upvotes:28, created_at: new Date(Date.now()-1800000).toISOString() }
+    ]
+  },
+  {
+    id:'p2', title:'Is 3 months enough to crack FAANG DSA rounds from scratch?',
+    body:'I am a 2021 graduate working at Wipro. I want to crack SDE-1 at Google or Amazon. I can give 3–4 hours daily. Is 3 months realistic or should I plan for 6?',
+    tags:['Interviews','Skills'], author:'Rahul K.', author_id:'u3', upvotes:63, created_at: new Date(Date.now()-3600000*18).toISOString(),
+    answers:[
+      { id:'a3', author:'Ananya R.', author_id:'u4', is_bexi:false, text:'Honest answer: 3 months is tight but doable if you are disciplined. Week 1–4: arrays, strings, hashmaps (Blind 75). Week 5–8: trees, graphs, DP. Week 9–10: system design basics. Week 11–12: mock interviews only. The biggest failure mode is grinding random problems instead of patterns. Do NeetCode 150 in order, not random.', upvotes:45, created_at: new Date(Date.now()-3600000*16).toISOString() }
+    ]
+  },
+  {
+    id:'p3', title:'How to switch from backend dev to Product Manager without an MBA?',
+    body:'I am a backend engineer with 3 years of experience at a B2B SaaS company. I want to become a PM. Most JDs ask for MBA. Is it possible without one and if yes what is the realistic path?',
+    tags:['Career Switch','Jobs'], author:'Sneha P.', author_id:'u5', upvotes:38, created_at: new Date(Date.now()-3600000*36).toISOString(),
+    answers:[
+      { id:'a4', author:'Bexi AI', author_id:'bexi', is_bexi:true, text:'Absolutely possible without an MBA — many top PMs in India come from engineering backgrounds. The path that works: (1) Become the unofficial PM of your current team — write PRDs, run sprint reviews, talk to customers. (2) Build a portfolio of 2–3 case studies on products you use daily. (3) Apply to APM programs (Swiggy, Razorpay, CRED all have them) or target startups (Series A/B) where your tech background is valued over the MBA tag. (4) Network with PMs on LinkedIn — ask for 20-min coffee chats. The MBA is a shortcut, not a requirement.', upvotes:52, created_at: new Date(Date.now()-3600000*30).toISOString() }
+    ]
+  },
+  {
+    id:'p4', title:'What is the best ATS-friendly resume format for a freshers first job in 2026?',
+    body:'I just graduated from a tier-3 college with 7.8 CGPA in CS. I have 2 internships and 3 projects. What resume format and length should I follow? I have been getting zero callbacks.',
+    tags:['Resume'], author:'Aditya V.', author_id:'u6', upvotes:29, created_at: new Date(Date.now()-3600000*50).toISOString(),
+    answers:[
+      { id:'a5', author:'Kavya L.', author_id:'u7', is_bexi:false, text:'For freshers: (1) Single page, always. (2) Use the Belongix Resume Builder — it generates an ATS score. (3) Your summary should have keywords from the JD. (4) Project bullets: "Built X using Y that resulted in Z" not just "Made a website". (5) Skills section first, then projects, then internships, then education. Recruiters spend 7 seconds — put the good stuff at the top.', upvotes:18, created_at: new Date(Date.now()-3600000*44).toISOString() }
+    ]
+  },
+  {
+    id:'p5', title:'How much equity should I ask for at a Series A startup in Bangalore?',
+    body:'Got an offer from a well-funded Series A startup (raised $8M). They are offering 0.1% ESOP with 4-year vesting and 1-year cliff. Role: Backend Engineer. CTC: ₹20 LPA. Is this a good deal?',
+    tags:['Salary','Startups'], author:'Rohan G.', author_id:'u8', upvotes:41, created_at: new Date(Date.now()-3600000*72).toISOString(),
+    answers:[]
+  },
+  {
+    id:'p6', title:'Rejected from 47 companies — what am I doing wrong?',
+    body:'6 years of experience in Python and ML. Applied to 47 companies in the last 3 months. Got 4 calls, 0 offers. My resume has a Kaggle grandmaster badge and 2 papers. I am losing confidence.',
+    tags:['Jobs','Resume'], author:'Anonymous', author_id:'u9', upvotes:89, created_at: new Date(Date.now()-3600000*96).toISOString(),
+    answers:[
+      { id:'a6', author:'Bexi AI', author_id:'bexi', is_bexi:true, text:'47 applications with only 4 calls suggests a resume/targeting problem, not a skills problem — because your credentials are strong. Common root causes: (1) Resume is too academic — ML papers and Kaggle are great, but recruiters first screen for company names and measurable impact. Add a section like "ML Impact" with bullet points like "Model reduced fraud by 23% saving ₹2Cr/month". (2) Applying too broadly — target ML roles at fintech/healthtech startups specifically, not generic "data science". (3) LinkedIn visibility — are you posting? Recruiters DM active profiles. (4) Referrals — with 6 YOE, cold applying is brutal. Try getting warm intros. Want me to critique your resume? Use the Bexi Resume Critique feature.', upvotes:67, created_at: new Date(Date.now()-3600000*90).toISOString() }
+    ]
+  },
+  {
+    id:'p7', title:'What is a realistic salary expectation for a 2 YOE data analyst in Mumbai?',
+    body:'Currently at ₹6.5 LPA at a mid-sized e-commerce company. Have skills in SQL, Python, Power BI and Tableau. Looking to switch. What range should I target?',
+    tags:['Salary'], author:'Meera S.', author_id:'u10', upvotes:22, created_at: new Date(Date.now()-3600000*120).toISOString(),
+    answers:[]
+  },
+  {
+    id:'p8', title:'How do I get a referral at a company where I know nobody?',
+    body:'I see people talking about referrals all the time but I do not have a network at companies like Swiggy, Zepto or CRED. How do you actually get a cold referral from a stranger on LinkedIn?',
+    tags:['Jobs','Mentorship'], author:'Arjun T.', author_id:'u11', upvotes:55, created_at: new Date(Date.now()-3600000*144).toISOString(),
+    answers:[
+      { id:'a7', author:'Deepa K.', author_id:'u12', is_bexi:false, text:'The LinkedIn cold referral template that actually works: (1) Find someone at target company with similar background to yours. (2) Message: "Hi [Name], I noticed you are at [Company] as a [Role]. I am applying for [Role] and your profile shows similar experience to mine. Would you mind a 10-min call to learn about the culture? Happy to return the favour." (3) After the call: "I applied for [Role]. If you feel comfortable, a referral would mean a lot." Never ask for a referral in the first message. Success rate goes from 2% to 30%+.', upvotes:44, created_at: new Date(Date.now()-3600000*138).toISOString() }
+    ]
+  },
+  {
+    id:'p9', title:'Should I join a 40 LPA big tech offer or a 22 LPA startup with 0.5% equity?',
+    body:'I have an offer from a FAANG at 40 LPA and a Series B startup at 22 LPA + 0.5% ESOP (4-year vest). I am 28, 5 YOE, no major family obligations. Startup is growing fast in a hot space.',
+    tags:['Salary','Startups','Career Switch'], author:'Kiran M.', author_id:'u13', upvotes:76, created_at: new Date(Date.now()-3600000*168).toISOString(),
+    answers:[]
+  },
+  {
+    id:'p10', title:'Best free resources to learn system design in 2026?',
+    body:'I have my Google interview in 6 weeks. I have done the basics but need to go deeper on system design. What are the best free resources specifically?',
+    tags:['Interviews','Skills'], author:'Tanvi R.', author_id:'u14', upvotes:34, created_at: new Date(Date.now()-3600000*200).toISOString(),
+    answers:[
+      { id:'a8', author:'Saurabh J.', author_id:'u15', is_bexi:false, text:'Free system design resources that actually help: (1) Grokking System Design (some free content on educative). (2) ByteByteGo newsletter (Alex Xu) — free diagrams. (3) GitHub: system-design-primer repo. (4) YouTube: Gaurav Sen, Tech Dummies Narendra L. (5) For Google specifically: study Spanner, Bigtable, and MapReduce papers — they ask about their own infra. 6 weeks is tight but doable if you do 1 system per day.', upvotes:29, created_at: new Date(Date.now()-3600000*195).toISOString() }
+    ]
+  }
 ];
 
-/* ── RENDER POSTS ── */
-function renderPosts(posts) {
-  var feed = document.getElementById('posts-feed');
-  if (!posts.length) {
-    feed.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><div class="empty-title">No posts yet</div><div class="empty-sub">Be the first to ask a question or share a tip!</div><button class="nav-btn primary" onclick="openAskModal()">+ Ask a Question</button></div>';
+/* ── UTILS ── */
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function relTime(iso){
+  var d=Math.floor((Date.now()-new Date(iso).getTime())/1000);
+  if(d<60)return 'just now';
+  if(d<3600)return Math.floor(d/60)+'m ago';
+  if(d<86400)return Math.floor(d/3600)+'h ago';
+  return Math.floor(d/86400)+'d ago';
+}
+function avColor(id){ return AVATAR_COLORS[String(id||'').length % AVATAR_COLORS.length]; }
+function avInitial(name){ return (name||'A')[0].toUpperCase(); }
+function tagHtml(tag){
+  var t = TAG_COLORS[tag] || { bg:'var(--off)', color:'var(--brand)' };
+  return '<span class="post-tag" style="background:'+t.bg+';color:'+t.color+'">' + esc(tag) + '</span>';
+}
+function showToast(msg, dur){
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, dur||2800);
+}
+
+/* ── AUTH CHECK ── */
+async function initAuth(){
+  try {
+    var s = await sb.auth.getSession();
+    if (s.data && s.data.session) _user = s.data.session.user;
+  } catch(e){}
+}
+
+/* ── LOAD POSTS ── */
+async function loadPosts(){
+  /* Try Supabase first */
+  var posts = [];
+  try {
+    var res = await sb.from('community_posts')
+      .select('*, community_answers(*)')
+      .order('created_at', { ascending: false })
+      .limit(50);
+    if (res.data && res.data.length) {
+      posts = res.data.map(function(p){
+        return Object.assign({}, p, { answers: p.community_answers || [] });
+      });
+    }
+  } catch(e){}
+
+  /* Fall back to seed if Supabase empty */
+  if (!posts.length) posts = SEED_POSTS;
+  _allPosts = posts;
+
+  updateStats();
+  renderFeed();
+}
+
+/* ── STATS ── */
+function updateStats(){
+  var totalAnswers = _allPosts.reduce(function(s,p){ return s+(p.answers||[]).length; }, 0);
+  var bexiAnswers  = _allPosts.reduce(function(s,p){ return s+(p.answers||[]).filter(function(a){return a.is_bexi;}).length; }, 0);
+  var el = function(id, v){ var e=document.getElementById(id); if(e) e.textContent=v; };
+  el('stat-posts',   _allPosts.length + '+');
+  el('stat-answers', totalAnswers + '+');
+  el('stat-bexi',    bexiAnswers  + '+');
+}
+
+/* ── FILTER + SORT ── */
+function getFilteredPosts(){
+  var posts = _allPosts.slice();
+  /* Tag filter */
+  if (_activeTag !== 'all') {
+    posts = posts.filter(function(p){ return (p.tags||[]).indexOf(_activeTag) !== -1; });
+  }
+  /* Sort */
+  if (_activeSort === 'top') {
+    posts.sort(function(a,b){ return (b.upvotes||0)-(a.upvotes||0); });
+  } else if (_activeSort === 'unanswered') {
+    posts = posts.filter(function(p){ return !(p.answers||[]).length; });
+    posts.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
+  } else {
+    posts.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
+  }
+  return posts;
+}
+
+function filterByTag(tag, el){
+  _activeTag = tag; _page = 0;
+  document.querySelectorAll('.tag-chip').forEach(function(c){ c.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  renderFeed();
+}
+
+function setSort(sort, btn){
+  _activeSort = sort; _page = 0;
+  document.querySelectorAll('.sort-btn').forEach(function(b){ b.classList.remove('active'); });
+  if (btn) btn.classList.add('active');
+  renderFeed();
+}
+
+/* ── RENDER FEED ── */
+function renderFeed(){
+  var posts   = getFilteredPosts();
+  var total   = posts.length;
+  var visible = posts.slice(0, (_page+1)*_perPage);
+  var fc      = document.getElementById('feed-count');
+  var lm      = document.getElementById('load-more-btn');
+  var feed    = document.getElementById('feed');
+
+  if (fc) fc.textContent = total + ' question' + (total===1?'':'s') + (_activeTag!=='all'?' in '+_activeTag:'');
+  if (lm) lm.style.display = total > (_page+1)*_perPage ? 'block' : 'none';
+
+  if (!total) {
+    feed.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">💬</div><div class="feed-empty-title">No questions yet</div><p style="color:var(--muted);font-size:13px;margin-top:6px">Be the first to ask something in this topic!</p></div>';
     return;
   }
-  feed.innerHTML = posts.map(renderPostCard).join('');
-}
 
-function renderPostCard(post) {
-  var timeStr = timeAgo(post.created_at);
-  var tags = Array.isArray(post.tags) ? post.tags : (post.tags||'').split(',').filter(Boolean);
-  var tagsHtml = tags.slice(0,4).map(function(t){ return '<span class="post-tag">'+escH(t.trim())+'</span>'; }).join('');
-  var typeLabel = post.type === 'question' ? '❓ Question' : post.type === 'tip' ? '💡 Tip' : '🎉 Success';
-  var typeClass = post.type || 'question';
-  if (post.is_bexi) typeClass = 'bexi';
-  var replyCount = post.reply_count || (post.community_replies && post.community_replies[0] && post.community_replies[0].count) || 0;
+  feed.innerHTML = visible.map(function(p){ return buildPostCard(p); }).join('');
 
-  return '<div class="post-card' + (post.is_bexi ? ' pinned' : '') + '" id="post-' + post.id + '">'
-    + '<div class="post-header">'
-    + '<div class="post-av" style="background:' + (post.author_color || COLORS[Math.floor(Math.random()*COLORS.length)]) + '">' + (post.author_initials || (post.author_name||'U').substring(0,2).toUpperCase()) + '</div>'
-    + '<div class="post-meta">'
-    + '<span class="post-author">' + escH(post.author_name || 'Anonymous') + '</span>'
-    + '<span class="post-type-badge ' + typeClass + '">' + typeLabel + '</span>'
-    + '<div class="post-time">' + timeStr + '</div>'
-    + '</div></div>'
-    + '<div class="post-title">' + escH(post.title||'') + '</div>'
-    + (post.body ? '<div class="post-body">' + escH(post.body.substring(0,300)) + (post.body.length>300?'...':'') + '</div>' : '')
-    + (tagsHtml ? '<div class="post-tags">' + tagsHtml + '</div>' : '')
-    + '<div class="post-footer">'
-    + '<button class="post-action" onclick="upvotePost(\'' + post.id + '\',event)">'
-    + '▲ <span id="votes-' + post.id + '">' + (post.upvotes || 0) + '</span></button>'
-    + '<button class="post-action" onclick="toggleReplies(\'' + post.id + '\',event)">💬 ' + replyCount + ' replies</button>'
-    + '<button class="post-action" onclick="sharePost(\'' + post.id + '\',event)">🔗 Share</button>'
-    + '</div>'
-    + '<div class="replies-section" id="replies-' + post.id + '">'
-    + '<div id="replies-list-' + post.id + '" style="margin-bottom:12px"><div style="font-size:13px;color:var(--subtle);padding:8px 0">Loading replies...</div></div>'
-    + '<div class="reply-inp-row">'
-    + '<input class="reply-inp" id="reply-inp-' + post.id + '" placeholder="Add a reply..." onkeydown="if(event.key===\'Enter\')submitReply(\'' + post.id + '\')" />'
-    + '<button class="reply-send" onclick="submitReply(\'' + post.id + '\')">Reply</button>'
-    + '</div></div>'
-    + '</div>';
-}
-
-/* ── TOGGLE REPLIES ── */
-async function toggleReplies(postId, e) {
-  if (e) e.stopPropagation();
-  var card = document.getElementById('post-' + postId);
-  var section = document.getElementById('replies-' + postId);
-  if (!card || !section) return;
-  var isOpen = card.classList.contains('expanded');
-  card.classList.toggle('expanded');
-  if (!isOpen) loadReplies(postId);
-}
-
-async function loadReplies(postId) {
-  var list = document.getElementById('replies-list-' + postId);
-  if (!list) return;
-  try {
-    var r = await sb.from('community_replies')
-      .select('*')
-      .eq('post_id', postId)
-      .order('created_at', { ascending: true });
-    var replies = r.data || [];
-    if (!replies.length) {
-      list.innerHTML = '<div style="font-size:13px;color:var(--subtle);padding:8px 0">No replies yet — be the first!</div>';
-      return;
-    }
-    list.innerHTML = replies.map(function(reply) {
-      var isBexi = reply.is_bexi;
-      return '<div class="reply-item">'
-        + '<div class="reply-av" style="background:' + (isBexi ? '#6B48CC' : COLORS[(reply.author_name||'').charCodeAt(0)%COLORS.length]) + '">'
-        + (isBexi ? '🤖' : (reply.author_name||'U').substring(0,2).toUpperCase()) + '</div>'
-        + '<div class="reply-body' + (isBexi ? ' reply-bexi' : '') + '">'
-        + '<div class="reply-author">' + escH(reply.author_name || 'Member') + (isBexi ? ' <span style="font-size:10px;background:var(--off2);color:var(--brand);padding:2px 6px;border-radius:10px;font-weight:700">Bexi AI</span>' : '') + '</div>'
-        + '<div class="reply-text">' + escH(reply.content||'') + '</div>'
-        + '</div></div>';
-    }).join('');
-  } catch(e) {
-    list.innerHTML = '<div style="font-size:13px;color:var(--muted)">Could not load replies.</div>';
-  }
-}
-
-/* ── SUBMIT REPLY ── */
-async function submitReply(postId) {
-  if (!_currentUser) { openModal('signup'); showToast('Sign in to reply'); return; }
-  var inp = document.getElementById('reply-inp-' + postId);
-  var text = (inp ? inp.value.trim() : '');
-  if (!text) return;
-  inp.value = '';
-  var name = (_currentUser.user_metadata && _currentUser.user_metadata.full_name) || _currentUser.email.split('@')[0];
-  try {
-    await sb.from('community_replies').insert([{
-      post_id: postId, user_id: _currentUser.id,
-      author_name: name, content: text, created_at: new Date().toISOString()
-    }]);
-    loadReplies(postId);
-    showToast('✅ Reply posted!');
-  } catch(e) { showToast('Failed to post reply'); }
-}
-
-/* ── UPVOTE ── */
-async function upvotePost(postId, e) {
-  if (e) e.stopPropagation();
-  if (!_currentUser) { showToast('Sign in to upvote'); return; }
-  var el = document.getElementById('votes-' + postId);
-  var current = parseInt(el ? el.textContent : '0', 10);
-  if (el) el.textContent = current + 1;
-  var btn = el ? el.closest('.post-action') : null;
-  if (btn) btn.classList.add('voted');
-  try {
-    await sb.from('community_posts').update({ upvotes: current + 1 }).eq('id', postId);
-  } catch(e) {}
-}
-
-/* ── SHARE ── */
-function sharePost(postId, e) {
-  if (e) e.stopPropagation();
-  var url = window.location.origin + '/community.html#post-' + postId;
-  navigator.clipboard.writeText(url).then(function(){ showToast('🔗 Link copied!'); }).catch(function(){ showToast('🔗 Copy: ' + url); });
-}
-
-/* ── FILTER ── */
-function filterPosts(type, btn) {
-  _currentFilter = type;
-  document.querySelectorAll('.f-btn').forEach(function(b){ b.classList.remove('active'); });
-  if (btn) btn.classList.add('active');
-  var filtered = type === 'all' ? _allPosts : _allPosts.filter(function(p){ return p.type === type; });
-  renderPosts(filtered);
-}
-
-function filterByTag(tag) {
-  var filtered = _allPosts.filter(function(p) {
-    var tags = Array.isArray(p.tags) ? p.tags : (p.tags||'').split(',');
-    return tags.some(function(t){ return t.toLowerCase().includes(tag.toLowerCase()); });
-  });
-  renderPosts(filtered.length ? filtered : _allPosts);
-  showToast('Showing posts tagged: ' + tag);
-}
-
-/* ── SUBMIT POST ── */
-async function submitPost() {
-  if (!_currentUser) { closeAskModal(); setTimeout(function(){ openModal && openModal('signup'); }, 100); showToast('Create a free account to post'); return; }
-  var title = (document.getElementById('post-title')||{}).value || '';
-  var body  = (document.getElementById('post-body')||{}).value || '';
-  var type  = (document.getElementById('post-type')||{}).value || 'question';
-  if (!title.trim()) { showToast('Please add a title for your post'); return; }
-  var btn = document.getElementById('post-submit-btn');
-  if (btn) { btn.disabled = true; btn.textContent = 'Posting...'; }
-  var name = (_currentUser.user_metadata && _currentUser.user_metadata.full_name) || _currentUser.email.split('@')[0];
-  try {
-    await sb.from('community_posts').insert([{
-      user_id: _currentUser.id, author_name: name, type, title: title.trim(),
-      body: body.trim(), tags: _postTags, upvotes: 0, created_at: new Date().toISOString()
-    }]);
-    closeAskModal();
-    showToast('✅ Post published! The community will see it shortly.');
-    _postTags = [];
-    document.getElementById('post-title').value = '';
-    document.getElementById('post-body').value = '';
-    document.getElementById('tags-preview').innerHTML = '';
-    loadPosts();
-  } catch(e) {
-    showToast('Failed to post: ' + (e.message || 'Please try again'));
-  } finally {
-    if (btn) { btn.disabled = false; btn.textContent = 'Post to Community →'; }
-  }
-}
-
-/* ── TAG INPUT ── */
-function handleTagKey(e) {
-  if (e.key === 'Enter' || e.key === ',') {
-    e.preventDefault();
-    var val = e.target.value.replace(',','').trim();
-    if (val && !_postTags.includes(val) && _postTags.length < 5) {
-      _postTags.push(val);
-      e.target.value = '';
-      renderTagsPreview();
+  /* Re-wire expanded if still in view */
+  if (_expanded) {
+    var cardEl = document.getElementById('card-'+_expanded);
+    if (cardEl) {
+      cardEl.classList.add('expanded');
+      var ans = cardEl.querySelector('.answers-section');
+      var body = cardEl.querySelector('.post-body-text');
+      if (ans) ans.classList.add('show');
+      if (body) body.classList.add('show');
     }
   }
 }
-function renderTagsPreview() {
-  var el = document.getElementById('tags-preview');
-  if (!el) return;
-  el.innerHTML = _postTags.map(function(t, i) {
-    return '<span class="tag-item">' + escH(t) + '<button onclick="_postTags.splice(' + i + ',1);renderTagsPreview()">×</button></span>';
+
+function loadMore(){
+  _page++;
+  renderFeed();
+}
+
+/* ── BUILD POST CARD ── */
+function buildPostCard(p){
+  var tags = (p.tags||[]).map(tagHtml).join('');
+  var ansCount = (p.answers||[]).length;
+  var unanswered = !ansCount;
+  var votes = p.upvotes || 0;
+  var voted = isVoted('post', p.id);
+
+  var answersHtml = buildAnswers(p);
+
+  /* Add answer form / login prompt */
+  var addAnswerHtml = '';
+  if (_user) {
+    addAnswerHtml = '<div class="add-answer-wrap">'
+      +'<textarea class="add-answer-textarea" id="ans-inp-'+p.id+'" placeholder="Share your experience or advice..."></textarea>'
+      +'<div class="add-answer-row">'
+        +'<div class="add-answer-hint">Be specific — answers with real examples get 5× more upvotes</div>'
+        +'<button class="add-answer-btn" onclick="submitAnswer(\''+p.id+'\')">Post Answer →</button>'
+      +'</div>'
+    +'</div>';
+  } else {
+    addAnswerHtml = '<div class="login-prompt">Have an answer? <a href="index.html">Sign in</a> to share your experience.</div>';
+  }
+
+  return '<div class="post-card" id="card-'+p.id+'" onclick="togglePost(\''+p.id+'\')">'
+    +'<div class="post-top">'
+      +'<div class="post-vote" onclick="event.stopPropagation()">'
+        +'<button class="vote-btn'+(voted?' voted':'')+'" onclick="votePost(\''+p.id+'\',this)" title="Upvote">▲</button>'
+        +'<div class="vote-count" id="votes-'+p.id+'">'+votes+'</div>'
+      +'</div>'
+      +'<div class="post-body">'
+        +(tags?'<div class="post-tags">'+tags+'</div>':'')
+        +'<div class="post-title">'+esc(p.title)+'</div>'
+        +(p.body?'<div class="post-body-text" id="body-'+p.id+'">'+esc(p.body)+'</div>':'')
+        +'<div class="post-meta">'
+          +'<span class="post-av" style="background:'+avColor(p.author_id)+'">'+avInitial(p.author||'A')+'</span>'
+          +'<span class="post-author">'+esc(p.author||'Anonymous')+'</span>'
+          +'<span class="post-meta-dot"></span>'
+          +'<span>'+relTime(p.created_at)+'</span>'
+          +'<span class="post-meta-dot"></span>'
+          +(unanswered
+            ? '<span class="unanswered-badge">Unanswered</span>'
+            : '<span class="answer-count">💬 '+ansCount+' answer'+(ansCount===1?'':'s')+'</span>')
+        +'</div>'
+      +'</div>'
+    +'</div>'
+    /* Answers section — hidden until card click */
+    +'<div class="answers-section" id="ans-sec-'+p.id+'" onclick="event.stopPropagation()">'
+      +answersHtml
+      +addAnswerHtml
+    +'</div>'
+  +'</div>';
+}
+
+function buildAnswers(p){
+  if (!(p.answers||[]).length) return '<div style="font-size:13px;color:var(--muted);padding:8px 0 10px;font-style:italic">No answers yet — be the first!</div>';
+  return (p.answers||[]).map(function(a){
+    var aVotes  = a.upvotes || 0;
+    var aVoted  = isVoted('answer', a.id);
+    return '<div class="answer-card'+(a.is_bexi?' bexi':'')+'">'
+      +'<div class="answer-top">'
+        +'<div class="answer-av" style="background:'+(a.is_bexi?'#2D1B69':avColor(a.author_id))+'">'+avInitial(a.author||'B')+'</div>'
+        +'<div class="answer-author">'+esc(a.author||'Community Member'+(a.is_bexi?'':' '))+' '+(a.is_bexi?'<span class="bexi-badge">🤖 Bexi AI</span>':'')+'</div>'
+        +'<div class="answer-time">'+relTime(a.created_at)+'</div>'
+      +'</div>'
+      +'<div class="answer-text">'+esc(a.text||a.content||'')+'</div>'
+      +'<div class="answer-vote-row">'
+        +'<button class="ans-vote-btn'+(aVoted?' voted':'')+'" onclick="voteAnswer(\''+a.id+'\',\''+p.id+'\',this)">'
+          +'▲ Helpful <span id="avotes-'+a.id+'">'+aVotes+'</span>'
+        +'</button>'
+      +'</div>'
+    +'</div>';
   }).join('');
 }
 
-/* ── MODAL ── */
-function openAskModal()  { document.getElementById('ask-modal').classList.add('open'); }
-function closeAskModal() { document.getElementById('ask-modal').classList.remove('open'); }
+/* ── TOGGLE EXPAND ── */
+function togglePost(id){
+  var card    = document.getElementById('card-'+id);
+  var ansSec  = document.getElementById('ans-sec-'+id);
+  var bodyTxt = document.getElementById('body-'+id);
+  if (!card || !ansSec) return;
 
-/* ── UTILS ── */
-function timeAgo(iso) {
-  var d = Math.floor((Date.now() - new Date(iso)) / 1000);
-  if (d < 60)   return 'Just now';
-  if (d < 3600) return Math.floor(d/60) + 'm ago';
-  if (d < 86400)return Math.floor(d/3600) + 'h ago';
-  return Math.floor(d/86400) + 'd ago';
+  var isOpen = ansSec.classList.contains('show');
+
+  /* Close previously expanded */
+  if (_expanded && _expanded !== id) {
+    var prev = document.getElementById('card-'+_expanded);
+    if (prev) {
+      prev.classList.remove('expanded');
+      var pa = document.getElementById('ans-sec-'+_expanded);
+      var pb = document.getElementById('body-'+_expanded);
+      if (pa) pa.classList.remove('show');
+      if (pb) pb.classList.remove('show');
+    }
+  }
+
+  if (isOpen) {
+    card.classList.remove('expanded');
+    ansSec.classList.remove('show');
+    if (bodyTxt) bodyTxt.classList.remove('show');
+    _expanded = null;
+  } else {
+    card.classList.add('expanded');
+    ansSec.classList.add('show');
+    if (bodyTxt) bodyTxt.classList.add('show');
+    _expanded = id;
+    /* Scroll into view smoothly */
+    setTimeout(function(){ card.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 80);
+  }
 }
-function escH(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function showToast(msg) {
-  var t = document.getElementById('toast');
-  if (!t) return;
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 3200);
+
+/* ── VOTING ── */
+var _votedKey = 'bx_community_votes';
+function getVotes(){ try{return JSON.parse(localStorage.getItem(_votedKey)||'{}');}catch(e){return {};} }
+function isVoted(type, id){ return !!(getVotes()[type+'_'+id]); }
+function setVoted(type, id){ var v=getVotes(); v[type+'_'+id]=true; localStorage.setItem(_votedKey,JSON.stringify(v)); }
+
+function votePost(id, btn){
+  if (isVoted('post',id)){ showToast('Already upvoted!'); return; }
+  if (!_user){ showToast('Sign in to upvote'); return; }
+  setVoted('post',id);
+  btn.classList.add('voted');
+  var vc = document.getElementById('votes-'+id);
+  if (vc) vc.textContent = parseInt(vc.textContent||0)+1;
+  /* Update in seed */
+  var p = _allPosts.find(function(x){return x.id===id;});
+  if (p) p.upvotes = (p.upvotes||0)+1;
+  /* Supabase */
+  try { sb.from('community_posts').update({upvotes: (p?p.upvotes:1)}).eq('id',id).then(function(){}); } catch(e){}
 }
+
+function voteAnswer(aid, pid, btn){
+  if (isVoted('answer',aid)){ showToast('Already upvoted!'); return; }
+  if (!_user){ showToast('Sign in to upvote'); return; }
+  setVoted('answer',aid);
+  btn.classList.add('voted');
+  var vc = document.getElementById('avotes-'+aid);
+  if (vc) vc.textContent = parseInt(vc.textContent||0)+1;
+  /* Supabase */
+  try {
+    sb.from('community_answers').select('upvotes').eq('id',aid).maybeSingle().then(function(r){
+      if (r.data) sb.from('community_answers').update({upvotes:(r.data.upvotes||0)+1}).eq('id',aid).then(function(){});
+    });
+  } catch(e){}
+}
+
+/* ── SUBMIT ANSWER ── */
+async function submitAnswer(postId){
+  if (!_user){ showToast('Please sign in to answer'); return; }
+  var inp = document.getElementById('ans-inp-'+postId);
+  if (!inp || !inp.value.trim()){ showToast('Please write your answer first'); return; }
+  var text = inp.value.trim();
+
+  var post = _allPosts.find(function(p){ return p.id===postId; });
+  var newAnswer = {
+    id:         'local_'+Date.now(),
+    post_id:    postId,
+    author:     _user.email ? _user.email.split('@')[0] : 'Community Member',
+    author_id:  _user.id,
+    is_bexi:    false,
+    text:       text,
+    upvotes:    0,
+    created_at: new Date().toISOString()
+  };
+
+  /* Add locally */
+  if (post) post.answers = (post.answers||[]).concat(newAnswer);
+
+  /* Supabase insert */
+  try {
+    await sb.from('community_answers').insert({
+      post_id:    postId,
+      user_id:    _user.id,
+      content:    text,
+      is_bexi:    false,
+      upvotes:    0
+    });
+  } catch(e){}
+
+  inp.value = '';
+  renderFeed();
+  showToast('✅ Answer posted! Thank you for contributing.');
+}
+
+/* ── ASK MODAL ── */
+var _selectedTags = [];
+
+function openAskModal(){
+  if (!_user){ showToast('Please sign in to ask a question'); window.location.href='index.html'; return; }
+  document.getElementById('ask-modal').classList.add('show');
+  document.getElementById('ask-title').focus();
+}
+function closeAskModal(){
+  document.getElementById('ask-modal').classList.remove('show');
+}
+function handleModalClick(e){
+  if (e.target === document.getElementById('ask-modal')) closeAskModal();
+}
+function toggleModalTag(el){
+  var tag = el.dataset.tag;
+  if (el.classList.contains('selected')){
+    el.classList.remove('selected');
+    _selectedTags = _selectedTags.filter(function(t){return t!==tag;});
+  } else {
+    if (_selectedTags.length >= 3){ showToast('Max 3 tags'); return; }
+    el.classList.add('selected');
+    _selectedTags.push(tag);
+  }
+}
+
+/* Char counters */
+document.addEventListener('DOMContentLoaded', function(){
+  var titleInp = document.getElementById('ask-title');
+  var bodyInp  = document.getElementById('ask-body');
+  if (titleInp) titleInp.addEventListener('input', function(){
+    document.getElementById('title-char').textContent = this.value.length + ' / 200';
+  });
+  if (bodyInp) bodyInp.addEventListener('input', function(){
+    document.getElementById('body-char').textContent = this.value.length + ' / 1000';
+  });
+  /* Escape to close modal */
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAskModal(); });
+});
+
+async function submitQuestion(){
+  var title = (document.getElementById('ask-title').value||'').trim();
+  var body  = (document.getElementById('ask-body').value||'').trim();
+  if (!title){ showToast('Please enter your question'); return; }
+  if (!_user){ showToast('Please sign in first'); return; }
+
+  var btn = document.getElementById('ask-submit-btn');
+  btn.disabled = true; btn.textContent = 'Posting...';
+
+  var newPost = {
+    id:         'local_'+Date.now(),
+    title:      title,
+    body:       body,
+    tags:       _selectedTags.slice(),
+    author:     _user.email ? _user.email.split('@')[0] : 'Community Member',
+    author_id:  _user.id,
+    upvotes:    0,
+    answers:    [],
+    created_at: new Date().toISOString()
+  };
+
+  /* Insert to Supabase */
+  try {
+    var res = await sb.from('community_posts').insert({
+      user_id:  _user.id,
+      title:    title,
+      body:     body,
+      tags:     _selectedTags,
+      upvotes:  0
+    }).select().maybeSingle();
+    if (res.data) newPost.id = res.data.id;
+  } catch(e){}
+
+  /* Add locally */
+  _allPosts.unshift(newPost);
+  _activeTag  = 'all';
+  _activeSort = 'latest';
+  _page = 0;
+
+  /* Reset modal */
+  document.getElementById('ask-title').value = '';
+  document.getElementById('ask-body').value  = '';
+  document.getElementById('title-char').textContent = '0 / 200';
+  document.getElementById('body-char').textContent  = '0 / 1000';
+  document.querySelectorAll('.modal-tag-opt').forEach(function(t){ t.classList.remove('selected'); });
+  _selectedTags = [];
+  closeAskModal();
+  btn.disabled = false; btn.textContent = 'Post Question →';
+
+  /* Reset tag chips */
+  document.querySelectorAll('.tag-chip').forEach(function(c){ c.classList.remove('active'); });
+  var allChip = document.querySelector('[data-tag="all"]');
+  if (allChip) allChip.classList.add('active');
+
+  updateStats();
+  renderFeed();
+  showToast('🎉 Question posted! The community will answer soon.');
+
+  /* Check if question needs Bexi auto-answer after 24h
+     In production this is handled by a Supabase Edge Function cron
+     Here we simulate for demo purposes */
+  schedulesBexiAnswer(newPost.id);
+}
+
+/* Bexi auto-answer simulation (in prod: Edge Function cron) */
+function schedulesBexiAnswer(postId){
+  /* For demo: answer after 8 seconds if post still has 0 answers */
+  setTimeout(async function(){
+    var post = _allPosts.find(function(p){ return p.id===postId; });
+    if (!post || (post.answers||[]).length) return;
+    var bexiAnswer = await getBexiAnswer(post.title, post.body, post.tags);
+    if (!bexiAnswer) return;
+    var newAnswer = {
+      id: 'bexi_'+Date.now(), post_id:postId,
+      author:'Bexi AI', author_id:'bexi', is_bexi:true,
+      text: bexiAnswer, upvotes:0, created_at:new Date().toISOString()
+    };
+    post.answers = (post.answers||[]).concat(newAnswer);
+    /* Save to Supabase */
+    try {
+      await sb.from('community_answers').insert({ post_id:postId, content:bexiAnswer, is_bexi:true, upvotes:0 });
+    } catch(e){}
+    renderFeed();
+    showToast('🤖 Bexi AI answered your question!', 4000);
+  }, 8000);
+}
+
+/* Call Claude API for Bexi answer */
+async function getBexiAnswer(title, body, tags){
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:600,
+        system:'You are Bexi, an expert career advisor for Indian professionals. Answer career questions with specific, actionable advice tailored to the Indian job market (include rupee figures, company names, realistic timelines). Be warm, direct, and practical. 3–4 paragraphs max.',
+        messages:[{ role:'user', content:'Question: '+title+'\n\nDetails: '+(body||'No additional details')+'\n\nTags: '+(tags||[]).join(', ') }]
+      })
+    });
+    if(!res.ok) return null;
+    var d=await res.json();
+    return (d.content||[]).map(function(b){return b.text||'';}).join('').trim()||null;
+  }catch(e){ return null; }
+}
+
+/* ── INIT ── */
+initAuth().then(loadPosts);
 </script>
-<script src="bexi.js"></script>
 </body>
 </html>
