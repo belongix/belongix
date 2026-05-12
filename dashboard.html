@@ -504,6 +504,10 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     </div>
     <div class="sb-group">
       <div class="sb-group-label">Tools</div>
+      <a class="sb-link" href="community.html" style="text-decoration:none">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>Community
+        <span style="margin-left:auto;font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 6px">NEW</span>
+      </a>
       <a class="sb-link" href="resume-builder.html" target="_blank" style="text-decoration:none">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Resume Builder
       </a>
@@ -620,6 +624,8 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <div class="ql-row" onclick="showPage('salary',document.querySelector('[onclick*=salary]'))"><div class="ql-ic" style="background:#ECFDF5">&#128176;</div><span class="ql-name">Salary Insights</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="showPage('upskill',document.querySelector('[onclick*=upskill]'))"><div class="ql-ic" style="background:#FEF9C3">&#127891;</div><span class="ql-name">Upskilling Hub</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="showPage('network',document.querySelector('[onclick*=network]'))"><div class="ql-ic" style="background:#FFF1F2">&#129309;</div><span class="ql-name">Find a Mentor</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-row" onclick="window.open('community.html','_self')"><div class="ql-ic" style="background:#ECFDF5">&#128101;</div><span class="ql-name">Community Q&amp;A</span><span style="font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 6px;margin-left:auto">NEW</span></div>
+      <div class="ql-row" onclick="showPage('settings',document.querySelector('[onclick*=settings]'))"><div class="ql-ic" style="background:#FEF9C3">&#127881;</div><span class="ql-name">Referral Program</span><span style="font-size:9px;font-weight:700;background:#F59E0B;color:#fff;border-radius:10px;padding:1px 6px;margin-left:auto">+10 pts</span></div>
       <div class="ql-row" onclick="window.open('resume-builder.html','_blank')"><div class="ql-ic" style="background:#EFF6FF">&#128196;</div><span class="ql-name">Resume Builder</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="window.open('post-job.html','_blank')"><div class="ql-ic" style="background:#FFF7ED">&#128188;</div><span class="ql-name">Post a Job</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="window.open('recruiter-dashboard.html','_blank')"><div class="ql-ic" style="background:#F0FDF4">&#128101;</div><span class="ql-name">Recruiter Portal</span><span class="ql-arr">&#8250;</span></div>
@@ -1079,6 +1085,38 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
   <div class="settings-row"><div><div class="settings-label">Account Email</div><div class="settings-desc">Your login email</div></div><div style="font-size:13px;color:var(--muted)" id="settings-email">--</div></div>
   <div class="settings-row"><div><div class="settings-label">Plan</div><div class="settings-desc">Current subscription</div></div><span class="settings-badge" id="settings-plan">Free</span></div>
   <div class="settings-row"><div><div class="settings-label">Career Score</div><div class="settings-desc">Your current score</div></div><div style="font-size:13px;font-weight:700;color:#2D1B69" id="settings-score">--</div></div>
+</div>
+
+<!-- ✅ FIX #41: REFERRAL PROGRAM SECTION -->
+<div class="settings-group">
+  <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:12px">
+    <div>
+      <div class="settings-label">🎁 Referral Program</div>
+      <div class="settings-desc">Invite friends to Belongix. Both of you earn <strong>+10 Career Score points</strong> when they sign up.</div>
+    </div>
+    <div style="background:linear-gradient(135deg,#2D1B69,#4C2FAA);border-radius:12px;padding:14px 16px;width:100%">
+      <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,.7);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Your Referral Link</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div id="referral-url-box" style="flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:8px 12px;font-size:12.5px;color:#fff;font-family:var(--ffb);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Loading your link...</div>
+        <button onclick="copyReferralLink()" style="padding:8px 14px;background:rgba(255,255,255,.95);color:#2D1B69;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);white-space:nowrap;flex-shrink:0">📋 Copy</button>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:8px">
+        <button onclick="shareReferralWhatsApp()" style="flex:1;padding:7px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--ffb)">💬 WhatsApp</button>
+        <button onclick="shareReferralLinkedIn()" style="flex:1;padding:7px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--ffb)">💼 LinkedIn</button>
+        <button onclick="shareReferralNative()" style="flex:1;padding:7px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:12px;font-weight:600;color:#fff;cursor:pointer;font-family:var(--ffb)">↗ Share</button>
+      </div>
+    </div>
+    <div id="referral-stats" style="display:flex;gap:12px;width:100%">
+      <div style="flex:1;background:var(--blue-lt);border-radius:10px;padding:10px;text-align:center">
+        <div style="font-family:var(--ff);font-size:22px;font-weight:800;color:#2D1B69" id="ref-count">0</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Friends Joined</div>
+      </div>
+      <div style="flex:1;background:#ECFDF5;border-radius:10px;padding:10px;text-align:center">
+        <div style="font-family:var(--ff);font-size:22px;font-weight:800;color:#15803D" id="ref-pts">0</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Score Pts Earned</div>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="settings-group">
   <div class="settings-row"><div><div class="settings-label">Change Password</div><div class="settings-desc">Send a reset email</div></div><button onclick="resetPassword()" style="background:var(--blue-lt);color:#2D1B69;border:none;border-radius:8px;padding:7px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit">Send Reset Email</button></div>
@@ -2207,6 +2245,84 @@ function closeModal(id) { var el=document.getElementById(id); if(el)el.classList
 function closeModalOuter(e, id) { if(e.target===document.getElementById(id)) closeModal(id); }
 document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ ['alert-modal','apply-modal','rb-modal'].forEach(closeModal); }});
 
+
+/* ═══════════════════════════════════════════════
+   FIX #41 — REFERRAL PROGRAM
+   ✅ Generate unique referral link from user ID
+   ✅ Copy / WhatsApp / LinkedIn / Native share
+   ✅ Load referral count + pts from Supabase
+   ✅ Capture ?ref= on index.html on signup
+═══════════════════════════════════════════════ */
+function refGetCode(userId) {
+  return userId ? userId.replace(/-/g,'').substring(0,8) : '';
+}
+
+function refGetLink(userId) {
+  var code = refGetCode(userId);
+  return code ? 'https://www.belongix.in/?ref=' + code : 'https://www.belongix.in';
+}
+
+function refPopulateSettings(userId) {
+  var link = refGetLink(userId);
+  var box  = document.getElementById('referral-url-box');
+  if (box) box.textContent = link;
+
+  /* Load referral stats from Supabase */
+  try {
+    supaClient.from('referrals')
+      .select('id', { count: 'exact' })
+      .eq('referrer_id', userId)
+      .then(function(res) {
+        var cnt = res.count || 0;
+        var cntEl = document.getElementById('ref-count');
+        var ptsEl = document.getElementById('ref-pts');
+        if (cntEl) cntEl.textContent = cnt;
+        if (ptsEl) ptsEl.textContent = cnt * 10;
+      }).catch(function(){});
+  } catch(e) {}
+}
+
+function copyReferralLink() {
+  var link = refGetLink(currentUser ? currentUser.id : '');
+  navigator.clipboard.writeText(link).then(function(){
+    showToast('🔗 Referral link copied! Share it with friends.');
+  }).catch(function(){
+    showToast('Link: ' + link);
+  });
+}
+
+function shareReferralWhatsApp() {
+  var link = refGetLink(currentUser ? currentUser.id : '');
+  var msg  = encodeURIComponent('Hey! I\'ve been using Belongix for jobs, salary insights and AI career guidance. Join free 👉 ' + link);
+  window.open('https://wa.me/?text=' + msg, '_blank');
+}
+
+function shareReferralLinkedIn() {
+  var link = refGetLink(currentUser ? currentUser.id : '');
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(link), '_blank');
+}
+
+function shareReferralNative() {
+  var link = refGetLink(currentUser ? currentUser.id : '');
+  if (navigator.share) {
+    navigator.share({
+      title: 'Join Belongix — India\'s Career Platform',
+      text:  'Get free AI career guidance, salary insights and job listings. Join using my link!',
+      url:   link
+    }).catch(function(){});
+  } else {
+    copyReferralLink();
+  }
+}
+
+/* Wire referral section when Settings page opens */
+var _origShowPage = showPage;
+showPage = function(page, btn) {
+  _origShowPage(page, btn);
+  if (page === 'settings' && currentUser) {
+    refPopulateSettings(currentUser.id);
+  }
+};
 
 async function init() {
   /* Safety: always hide loading screen after 5s max, even if errors */
