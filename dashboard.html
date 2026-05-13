@@ -1576,6 +1576,11 @@ var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI
 var supaClient = supabase.createClient(SB_URL, SB_KEY);
 var currentUser = null;
 
+/* Global esc() — required by saveField, loadPortfolio, and other functions.
+   Was previously only defined inside a local scope, causing ReferenceError
+   when saveField('work') and saveField('skills') called it, silently killing the save. */
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
 // ── NAVIGATION ──
 function showPage(page, btn) {
   document.querySelectorAll('.page-section').forEach(function(el){ el.classList.remove('active'); });
@@ -1751,7 +1756,6 @@ async function saveProfile() {
     var res=await supaClient.from('profiles').upsert([updates],{onConflict:'id'});
     if(res.error)throw res.error;
     showToast('Profile saved! Score: '+updates.career_score);
-    try{supaClient.from('career_score_history').insert([{user_id:currentUser.id,score:updates.career_score,delta:0,reason:'Profile updated',created_at:new Date().toISOString()}]).then(function(){}).catch(function(){});}catch(e){}
     populateProfileCard(updates);loadPortfolio(updates);
     var sbN=document.getElementById('sb-name');if(sbN&&updates.full_name)sbN.textContent=updates.full_name.split(' ')[0];
     var sbR=document.getElementById('sb-role');if(sbR)sbR.textContent=updates.role||updates.experience||'Member';
