@@ -592,7 +592,7 @@
       hideTyping();
       if (progEl) progEl.classList.remove('show');
       if (sendBtn) sendBtn.disabled = false;
-      appendMsg('❌ Sorry, I couldn't analyse that file. Try a plain-text or PDF version of your resume.', 'bot');
+      appendMsg("❌ Sorry, I couldn't analyse that file. Try a plain-text or PDF version of your resume.", 'bot');
       console.error('[Bexi Resume]', e);
     }
   };
@@ -1298,7 +1298,7 @@
     else if (_userProfile && (!_userProfile.skills || !_userProfile.skills.trim())) {
       nudge = {
         icon: '⚡',
-        msg: 'You haven't added any skills yet. Adding skills helps Bexi personalise advice and boosts your Career Score by +10 pts.',
+        msg: "You haven't added any skills yet. Adding skills helps Bexi personalise advice and boosts your Career Score by +10 pts.",
         actions: [
           { label: 'Add skills now', href: 'dashboard.html?page=profile' },
           { label: 'Which skills matter?', q: 'What skills should I learn in 2026?' }
@@ -1325,8 +1325,8 @@
               nudge = {
                 icon: '🔍',
                 msg: daysSince >= 999
-                  ? 'You haven't applied to any jobs yet. The best time to start is today.'
-                  : 'It's been <strong>' + daysSince + ' days</strong> since your last application. Consistent applying is key.',
+                  ? "You haven't applied to any jobs yet. The best time to start is today."
+                  : "It's been <strong>" + daysSince + " days</strong> since your last application. Consistent applying is key.",
                 actions: [
                   { label: 'Browse jobs', href: 'dashboard.html?page=jobs' },
                   { label: 'Job search tips', q: 'How do I find a job in India?' }
@@ -1355,7 +1355,7 @@
       if (a.href) {
         return '<a href="' + a.href + '" class="bx-sn-btn primary" style="text-decoration:none;display:inline-flex;align-items:center">' + a.label + '</a>';
       }
-      return '<button class="bx-sn-btn ghost" onclick="bexiAsk('' + a.q.replace(/'/g, "\'") + '');dismissSmartNudge()">' + a.label + '</button>';
+      return '<button class="bx-sn-btn ghost" onclick="bexiAsk(&quot;' + a.q + '&quot;);dismissSmartNudge()">' + a.label + '</button>';
     }).join('');
 
     el.classList.add('show');
@@ -1479,12 +1479,12 @@
     ivMsgs.innerHTML =
       '<div class="bxb bot" style="max-width:100%">' +
         '<strong>🎯 Mock Interview Setup</strong><br><br>' +
-        'I'll ask you 5 real interview questions, evaluate each answer, and give you a final score with tips.<br><br>' +
+        "I'll ask you 5 real interview questions, evaluate each answer, and give you a final score with tips.<br><br>" +
         '<strong>1. Choose company:</strong>' +
       '</div>' +
       '<div style="display:flex;flex-wrap:wrap;gap:5px;padding:0 2px">' +
         companies.map(function(c) {
-          return '<button class="bx-iv-chip" onclick="bxIvSelectCompany('' + c + '')">' + c + '</button>';
+          return '<button class="bx-iv-chip" onclick="bxIvSelectCompany(\'" + c + "\')">' + c + '</button>';
         }).join('') +
       '</div>';
     ivMsgs.scrollTop = ivMsgs.scrollHeight;
@@ -1507,7 +1507,11 @@
       '<div class="bxb bot" style="max-width:100%"><strong>2. Choose role:</strong></div>' +
       '<div style="display:flex;flex-wrap:wrap;gap:5px;padding:0 2px">' +
         roles.map(function(r) {
-          return '<button class="bx-iv-chip" onclick="bxIvSelectRole('' + r.replace(/'/g,"\'") + '')">' + r + '</button>';
+          var btn2 = document.createElement('button');
+            btn2.className = 'bx-iv-chip';
+            btn2.textContent = r;
+            btn2.onclick = (function(role){ return function(){ bxIvSelectRole(role); }; })(r);
+            return btn2.outerHTML;
         }).join('') +
       '</div>';
     ivMsgs.appendChild(roleDiv);
@@ -1535,7 +1539,11 @@
       '<div class="bxb bot" style="max-width:100%"><strong>3. Choose round type:</strong></div>' +
       '<div style="display:flex;flex-wrap:wrap;gap:5px;padding:0 2px">' +
         rounds.map(function(r) {
-          return '<button class="bx-iv-chip" onclick="bxIvSelectRound('' + r.id + '')">' + r.label + ' <span style='font-size:10px;opacity:.6'>' + r.desc + '</span></button>';
+          var btn3 = document.createElement('button');
+            btn3.className = 'bx-iv-chip';
+            btn3.innerHTML = r.label + ' <span style="font-size:10px;opacity:.6">' + r.desc + '</span>';
+            btn3.onclick = (function(id){ return function(){ bxIvSelectRound(id); }; })(r.id);
+            return btn3.outerHTML;
         }).join('') +
       '</div>';
     ivMsgs.appendChild(roundDiv);
@@ -1641,14 +1649,10 @@
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
           max_tokens: 200,
-          system: 'You are a senior interviewer at a top Indian tech company. Evaluate the candidate's answer. Return ONLY valid JSON: {"score": 0-10, "feedback": "2-3 sentence constructive feedback mentioning what was good and what could be improved"}',
+          system: "You are a senior interviewer at a top Indian tech company. Evaluate the candidate's answer. Return ONLY valid JSON: {\"score\": 0-10, \"feedback\": \"2-3 sentence constructive feedback mentioning what was good and what could be improved\"}",
           messages: [{
             role: 'user',
-            content: 'Question: ' + question + '
-
-Candidate Answer: ' + answer + '
-
-Role being interviewed for: ' + _iv.role + ' at ' + _iv.company
+            content: 'Question: ' + question + '\n\nCandidate Answer: ' + answer + '\n\nRole being interviewed for: ' + _iv.role + ' at ' + _iv.company
           }]
         })
       });
@@ -1721,12 +1725,12 @@ Role being interviewed for: ' + _iv.role + ' at ' + _iv.company
     var avg     = Math.round(total / _iv.scores.length * 10);
     var grade   = avg >= 80 ? '🏆 Excellent' : avg >= 65 ? '✅ Good' : avg >= 50 ? '📈 Developing' : '🔧 Needs Work';
     var tip     = avg >= 80
-      ? 'You're interview-ready! Focus on negotiating your salary next.'
+      ? "You're interview-ready! Focus on negotiating your salary next."
       : avg >= 65
-      ? 'Strong performance. Work on adding more quantified examples to your answers.'
+      ? "Strong performance. Work on adding more quantified examples to your answers."
       : avg >= 50
-      ? 'Use the STAR method (Situation, Task, Action, Result) to structure every answer.'
-      : 'Practice daily — 1 mock interview per week + LeetCode DSA problems will build your confidence fast.';
+      ? "Use the STAR method (Situation, Task, Action, Result) to structure every answer."
+      : "Practice daily — 1 mock interview per week + LeetCode DSA problems will build your confidence fast.";
 
     if (!ivMsgs) return;
     var resDiv = document.createElement('div');
@@ -1738,7 +1742,7 @@ Role being interviewed for: ' + _iv.role + ' at ' + _iv.company
         '<div class="iv-feedback">' + tip + '</div>' +
       '</div>' +
       '<div class="bxb bot" style="max-width:100%;margin-top:8px">' +
-        '💡 <strong>Want to improve?</strong> Try a mentor session for a real mock interview — they'll give you company-specific tips.<br><br>' +
+        "💡 <strong>Want to improve?</strong> Try a mentor session for a real mock interview — they'll give you company-specific tips.<br><br>" +
         '<a href="mentors.html" style="display:inline-block;padding:7px 14px;background:#2D1B69;color:#fff;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;margin-top:4px">Find a Mentor →</a>' +
       '</div>';
     ivMsgs.appendChild(resDiv);
@@ -1890,12 +1894,12 @@ Role being interviewed for: ' + _iv.role + ' at ' + _iv.company
     ivMsgs.innerHTML =
       '<div class="bxb bot" style="max-width:100%">' +
         '<strong>💰 Negotiation Simulator</strong><br><br>' +
-        'I'll play the role of HR or your manager. You practice your negotiation in real-time, and I'll coach you after each round.<br><br>' +
+        "I'll play the role of HR or your manager. You practice your negotiation in real-time, and I'll coach you after each round.<br><br>" +
         '<strong>Choose your scenario:</strong>' +
       '</div>' +
       '<div style="display:flex;flex-direction:column;gap:6px;padding:2px">' +
         NEG_SCENARIOS.map(function(s) {
-          return '<button class="bx-iv-chip" style="display:flex;justify-content:space-between;align-items:center" onclick="bxNegSelectScenario('' + s.id + '')">' +
+          return '<button class="bx-iv-chip" style="display:flex;justify-content:space-between;align-items:center" onclick="bxNegSelectScenario(\'" + s.id + "\')">' +
             '<span>' + s.label + '</span>' +
             '<span style="font-size:10.5px;opacity:.6;font-weight:500">' + s.desc + '</span>' +
           '</button>';
@@ -1982,10 +1986,10 @@ Role being interviewed for: ' + _iv.role + ' at ' + _iv.company
   function bxNegHROpening(current, target) {
     var ivMsgs = document.getElementById('bx-iv-msgs');
     var OPENINGS = {
-      counter:   'Thank you for your time today. We're excited to extend this offer of ₹' + current + ' LPA. We believe it's competitive for this role and your experience level. Do you have any questions about the package?',
-      appraisal: 'Thank you for coming in. We've reviewed your performance and the team is pleased with your contributions. We'd like to discuss your appraisal — we're proposing an 8% increment this cycle, bringing you to ₹' + Math.round(current * 1.08) + ' LPA. What are your thoughts?',
-      competing: 'Welcome — I understand you have some thoughts on the compensation. Our current offer stands at ₹' + current + ' LPA. How are you feeling about it?',
-      bonus:     'Welcome aboard! We're thrilled to have you joining us. The offer package includes ₹' + current + ' LPA fixed, with performance bonuses. I know you had questions about a joining bonus?'
+      counter:   "Thank you for your time today. We are excited to extend this offer of ₹" + current + " LPA. We believe it is competitive for this role and your experience level. Do you have any questions about the package?",
+      appraisal: "Thank you for coming in. We have reviewed your performance and the team is pleased with your contributions. We would like to discuss your appraisal — we are proposing an 8% increment this cycle, bringing you to ₹" + Math.round(current * 1.08) + " LPA. What are your thoughts?",
+      competing: "Welcome — I understand you have some thoughts on the compensation. Our current offer stands at ₹" + current + " LPA. How are you feeling about it?",
+      bonus:     "Welcome aboard! We are thrilled to have you joining us. The offer package includes ₹" + current + " LPA fixed, with performance bonuses. I know you had questions about a joining bonus?"
     };
 
     var opening = OPENINGS[_neg.scenario] || OPENINGS.counter;
@@ -1994,11 +1998,11 @@ Role being interviewed for: ' + _iv.role + ' at ' + _iv.company
     _neg.history = [{
       role: 'user',
       content: 'You are playing the role of an HR manager or direct manager at an Indian tech company. ' +
-        'The candidate's current offer/salary is ₹' + current + ' LPA. ' +
+        "The candidate's current offer/salary is ₹" + current + ' LPA. ' +
         'Their target is ₹' + _neg.target + ' LPA. ' +
         'Scenario: ' + _neg.scenario + '. ' +
         'Be realistic — start firm, but gradually show flexibility over 5 rounds. ' +
-        'Keep responses to 2-3 sentences. After my opening statement, wait for the candidate's counter. ' +
+        "Keep responses to 2-3 sentences. After my opening statement, wait for the candidate's counter. " +
         'Your opening: "' + opening + '"'
     }, {
       role: 'assistant',
@@ -2115,7 +2119,7 @@ Role being interviewed for: ' + _iv.role + ' at ' + _iv.company
         body: JSON.stringify({
           model: 'claude-sonnet-4-20250514',
           max_tokens: 200,
-          system: 'You are a salary negotiation coach. Evaluate the candidate's last response in 1-2 sentences. Return ONLY JSON: {"score":1-10,"strength":"what worked","improve":"one specific improvement","next":"suggested next line to say"}',
+          system: "You are a salary negotiation coach. Evaluate the candidate's last response in 1-2 sentences. Return ONLY JSON: {\"score\":1-10,\"strength\":\"what worked\",\"improve\":\"one specific improvement\",\"next\":\"suggested next line to say\"}",
           messages: [{ role: 'user', content: 'Candidate said: "' + userAnswer + '". HR said: "' + hrResponse + '". Evaluate the candidate.' }]
         })
       });
