@@ -701,12 +701,30 @@ footer{background:#0D0D1A;padding:48px 5% 28px;border-top:1px solid rgba(255,255
 </footer>
 
 <div id="pj-toast"></div>
+<!-- Auth nudge for guests -->
+<div id="pj-auth-nudge" style="display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#2D1B69;color:#fff;padding:11px 20px;align-items:center;justify-content:center;gap:14px;font-family:'DM Sans',sans-serif;font-size:13.5px;box-shadow:0 2px 12px rgba(0,0,0,.2)">
+  <span>🔐 Sign in to post a job — it only takes 30 seconds and it&#39;s free.</span>
+  <a href="app.html?redirect=post-job.html" style="background:#FF5C35;color:#fff;padding:6px 16px;border-radius:8px;font-weight:700;text-decoration:none;white-space:nowrap;font-size:13px">Sign In / Join Free →</a>
+  <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.6);cursor:pointer;font-size:18px;line-height:1;padding:0 0 0 4px">×</button>
+</div>
 
 <script>
 var SB_URL = 'https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
 var RZP_KEY = 'rzp_live_SiouVVDYQu9HTt';
 var sb = window._bxSb || (window._bxSb = supabase.createClient(SB_URL, SB_KEY));
+
+/* AUTH GUARD — soft check; RLS enforces server-side, but UX should redirect guests */
+(function() {
+  sb.auth.getSession().then(function(r) {
+    if (!r.data || !r.data.session) {
+      /* Show a non-blocking sign-in nudge instead of hard redirect
+         (post-job is public-facing; recruiters may not be signed in yet) */
+      var nudge = document.getElementById('pj-auth-nudge');
+      if (nudge) nudge.style.display = 'flex';
+    }
+  });
+})();
 
 var _selectedPlan = 'free';
 var _applyMethod  = 'url';

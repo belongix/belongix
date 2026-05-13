@@ -1,6 +1,12 @@
 /* ═══════════════════════════════════════════════════════════════
    Belongix — Bexi Career Guide  v7.0
    ✅ UNLIMITED queries — no daily cap, free forever
+   ⚠️  IMPORTANT: Anthropic API calls must be routed through a Supabase
+       Edge Function before adding a real API key. The current direct-browser
+       calls use 'anthropic-dangerous-direct-browser-access: true' which
+       requires the key in-browser (insecure). Until Edge Function is wired,
+       all Claude-powered features fall back to scripted responses gracefully.
+       Edge Function template: supabase/functions/bexi-claude/index.ts
    ✅ Profile-aware — reads logged-in user's Supabase profile
       and injects it as context so Bexi personalises every reply
    ✅ Pro upsell visible but NEVER blocks the chat

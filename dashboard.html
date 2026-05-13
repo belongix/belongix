@@ -7,7 +7,7 @@
 <link rel="manifest" href="manifest.json"/>
 <link rel="icon" href="icons/icon-32.png"/>
 <meta name="theme-color" content="#2D1B69"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;450;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
@@ -1243,7 +1243,7 @@ async function fetchPartnerJobs() {
       });
       extraJobs = extraJobs.concat(mapped1.slice(0,8));
     }
-  } catch(e) { console.log('Remotive unavailable'); }
+  } catch(e) { /* Remotive unavailable */ }
   // Source 2: Arbeitnow
   try {
     var r2 = await fetch('https://www.arbeitnow.com/api/job-board-api');
@@ -1257,7 +1257,7 @@ async function fetchPartnerJobs() {
       });
       extraJobs = extraJobs.concat(mapped2.slice(0,5));
     }
-  } catch(e) { console.log('Arbeitnow unavailable'); }
+  } catch(e) { /* Arbeitnow unavailable */ }
   if (extraJobs.length > 0) {
     var combined = ALL_JOBS.concat(extraJobs);
     window._lastRenderedJobs = combined;
@@ -1711,15 +1711,15 @@ function loadPortfolio(p) {
   if(bioEl){if(p.bio||p.about){bioEl.textContent=p.bio||p.about;bioEl.classList.remove('port-empty');}else{bioEl.textContent='No summary yet. Click Edit to add.';bioEl.classList.add('port-empty');}}
   sv('bio-inp', p.bio||p.about);
   var workEl=document.getElementById('ov-work');
-  if(workEl){if(p.role){workEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127970;</div><div><div class="wt">'+(p.role||'')+'</div><div class="wc">'+(p.company||'Not specified')+'</div><div class="wp">'+(p.experience||'')+(p.notice_period?' &bull; Notice: '+p.notice_period:'')+'</div></div></div>';}else{workEl.innerHTML='<div class="port-empty">No experience added yet.</div>';}}
+  if(workEl){if(p.role){workEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127970;</div><div><div class="wt">'+esc(p.role||'')+'</div><div class="wc">'+esc(p.company||'Not specified')+'</div><div class="wp">'+esc(p.experience||'')+(p.notice_period?' &bull; Notice: '+esc(p.notice_period):'')+'</div></div></div>';}else{workEl.innerHTML='<div class="port-empty">No experience added yet.</div>';}}
   sv('we-role',p.role);sv('we-company',p.company);sv('we-exp',p.experience);sv('we-notice',p.notice_period);
   var sklEl=document.getElementById('ov-skills');
-  if(sklEl){if(p.skills){sklEl.innerHTML=p.skills.split(',').filter(function(s){return s.trim();}).map(function(s){return'<span class="sk-chip">'+s.trim()+'</span>';}).join('');}else{sklEl.innerHTML='<div class="port-empty">No skills added yet.</div>';}}
+  if(sklEl){if(p.skills){sklEl.innerHTML=p.skills.split(',').filter(function(s){return s.trim();}).map(function(s){return'<span class="sk-chip">'+esc(s.trim())+'</span>';}).join('');}else{sklEl.innerHTML='<div class="port-empty">No skills added yet.</div>';}}
   sv('skills-inp',p.skills);
   var eduData=null;
   try{eduData=JSON.parse(localStorage.getItem('bx_edu_'+(currentUser?currentUser.id:'x')));}catch(e){}
   var eduEl=document.getElementById('ov-edu');
-  if(eduEl){if(eduData&&eduData.degree){eduEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127979;</div><div><div class="wt">'+eduData.degree+'</div><div class="wc">'+eduData.college+'</div><div class="wp">'+eduData.year+(eduData.grade?' &bull; '+eduData.grade:'')+'</div></div></div>';sv('edu-degree',eduData.degree);sv('edu-college',eduData.college);sv('edu-year',eduData.year);sv('edu-grade',eduData.grade);}else{eduEl.innerHTML='<div class="port-empty">No education added yet.</div>';}}
+  if(eduEl){if(eduData&&eduData.degree){eduEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127979;</div><div><div class="wt">'+esc(eduData.degree)+'</div><div class="wc">'+esc(eduData.college)+'</div><div class="wp">'+esc(eduData.year)+(eduData.grade?' &bull; '+esc(eduData.grade):'')+'</div></div></div>';sv('edu-degree',eduData.degree);sv('edu-college',eduData.college);sv('edu-year',eduData.year);sv('edu-grade',eduData.grade);}else{eduEl.innerHTML='<div class="port-empty">No education added yet.</div>';}}
   var tm={college_student:'College Student',fresher:'Fresh Graduate',junior_prof:'Junior Professional',mid_prof:'Mid-level',senior_prof:'Senior Professional',career_changer:'Career Changer'};
   st('pref-role',p.role||'--');st('pref-exp',p.experience||'--');st('pref-loc',p.city||'--');
   st('pref-notice',p.notice_period||'--');st('pref-field',p.field||'--');st('pref-type',tm[p.user_type]||p.user_type||'--');
@@ -1764,11 +1764,11 @@ async function saveField(field) {
   var existingName=(document.getElementById('ov-name')||{}).textContent||currentUser.email.split('@')[0];
   var updates={id:currentUser.id,email:currentUser.email,full_name:existingName||currentUser.email.split('@')[0]};
   if(field==='bio'){var v=(document.getElementById('bio-inp')||{}).value||'';updates.bio=v;var bioEl=document.getElementById('ov-bio');if(bioEl){bioEl.textContent=v||'No summary yet.';bioEl.classList[v?'remove':'add']('port-empty');}toggleEdit('bio-edit');}
-  else if(field==='skills'){var v=(document.getElementById('skills-inp')||{}).value||'';updates.skills=v;var sklEl=document.getElementById('ov-skills');if(sklEl)sklEl.innerHTML=v?v.split(',').filter(function(s){return s.trim();}).map(function(s){return'<span class="sk-chip">'+s.trim()+'</span>';}).join(''):'<div class="port-empty">No skills.</div>';toggleEdit('skills-edit');}
-  else if(field==='work'){updates.role=(document.getElementById('we-role')||{}).value||null;updates.company=(document.getElementById('we-company')||{}).value||null;updates.experience=(document.getElementById('we-exp')||{}).value||null;updates.notice_period=(document.getElementById('we-notice')||{}).value||null;var workEl=document.getElementById('ov-work');if(workEl&&updates.role)workEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127970;</div><div><div class="wt">'+(updates.role||'')+'</div><div class="wc">'+(updates.company||'')+'</div><div class="wp">'+(updates.experience||'')+'</div></div></div>';toggleEdit('work-edit');}
+  else if(field==='skills'){var v=(document.getElementById('skills-inp')||{}).value||'';updates.skills=v;var sklEl=document.getElementById('ov-skills');if(sklEl)sklEl.innerHTML=v?v.split(',').filter(function(s){return s.trim();}).map(function(s){return'<span class="sk-chip">'+esc(s.trim())+'</span>';}).join(''):'<div class="port-empty">No skills.</div>';toggleEdit('skills-edit');}
+  else if(field==='work'){updates.role=(document.getElementById('we-role')||{}).value||null;updates.company=(document.getElementById('we-company')||{}).value||null;updates.experience=(document.getElementById('we-exp')||{}).value||null;updates.notice_period=(document.getElementById('we-notice')||{}).value||null;var workEl=document.getElementById('ov-work');if(workEl&&updates.role)workEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127970;</div><div><div class="wt">'+esc(updates.role||'')+'</div><div class="wc">'+esc(updates.company||'')+'</div><div class="wp">'+esc(updates.experience||'')+'</div></div></div>';toggleEdit('work-edit');}
   else if(field==='prefs'){updates.role=(document.getElementById('pref-inp-role')||{}).value||null;updates.city=(document.getElementById('pref-inp-loc')||{}).value||null;updates.experience=(document.getElementById('pref-inp-exp')||{}).value||null;updates.notice_period=(document.getElementById('pref-inp-notice')||{}).value||null;updates.field=(document.getElementById('pref-inp-field')||{}).value||null;updates.user_type=(document.getElementById('pref-inp-type')||{}).value||null;toggleEdit('prefs-edit');}
   else if(field==='personal'){updates.phone=(document.getElementById('pd-inp-phone')||{}).value||null;updates.city=(document.getElementById('pd-inp-city')||{}).value||null;updates.company=(document.getElementById('pd-inp-company')||{}).value||null;updates.address=(document.getElementById('pd-inp-address')||{}).value||null;toggleEdit('personal-edit');}
-  else if(field==='edu'){var edu={degree:(document.getElementById('edu-degree')||{}).value||'',college:(document.getElementById('edu-college')||{}).value||'',year:(document.getElementById('edu-year')||{}).value||'',grade:(document.getElementById('edu-grade')||{}).value||''};try{localStorage.setItem('bx_edu_'+currentUser.id,JSON.stringify(edu));}catch(e){}var eduEl=document.getElementById('ov-edu');if(eduEl&&edu.degree)eduEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127979;</div><div><div class="wt">'+edu.degree+'</div><div class="wc">'+edu.college+'</div><div class="wp">'+edu.year+(edu.grade?' &bull; '+edu.grade:'')+'</div></div></div>';toggleEdit('edu-edit');showToast('Education saved!');return;}
+  else if(field==='edu'){var edu={degree:(document.getElementById('edu-degree')||{}).value||'',college:(document.getElementById('edu-college')||{}).value||'',year:(document.getElementById('edu-year')||{}).value||'',grade:(document.getElementById('edu-grade')||{}).value||''};try{localStorage.setItem('bx_edu_'+currentUser.id,JSON.stringify(edu));}catch(e){}var eduEl=document.getElementById('ov-edu');if(eduEl&&edu.degree)eduEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127979;</div><div><div class="wt">'+esc(edu.degree)+'</div><div class="wc">'+esc(edu.college)+'</div><div class="wp">'+esc(edu.year)+(edu.grade?' &bull; '+esc(edu.grade):'')+'</div></div></div>';toggleEdit('edu-edit');showToast('Education saved!');return;}
   try{var res=await supaClient.from('profiles').upsert([updates],{onConflict:'id'});if(res.error)throw res.error;showToast('Saved!');loadUserData();}catch(e){showToast('Save failed: '+e.message);}
 }
 

@@ -9,7 +9,7 @@
 <meta property="og:description" content="Ask anything about jobs, salary, interviews, and career growth. Get answers from real professionals and Bexi AI."/>
 <meta property="og:image" content="https://www.belongix.in/icons/icon-512.png"/>
 <link rel="icon" href="icons/icon-32.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=DM+Sans:wght@400;450;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
@@ -191,6 +191,7 @@ body { font-family: var(--ffb); background: var(--bg); color: var(--ink); min-he
 .load-more-btn { width: 100%; padding: 12px; background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: var(--ffb); color: var(--muted); transition: .15s; margin-top: 8px; }
 .load-more-btn:hover { border-color: var(--brand); color: var(--brand); }
 </style>
+<meta name="theme-color" content="#2D1B69"/>
 </head>
 <body>
 
@@ -514,7 +515,7 @@ async function loadPosts(){
     }
   } catch(e){}
 
-  /* Fall back to seed if Supabase empty */
+  /* Fall back to seed data if Supabase table doesn't exist yet (schema not deployed) */
   if (!posts.length) posts = SEED_POSTS;
   _allPosts = posts;
 
@@ -939,5 +940,6 @@ async function getBexiAnswer(title, body, tags){
 /* ── INIT ── */
 initAuth().then(loadPosts);
 </script>
+<script src="pwa-install.js"></script>
 </body>
 </html>

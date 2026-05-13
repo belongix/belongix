@@ -1,5 +1,5 @@
 /* Belongix Service Worker v1.0 */
-var CACHE = "belongix-v3";
+var CACHE = "belongix-v4";
 var OFFLINE_URL = "/offline.html";
 
 var PRECACHE = [
@@ -11,8 +11,27 @@ var PRECACHE = [
   "/contact.html",
   "/mentors.html",
   "/bexi.js",
+  "/pwa-install.js",
   "/manifest.json",
-  "/offline.html"
+  "/offline.html",
+  "/application-tracker.html",
+  "/career-score.html",
+  "/community.html",
+  "/job-alerts.html",
+  "/profile.html",
+  "/recruiter-dashboard.html",
+  "/resume-builder.html",
+  "/salary-intelligence.html",
+  "/post-job.html",
+  "/privacy.html",
+  "/terms.html",
+  "/career-switch.html",
+  "/linkedin-profile.html",
+  "/resume-masterclass.html",
+  "/salary-negotiation.html",
+  "/system-design-basics.html",
+  "/bangalore-tech-jobs.html",
+  "/software-engineer-salary-india.html"
 ];
 
 /* Install — cache core files */
@@ -51,7 +70,11 @@ self.addEventListener("fetch", function(e) {
     url.hostname.includes("supabase.co") ||
     url.hostname.includes("razorpay.com") ||
     url.hostname.includes("rapidapi.com") ||
-    url.hostname.includes("googleapis.com")
+    url.hostname.includes("googleapis.com") ||
+    url.hostname.includes("anthropic.com") ||
+    url.hostname.includes("fonts.gstatic.com") ||
+    url.hostname.includes("cdn.jsdelivr.net") ||
+    url.hostname.includes("cdnjs.cloudflare.com")
   ) {
     return;
   }

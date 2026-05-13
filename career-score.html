@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <style>
 :root {
   --brand:#2D1B69; --brand2:#4C2FAA; --brand3:#7C5CDB;
@@ -151,6 +151,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
   .sh-change{display:none}
 }
 </style>
+<meta name="theme-color" content="#2D1B69"/>
 </head>
 <body>
 
@@ -728,5 +729,6 @@ document.querySelectorAll('.range-btn').forEach(function(b){
   if (match) b.id = 'btn-' + match[1];
 });
 </script>
+<script src="pwa-install.js"></script>
 </body>
 </html>

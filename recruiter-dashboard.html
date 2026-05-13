@@ -683,7 +683,16 @@ var DEMO_JOBS = [
 
 /* ── INIT ── */
 window.addEventListener('DOMContentLoaded', async function() {
-  _recruiterEmail = localStorage.getItem('bx_recruiter_email') || '';
+  /* AUTH GUARD — redirect to sign-in if not logged in */
+  var _session = await sb.auth.getSession();
+  if (!_session.data || !_session.data.session) {
+    window.location.href = 'app.html?redirect=recruiter-dashboard.html';
+    return;
+  }
+  var _authUser = _session.data.session.user;
+  _recruiterEmail = _authUser.email || localStorage.getItem('bx_recruiter_email') || '';
+
+  if (!_recruiterEmail) _recruiterEmail = localStorage.getItem('bx_recruiter_email') || '';
 
   // Update sidebar
   if (_recruiterEmail) {
@@ -1350,5 +1359,6 @@ showRdPage = function(page, btn) {
   if (page === 'pipeline') { kbRenderBoard(); }
 };
 </script>
+<script src="pwa-install.js"></script>
 </body>
 </html>
