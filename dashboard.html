@@ -1744,13 +1744,17 @@ async function saveProfile() {
   function gv(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
   var updates={id:currentUser.id,email:currentUser.email,full_name:gv('pf-name')||null,city:gv('pf-city')||null,user_type:gv('pf-usertype')||null,role:gv('pf-role')||null,experience:gv('pf-exp')||null,skills:gv('pf-skills')||null,bio:gv('pf-about')||null,field:gv('pf-field')||null,company:gv('pf-company')||null,notice_period:gv('pf-notice')||null,phone:gv('pf-phone')||null,address:gv('pf-address')||null,updated_at:new Date().toISOString()};
   var sf=['full_name','city','user_type','role','experience','skills','bio'];
-  updates.career_score=Math.min(30+sf.filter(function(k){return updates[k]&&updates[k].trim();}).length*10,95);
+  /* Score: 30 base + 10 per completed field, max 100 */
+  var filledCount=sf.filter(function(k){return updates[k]&&String(updates[k]).trim();}).length;
+  updates.career_score=Math.min(30+(filledCount*10),100);
   var btn=document.getElementById('prof-save-btn');
   if(btn){btn.disabled=true;btn.textContent='Saving...';}
   try{
     var res=await supaClient.from('profiles').upsert([updates],{onConflict:'id'});
     if(res.error)throw res.error;
-    showToast('Profile saved! Score: '+updates.career_score);
+    showToast('Profile saved! Score: '+updates.career_score+'/100 ✓');
+    /* Log score change to history */
+    try{supaClient.from('career_score_history').insert([{user_id:currentUser.id,score:updates.career_score,delta:0,reason:'Profile updated',created_at:new Date().toISOString()}]).then(function(){});}catch(e){}
     populateProfileCard(updates);loadPortfolio(updates);
     var sbN=document.getElementById('sb-name');if(sbN&&updates.full_name)sbN.textContent=updates.full_name.split(' ')[0];
     var sbR=document.getElementById('sb-role');if(sbR)sbR.textContent=updates.role||updates.experience||'Member';
@@ -1761,15 +1765,25 @@ async function saveProfile() {
 
 async function saveField(field) {
   if(!currentUser)return;
-  var existingName=(document.getElementById('ov-name')||{}).textContent||currentUser.email.split('@')[0];
-  var updates={id:currentUser.id,email:currentUser.email,full_name:existingName||currentUser.email.split('@')[0]};
+  /* Get full_name from metadata or email — never from DOM to avoid stale data */
+  var existingName=(currentUser.user_metadata&&currentUser.user_metadata.full_name)||
+    (document.getElementById('ov-name')||{}).textContent||currentUser.email.split('@')[0];
+  var updates={id:currentUser.id,email:currentUser.email,full_name:existingName||null};
   if(field==='bio'){var v=(document.getElementById('bio-inp')||{}).value||'';updates.bio=v;var bioEl=document.getElementById('ov-bio');if(bioEl){bioEl.textContent=v||'No summary yet.';bioEl.classList[v?'remove':'add']('port-empty');}toggleEdit('bio-edit');}
   else if(field==='skills'){var v=(document.getElementById('skills-inp')||{}).value||'';updates.skills=v;var sklEl=document.getElementById('ov-skills');if(sklEl)sklEl.innerHTML=v?v.split(',').filter(function(s){return s.trim();}).map(function(s){return'<span class="sk-chip">'+esc(s.trim())+'</span>';}).join(''):'<div class="port-empty">No skills.</div>';toggleEdit('skills-edit');}
   else if(field==='work'){updates.role=(document.getElementById('we-role')||{}).value||null;updates.company=(document.getElementById('we-company')||{}).value||null;updates.experience=(document.getElementById('we-exp')||{}).value||null;updates.notice_period=(document.getElementById('we-notice')||{}).value||null;var workEl=document.getElementById('ov-work');if(workEl&&updates.role)workEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127970;</div><div><div class="wt">'+esc(updates.role||'')+'</div><div class="wc">'+esc(updates.company||'')+'</div><div class="wp">'+esc(updates.experience||'')+'</div></div></div>';toggleEdit('work-edit');}
   else if(field==='prefs'){updates.role=(document.getElementById('pref-inp-role')||{}).value||null;updates.city=(document.getElementById('pref-inp-loc')||{}).value||null;updates.experience=(document.getElementById('pref-inp-exp')||{}).value||null;updates.notice_period=(document.getElementById('pref-inp-notice')||{}).value||null;updates.field=(document.getElementById('pref-inp-field')||{}).value||null;updates.user_type=(document.getElementById('pref-inp-type')||{}).value||null;toggleEdit('prefs-edit');}
   else if(field==='personal'){updates.phone=(document.getElementById('pd-inp-phone')||{}).value||null;updates.city=(document.getElementById('pd-inp-city')||{}).value||null;updates.company=(document.getElementById('pd-inp-company')||{}).value||null;updates.address=(document.getElementById('pd-inp-address')||{}).value||null;toggleEdit('personal-edit');}
   else if(field==='edu'){var edu={degree:(document.getElementById('edu-degree')||{}).value||'',college:(document.getElementById('edu-college')||{}).value||'',year:(document.getElementById('edu-year')||{}).value||'',grade:(document.getElementById('edu-grade')||{}).value||''};try{localStorage.setItem('bx_edu_'+currentUser.id,JSON.stringify(edu));}catch(e){}var eduEl=document.getElementById('ov-edu');if(eduEl&&edu.degree)eduEl.innerHTML='<div class="work-item"><div class="work-logo-ic">&#127979;</div><div><div class="wt">'+esc(edu.degree)+'</div><div class="wc">'+esc(edu.college)+'</div><div class="wp">'+esc(edu.year)+(edu.grade?' &bull; '+esc(edu.grade):'')+'</div></div></div>';toggleEdit('edu-edit');showToast('Education saved!');return;}
-  try{var res=await supaClient.from('profiles').upsert([updates],{onConflict:'id'});if(res.error)throw res.error;showToast('Saved!');loadUserData();}catch(e){showToast('Save failed: '+e.message);}
+  /* Use UPDATE not UPSERT to avoid overwriting other fields with null */
+  try{
+    var updateData={};
+    Object.keys(updates).forEach(function(k){if(k!=='id'&&k!=='email')updateData[k]=updates[k];});
+    var res=await supaClient.from('profiles').update(updateData).eq('id',currentUser.id);
+    if(res.error)throw res.error;
+    showToast('Saved! ✓');
+    loadUserData();
+  }catch(e){showToast('Save failed: '+e.message);}
 }
 
 async function saveLinkedIn() {
