@@ -1,3 +1,6 @@
+// Bexi uses the dashboard's authenticated Supabase client
+if (typeof supaClient !== 'undefined') window._bxSb = supaClient;
+
 /* ═══════════════════════════════════════════════════════════════
    Belongix — Bexi Career Guide  v7.0
    ✅ UNLIMITED queries — no daily cap, free forever
