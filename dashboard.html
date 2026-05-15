@@ -1432,8 +1432,10 @@ function renderJobs(jobs) {
               var pillTxt=st==="completed"?"Done":st==="in-progress"?"In Progress":"Start";
               var rowCls="cLink-prog"+(st==="in-progress"?" in-progress":st==="completed"?" completed":"");
               var barW=st==="completed"?100:st==="in-progress"?45:0;
-              var enc=encodeURIComponent;
-              return "<div class='"+rowCls+"' onclick='upHandleClick(\""+key+"\",\""+enc(c.url)+"\",\""+enc(c.n)+"\",this)'>"
+              if(!window._upUrls)window._upUrls={};
+              window._upUrls[key+"u"]=c.url;
+              window._upUrls[key+"n"]=c.n;
+              return "<div class='"+rowCls+"' onclick='upHandleClickSafe(\""+key+"\",this)'>"
                 +"<div style='flex:1;min-width:0'>"
                   +"<div style='font-size:13px;font-weight:600;color:#0F172A'>"+c.n+"</div>"
                   +"<div style='font-size:11px;color:#64748B;margin-top:2px'>"+c.by+"</div>"
@@ -1461,18 +1463,25 @@ function renderJobs(jobs) {
           if(status==="completed"&&prev!=="completed"){upAwardPoints();}
           upRefreshSummary();
         }
-        function upHandleClick(key,encUrl,encName,el){
-          var url=decodeURIComponent(encUrl);
+
+        function upHandleClickSafe(key,el){
+          if(!window._upUrls)return;
+          var url=window._upUrls[key+"u"]||"";
+          var name=window._upUrls[key+"n"]||"";
+          upHandleClick(key, url, name, el);
+        }
+        function upHandleClick(key,url,name,el){
           var st=upGetStatus(key);
           if(st==="not-started"){
-            upSetStatus(key,"in-progress",encName);
+            upSetStatus(key,"in-progress",name);
             el.className="cLink-prog in-progress";
-            el.querySelector(".cp-pill").className="cp-pill in-progress";
-            el.querySelector(".cp-pill").textContent="In Progress";
-            el.querySelector(".cp-bar-fill").style.width="45%";
+            var pill=el.querySelector(".cp-pill");
+            if(pill){pill.className="cp-pill in-progress";pill.textContent="In Progress";}
+            var bar=el.querySelector(".cp-bar-fill");
+            if(bar)bar.style.width="45%";
             window.open(url,"_blank");
           } else if(st==="in-progress"){
-            upShowCompletePrompt(key,encName,el,url);
+            upShowCompletePrompt(key,name,el,url);
           } else {
             window.open(url,"_blank");
           }
@@ -1534,10 +1543,24 @@ function renderJobs(jobs) {
         var SG_DEFAULT_COURSE='dashboard.html?page=upskill';
         var _sgUserSkills=[];
         function sgLoadUserSkills(cb){
-          var tags=document.querySelectorAll('#an-skills-row .skill-tag,#profile-skills-wrap .skill-tag,#skills-display .skill-tag');
-          var fromDom=Array.from(tags).map(function(t){return t.textContent.trim().replace('×','').trim();}).filter(Boolean);
-          if(fromDom.length){_sgUserSkills=fromDom;if(cb)cb();return;}
-          try{supaClient.auth.getSession().then(function(r){if(!r.data||!r.data.session){if(cb)cb();return;}supaClient.from('profiles').select('skills').eq('id',r.data.session.user.id).maybeSingle().then(function(res){if(res.data&&res.data.skills){_sgUserSkills=Array.isArray(res.data.skills)?res.data.skills:String(res.data.skills).split(',').map(function(s){return s.trim();}).filter(Boolean);}if(cb)cb();}).catch(function(){if(cb)cb();});});}catch(e){if(cb)cb();}
+          /* Always fetch fresh from Supabase — DOM skills may not be loaded on upskill page */
+          var inp=document.getElementById('skills-inp');
+          var inpVal=inp?inp.value.trim():'';
+          var fromInp=inpVal?inpVal.split(',').map(function(s){return s.trim();}).filter(Boolean):[];
+          if(fromInp.length){_sgUserSkills=fromInp;if(cb)cb();return;}
+          try{
+            supaClient.auth.getSession().then(function(r){
+              if(!r.data||!r.data.session){if(cb)cb();return;}
+              supaClient.from('profiles').select('skills').eq('id',r.data.session.user.id).maybeSingle().then(function(res){
+                if(res.data&&res.data.skills){
+                  _sgUserSkills=Array.isArray(res.data.skills)
+                    ?res.data.skills
+                    :String(res.data.skills).split(',').map(function(s){return s.trim();}).filter(Boolean);
+                }
+                if(cb)cb();
+              }).catch(function(){if(cb)cb();});
+            });
+          }catch(e){if(cb)cb();}
         }
         function sgAnalyse(){
           var roleKey=(document.getElementById('sg-role-select')||{}).value||'';
