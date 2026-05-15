@@ -1593,6 +1593,14 @@ function renderJobs(jobs) {
           });
         }
         if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",function(){renderFilters();renderTracks();});}else{renderFilters();renderTracks();}
+        /* Expose functions to global scope so inline onclick attrs can call them */
+        window.upHandleClickSafe = upHandleClickSafe;
+        window.upHandleClick = upHandleClick;
+        window.upMarkDone = upMarkDone;
+        window.sgAnalyse = sgAnalyse;
+        window.renderFilters = renderFilters;
+        window.renderTracks = renderTracks;
+        window.upShowCompleted = upShowCompleted;
       })();
       
 </script>
