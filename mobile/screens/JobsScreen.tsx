@@ -1,205 +1,133 @@
-/**
- * Belongix — Jobs Screen
- * Sticky search, filters, chip tabs, virtualized FlatList, apply bottom sheet.
- */
-
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  View, Text, StyleSheet, TextInput, TouchableOpacity, FlatList,
-  ScrollView, Modal, Alert, ActivityIndicator, Platform, KeyboardAvoidingView,
+  View, Text, FlatList, TextInput, TouchableOpacity,
+  StyleSheet, ActivityIndicator, Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-
-import { Colors, FontFamily, Spacing, Radius, Shadow } from '../lib/theme';
-import { useJobStore, JobFilters } from '../store/jobStore';
+import { Colors, FontFamily, Shadow, companyColor } from '../lib/theme';
+import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
-import { Job } from '../lib/supabase';
-import JobCard from '../components/JobCard';
 
-const CITIES    = ['All', 'Bangalore', 'Hyderabad', 'Mumbai', 'Pune', 'Chennai', 'Remote'];
-const TAGS      = ['All', 'Fresher', 'Remote', 'AI/ML', 'Data', 'Cloud', 'DevOps', 'Exclusive'];
-const JOB_TYPES = ['All', 'FULLTIME', 'INTERN', 'REMOTE'];
+interface Job {
+  id: string; title: string; company: string; city: string;
+  salary_min: number | null; salary_max: number | null;
+  job_type: string; skills: string[] | null; is_exclusive: boolean;
+}
+
+const SEED_JOBS: Job[] = [
+  { id: '1', title: 'Software Engineer', company: 'Swiggy', city: 'Bangalore', salary_min: 20, salary_max: 35, job_type: 'Full Time', skills: ['React', 'Node.js', 'AWS'], is_exclusive: true },
+  { id: '2', title: 'Product Manager', company: 'CRED', city: 'Bangalore', salary_min: 25, salary_max: 40, job_type: 'Full Time', skills: ['Product', 'Analytics', 'SQL'], is_exclusive: false },
+  { id: '3', title: 'Data Scientist', company: 'PhonePe', city: 'Bangalore', salary_min: 18, salary_max: 30, job_type: 'Full Time', skills: ['Python', 'ML', 'SQL'], is_exclusive: true },
+  { id: '4', title: 'DevOps Engineer', company: 'Razorpay', city: 'Bangalore', salary_min: 15, salary_max: 28, job_type: 'Full Time', skills: ['AWS', 'Kubernetes', 'Docker'], is_exclusive: false },
+  { id: '5', title: 'ML Engineer', company: 'Zepto', city: 'Mumbai', salary_min: 20, salary_max: 35, job_type: 'Full Time', skills: ['Python', 'TensorFlow', 'MLOps'], is_exclusive: true },
+];
 
 export default function JobsScreen() {
-  const { jobs, loading, loadJobs, applyToJob, appliedIds } = useJobStore();
-  const { user, profile } = useAuthStore();
-
-  const [search, setSearch]       = useState('');
-  const [city, setCity]           = useState('All');
-  const [tag, setTag]             = useState('All');
-  const [jobType, setJobType]     = useState('All');
-  const [applyJob, setApplyJob]   = useState<Job | null>(null);
-  const [coverNote, setCoverNote] = useState('');
-  const [applying, setApplying]   = useState(false);
+  const { user } = useAuthStore();
+  const [jobs, setJobs] = useState<Job[]>(SEED_JOBS);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [applying, setApplying] = useState<string | null>(null);
 
   useEffect(() => { loadJobs(); }, []);
 
-  const handleSearch = useCallback(() => {
-    const filters: JobFilters = {
-      search:   search || undefined,
-      city:     city !== 'All' ? city : undefined,
-      type:     jobType !== 'All' ? jobType : undefined,
-    };
-    loadJobs(filters);
-  }, [search, city, jobType]);
-
-  // Filter client-side by tag
-  const filteredJobs = jobs.filter((j) => {
-    if (tag === 'All') return true;
-    if (tag === 'Exclusive') return j.is_exclusive;
-    if (tag === 'Remote')    return j.city === 'Remote' || j.job_type === 'REMOTE';
-    if (tag === 'Fresher')   return j.experience?.includes('0') || j.experience?.includes('Fresher');
-    return j.skills?.some((s) => s.toLowerCase().includes(tag.toLowerCase()));
-  });
-
-  const handleApply = async () => {
-    if (!user || !applyJob) return;
-    setApplying(true);
+  const loadJobs = async () => {
     try {
-      await applyToJob(user.id, applyJob, coverNote);
-      setApplyJob(null);
-      setCoverNote('');
-      Alert.alert('✅ Applied!', `Your application to ${applyJob.company} has been submitted. +15 career score points awarded!`);
-    } catch {
-      Alert.alert('Apply failed', 'Please try again.');
-    } finally {
-      setApplying(false);
-    }
+      const { data } = await supabase.from('jobs').select('*').eq('status', 'active').limit(30);
+      if (data && data.length > 0) setJobs(data as Job[]);
+    } catch { /* keep seed */ }
   };
 
+  const applyJob = async (job: Job) => {
+    if (!user) { Alert.alert('Sign in to apply'); return; }
+    setApplying(job.id);
+    try {
+      await supabase.from('applications').insert({
+        user_id: user.id, company: job.company, role: job.title,
+        city: job.city, status: 'applied', applied_at: new Date().toISOString().split('T')[0],
+      });
+      Alert.alert('✅ Applied!', `Application sent to ${job.company}. +15 Career Score points!`);
+    } catch { Alert.alert('Apply failed', 'Please try again.'); }
+    finally { setApplying(null); }
+  };
+
+  const filtered = jobs.filter(j =>
+    !search || j.title.toLowerCase().includes(search.toLowerCase()) ||
+    j.company.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <SafeAreaView style={styles.safe}>
-      {/* ── Sticky search ── */}
-      <View style={styles.searchBar}>
-        <Ionicons name="search" size={18} color={Colors.muted} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          value={search}
-          onChangeText={setSearch}
-          placeholder="Role, company, or skill..."
-          placeholderTextColor={Colors.muted}
-          onSubmitEditing={handleSearch}
-          returnKeyType="search"
-        />
-        {search.length > 0 && (
-          <TouchableOpacity onPress={() => { setSearch(''); loadJobs(); }}>
-            <Ionicons name="close-circle" size={18} color={Colors.muted} />
-          </TouchableOpacity>
-        )}
+    <SafeAreaView style={s.safe} edges={['top']}>
+      <View style={s.searchWrap}>
+        <View style={s.searchBar}>
+          <Ionicons name="search" size={18} color={Colors.muted} />
+          <TextInput style={s.searchInput} placeholder="Search role, company..."
+            placeholderTextColor={Colors.muted} value={search} onChangeText={setSearch} />
+        </View>
       </View>
-
-      {/* ── City filter ── */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
-        {CITIES.map((c) => (
-          <TouchableOpacity key={c} style={[styles.filterChip, city === c && styles.filterChipActive]} onPress={() => { setCity(c); handleSearch(); }}>
-            <Text style={[styles.filterChipText, city === c && styles.filterChipTextActive]}>{c}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* ── Tag chips ── */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
-        {TAGS.map((t) => (
-          <TouchableOpacity key={t} style={[styles.tagChip, tag === t && styles.tagChipActive]} onPress={() => setTag(t)}>
-            <Text style={[styles.tagChipText, tag === t && styles.tagChipTextActive]}>{t}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      {/* ── Job count ── */}
-      <Text style={styles.count}>{filteredJobs.length} jobs found</Text>
-
-      {/* ── Job list ── */}
-      {loading ? (
-        <ActivityIndicator color={Colors.brand} style={{ marginTop: 40 }} />
-      ) : (
-        <FlatList
-          data={filteredJobs}
-          keyExtractor={(j) => j.id}
-          renderItem={({ item }) => (
-            <JobCard
-              job={item}
-              applied={appliedIds.has(item.id)}
-              onApply={() => { setApplyJob(item); setCoverNote(''); }}
-            />
-          )}
-          contentContainerStyle={styles.list}
-          showsVerticalScrollIndicator={false}
-          ItemSeparatorComponent={() => <View style={{ height: Spacing.sm }} />}
-          ListEmptyComponent={
-            <Text style={styles.empty}>No jobs match your filters. Try broadening your search.</Text>
-          }
-        />
-      )}
-
-      {/* ── Apply Modal ── */}
-      <Modal visible={!!applyJob} transparent animationType="slide">
-        <KeyboardAvoidingView style={styles.modalBg} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <View style={styles.sheet}>
-            <View style={styles.sheetHandle} />
-            <Text style={styles.sheetTitle}>Apply to {applyJob?.company}</Text>
-            <Text style={styles.sheetRole}>{applyJob?.title} · {applyJob?.city}</Text>
-
-            <View style={styles.prefill}>
-              <Text style={styles.prefillLabel}>Applying as</Text>
-              <Text style={styles.prefillVal}>{profile?.full_name ?? user?.email}</Text>
+      <Text style={s.count}>{filtered.length} jobs found</Text>
+      <FlatList
+        data={filtered}
+        keyExtractor={j => j.id}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 100 }}
+        renderItem={({ item: job }) => (
+          <View style={s.card}>
+            <View style={s.top}>
+              <View style={[s.logo, { backgroundColor: companyColor(job.company) }]}>
+                <Text style={s.logoTxt}>{job.company.slice(0, 2).toUpperCase()}</Text>
+              </View>
+              <View style={s.info}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                  <Text style={s.role} numberOfLines={1}>{job.title}</Text>
+                  {job.is_exclusive && (
+                    <View style={s.excl}><Text style={s.exclTxt}>⭐ Exclusive</Text></View>
+                  )}
+                </View>
+                <Text style={s.company}>{job.company} · {job.city}</Text>
+                {job.salary_min && <Text style={s.salary}>₹{job.salary_min}–{job.salary_max}L/yr</Text>}
+              </View>
             </View>
-
-            <Text style={styles.noteLabel}>Cover note (optional)</Text>
-            <TextInput
-              style={styles.noteInput}
-              value={coverNote}
-              onChangeText={setCoverNote}
-              placeholder="Why are you a great fit? Keep it brief..."
-              placeholderTextColor={Colors.muted}
-              multiline
-              numberOfLines={4}
-              maxLength={500}
-            />
-
-            <TouchableOpacity style={styles.applyBtn} onPress={handleApply} disabled={applying}>
-              {applying ? <ActivityIndicator color={Colors.white} /> : <Text style={styles.applyBtnText}>⚡ Submit Application</Text>}
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.cancelBtn} onPress={() => setApplyJob(null)}>
-              <Text style={styles.cancelText}>Cancel</Text>
+            {job.skills && (
+              <View style={s.skills}>
+                {job.skills.slice(0, 3).map(sk => (
+                  <View key={sk} style={s.chip}><Text style={s.chipTxt}>{sk}</Text></View>
+                ))}
+              </View>
+            )}
+            <TouchableOpacity style={s.applyBtn} onPress={() => applyJob(job)}
+              disabled={applying === job.id}>
+              {applying === job.id
+                ? <ActivityIndicator color="#fff" size="small" />
+                : <Text style={s.applyTxt}>⚡ Easy Apply</Text>}
             </TouchableOpacity>
           </View>
-        </KeyboardAvoidingView>
-      </Modal>
+        )}
+      />
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  safe:               { flex: 1, backgroundColor: Colors.bg },
-  searchBar:          { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.white, marginHorizontal: Spacing.lg, marginTop: Spacing.md, marginBottom: Spacing.sm, borderRadius: Radius.lg, paddingHorizontal: Spacing.md, borderWidth: 1.5, borderColor: Colors.border, gap: 8 },
-  searchIcon:         {},
-  searchInput:        { flex: 1, fontFamily: FontFamily.dmSans, fontSize: 14, color: Colors.ink, paddingVertical: 11 },
-  filterRow:          { paddingHorizontal: Spacing.lg, paddingVertical: Spacing.xs, gap: 8 },
-  filterChip:         { paddingHorizontal: 14, paddingVertical: 7, backgroundColor: Colors.white, borderRadius: Radius.full, borderWidth: 1.5, borderColor: Colors.border },
-  filterChipActive:   { backgroundColor: Colors.brand, borderColor: Colors.brand },
-  filterChipText:     { fontFamily: FontFamily.dmSansMed, fontSize: 13, color: Colors.muted },
-  filterChipTextActive: { color: Colors.white },
-  tagChip:            { paddingHorizontal: 12, paddingVertical: 5, backgroundColor: Colors.off, borderRadius: Radius.full, borderWidth: 1, borderColor: Colors.off2 },
-  tagChipActive:      { backgroundColor: Colors.brand + '15', borderColor: Colors.brand },
-  tagChipText:        { fontFamily: FontFamily.dmSans, fontSize: 12.5, color: Colors.muted },
-  tagChipTextActive:  { color: Colors.brand, fontFamily: FontFamily.dmSansSemi },
-  count:              { fontFamily: FontFamily.dmSans, fontSize: 12.5, color: Colors.muted, marginHorizontal: Spacing.lg, marginBottom: Spacing.sm },
-  list:               { paddingHorizontal: Spacing.lg, paddingBottom: 100 },
-  empty:              { fontFamily: FontFamily.dmSans, fontSize: 14, color: Colors.muted, textAlign: 'center', marginTop: 40, lineHeight: 22 },
-  modalBg:            { flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.5)' },
-  sheet:              { backgroundColor: Colors.white, borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: Spacing.xl, paddingBottom: 40 },
-  sheetHandle:        { width: 36, height: 4, backgroundColor: Colors.border, borderRadius: 2, alignSelf: 'center', marginBottom: Spacing.lg },
-  sheetTitle:         { fontFamily: FontFamily.soraBold, fontSize: 18, color: Colors.ink, marginBottom: 2 },
-  sheetRole:          { fontFamily: FontFamily.dmSans, fontSize: 13.5, color: Colors.muted, marginBottom: Spacing.lg },
-  prefill:            { backgroundColor: Colors.off, borderRadius: Radius.md, padding: Spacing.md, marginBottom: Spacing.md },
-  prefillLabel:       { fontFamily: FontFamily.dmSans, fontSize: 11, color: Colors.muted },
-  prefillVal:         { fontFamily: FontFamily.dmSansSemi, fontSize: 14, color: Colors.ink, marginTop: 2 },
-  noteLabel:          { fontFamily: FontFamily.dmSansSemi, fontSize: 11, color: Colors.muted, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 },
-  noteInput:          { borderWidth: 1.5, borderColor: Colors.border, borderRadius: Radius.md, padding: Spacing.md, fontFamily: FontFamily.dmSans, fontSize: 14, color: Colors.ink, textAlignVertical: 'top', minHeight: 90 },
-  applyBtn:           { backgroundColor: Colors.green, borderRadius: Radius.md, paddingVertical: 14, alignItems: 'center', marginTop: Spacing.lg },
-  applyBtnText:       { fontFamily: FontFamily.soraBold, fontSize: 15, color: Colors.white },
-  cancelBtn:          { alignItems: 'center', paddingVertical: 12 },
-  cancelText:         { fontFamily: FontFamily.dmSansMed, fontSize: 14, color: Colors.muted },
+const s = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: Colors.background },
+  searchWrap: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 },
+  searchBar: { flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: Colors.white, borderRadius: 12, paddingHorizontal: 14, height: 44, borderWidth: 1.5, borderColor: Colors.border },
+  searchInput: { flex: 1, fontSize: 14, fontFamily: FontFamily.dmSansRegular, color: Colors.ink },
+  count: { fontSize: 12, color: Colors.muted, paddingHorizontal: 20, marginBottom: 8, fontFamily: FontFamily.dmSansRegular },
+  card: { backgroundColor: Colors.white, borderRadius: 16, padding: 16, marginHorizontal: 16, marginBottom: 12, borderWidth: 1, borderColor: Colors.border, ...Shadow.sm },
+  top: { flexDirection: 'row', gap: 12, marginBottom: 10 },
+  logo: { width: 44, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
+  logoTxt: { color: '#fff', fontSize: 15, fontFamily: FontFamily.soraSemiBold },
+  info: { flex: 1, gap: 2 },
+  role: { flex: 1, fontSize: 14.5, fontFamily: FontFamily.soraSemiBold, color: Colors.ink },
+  company: { fontSize: 12, fontFamily: FontFamily.dmSansRegular, color: Colors.muted },
+  salary: { fontSize: 12.5, fontFamily: FontFamily.soraSemiBold, color: Colors.green },
+  excl: { backgroundColor: '#EEF0FF', borderRadius: 20, paddingHorizontal: 8, paddingVertical: 2 },
+  exclTxt: { fontSize: 10, fontFamily: FontFamily.soraSemiBold, color: Colors.brand },
+  skills: { flexDirection: 'row', gap: 6, marginBottom: 10 },
+  chip: { backgroundColor: Colors.off, borderRadius: 20, paddingHorizontal: 10, paddingVertical: 3 },
+  chipTxt: { fontSize: 11, fontFamily: FontFamily.dmSansMedium, color: Colors.brand },
+  applyBtn: { backgroundColor: Colors.green, borderRadius: 10, paddingVertical: 10, alignItems: 'center' },
+  applyTxt: { color: '#fff', fontSize: 13.5, fontFamily: FontFamily.soraSemiBold },
 });

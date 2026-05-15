@@ -1,109 +1,74 @@
-/**
- * Belongix — Upskill / Learn Screen
- * Skill gap analyser, course tracks, progress pills, completion flow.
- */
-
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, FlatList, Linking, Alert } from 'react-native';
+import React from 'react';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Colors, FontFamily, Spacing, Radius, Shadow } from '../lib/theme';
-import { useAuthStore } from '../store/authStore';
-import CourseRow from '../components/CourseRow';
+import { Colors, FontFamily, Shadow } from '../lib/theme';
 
 const COURSES = [
-  { id: '1', track: '🐍 Python & Data',      title: 'Python for Data Science',       provider: 'Coursera',    free: true,  hot: false, cert: true,  url: 'https://www.coursera.org/learn/python-for-applied-data-science-ai' },
-  { id: '2', track: '🐍 Python & Data',      title: 'SQL for Analytics',             provider: 'Mode',        free: true,  hot: true,  cert: false, url: 'https://mode.com/sql-tutorial' },
-  { id: '3', track: '⚛️ Full Stack Dev',     title: 'React + Node.js Full Course',   provider: 'The Odin Project', free: true, hot: true, cert: false, url: 'https://www.theodinproject.com' },
-  { id: '4', track: '⚛️ Full Stack Dev',     title: 'TypeScript Fundamentals',       provider: 'Scrimba',     free: true,  hot: false, cert: false, url: 'https://scrimba.com/learn/typescript' },
-  { id: '5', track: '☁️ Cloud & DevOps',     title: 'AWS Cloud Practitioner',        provider: 'AWS',         free: false, hot: true,  cert: true,  url: 'https://aws.amazon.com/training/' },
-  { id: '6', track: '☁️ Cloud & DevOps',     title: 'Docker & Kubernetes',           provider: 'Udemy',       free: false, hot: true,  cert: true,  url: 'https://www.udemy.com' },
-  { id: '7', track: '🤖 AI/ML',              title: 'Machine Learning — Andrew Ng',  provider: 'Coursera',    free: true,  hot: true,  cert: true,  url: 'https://www.coursera.org/learn/machine-learning' },
-  { id: '8', track: '🤖 AI/ML',              title: 'LLM Engineering',               provider: 'DeepLearning.AI', free: true, hot: true, cert: false, url: 'https://www.deeplearning.ai' },
-  { id: '9', track: '🎯 Product Management', title: 'Product Management Basics',     provider: 'Google',      free: true,  hot: false, cert: true,  url: 'https://grow.google/certificates/' },
-  { id: '10', track: '📊 System Design',     title: 'System Design Interview Prep',  provider: 'ByteByteGo',  free: false, hot: true,  cert: false, url: 'https://bytebytego.com' },
-  { id: '11', track: '💼 Soft Skills',       title: 'Public Speaking & Comm.',       provider: 'Coursera',    free: true,  hot: false, cert: true,  url: 'https://www.coursera.org' },
-  { id: '12', track: '💰 Finance & BFSI',    title: 'Financial Modeling',            provider: 'CFI',         free: false, hot: false, cert: true,  url: 'https://corporatefinanceinstitute.com' },
+  { id: '1', track: '💻', title: 'Data Structures & Algorithms', sub: 'For FAANG India interviews', badge: 'HOT', free: true, url: 'https://takeuforward.org' },
+  { id: '2', track: '🤖', title: 'Machine Learning Specialisation', sub: 'Andrew Ng — industry gold standard', badge: 'CERT', free: false, url: 'https://coursera.org' },
+  { id: '3', track: '☁️', title: 'AWS Solutions Architect', sub: 'Most in-demand cloud cert in India', badge: 'CERT', free: false, url: 'https://aws.amazon.com/certification' },
+  { id: '4', track: '📊', title: 'SQL for Data Analytics', sub: 'Used in 95% of Indian data roles', badge: 'FREE', free: true, url: 'https://mode.com/sql-tutorial' },
+  { id: '5', track: '⚛️', title: 'React + TypeScript Masterclass', sub: 'Most hired frontend stack', badge: 'HOT', free: false, url: 'https://udemy.com' },
+  { id: '6', track: '🐍', title: 'Python for Data Science', sub: 'Start here for any data role', badge: 'FREE', free: true, url: 'https://kaggle.com/learn/python' },
 ];
 
-const FILTERS = ['All', 'Trending', 'Free', 'Beginner', 'Certifications'];
+const BADGE_COLORS: Record<string, [string, string]> = {
+  HOT:  ['#FEF2F2', '#BE123C'],
+  FREE: ['#F0FDF4', '#15803D'],
+  CERT: ['#FEF9C3', '#A16207'],
+};
 
 export default function UpskillScreen() {
-  const { profile, updateProfile } = useAuthStore();
-  const [filter, setFilter]     = useState('All');
-  const [progress, setProgress] = useState<Record<string, 'not_started' | 'in_progress' | 'completed'>>({});
-
-  const filtered = COURSES.filter((c) => {
-    if (filter === 'Free')    return c.free;
-    if (filter === 'Trending') return c.hot;
-    if (filter === 'Certifications') return c.cert;
-    return true;
-  });
-
-  const handleCoursePress = async (courseId: string, url: string) => {
-    const status = progress[courseId] ?? 'not_started';
-    if (status === 'in_progress') {
-      Alert.alert(
-        'Mark Complete?',
-        "Did you finish this course? Mark it complete to earn +20 career score points! 🎓",
-        [
-          { text: 'Not yet', onPress: () => Linking.openURL(url) },
-          {
-            text: 'Yes, mark complete! 🎉',
-            onPress: async () => {
-              setProgress((p) => ({ ...p, [courseId]: 'completed' }));
-              const newScore = Math.min(100, (profile?.career_score ?? 30) + 20);
-              await updateProfile({ career_score: newScore });
-              Alert.alert('🎉 Congratulations!', `Course completed! +20 points earned. Score: ${newScore}/100`);
-            },
-          },
-        ]
-      );
-    } else if (status === 'not_started') {
-      setProgress((p) => ({ ...p, [courseId]: 'in_progress' }));
-      await Linking.openURL(url);
-    } else {
-      await Linking.openURL(url);
-    }
-  };
-
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={s.safe} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={styles.header}>Upskilling Hub 🎓</Text>
-        <Text style={styles.sub}>48+ curated courses for Indian professionals</Text>
-
-        {/* Filter tabs */}
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
-          {FILTERS.map((f) => (
-            <TouchableOpacity key={f} style={[styles.filterChip, filter === f && styles.active]} onPress={() => setFilter(f)}>
-              <Text style={[styles.filterText, filter === f && styles.activeText]}>{f}</Text>
+        <View style={s.header}>
+          <Text style={s.title}>Upskilling Hub</Text>
+          <Text style={s.sub}>Curated for Indian professionals</Text>
+        </View>
+        {COURSES.map(course => {
+          const [badgeBg, badgeColor] = BADGE_COLORS[course.badge] ?? [Colors.off, Colors.muted];
+          return (
+            <TouchableOpacity key={course.id} style={s.card}
+              onPress={() => Linking.openURL(course.url)} activeOpacity={0.85}>
+              <View style={s.row}>
+                <Text style={s.track}>{course.track}</Text>
+                <View style={{ flex: 1, marginLeft: 12 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                    <Text style={s.courseTitle} numberOfLines={1}>{course.title}</Text>
+                    <View style={[s.badge, { backgroundColor: badgeBg }]}>
+                      <Text style={[s.badgeTxt, { color: badgeColor }]}>{course.badge}</Text>
+                    </View>
+                  </View>
+                  <Text style={s.courseSub}>{course.sub}</Text>
+                  <Text style={s.provider}>{course.free ? '🆓 FREE' : '💳 Paid'}</Text>
+                </View>
+                <View style={s.startPill}>
+                  <Text style={s.startTxt}>Start →</Text>
+                </View>
+              </View>
             </TouchableOpacity>
-          ))}
-        </ScrollView>
-
-        {/* Courses */}
-        {filtered.map((course) => (
-          <CourseRow
-            key={course.id}
-            course={course}
-            status={progress[course.id] ?? 'not_started'}
-            onPress={() => handleCoursePress(course.id, course.url)}
-          />
-        ))}
-
-        <View style={{ height: 40 }} />
+          );
+        })}
+        <View style={{ height: 100 }} />
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
-  safe:       { flex: 1, backgroundColor: Colors.bg },
-  header:     { fontFamily: FontFamily.soraBlack, fontSize: 22, color: Colors.ink, paddingHorizontal: Spacing.lg, paddingTop: Spacing.lg, marginBottom: 2 },
-  sub:        { fontFamily: FontFamily.dmSans, fontSize: 13, color: Colors.muted, paddingHorizontal: Spacing.lg, marginBottom: Spacing.md },
-  filterRow:  { paddingHorizontal: Spacing.lg, gap: 8, marginBottom: Spacing.md },
-  filterChip: { paddingHorizontal: 16, paddingVertical: 8, backgroundColor: Colors.white, borderRadius: Radius.full, borderWidth: 1.5, borderColor: Colors.border },
-  active:     { backgroundColor: Colors.brand, borderColor: Colors.brand },
-  filterText: { fontFamily: FontFamily.dmSansMed, fontSize: 13, color: Colors.muted },
-  activeText: { color: Colors.white },
+const s = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: Colors.background },
+  header: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 14 },
+  title: { fontSize: 20, fontFamily: FontFamily.soraExtraBold, color: Colors.ink },
+  sub: { fontSize: 13, fontFamily: FontFamily.dmSansRegular, color: Colors.muted, marginTop: 2 },
+  card: { backgroundColor: Colors.white, borderRadius: 14, padding: 14, marginHorizontal: 16, marginBottom: 10, borderWidth: 1, borderColor: Colors.border, ...Shadow.sm },
+  row: { flexDirection: 'row', alignItems: 'center' },
+  track: { fontSize: 28 },
+  courseTitle: { flex: 1, fontSize: 13.5, fontFamily: FontFamily.soraSemiBold, color: Colors.ink },
+  courseSub: { fontSize: 11.5, fontFamily: FontFamily.dmSansRegular, color: Colors.muted, marginBottom: 2 },
+  provider: { fontSize: 11, fontFamily: FontFamily.dmSansMedium, color: Colors.muted },
+  badge: { borderRadius: 20, paddingHorizontal: 7, paddingVertical: 2 },
+  badgeTxt: { fontSize: 9.5, fontFamily: FontFamily.soraSemiBold },
+  startPill: { backgroundColor: Colors.off, borderRadius: 20, paddingHorizontal: 12, paddingVertical: 6, marginLeft: 8 },
+  startTxt: { fontSize: 12, fontFamily: FontFamily.soraSemiBold, color: Colors.brand },
 });

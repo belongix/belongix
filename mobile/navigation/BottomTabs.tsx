@@ -1,78 +1,44 @@
-/**
- * Belongix — Bottom Tab Navigator
- * 5 tabs: Home | Jobs | Bexi (hero, centre) | Learn | Profile
- */
-
 import React from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-
 import { Colors, FontFamily } from '../lib/theme';
-import DashboardScreen   from '../screens/DashboardScreen';
-import JobsScreen        from '../screens/JobsScreen';
-import BexiScreen        from '../screens/BexiScreen';
-import UpskillScreen     from '../screens/UpskillScreen';
-import ProfileScreen     from '../screens/ProfileScreen';
+import DashboardScreen from '../screens/DashboardScreen';
+import JobsScreen from '../screens/JobsScreen';
+import BexiScreen from '../screens/BexiScreen';
+import UpskillScreen from '../screens/UpskillScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
-export type TabParamList = {
-  Home:    undefined;
-  Jobs:    undefined;
-  Bexi:    undefined;
-  Learn:   undefined;
-  Profile: undefined;
-};
-
-const Tab = createBottomTabNavigator<TabParamList>();
-
-/** Custom centre Bexi tab icon — larger, purple circle */
-function BexiTabIcon({ focused }: { focused: boolean }) {
-  return (
-    <View style={[styles.bexiBtn, focused && styles.bexiBtnActive]}>
-      <Text style={styles.bexiEmoji}>🤖</Text>
-    </View>
-  );
-}
+const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
   return (
     <Tab.Navigator
-      screenOptions={({ route }) => ({
+      screenOptions={{
         headerShown: false,
-        tabBarShowLabel: true,
+        tabBarStyle: styles.tabBar,
         tabBarActiveTintColor: Colors.brand,
         tabBarInactiveTintColor: Colors.muted,
-        tabBarStyle: styles.tabBar,
-        tabBarLabelStyle: styles.label,
-        tabBarIcon: ({ focused, color, size }) => {
-          switch (route.name) {
-            case 'Home':
-              return <Ionicons name={focused ? 'grid' : 'grid-outline'} size={22} color={color} />;
-            case 'Jobs':
-              return <Ionicons name={focused ? 'briefcase' : 'briefcase-outline'} size={22} color={color} />;
-            case 'Bexi':
-              return <BexiTabIcon focused={focused} />;
-            case 'Learn':
-              return <Ionicons name={focused ? 'school' : 'school-outline'} size={22} color={color} />;
-            case 'Profile':
-              return <Ionicons name={focused ? 'person' : 'person-outline'} size={22} color={color} />;
-          }
-        },
-      })}
+        tabBarLabelStyle: styles.tabLabel,
+      }}
     >
-      <Tab.Screen name="Home"    component={DashboardScreen}  options={{ title: 'Home' }} />
-      <Tab.Screen name="Jobs"    component={JobsScreen}       options={{ title: 'Jobs' }} />
-      <Tab.Screen
-        name="Bexi"
-        component={BexiScreen}
+      <Tab.Screen name="Home" component={DashboardScreen}
+        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" size={size} color={color} /> }} />
+      <Tab.Screen name="Jobs" component={JobsScreen}
+        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="briefcase-outline" size={size} color={color} /> }} />
+      <Tab.Screen name="Bexi" component={BexiScreen}
         options={{
-          title: 'Bexi AI',
-          tabBarLabel: 'Bexi',
-          tabBarItemStyle: { marginTop: -8 }, // lifts the centre button
-        }}
-      />
-      <Tab.Screen name="Learn"   component={UpskillScreen}    options={{ title: 'Learn' }} />
-      <Tab.Screen name="Profile" component={ProfileScreen}    options={{ title: 'Profile' }} />
+          tabBarIcon: ({ focused }) => (
+            <View style={[styles.bexiBtn, focused && styles.bexiBtnActive]}>
+              <Ionicons name="sparkles" size={24} color="#fff" />
+            </View>
+          ),
+          tabBarLabel: 'Bexi AI',
+        }} />
+      <Tab.Screen name="Learn" component={UpskillScreen}
+        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="star-outline" size={size} color={color} /> }} />
+      <Tab.Screen name="Profile" component={ProfileScreen}
+        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} /> }} />
     </Tab.Navigator>
   );
 }
@@ -80,35 +46,25 @@ export default function BottomTabs() {
 const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: Colors.white,
-    borderTopColor:  Colors.border,
-    borderTopWidth:  1,
-    height:          Platform.OS === 'ios' ? 84 : 64,
-    paddingBottom:   Platform.OS === 'ios' ? 28 : 8,
-    paddingTop:      8,
+    borderTopColor: Colors.border,
+    height: Platform.OS === 'ios' ? 84 : 64,
+    paddingBottom: Platform.OS === 'ios' ? 24 : 8,
+    paddingTop: 8,
   },
-  label: {
-    fontFamily: FontFamily.dmSansMed,
-    fontSize:   11,
-    marginTop:  2,
+  tabLabel: {
+    fontSize: 10.5,
+    fontFamily: FontFamily.dmSansMedium,
   },
   bexiBtn: {
-    width:           52,
-    height:          52,
-    borderRadius:    26,
+    width: 52, height: 52, borderRadius: 26,
     backgroundColor: Colors.brand,
-    alignItems:      'center',
-    justifyContent:  'center',
-    marginTop:       -16,
-    shadowColor:     Colors.brand,
-    shadowOffset:    { width: 0, height: 4 },
-    shadowOpacity:   0.4,
-    shadowRadius:    12,
-    elevation:       8,
+    alignItems: 'center', justifyContent: 'center',
+    marginBottom: 4,
+    shadowColor: Colors.brand,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 8,
   },
-  bexiBtnActive: {
-    backgroundColor: Colors.brand2,
-  },
-  bexiEmoji: {
-    fontSize: 24,
-  },
+  bexiBtnActive: { backgroundColor: Colors.brand2 },
 });

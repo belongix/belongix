@@ -1,88 +1,30 @@
 {
   "expo": {
-    "name": "Belongix",
-    "slug": "belongix-app",
+    "name": "mobile",
+    "slug": "mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#2D1B69"
+      "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": false,
-      "bundleIdentifier": "in.belongix.app",
-      "buildNumber": "1",
-      "infoPlist": {
-        "NSCameraUsageDescription": "Upload your profile photo",
-        "NSPhotoLibraryUsageDescription": "Upload your profile photo or resume",
-        "NSMicrophoneUsageDescription": "Voice input for Bexi AI",
-        "NSDocumentUsageDescription": "Upload your resume for AI critique"
-      },
-      "associatedDomains": ["applinks:belongix.in"]
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#2D1B69"
+        "backgroundColor": "#ffffff"
       },
-      "package": "in.belongix.app",
-      "versionCode": 1,
-      "permissions": [
-        "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "RECORD_AUDIO",
-        "INTERNET",
-        "VIBRATE",
-        "RECEIVE_BOOT_COMPLETED"
-      ],
-      "intentFilters": [
-        {
-          "action": "VIEW",
-          "autoVerify": true,
-          "data": [
-            {
-              "scheme": "https",
-              "host": "belongix.in",
-              "pathPrefix": "/"
-            }
-          ],
-          "category": ["BROWSABLE", "DEFAULT"]
-        }
-      ]
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      "expo-font",
-      "expo-image-picker",
-      "expo-document-picker",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/notification-icon.png",
-          "color": "#2D1B69"
-        }
-      ],
-      [
-        "expo-splash-screen",
-        {
-          "backgroundColor": "#2D1B69",
-          "image": "./assets/splash.png",
-          "imageWidth": 200
-        }
-      ]
-    ],
-    "scheme": "belongix",
-    "extra": {
-      "eas": {
-        "projectId": "YOUR_EAS_PROJECT_ID"
-      }
     }
   }
 }

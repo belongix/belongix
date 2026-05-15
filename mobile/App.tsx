@@ -1,40 +1,28 @@
-// App.tsx — Root entry: fonts, auth listener, navigation
-
-import React, { useEffect, useState, useCallback } from 'react';
+import 'react-native-url-polyfill/auto';
+import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import * as SplashScreen from 'expo-splash-screen';
-import * as Notifications from 'expo-notifications';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
-  useFonts, Sora_400Regular, Sora_600SemiBold,
-  Sora_700Bold, Sora_800ExtraBold,
+  useFonts, Sora_700Bold, Sora_800ExtraBold,
+  Sora_600SemiBold, Sora_400Regular,
 } from '@expo-google-fonts/sora';
 import {
   DMSans_400Regular, DMSans_500Medium,
   DMSans_600SemiBold, DMSans_700Bold,
 } from '@expo-google-fonts/dm-sans';
-
 import { supabase } from './lib/supabase';
 import { useAuthStore } from './store/authStore';
 import AppNavigator from './navigation/AppNavigator';
-import { Colors, FontFamily } from './lib/theme';
-
-SplashScreen.preventAutoHideAsync();
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true, shouldPlaySound: false, shouldSetBadge: true,
-  }),
-});
+import { Colors } from './lib/theme';
 
 export default function App() {
   const { setSession, loadProfile, setInitialized } = useAuthStore();
   const [authReady, setAuthReady] = useState(false);
 
   const [fontsLoaded] = useFonts({
-    Sora_400Regular, Sora_600SemiBold, Sora_700Bold, Sora_800ExtraBold,
+    Sora_700Bold, Sora_800ExtraBold, Sora_600SemiBold, Sora_400Regular,
     DMSans_400Regular, DMSans_500Medium, DMSans_600SemiBold, DMSans_700Bold,
   });
 
@@ -45,24 +33,18 @@ export default function App() {
       setAuthReady(true);
       setInitialized();
     });
-
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
       if (session) loadProfile();
     });
-
     return () => subscription.unsubscribe();
   }, []);
-
-  const onLayout = useCallback(async () => {
-    if (fontsLoaded && authReady) await SplashScreen.hideAsync();
-  }, [fontsLoaded, authReady]);
 
   if (!fontsLoaded || !authReady) {
     return (
       <View style={s.loading}>
         <Text style={s.logo}>Belong<Text style={s.accent}>ix</Text></Text>
-        <ActivityIndicator color={Colors.orange} size="large" style={{ marginTop: 20 }} />
+        <ActivityIndicator color="#FF5C35" size="large" style={{ marginTop: 20 }} />
       </View>
     );
   }
@@ -71,9 +53,7 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
         <NavigationContainer>
-          <View style={{ flex: 1 }} onLayout={onLayout}>
-            <AppNavigator />
-          </View>
+          <AppNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
     </GestureHandlerRootView>
@@ -82,6 +62,6 @@ export default function App() {
 
 const s = StyleSheet.create({
   loading: { flex: 1, backgroundColor: Colors.brand, alignItems: 'center', justifyContent: 'center' },
-  logo:    { fontSize: 38, fontFamily: FontFamily.soraExtraBold, color: '#fff' },
-  accent:  { color: Colors.orange },
+  logo: { fontSize: 38, color: '#fff', fontWeight: '800' },
+  accent: { color: '#FF5C35' },
 });
