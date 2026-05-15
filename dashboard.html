@@ -404,7 +404,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         .sg-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
         .sg-select{border:1.5px solid #E2E8F0;border-radius:9px;padding:8px 12px;font-size:13px;font-family:inherit;color:#0D0D1A;background:#fff;outline:none;cursor:pointer;min-width:180px}
         .sg-select:focus{border-color:#2D1B69}
-        .sg-btn{padding:8px 16px;background:#2D1B69;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap}
+        .sg-btn{padding:8px 16px;background:#2D1B69;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s;white-space:nowrap;position:relative;z-index:10}
         .sg-btn:hover{filter:brightness(1.1)}
         .sg-result{display:none;margin-top:16px}
         .sg-result.show{display:block}
@@ -824,7 +824,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         .bIndia{background:#FFF7ED;color:#C2410C;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
         /* ✅ FIX #21: Course progress pills and start button */
         .cLink-wrap{position:relative}
-        .cLink-prog{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s;margin-bottom:7px;gap:10px;cursor:pointer;background:#fff}
+        .cLink-prog{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s;margin-bottom:7px;gap:10px;cursor:pointer;background:#fff;position:relative;z-index:5}
         .cLink-prog:hover{background:#EFF6FF;border-color:#2563EB}
         .cLink-prog.in-progress{border-color:#F59E0B;background:#FFFBEB}
         .cLink-prog.completed{border-color:#10B981;background:#F0FDF4;opacity:.8}
@@ -1567,6 +1567,9 @@ function renderJobs(jobs) {
           if(!roleKey){alert('Please select a target role first.');return;}
           var result=document.getElementById('sg-result');
           if(result){result.innerHTML='<div style="text-align:center;padding:20px;color:#64748B;font-size:13px">⏳ Analysing your skills...</div>';result.classList.add('show');}
+          /* Always re-read skills from input before analysing */
+          var skillsInput=document.getElementById('skills-inp');
+          if(skillsInput&&skillsInput.value.trim()){_sgUserSkills=skillsInput.value.split(',').map(function(s){return s.trim();}).filter(Boolean);}
           sgLoadUserSkills(function(){
             var role=SG_ROLES[roleKey];if(!role||!result)return;
             var required=role.skills;
@@ -1617,6 +1620,7 @@ function showPage(page, btn) {
   if (page === 'jobs') loadJobs();
   if (page === 'network') setTimeout(loadDashMentors, 100);
   if (page === 'tracker') loadTracker();
+  if (page === 'upskill') { setTimeout(function(){ if(typeof renderFilters==='function'){renderFilters();renderTracks();} }, 50); }
 }
 
 // ── TOAST ──
