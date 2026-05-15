@@ -105,6 +105,52 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
 .sal-bar-fill{height:100%;background:linear-gradient(90deg,#2D1B69,#06B6D4);border-radius:8px}
 .sal-avg-badge{background:var(--blue-lt);color:#2D1B69;font-size:12px;font-weight:700;border-radius:8px;padding:4px 11px;display:inline-block;margin-top:6px}
 .sal-hike-badge{background:#ECFDF5;color:#15803D;font-size:11.5px;font-weight:600;border-radius:6px;padding:3px 8px;margin-left:5px}
+/* ── 3D Salary Chart ── */
+.sal-3d-wrap{background:linear-gradient(135deg,#1A0B4B 0%,#2D1B69 50%,#1e3a5f 100%);border-radius:20px;padding:28px 24px 20px;margin-bottom:20px;position:relative;overflow:hidden}
+.sal-3d-wrap::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+.sal-3d-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+.sal-3d-title{font-size:16px;font-weight:800;color:#fff;font-family:var(--ff)}
+.sal-3d-subtitle{font-size:12px;color:rgba(255,255,255,0.55);margin-top:3px}
+.sal-3d-role-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.sal-3d-chip{padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.65);background:rgba(255,255,255,0.05);transition:.2s;white-space:nowrap}
+.sal-3d-chip:hover{border-color:rgba(255,255,255,0.5);color:#fff}
+.sal-3d-chip.active{background:rgba(255,255,255,0.18);border-color:#fff;color:#fff}
+.sal-3d-chart{display:flex;align-items:flex-end;gap:12px;height:180px;padding:0 4px;position:relative}
+.sal-3d-chart::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(255,255,255,0.12)}
+.sal-bar3d-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;cursor:pointer;transition:.2s}
+.sal-bar3d-wrap:hover .sal-bar3d{filter:brightness(1.15);transform:scaleY(1.03);transform-origin:bottom}
+.sal-bar3d{width:100%;position:relative;border-radius:7px 7px 0 0;transition:all .5s cubic-bezier(.34,1.56,.64,1)}
+.sal-bar3d::after{content:'';position:absolute;top:0;right:0;width:30%;height:100%;background:rgba(0,0,0,0.18);border-radius:0 7px 0 0;clip-path:polygon(0 0,100% 0,100% 100%)}
+.sal-bar3d::before{content:'';position:absolute;top:-8px;left:0;right:0;height:8px;background:inherit;opacity:0.6;transform:perspective(40px) rotateX(30deg);border-radius:2px}
+.sal-bar3d-p10{background:linear-gradient(180deg,#7C3AED,#5B21B6)}
+.sal-bar3d-p50{background:linear-gradient(180deg,#2563EB,#1D4ED8)}
+.sal-bar3d-p90{background:linear-gradient(180deg,#0891B2,#0E7490)}
+.sal-bar3d-label{font-size:10px;color:rgba(255,255,255,0.55);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;width:100%}
+.sal-bar3d-val{font-size:11px;font-weight:700;color:#fff;text-align:center;white-space:nowrap}
+.sal-3d-legend{display:flex;gap:16px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.sal-3d-leg-item{display:flex;align-items:center;gap:5px;font-size:11px;color:rgba(255,255,255,0.65)}
+.sal-3d-leg-dot{width:10px;height:10px;border-radius:3px}
+.sal-3d-tooltip{position:absolute;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);color:#fff;padding:10px 14px;border-radius:10px;font-size:12px;pointer-events:none;z-index:99;white-space:nowrap;border:1px solid rgba(255,255,255,0.1);box-shadow:0 8px 24px rgba(0,0,0,0.4);display:none}
+.sal-3d-tooltip.show{display:block}
+.sal-stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.sal-stat-tile{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px;text-align:center;backdrop-filter:blur(4px)}
+.sal-stat-val{font-size:18px;font-weight:800;color:#fff;font-family:var(--ff)}
+.sal-stat-lbl{font-size:10px;color:rgba(255,255,255,0.5);margin-top:3px}
+.sal-stat-delta{font-size:10px;font-weight:700;color:#34D399;margin-top:2px}
+.sal-cards-new{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.sal-card-new{background:#fff;border-radius:16px;padding:18px;border:1.5px solid #F1F5F9;box-shadow:0 2px 12px rgba(45,27,105,.06);cursor:pointer;transition:.2s;position:relative;overflow:hidden}
+.sal-card-new::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-accent,linear-gradient(90deg,#2D1B69,#06B6D4))}
+.sal-card-new:hover{border-color:#2D1B69;box-shadow:0 6px 24px rgba(45,27,105,.14);transform:translateY(-2px)}
+.sal-card-new-title{font-size:14px;font-weight:700;color:#0F172A;margin-bottom:2px}
+.sal-card-new-city{font-size:11.5px;color:#94A3B8;margin-bottom:12px}
+.sal-range-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sal-range-min{font-size:13px;font-weight:700;color:#2D1B69}
+.sal-range-max{font-size:13px;font-weight:700;color:#0891B2}
+.sal-range-bar{height:6px;background:#F1F5F9;border-radius:10px;overflow:hidden;margin-bottom:10px;position:relative}
+.sal-range-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,#2D1B69,#06B6D4);transition:width 1s ease}
+.sal-card-new-footer{display:flex;justify-content:space-between;align-items:center}
+.sal-hike-pill{background:#ECFDF5;color:#15803D;font-size:11px;font-weight:700;border-radius:20px;padding:3px 10px}
+.sal-exp-pill{background:#EEF2FF;color:#4F46E5;font-size:11px;font-weight:600;border-radius:20px;padding:3px 10px}
 
 /* ── FIX #16: OFFER COMPARISON ── */
 .sal-tab-bar{display:flex;gap:6px;margin-bottom:16px;border-bottom:2px solid var(--border);padding-bottom:0}
@@ -851,16 +897,65 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         <button class="sal-tab" id="sal-tab-compare" onclick="salSwitchTab('compare')">⚖️ Compare Two Offers</button>
       </div>
 
-      <!-- Tab 1: Existing salary benchmark cards (unchanged) -->
+      <!-- Tab 1: 3D Salary Benchmarks -->
       <div id="sal-panel-bench">
-        <div class="salary-cards">
-          <div class="sal-card"><div class="sal-role-title">Software Engineer</div><div class="sal-city">Bangalore / Hyderabad</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:85%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;12-22 LPA</span><span class="sal-hike-badge">+25% hike</span></div></div>
-          <div class="sal-card"><div class="sal-role-title">Data Scientist</div><div class="sal-city">All India</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:80%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;10-20 LPA</span><span class="sal-hike-badge">+30% hike</span></div></div>
-          <div class="sal-card"><div class="sal-role-title">AI / ML Engineer</div><div class="sal-city">Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:95%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;15-35 LPA</span><span class="sal-hike-badge">+40% hike</span></div></div>
-          <div class="sal-card"><div class="sal-role-title">DevOps Engineer</div><div class="sal-city">Pune / Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:82%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;8-22 LPA</span><span class="sal-hike-badge">+20% hike</span></div></div>
-          <div class="sal-card"><div class="sal-role-title">Product Manager</div><div class="sal-city">Mumbai / Bangalore</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:78%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;18-40 LPA</span><span class="sal-hike-badge">+28% hike</span></div></div>
-          <div class="sal-card"><div class="sal-role-title">UI/UX Designer</div><div class="sal-city">All India</div><div class="sal-bar-bg"><div class="sal-bar-fill" style="width:65%"></div></div><div><span class="sal-avg-badge">Avg: &#8377;6-16 LPA</span><span class="sal-hike-badge">+18% hike</span></div></div>
+
+        <!-- 3D Chart Hero -->
+        <div class="sal-3d-wrap">
+          <div class="sal-3d-header">
+            <div>
+              <div class="sal-3d-title">&#127881; India Salary Intelligence 2026</div>
+              <div class="sal-3d-subtitle">Real CTC data from 2,400+ professionals across top companies</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:20px;font-weight:800;color:#34D399;font-family:var(--ff)" id="sal3d-selected-val">&#8377;15-35L</div>
+              <div style="font-size:10px;color:rgba(255,255,255,0.5)">Selected role median</div>
+            </div>
+          </div>
+
+          <!-- Stats strip -->
+          <div class="sal-stats-strip">
+            <div class="sal-stat-tile">
+              <div class="sal-stat-val">&#8377;22L</div>
+              <div class="sal-stat-lbl">Avg Tech CTC</div>
+              <div class="sal-stat-delta">&#9650; 18% YoY</div>
+            </div>
+            <div class="sal-stat-tile">
+              <div class="sal-stat-val">&#8377;45L</div>
+              <div class="sal-stat-lbl">FAANG Median</div>
+              <div class="sal-stat-delta">&#9650; 12% YoY</div>
+            </div>
+            <div class="sal-stat-tile">
+              <div class="sal-stat-val">&#8377;8L</div>
+              <div class="sal-stat-lbl">Fresher Avg</div>
+              <div class="sal-stat-delta">&#9650; 22% YoY</div>
+            </div>
+            <div class="sal-stat-tile">
+              <div class="sal-stat-val">38%</div>
+              <div class="sal-stat-lbl">Max Switch Hike</div>
+              <div class="sal-stat-delta">&#9650; AI roles</div>
+            </div>
+          </div>
+
+          <!-- Role filter chips -->
+          <div class="sal-3d-role-filter" id="sal3d-chips"></div>
+
+          <!-- 3D Bar Chart -->
+          <div style="position:relative">
+            <div class="sal-3d-chart" id="sal3d-chart"></div>
+            <div class="sal-3d-tooltip" id="sal3d-tooltip"></div>
+          </div>
+
+          <!-- Legend -->
+          <div class="sal-3d-legend">
+            <div class="sal-3d-leg-item"><div class="sal-3d-leg-dot" style="background:linear-gradient(#7C3AED,#5B21B6)"></div>P10 (Entry)</div>
+            <div class="sal-3d-leg-item"><div class="sal-3d-leg-dot" style="background:linear-gradient(#2563EB,#1D4ED8)"></div>Median</div>
+            <div class="sal-3d-leg-item"><div class="sal-3d-leg-dot" style="background:linear-gradient(#0891B2,#0E7490)"></div>P90 (Senior)</div>
+          </div>
         </div>
+
+        <!-- Role Cards -->
+        <div class="sal-cards-new" id="sal3d-cards"></div>
       </div>
 
       <!-- Tab 2: Offer Comparison Widget -->
@@ -2609,6 +2704,146 @@ init();
 ═══════════════════════════════════════════════════════ */
 
 /* Switch between Benchmarks and Compare tabs */
+/* ── 3D Salary Chart ── */
+(function(){
+  var SAL_DATA = [
+    {role:'SWE',label:'Software Engineer',city:'Bangalore / Hyd',p10:10,p50:22,p90:45,hike:25,exp:'2-5 yrs',accent:'linear-gradient(135deg,#2D1B69,#06B6D4)'},
+    {role:'SWE-FAANG',label:'SWE @ FAANG',city:'Bangalore',p10:25,p50:45,p90:90,hike:35,exp:'3-8 yrs',accent:'linear-gradient(135deg,#7C3AED,#EC4899)'},
+    {role:'DS',label:'Data Scientist',city:'All India',p10:8,p50:18,p90:38,hike:30,exp:'2-5 yrs',accent:'linear-gradient(135deg,#059669,#06B6D4)'},
+    {role:'AI',label:'AI / ML Engineer',city:'Bangalore',p10:15,p50:32,p90:70,hike:40,exp:'2-6 yrs',accent:'linear-gradient(135deg,#DC2626,#F59E0B)'},
+    {role:'DevOps',label:'DevOps / SRE',city:'Pune / Bangalore',p10:8,p50:20,p90:38,hike:22,exp:'2-5 yrs',accent:'linear-gradient(135deg,#0891B2,#3B82F6)'},
+    {role:'PM',label:'Product Manager',city:'Mumbai / Bangalore',p10:12,p50:28,p90:55,hike:28,exp:'3-7 yrs',accent:'linear-gradient(135deg,#D97706,#F59E0B)'},
+    {role:'UX',label:'UI/UX Designer',city:'All India',p10:5,p50:13,p90:28,hike:18,exp:'2-5 yrs',accent:'linear-gradient(135deg,#DB2777,#9333EA)'},
+    {role:'DE',label:'Data Engineer',city:'Bangalore',p10:10,p50:22,p90:42,hike:26,exp:'2-5 yrs',accent:'linear-gradient(135deg,#0F766E,#0891B2)'},
+    {role:'FSE',label:'Full Stack Dev',city:'All India',p10:7,p50:18,p90:35,hike:23,exp:'2-5 yrs',accent:'linear-gradient(135deg,#2D1B69,#4F46E5)'},
+    {role:'Fresh',label:'Fresher (Any)',city:'All India',p10:3,p50:6,p90:12,hike:12,exp:'0-1 yr',accent:'linear-gradient(135deg,#64748B,#94A3B8)'}
+  ];
+  var activeRole = 'AI';
+  var tooltip = null;
+
+  function init3D(){
+    tooltip = document.getElementById('sal3d-tooltip');
+    renderChips();
+    renderChart();
+    renderCards();
+  }
+
+  function renderChips(){
+    var wrap = document.getElementById('sal3d-chips');
+    if(!wrap) return;
+    wrap.innerHTML = SAL_DATA.map(function(d){
+      return '<button class="sal-3d-chip'+(d.role===activeRole?' active':'')+'" onclick="sal3dSelect(\"'+d.role+'\")">'+d.label+'</button>';
+    }).join('');
+  }
+
+  function renderChart(){
+    var chart = document.getElementById('sal3d-chart');
+    if(!chart) return;
+    var maxVal = 90;
+    var active = SAL_DATA.find(function(d){return d.role===activeRole;}) || SAL_DATA[0];
+    document.getElementById('sal3d-selected-val').textContent = '₹'+active.p10+'–'+active.p90+'L';
+
+    chart.innerHTML = SAL_DATA.map(function(d){
+      var hP10 = Math.round((d.p10/maxVal)*100);
+      var hP50 = Math.round((d.p50/maxVal)*100);
+      var hP90 = Math.round((d.p90/maxVal)*100);
+      var isActive = d.role === activeRole;
+      return '<div class="sal-bar3d-wrap" onclick="sal3dSelect(\"'+d.role+'\")" onmouseenter="sal3dTip(event,this,\"'+d.label+'\",'+d.p10+','+d.p50+','+d.p90+','+d.hike+')" onmouseleave="sal3dHideTip()">' +
+        '<div style="display:flex;gap:2px;align-items:flex-end;width:100%;height:160px">' +
+          '<div class="sal-bar3d sal-bar3d-p10" style="height:'+hP10+'%;flex:1;opacity:'+(isActive?1:0.55)+';box-shadow:'+(isActive?'0 0 12px rgba(124,58,237,.5)':'none')+'"></div>' +
+          '<div class="sal-bar3d sal-bar3d-p50" style="height:'+hP50+'%;flex:1;opacity:'+(isActive?1:0.55)+';box-shadow:'+(isActive?'0 0 12px rgba(37,99,235,.5)':'none')+'"></div>' +
+          '<div class="sal-bar3d sal-bar3d-p90" style="height:'+hP90+'%;flex:1;opacity:'+(isActive?1:0.55)+';box-shadow:'+(isActive?'0 0 16px rgba(8,145,178,.6)':'none')+'"></div>' +
+        '</div>' +
+        '<div class="sal-bar3d-label" style="color:'+(isActive?'#fff':'rgba(255,255,255,0.45)')+';font-weight:'+(isActive?700:400)+'">'+d.label.split(' ')[0]+'</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function renderCards(){
+    var wrap = document.getElementById('sal3d-cards');
+    if(!wrap) return;
+    var accents = [
+      'linear-gradient(90deg,#2D1B69,#06B6D4)',
+      'linear-gradient(90deg,#7C3AED,#EC4899)',
+      'linear-gradient(90deg,#059669,#06B6D4)',
+      'linear-gradient(90deg,#DC2626,#F59E0B)',
+      'linear-gradient(90deg,#0891B2,#3B82F6)',
+      'linear-gradient(90deg,#D97706,#F59E0B)',
+      'linear-gradient(90deg,#DB2777,#9333EA)',
+      'linear-gradient(90deg,#0F766E,#0891B2)',
+      'linear-gradient(90deg,#2D1B69,#4F46E5)',
+      'linear-gradient(90deg,#64748B,#94A3B8)'
+    ];
+    wrap.innerHTML = SAL_DATA.map(function(d,i){
+      var pct = Math.round((d.p50/90)*100);
+      return '<div class="sal-card-new" style="--card-accent:'+accents[i]+'" onclick="sal3dSelect(\"'+d.role+'\")">'+
+        '<div class="sal-card-new-title">'+d.label+'</div>'+
+        '<div class="sal-card-new-city">📍 '+d.city+' · '+d.exp+'</div>'+
+        '<div class="sal-range-row">'+
+          '<span class="sal-range-min">₹'+d.p10+'L</span>'+
+          '<span style="font-size:11px;color:#94A3B8">Entry → Senior</span>'+
+          '<span class="sal-range-max">₹'+d.p90+'L</span>'+
+        '</div>'+
+        '<div class="sal-range-bar"><div class="sal-range-fill" style="width:'+pct+'%;background:'+accents[i]+'"></div></div>'+
+        '<div class="sal-card-new-footer">'+
+          '<span class="sal-hike-pill">+'+d.hike+'% hike</span>'+
+          '<span class="sal-exp-pill">Median: ₹'+d.p50+'L</span>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+  }
+
+  window.sal3dSelect = function(role){
+    activeRole = role;
+    renderChips();
+    renderChart();
+  };
+
+  window.sal3dTip = function(e, el, label, p10, p50, p90, hike){
+    if(!tooltip) return;
+    tooltip.innerHTML = '<div style="font-weight:700;margin-bottom:6px">'+label+'</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px">'+
+        '<span style="color:rgba(255,255,255,0.6)">Entry (P10)</span><span style="font-weight:700;color:#A78BFA">₹'+p10+'L</span>'+
+        '<span style="color:rgba(255,255,255,0.6)">Median</span><span style="font-weight:700;color:#60A5FA">₹'+p50+'L</span>'+
+        '<span style="color:rgba(255,255,255,0.6)">Senior (P90)</span><span style="font-weight:700;color:#34D399">₹'+p90+'L</span>'+
+        '<span style="color:rgba(255,255,255,0.6)">Switch Hike</span><span style="font-weight:700;color:#FCD34D">+'+hike+'%</span>'+
+      '</div>';
+    var rect = el.getBoundingClientRect();
+    var chart = document.getElementById('sal3d-chart');
+    var chartRect = chart.getBoundingClientRect();
+    tooltip.style.left = Math.min(rect.left - chartRect.left, chartRect.width - 200) + 'px';
+    tooltip.style.bottom = (chartRect.bottom - rect.top + 10) + 'px';
+    tooltip.classList.add('show');
+  };
+
+  window.sal3dHideTip = function(){
+    if(tooltip) tooltip.classList.remove('show');
+  };
+
+  // Init when salary page is shown
+  var _sal3dInited = false;
+  var _origShowPage = window.showPage;
+  document.addEventListener('DOMContentLoaded', function(){
+    // Hook into showPage
+    var orig = window.showPage;
+    window.showPage = function(page, el){
+      orig && orig(page, el);
+      if(page === 'salary' && !_sal3dInited){
+        setTimeout(init3D, 80);
+        _sal3dInited = true;
+      }
+    };
+    // Also animate range bars on load
+    setTimeout(function(){
+      document.querySelectorAll('.sal-range-fill').forEach(function(el){
+        var w = el.style.width;
+        el.style.width = '0';
+        setTimeout(function(){ el.style.width = w; }, 100);
+      });
+    }, 200);
+  });
+})();
+
 function salSwitchTab(tab) {
   var bench   = document.getElementById('sal-panel-bench');
   var compare = document.getElementById('sal-panel-compare');
