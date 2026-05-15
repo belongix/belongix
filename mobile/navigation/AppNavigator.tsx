@@ -1,17 +1,16 @@
-import React from 'react';
+﻿import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuthStore } from '../store/authStore';
 import AuthScreen from '../screens/AuthScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import BottomTabs from './BottomTabs';
+import SalaryScreen from '../screens/SalaryScreen';
+import MentorsScreen from '../screens/MentorsScreen';
+import CommunityScreen from '../screens/CommunityScreen';
+import ResumeScreen from '../screens/ResumeScreen';
+import CareerScoreScreen from '../screens/CareerScoreScreen';
 
-export type RootStackParamList = {
-  Onboarding: undefined;
-  Auth: { referralCode?: string };
-  MainTabs: undefined;
-};
-
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   const { session } = useAuthStore();
@@ -23,7 +22,14 @@ export default function AppNavigator() {
           <Stack.Screen name="Auth" component={AuthScreen} />
         </>
       ) : (
-        <Stack.Screen name="MainTabs" component={BottomTabs} />
+        <>
+          <Stack.Screen name="MainTabs" component={BottomTabs} />
+          <Stack.Screen name="Salary"      component={SalaryScreen}      />
+          <Stack.Screen name="Mentors"     component={MentorsScreen}     />
+          <Stack.Screen name="Community"   component={CommunityScreen}   />
+          <Stack.Screen name="Resume"      component={ResumeScreen}      />
+          <Stack.Screen name="Score"       component={CareerScoreScreen} />
+        </>
       )}
     </Stack.Navigator>
   );

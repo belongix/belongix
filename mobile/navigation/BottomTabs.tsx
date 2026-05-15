@@ -1,8 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+﻿import React from 'react';
+import { View, StyleSheet, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, FontFamily } from '../lib/theme';
 import DashboardScreen from '../screens/DashboardScreen';
 import JobsScreen from '../screens/JobsScreen';
 import BexiScreen from '../screens/BexiScreen';
@@ -10,61 +9,58 @@ import UpskillScreen from '../screens/UpskillScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
+const BRAND = '#2D1B69';
 
 export default function BottomTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
-        tabBarActiveTintColor: Colors.brand,
-        tabBarInactiveTintColor: Colors.muted,
-        tabBarLabelStyle: styles.tabLabel,
+        tabBarActiveTintColor: BRAND,
+        tabBarInactiveTintColor: '#9CA3AF',
+        tabBarStyle: styles.bar,
+        tabBarLabelStyle: styles.label,
       }}
     >
       <Tab.Screen name="Home" component={DashboardScreen}
-        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" size={size} color={color} /> }} />
+        options={{ tabBarLabel: 'Home', tabBarIcon: ({ color, size }) => <Ionicons name="grid-outline" size={size} color={color} /> }} />
       <Tab.Screen name="Jobs" component={JobsScreen}
-        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="briefcase-outline" size={size} color={color} /> }} />
+        options={{ tabBarLabel: 'Jobs', tabBarIcon: ({ color, size }) => <Ionicons name="briefcase-outline" size={size} color={color} /> }} />
       <Tab.Screen name="Bexi" component={BexiScreen}
         options={{
+          tabBarLabel: 'Bexi',
           tabBarIcon: ({ focused }) => (
-            <View style={[styles.bexiBtn, focused && styles.bexiBtnActive]}>
-              <Ionicons name="sparkles" size={24} color="#fff" />
+            <View style={[styles.fab, focused && styles.fabActive]}>
+              <Ionicons name="sparkles" size={20} color="#fff" />
             </View>
           ),
-          tabBarLabel: 'Bexi AI',
         }} />
       <Tab.Screen name="Learn" component={UpskillScreen}
-        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="star-outline" size={size} color={color} /> }} />
+        options={{ tabBarLabel: 'Learn', tabBarIcon: ({ color, size }) => <Ionicons name="book-outline" size={size} color={color} /> }} />
       <Tab.Screen name="Profile" component={ProfileScreen}
-        options={{ tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} /> }} />
+        options={{ tabBarLabel: 'Profile', tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" size={size} color={color} /> }} />
     </Tab.Navigator>
   );
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: Colors.white,
-    borderTopColor: Colors.border,
-    height: Platform.OS === 'ios' ? 84 : 64,
-    paddingBottom: Platform.OS === 'ios' ? 24 : 8,
+  bar: {
+    backgroundColor: '#ffffff',
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    height: Platform.OS === 'ios' ? 82 : 62,
+    paddingBottom: Platform.OS === 'ios' ? 22 : 8,
     paddingTop: 8,
   },
-  tabLabel: {
-    fontSize: 10.5,
-    fontFamily: FontFamily.dmSansMedium,
-  },
-  bexiBtn: {
-    width: 52, height: 52, borderRadius: 26,
-    backgroundColor: Colors.brand,
+  label: { fontSize: 11, fontWeight: '600' },
+  fab: {
+    width: 48, height: 48, borderRadius: 24,
+    backgroundColor: BRAND,
     alignItems: 'center', justifyContent: 'center',
-    marginBottom: 4,
-    shadowColor: Colors.brand,
+    marginBottom: 6,
+    shadowColor: BRAND,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowOpacity: 0.35, shadowRadius: 8, elevation: 6,
   },
-  bexiBtnActive: { backgroundColor: Colors.brand2 },
+  fabActive: { backgroundColor: '#4C2FAA' },
 });
