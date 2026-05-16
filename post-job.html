@@ -11,6 +11,40 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- ✅ EmailJS SDK — Belongix Email Notifications -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+(function() {
+  var EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
+  var EMAILJS_SERVICE_ID = 'service_belongix';
+  var TPL_JOB_POSTED     = 'tpl_job_posted_admin'; /* notify admin of new job submission */
+  var _ready = false;
+  try { emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY }); _ready = true; } catch(e) { console.warn('[BxEmail] init:', String(e.message||e)); }
+  function send(tpl, params) {
+    if (!_ready) return;
+    emailjs.send(EMAILJS_SERVICE_ID, tpl, params)
+      .then(function(r){ console.log('[BxEmail] Sent:', tpl, r.status); })
+      .catch(function(e){ console.warn('[BxEmail] Failed:', tpl, String(e.text||e.message||e)); });
+  }
+  function fmtDate(d){ return (d||new Date()).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}); }
+  window.BxEmail = window.BxEmail || {};
+  /* Job posted — admin notification */
+  window.BxEmail.jobPosted = function(data) {
+    send(TPL_JOB_POSTED, {
+      to_email    : 'admin@belongix.in',
+      company     : data.company||'',
+      job_title   : data.title||'',
+      location    : data.location||'',
+      salary      : data.salary||'',
+      job_type    : data.type||'Full Time',
+      plan        : data.plan||'free',
+      contact_email: data.email||'',
+      posted_date : fmtDate(new Date()),
+      admin_url   : 'https://www.belongix.in/admin.html'
+    });
+  };
+})();
+</script>
 <style>
 /* ═══════════════════════════════════════
    BELONGIX RECRUITER PORTAL — post-job
@@ -837,7 +871,7 @@ async function submitJob() {
 
   try {
     var r = await sb.from('jobs').insert([jobRecord]);
-    if (r.error) throw r.error;
+    if (r.error) throw new Error(String(r.error.message || r.error.code || 'Insert failed'));
 
     // Try to trigger confirmation email via edge function (non-fatal)
     try {
@@ -846,7 +880,22 @@ async function submitJob() {
         headers: {'Content-Type':'application/json','Authorization':'Bearer '+SB_KEY},
         body: JSON.stringify({ email: email, company: company, title: title, plan: _selectedPlan })
       });
-    } catch(e) { /* email is non-fatal */ }
+    } catch(e) { /* edge function email is non-fatal */ }
+
+    /* ✅ EMAIL: Notify admin of new job posting via EmailJS */
+    try {
+      if (window.BxEmail && window.BxEmail.jobPosted) {
+        window.BxEmail.jobPosted({
+          company  : company,
+          title    : title,
+          location : _selectedLocs.join(', '),
+          salary   : '₹' + salMin + '–' + salMax + ' LPA',
+          type     : jobType,
+          plan     : _selectedPlan,
+          email    : email
+        });
+      }
+    } catch(mailErr) { console.warn('[BxEmail] JobPosted:', String(mailErr.message||mailErr)); }
 
     // Save to localStorage for dashboard
     try {

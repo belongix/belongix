@@ -393,81 +393,38 @@ var TAG_COLORS = {
 
 /* ── SEED DATA ── */
 var SEED_POSTS = [
-  {
-    id:'p1', title:'How do I negotiate a 40% salary hike when switching from service to product?',
-    body:'I have 4 years of Java development at TCS and got an offer from a mid-stage fintech startup. My current CTC is ₹8 LPA and they are offering ₹14 LPA. Should I negotiate higher? What is the standard hike expectation for this kind of switch?',
-    tags:['Salary','Jobs'], author:'Vikram S.', author_id:'u1', upvotes:47, created_at: new Date(Date.now()-3600000*2).toISOString(),
-    answers:[
-      { id:'a1', author:'Priya M.', author_id:'u2', is_bexi:false, text:'Service to product switch typically commands 40–80% hike. With 4 years of Java and a fintech offer, you can absolutely counter at ₹16–17 LPA. Key: research their funding stage, mention competing timelines, and counter in writing. ₹14 LPA for a product company fintech role in Bangalore is on the lower side for 4 YOE.', upvotes:31, created_at: new Date(Date.now()-3600000).toISOString() },
-      { id:'a2', author:'Bexi AI', author_id:'bexi', is_bexi:true, text:'Great question! For a service-to-product switch with 4 years of experience in Bangalore, the typical hike range is 40–80%. At ₹8 LPA → ₹14 LPA you are already at 75%, which is strong. However, product companies often have ESOP components that can add significant value. My suggestion: counter at ₹16.5 LPA + ask about ESOP vesting. Your negotiation script: "I am very excited about this role. Based on my research and the market rate for product engineers with my background in Bangalore, I was expecting ₹16–17 LPA. Is there flexibility there?" Then stay silent.', upvotes:28, created_at: new Date(Date.now()-1800000).toISOString() }
-    ]
-  },
-  {
-    id:'p2', title:'Is 3 months enough to crack FAANG DSA rounds from scratch?',
-    body:'I am a 2021 graduate working at Wipro. I want to crack SDE-1 at Google or Amazon. I can give 3–4 hours daily. Is 3 months realistic or should I plan for 6?',
-    tags:['Interviews','Skills'], author:'Rahul K.', author_id:'u3', upvotes:63, created_at: new Date(Date.now()-3600000*18).toISOString(),
-    answers:[
-      { id:'a3', author:'Ananya R.', author_id:'u4', is_bexi:false, text:'Honest answer: 3 months is tight but doable if you are disciplined. Week 1–4: arrays, strings, hashmaps (Blind 75). Week 5–8: trees, graphs, DP. Week 9–10: system design basics. Week 11–12: mock interviews only. The biggest failure mode is grinding random problems instead of patterns. Do NeetCode 150 in order, not random.', upvotes:45, created_at: new Date(Date.now()-3600000*16).toISOString() }
-    ]
-  },
-  {
-    id:'p3', title:'How to switch from backend dev to Product Manager without an MBA?',
-    body:'I am a backend engineer with 3 years of experience at a B2B SaaS company. I want to become a PM. Most JDs ask for MBA. Is it possible without one and if yes what is the realistic path?',
-    tags:['Career Switch','Jobs'], author:'Sneha P.', author_id:'u5', upvotes:38, created_at: new Date(Date.now()-3600000*36).toISOString(),
-    answers:[
-      { id:'a4', author:'Bexi AI', author_id:'bexi', is_bexi:true, text:'Absolutely possible without an MBA — many top PMs in India come from engineering backgrounds. The path that works: (1) Become the unofficial PM of your current team — write PRDs, run sprint reviews, talk to customers. (2) Build a portfolio of 2–3 case studies on products you use daily. (3) Apply to APM programs (Swiggy, Razorpay, CRED all have them) or target startups (Series A/B) where your tech background is valued over the MBA tag. (4) Network with PMs on LinkedIn — ask for 20-min coffee chats. The MBA is a shortcut, not a requirement.', upvotes:52, created_at: new Date(Date.now()-3600000*30).toISOString() }
-    ]
-  },
-  {
-    id:'p4', title:'What is the best ATS-friendly resume format for a freshers first job in 2026?',
-    body:'I just graduated from a tier-3 college with 7.8 CGPA in CS. I have 2 internships and 3 projects. What resume format and length should I follow? I have been getting zero callbacks.',
-    tags:['Resume'], author:'Aditya V.', author_id:'u6', upvotes:29, created_at: new Date(Date.now()-3600000*50).toISOString(),
-    answers:[
-      { id:'a5', author:'Kavya L.', author_id:'u7', is_bexi:false, text:'For freshers: (1) Single page, always. (2) Use the Belongix Resume Builder — it generates an ATS score. (3) Your summary should have keywords from the JD. (4) Project bullets: "Built X using Y that resulted in Z" not just "Made a website". (5) Skills section first, then projects, then internships, then education. Recruiters spend 7 seconds — put the good stuff at the top.', upvotes:18, created_at: new Date(Date.now()-3600000*44).toISOString() }
-    ]
-  },
-  {
-    id:'p5', title:'How much equity should I ask for at a Series A startup in Bangalore?',
-    body:'Got an offer from a well-funded Series A startup (raised $8M). They are offering 0.1% ESOP with 4-year vesting and 1-year cliff. Role: Backend Engineer. CTC: ₹20 LPA. Is this a good deal?',
-    tags:['Salary','Startups'], author:'Rohan G.', author_id:'u8', upvotes:41, created_at: new Date(Date.now()-3600000*72).toISOString(),
-    answers:[]
-  },
-  {
-    id:'p6', title:'Rejected from 47 companies — what am I doing wrong?',
-    body:'6 years of experience in Python and ML. Applied to 47 companies in the last 3 months. Got 4 calls, 0 offers. My resume has a Kaggle grandmaster badge and 2 papers. I am losing confidence.',
-    tags:['Jobs','Resume'], author:'Anonymous', author_id:'u9', upvotes:89, created_at: new Date(Date.now()-3600000*96).toISOString(),
-    answers:[
-      { id:'a6', author:'Bexi AI', author_id:'bexi', is_bexi:true, text:'47 applications with only 4 calls suggests a resume/targeting problem, not a skills problem — because your credentials are strong. Common root causes: (1) Resume is too academic — ML papers and Kaggle are great, but recruiters first screen for company names and measurable impact. Add a section like "ML Impact" with bullet points like "Model reduced fraud by 23% saving ₹2Cr/month". (2) Applying too broadly — target ML roles at fintech/healthtech startups specifically, not generic "data science". (3) LinkedIn visibility — are you posting? Recruiters DM active profiles. (4) Referrals — with 6 YOE, cold applying is brutal. Try getting warm intros. Want me to critique your resume? Use the Bexi Resume Critique feature.', upvotes:67, created_at: new Date(Date.now()-3600000*90).toISOString() }
-    ]
-  },
-  {
-    id:'p7', title:'What is a realistic salary expectation for a 2 YOE data analyst in Mumbai?',
-    body:'Currently at ₹6.5 LPA at a mid-sized e-commerce company. Have skills in SQL, Python, Power BI and Tableau. Looking to switch. What range should I target?',
-    tags:['Salary'], author:'Meera S.', author_id:'u10', upvotes:22, created_at: new Date(Date.now()-3600000*120).toISOString(),
-    answers:[]
-  },
-  {
-    id:'p8', title:'How do I get a referral at a company where I know nobody?',
-    body:'I see people talking about referrals all the time but I do not have a network at companies like Swiggy, Zepto or CRED. How do you actually get a cold referral from a stranger on LinkedIn?',
-    tags:['Jobs','Mentorship'], author:'Arjun T.', author_id:'u11', upvotes:55, created_at: new Date(Date.now()-3600000*144).toISOString(),
-    answers:[
-      { id:'a7', author:'Deepa K.', author_id:'u12', is_bexi:false, text:'The LinkedIn cold referral template that actually works: (1) Find someone at target company with similar background to yours. (2) Message: "Hi [Name], I noticed you are at [Company] as a [Role]. I am applying for [Role] and your profile shows similar experience to mine. Would you mind a 10-min call to learn about the culture? Happy to return the favour." (3) After the call: "I applied for [Role]. If you feel comfortable, a referral would mean a lot." Never ask for a referral in the first message. Success rate goes from 2% to 30%+.', upvotes:44, created_at: new Date(Date.now()-3600000*138).toISOString() }
-    ]
-  },
-  {
-    id:'p9', title:'Should I join a 40 LPA big tech offer or a 22 LPA startup with 0.5% equity?',
-    body:'I have an offer from a FAANG at 40 LPA and a Series B startup at 22 LPA + 0.5% ESOP (4-year vest). I am 28, 5 YOE, no major family obligations. Startup is growing fast in a hot space.',
-    tags:['Salary','Startups','Career Switch'], author:'Kiran M.', author_id:'u13', upvotes:76, created_at: new Date(Date.now()-3600000*168).toISOString(),
-    answers:[]
-  },
-  {
-    id:'p10', title:'Best free resources to learn system design in 2026?',
-    body:'I have my Google interview in 6 weeks. I have done the basics but need to go deeper on system design. What are the best free resources specifically?',
-    tags:['Interviews','Skills'], author:'Tanvi R.', author_id:'u14', upvotes:34, created_at: new Date(Date.now()-3600000*200).toISOString(),
-    answers:[
-      { id:'a8', author:'Saurabh J.', author_id:'u15', is_bexi:false, text:'Free system design resources that actually help: (1) Grokking System Design (some free content on educative). (2) ByteByteGo newsletter (Alex Xu) — free diagrams. (3) GitHub: system-design-primer repo. (4) YouTube: Gaurav Sen, Tech Dummies Narendra L. (5) For Google specifically: study Spanner, Bigtable, and MapReduce papers — they ask about their own infra. 6 weeks is tight but doable if you do 1 system per day.', upvotes:29, created_at: new Date(Date.now()-3600000*195).toISOString() }
-    ]
-  }
+  {id:'p1',title:'How do I negotiate salary for my first job?',body:'I have an offer of ₹6 LPA from a mid-size company. How do I negotiate without losing the offer?',tags:['Salary','Jobs'],author:'Fresher_Priya',author_id:'u1',upvotes:34,created_at:new Date(Date.now()-3600000*4).toISOString(),answers:[
+    {id:'a1',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'Great question for a first-time negotiator! The key rule: never be the first to give a number, and never accept verbally on the spot. Your script: "Thank you so much for the offer. I am very excited about this role. I was expecting something closer to ₹7–7.5 LPA based on my research and the market rate for this profile. Is there any flexibility?" Then stay silent. Companies expect negotiation. The worst they can say is no — you will never lose an offer by politely negotiating. Most first offers have 10–20% room.',upvotes:22,created_at:new Date(Date.now()-3600000*2).toISOString()}
+  ]},
+  {id:'p2',title:'Is ₹14 LPA good for 3 years experience in Bangalore?',body:'Working at a service company for 3 years. Got an offer at ₹14 LPA from a product startup. Is this market rate?',tags:['Salary','Jobs'],author:'SDE_Arjun',author_id:'u2',upvotes:67,created_at:new Date(Date.now()-3600000*20).toISOString(),answers:[
+    {id:'a2',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'For 3 years of experience switching from a service company to a product startup in Bangalore, ₹14 LPA is on the lower end in 2026. Market rate for 3 YOE at a product startup is typically ₹16–22 LPA depending on your tech stack. If you are in a hot stack (Python, React, Go, or anything ML-adjacent), you could push for ₹17–18 LPA. Counter confidently — service-to-product switches typically warrant 40–80% hikes. A ₹14 LPA offer if your current CTC is ₹8–9 LPA is a reasonable hike but you can negotiate.',upvotes:41,created_at:new Date(Date.now()-3600000*18).toISOString()}
+  ]},
+  {id:'p3',title:'How to switch from service company to product company?',body:'Currently at TCS for 2 years. Want to move to a startup or product company. What\'s the roadmap?',tags:['Career Switch','Jobs'],author:'Rahul_TCS',author_id:'u3',upvotes:89,created_at:new Date(Date.now()-3600000*48).toISOString(),answers:[
+    {id:'a3',author:'Meera S.',author_id:'u10',is_bexi:false,text:'I made this switch 2 years ago from Infosys. The honest roadmap: (1) Build 2–3 portfolio projects with real GitHub commits — no tutorial projects. (2) Get comfortable with DSA — LeetCode 75 is enough for most startups. (3) Upskill in one hot area: cloud certs, React, or data engineering. (4) Target Series A/B startups — they value hustle over pedigree. (5) LinkedIn cold outreach works better than job portals. Budget 3–6 months.',upvotes:52,created_at:new Date(Date.now()-3600000*44).toISOString()}
+  ]},
+  {id:'p4',title:'Best way to prepare for FAANG interviews in 6 months?',body:'I have 4 years of experience. Want to target Google or Amazon. Where do I start — DSA, system design or both?',tags:['Interviews','Skills'],author:'Aspirant_Kavya',author_id:'u4',upvotes:112,created_at:new Date(Date.now()-3600000*72).toISOString(),answers:[
+    {id:'a4',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'For 6 months and 4 YOE targeting FAANG: do both, but in sequence. Month 1–2: NeetCode 150 DSA in order (not random). Month 3: System Design — ByteByteGo, Gaurav Sen YouTube, and Grokking System Design. Month 4: Mock interviews on Pramp and interviewing.io. Month 5: Company-specific prep — Google values algorithms and scale; Amazon weights behavioural (STAR + Leadership Principles) heavily. Month 6: Apply and iterate. Most important: do 3 timed practice problems per day, not 10 random ones.',upvotes:78,created_at:new Date(Date.now()-3600000*68).toISOString()}
+  ]},
+  {id:'p5',title:'Should I take a startup offer at ₹22 LPA vs MNC at ₹18 LPA?',body:'Startup has ESOPs, MNC has stability. 3 years experience. Which makes more sense long term?',tags:['Salary','Startups'],author:'Confused_Vikram',author_id:'u5',upvotes:78,created_at:new Date(Date.now()-3600000*96).toISOString(),answers:[]},
+  {id:'p6',title:'How long does it realistically take to switch to data science?',body:'Currently a software engineer with 2 years Python experience. Want to move to DS. Is 6 months enough?',tags:['Career Switch','Skills'],author:'SDE_to_DS',author_id:'u6',upvotes:56,created_at:new Date(Date.now()-3600000*120).toISOString(),answers:[
+    {id:'a5',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'With 2 years of Python experience, 6 months is realistic if you are disciplined. The honest curriculum: Month 1: Statistics + Pandas + NumPy (Kaggle courses are free and great). Month 2: Machine Learning (Andrew Ng Coursera — free audit). Month 3: SQL for analytics + building your first end-to-end project. Month 4–5: One Kaggle competition + build a portfolio project with a real dataset. Month 6: Apply, apply, apply. Target analyst-to-DS roles or data engineering first — it is easier than direct DS. Do not wait to be "ready".',upvotes:38,created_at:new Date(Date.now()-3600000*115).toISOString()}
+  ]},
+  {id:'p7',title:'What skills should I learn in 2026 to reach ₹20 LPA?',body:'Currently at ₹11 LPA as a backend engineer with 2 years experience. What should I focus on next?',tags:['Skills','Salary'],author:'Backend_Dev',author_id:'u7',upvotes:145,created_at:new Date(Date.now()-3600000*144).toISOString(),answers:[
+    {id:'a6',author:'Rohan G.',author_id:'u11',is_bexi:false,text:'From ₹11 LPA to ₹20 LPA with 2 YOE backend — the fastest paths in 2026: (1) Add an AWS cert (Solutions Architect Associate) — adds ₹3–5 LPA premium. (2) Learn system design fundamentals — mandatory for any ₹20L+ backend role. (3) Upskill to a hot language/framework: Go, Rust, or Kafka/Kubernetes if you are currently on basic Java/Python. The shortcut: target fintech startups — they pay ₹18–25 LPA for 2–3 YOE backend engineers who know distributed systems basics.',upvotes:89,created_at:new Date(Date.now()-3600000*140).toISOString()}
+  ]},
+  {id:'p8',title:'Is it worth doing MBA after 3 years of software engineering?',body:'Getting pulls toward management. But already at ₹16 LPA. Is MBA worth the 2 year break and fees?',tags:['Career Switch','Skills'],author:'SDE_MBA_Dilemma',author_id:'u8',upvotes:43,created_at:new Date(Date.now()-3600000*168).toISOString(),answers:[]},
+  {id:'p9',title:'How to get a referral at Google India?',body:'No direct contacts at Google. How do most people manage to get referrals? LinkedIn cold outreach works?',tags:['Jobs','Skills'],author:'FAANG_Hopeful',author_id:'u9',upvotes:92,created_at:new Date(Date.now()-3600000*192).toISOString(),answers:[
+    {id:'a7',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'Cold referral outreach works — the script matters. Find a Googler with a similar background on LinkedIn. Message: "Hi [Name], I noticed you are an SDE at Google and your background in [X] is similar to mine. I am applying for [role] and would love to learn about the team culture. Would you be open to a 15-min call? Happy to pay it forward." After a good call: "I just submitted my application for [role ID]. If you feel comfortable, a referral would mean the world to me." Never ask in the first message. Response rate jumps from 2% to 35%+ with this approach.',upvotes:64,created_at:new Date(Date.now()-3600000*188).toISOString()}
+  ]},
+  {id:'p10',title:'Fresher with 8.5 CGPA — which companies should I target?',body:'Passing out this June from NIT. 8.5 CGPA, know Python and React. Campus placements were disappointing.',tags:['Jobs','Skills'],author:'NIT_Fresher',author_id:'u12',upvotes:61,created_at:new Date(Date.now()-3600000*216).toISOString(),answers:[
+    {id:'a8',author:'Ananya T.',author_id:'u13',is_bexi:false,text:'NIT grad with 8.5 CGPA and Python + React — you are in a good spot. Target list: (1) Off-campus drives at Atlassian, Adobe, Juspay, Groww, Razorpay — all hire freshers at ₹12–20 LPA. (2) Service companies (TCS, Wipro, Infosys) for backup, but negotiate the digital/specialist tracks, not the bulk track. (3) FAANG university hiring — check Google, Microsoft, and Amazon career pages directly. (4) YC-backed Indian startups on Wellfound. The campus disappointment means nothing — half my batch\'s best offers came off-campus.',upvotes:39,created_at:new Date(Date.now()-3600000*210).toISOString()}
+  ]},
+  {id:'p11',title:'How to explain a 1 year gap in interviews?',body:'Took a break for personal reasons. Back in job market. How do I address this without it hurting my chances?',tags:['Jobs','Skills'],author:'Career_Gap',author_id:'u14',upvotes:87,created_at:new Date(Date.now()-3600000*240).toISOString(),answers:[
+    {id:'a9',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'Career gaps in India are more accepted now than ever — especially post-2021. The key is to own it confidently, not apologetically. Script: "I took time off to [handle a personal situation / upskill / recover my health]. During that time I also [mention anything: freelanced, did a certification, built a project]. I am now fully refreshed and excited to bring my skills to this role." If you can add even one productive thing from the gap period (an online course, a GitHub project, freelance work), mention it. Most hiring managers care more about your skills than the gap.',upvotes:58,created_at:new Date(Date.now()-3600000*235).toISOString()}
+  ]},
+  {id:'p12',title:'Remote jobs in India — which companies actually offer it?',body:'Want to work remotely but stay in India. Which companies genuinely offer remote for Indian engineers?',tags:['Jobs','Salary'],author:'Remote_Seeker',author_id:'u15',upvotes:134,created_at:new Date(Date.now()-3600000*264).toISOString(),answers:[
+    {id:'a10',author:'Kiran M.',author_id:'u16',is_bexi:false,text:'Companies that genuinely offer full remote for Indian engineers in 2026: (1) GitLab (fully distributed, great pay). (2) Automattic (WordPress parent). (3) Deel, Remote.com — they hire to hire remotely for global clients. (4) Most US-based startups hiring on Wellfound — filter by "Remote" and sort by "Indian time zone friendly". (5) Toptal and Upwork for freelance. Domestic Indian companies promising "remote" often flip back to hybrid. The safest bet for genuine full-remote: target companies that were remote-first before 2020.',upvotes:87,created_at:new Date(Date.now()-3600000*260).toISOString()}
+  ]}
 ];
 
 /* ── UTILS ── */
@@ -501,7 +458,6 @@ async function initAuth(){
 
 /* ── LOAD POSTS ── */
 async function loadPosts(){
-  /* Try Supabase first */
   var posts = [];
   try {
     var res = await sb.from('community_posts')
@@ -515,10 +471,37 @@ async function loadPosts(){
     }
   } catch(e){}
 
-  /* Fall back to seed data if Supabase table doesn't exist yet (schema not deployed) */
-  if (!posts.length) posts = SEED_POSTS;
-  _allPosts = posts;
+  /* If Supabase table is empty, seed and retry */
+  if (!posts.length) {
+    try {
+      var seedRows = SEED_POSTS.map(function(p){
+        return {
+          title: p.title,
+          body: p.body,
+          tags: p.tags,
+          upvotes: p.upvotes || 0,
+          user_id: 'seed'
+        };
+      });
+      await sb.from('community_posts').insert(seedRows);
+      var res2 = await sb.from('community_posts')
+        .select('*, community_answers(*)')
+        .order('created_at', { ascending: false })
+        .limit(50);
+      if (res2.data && res2.data.length) {
+        posts = res2.data.map(function(p){
+          return Object.assign({}, p, { answers: p.community_answers || [] });
+        });
+      }
+    } catch(se){
+      console.warn('[Belongix] Community seed failed:', se.message);
+    }
+  }
 
+  /* Always fall back to rich seed data (with answers) if still empty */
+  if (!posts.length) posts = SEED_POSTS;
+
+  _allPosts = posts;
   updateStats();
   renderFeed();
 }
@@ -527,9 +510,16 @@ async function loadPosts(){
 function updateStats(){
   var totalAnswers = _allPosts.reduce(function(s,p){ return s+(p.answers||[]).length; }, 0);
   var bexiAnswers  = _allPosts.reduce(function(s,p){ return s+(p.answers||[]).filter(function(a){return a.is_bexi;}).length; }, 0);
+  var uniqueAuthors = {};
+  _allPosts.forEach(function(p){
+    if(p.author_id) uniqueAuthors[p.author_id] = true;
+    (p.answers||[]).forEach(function(a){ if(a.author_id) uniqueAuthors[a.author_id] = true; });
+  });
+  var activeMembers = Object.keys(uniqueAuthors).length;
   var el = function(id, v){ var e=document.getElementById(id); if(e) e.textContent=v; };
   el('stat-posts',   _allPosts.length + '+');
   el('stat-answers', totalAnswers + '+');
+  el('stat-members', activeMembers + '+');
   el('stat-bexi',    bexiAnswers  + '+');
 }
 

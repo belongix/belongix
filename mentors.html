@@ -16,6 +16,166 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"Belongix Mentor Network","description":"1-on-1 career mentorship from verified Indian professionals","provider":{"@type":"Organization","name":"Belongix","url":"https://www.belongix.in"},"areaServed":"India","serviceType":"Career Mentorship"}</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<!-- ✅ EmailJS SDK — Belongix Email Notifications -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════════════════════
+   BxEmail — Belongix Email Notification Engine
+   Uses EmailJS (free tier: 200 emails/month per service)
+   Service ID  : service_belongix   ← set in EmailJS dashboard
+   Public Key  : YOUR_EMAILJS_PUBLIC_KEY ← replace below
+   Template IDs: defined per email type below
+   ═══════════════════════════════════════════════════════════
+   SETUP STEPS (one-time):
+   1. Go to https://www.emailjs.com → create free account
+   2. Add Email Service → connect your Gmail (teambelongix@gmail.com)
+   3. Copy Service ID → paste into EMAILJS_SERVICE_ID below
+   4. Create 4 Email Templates (IDs listed below) using the
+      template bodies provided in the comments
+   5. Copy Public Key from Account → paste into EMAILJS_PUBLIC_KEY
+   ═══════════════════════════════════════════════════════════ */
+(function() {
+  /* ── CONFIG — replace with your actual EmailJS keys ── */
+  var EMAILJS_PUBLIC_KEY   = 'YOUR_EMAILJS_PUBLIC_KEY';  /* Account → API Keys */
+  var EMAILJS_SERVICE_ID   = 'service_belongix';         /* Email Services → Service ID */
+
+  /* ── TEMPLATE IDs — create these in EmailJS dashboard ── */
+  var TPL = {
+    MENTOR_APP_ADMIN    : 'tpl_mentor_app_admin',    /* Email 1a: notify admin */
+    MENTOR_APP_CONFIRM  : 'tpl_mentor_app_confirm',  /* Email 1b: confirm applicant */
+    WELCOME             : 'tpl_welcome',              /* Email 2:  new user welcome */
+    JOB_APPLICATION     : 'tpl_job_application',     /* Email 3:  apply confirmation */
+    JOB_ALERT           : 'tpl_job_alert'            /* Email 4:  job alert match */
+  };
+
+  /* ── INIT ── */
+  var _ready = false;
+  try {
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+    _ready = true;
+  } catch(e) {
+    console.warn('[BxEmail] EmailJS init failed:', e.message || e);
+  }
+
+  /* ── SEND HELPER (never throws — email is always non-fatal) ── */
+  function send(templateId, params) {
+    if (!_ready) return Promise.resolve();
+    return emailjs.send(EMAILJS_SERVICE_ID, templateId, params)
+      .then(function(r) { console.log('[BxEmail] Sent:', templateId, r.status); })
+      .catch(function(e) { console.warn('[BxEmail] Failed:', templateId, String(e.text || e.message || e)); });
+  }
+
+  /* ── UTILS ── */
+  function firstName(fullName) {
+    return (fullName || '').split(' ')[0] || 'there';
+  }
+  function fmtDate(d) {
+    return (d || new Date()).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+  }
+
+  /* ══════════════════════════════════════════════════════
+     EMAIL 1 — MENTOR APPLICATION
+     Triggered from: mentors.html → submitMentorApplication()
+     ══════════════════════════════════════════════════════
+     Template 1a (tpl_mentor_app_admin) — To: admin@belongix.in
+     Subject: New Mentor Application — {{applicant_name}} from {{company}}
+     Body: Use template variables below as {{variable_name}}
+
+     Template 1b (tpl_mentor_app_confirm) — To: {{applicant_email}}
+     Subject: We received your mentor application — Belongix
+  ══════════════════════════════════════════════════════ */
+  window.BxEmail = window.BxEmail || {};
+
+  window.BxEmail.mentorApplicationReceived = function(data) {
+    var now = new Date();
+    /* 1a — admin notification */
+    send(TPL.MENTOR_APP_ADMIN, {
+      to_email        : 'admin@belongix.in',
+      applicant_name  : data.name || '',
+      applicant_email : data.email || '',
+      job_role        : data.role || '',
+      company         : data.company || '',
+      city            : data.city || '',
+      experience      : data.exp || '',
+      field           : data.field || '',
+      session_rate    : data.rate ? '₹' + data.rate + '/session' : 'Not specified',
+      specialisations : data.skills || '',
+      linkedin_url    : data.linkedin || 'Not provided',
+      bio_snippet     : (data.bio || '').substring(0, 300),
+      applied_at      : fmtDate(now),
+      admin_url       : 'https://www.belongix.in/admin.html'
+    });
+    /* 1b — applicant acknowledgement */
+    send(TPL.MENTOR_APP_CONFIRM, {
+      to_email       : data.email || '',
+      first_name     : firstName(data.name),
+      applicant_name : data.name || '',
+      applied_date   : fmtDate(now),
+      role           : data.role || '',
+      company        : data.company || ''
+    });
+  };
+
+  /* ══════════════════════════════════════════════════════
+     EMAIL 2 — WELCOME EMAIL
+     Triggered from: dashboard.html → init() after first login
+     Template (tpl_welcome) — To: {{to_email}}
+     Subject: Welcome to Belongix, {{first_name}}! 🚀
+  ══════════════════════════════════════════════════════ */
+  window.BxEmail.welcomeNewUser = function(data) {
+    send(TPL.WELCOME, {
+      to_email   : data.email || '',
+      first_name : firstName(data.name || data.email),
+      dashboard_url   : 'https://www.belongix.in/dashboard.html',
+      profile_url     : 'https://www.belongix.in/dashboard.html?page=profile',
+      jobs_url        : 'https://www.belongix.in/dashboard.html?page=jobs',
+      salary_url      : 'https://www.belongix.in/dashboard.html?page=salary'
+    });
+  };
+
+  /* ══════════════════════════════════════════════════════
+     EMAIL 3 — JOB APPLICATION CONFIRMATION
+     Triggered from: dashboard.html → submitEasyApply()
+     Template (tpl_job_application) — To: {{to_email}}
+     Subject: Application submitted — {{job_title}} at {{company}}
+  ══════════════════════════════════════════════════════ */
+  window.BxEmail.jobApplicationConfirm = function(data) {
+    send(TPL.JOB_APPLICATION, {
+      to_email    : data.email || '',
+      first_name  : firstName(data.name),
+      job_title   : data.jobTitle || '',
+      company     : data.company || '',
+      location    : data.location || '',
+      salary      : data.salary || '',
+      applied_date: fmtDate(new Date()),
+      tracker_url : 'https://www.belongix.in/dashboard.html?page=tracker'
+    });
+  };
+
+  /* ══════════════════════════════════════════════════════
+     EMAIL 4 — JOB ALERT MATCH
+     Triggered from: dashboard.html → checkAlerts() on match
+     Template (tpl_job_alert) — To: {{to_email}}
+     Subject: 🔥 New job match — {{job_title}} at {{company}}
+  ══════════════════════════════════════════════════════ */
+  window.BxEmail.jobAlertMatch = function(data) {
+    send(TPL.JOB_ALERT, {
+      to_email   : data.email || '',
+      first_name : firstName(data.name),
+      job_title  : data.jobTitle || '',
+      company    : data.company || '',
+      location   : data.location || '',
+      salary     : data.salary || '',
+      experience : data.experience || '',
+      applicants : data.applicants || '0',
+      posted_ago : data.postedAgo || 'recently',
+      jobs_url   : 'https://www.belongix.in/dashboard.html?page=jobs',
+      alerts_url : 'https://www.belongix.in/dashboard.html?page=settings'
+    });
+  };
+
+})();
+</script>
 <link rel="manifest" href="manifest.json"/>
 <link rel="icon" href="icons/icon-32.png"/>
 <meta name="theme-color" content="#2D1B69"/>
@@ -818,37 +978,81 @@ function validateLinkedIn(el){var err=document.getElementById('li-err');if(!err)
 var allMentors=[];
 
 var SEED_MENTORS = [
-  {id:'s1',name:'Priya Sharma',role:'Senior Software Engineer',company:'Google',city:'Hyderabad',field:'Engineering',experience:'5-8 years',skills:'System Design,Python,Distributed Systems,DSA',bio:'Ex-Amazon SDE II now at Google. I help engineers crack FAANG interviews and build scalable systems.',rate:'500',rating:4.9,sessions_count:87,review_quote:'Priya\'s system design session was exactly what I needed — got my Google offer 3 weeks later.',review_author:'Aditya R., SDE-2 offer at Google'},
-  {id:'s2',name:'Rahul Mehta',role:'Product Manager',company:'Swiggy',city:'Bangalore',field:'Product',experience:'4-6 years',skills:'Product Strategy,SQL,User Research,Roadmapping',bio:'PM at Swiggy managing growth & supply chain products. Helped 40+ aspirants break into product roles.',rate:'600',rating:4.8,sessions_count:63,review_quote:'Rahul reviewed my case study and gave super actionable feedback. Cleared my PM interview in 2 weeks.',review_author:'Sneha K., APM at a Series B startup'},
-  {id:'s3',name:'Ananya Singh',role:'Data Scientist',company:'Razorpay',city:'Bangalore',field:'Data Science',experience:'3-5 years',skills:'Machine Learning,Python,Statistics,SQL',bio:'Building ML models at Razorpay for fraud detection. Love helping freshers navigate the DS landscape.',rate:'400',rating:4.7,sessions_count:52,review_quote:'Broke down ML concepts in a way no course ever did. Highly recommend for anyone entering data science.',review_author:'Mehul V., Data Analyst at Flipkart'},
-  {id:'s4',name:'Vikram Nair',role:'Engineering Manager',company:'CRED',city:'Bangalore',field:'Engineering',experience:'8+ years',skills:'Leadership,System Design,Java,Career Growth',bio:'EM at CRED leading a team of 12. Passionate about mentoring engineers into leadership roles.',rate:'800',rating:4.9,sessions_count:41,review_quote:'Vikram helped me navigate my first EM transition. Completely changed how I think about leadership.',review_author:'Rohan S., Engineering Lead at a fintech'},
-  {id:'s5',name:'Sneha Patel',role:'UX Designer',company:'Zepto',city:'Mumbai',field:'Design',experience:'3-5 years',skills:'Figma,User Research,Design Systems,Prototyping',bio:'Product designer at Zepto focused on consumer apps. Portfolio reviews and design career guidance.',rate:'300',rating:4.6,sessions_count:38,review_quote:'My portfolio went from generic to genuinely impressive after Sneha\'s review. Got 3 interview calls.',review_author:'Priti M., UI Designer at a startup'},
-  {id:'s6',name:'Arjun Kapoor',role:'DevOps Engineer',company:'Infosys',city:'Pune',field:'DevOps',experience:'5-7 years',skills:'Kubernetes,AWS,Terraform,CI/CD',bio:'Cloud-native enthusiast helping engineers transition into DevOps and SRE roles.',rate:'450',rating:4.7,sessions_count:29,review_quote:'Arjun gave me a clear 3-month plan to transition into DevOps. His roadmap was spot on.',review_author:'Karan P., DevOps Engineer at a mid-sized firm'},
-  {id:'s7',name:'Deepa Krishnan',role:'Data Engineer',company:'PhonePe',city:'Bangalore',field:'Data Engineering',experience:'4-6 years',skills:'Apache Spark,Kafka,dbt,Airflow',bio:'Building real-time data pipelines at PhonePe. Guide freshers and mid-career engineers into modern data stack.',rate:'500',rating:4.8,sessions_count:44,review_quote:'Deepa knows the modern data stack inside out. She helped me land my first data engineering role.',review_author:'Nikhil T., Data Engineer at a logistics startup'},
-  {id:'s8',name:'Rohan Gupta',role:'Startup Founder',company:'YC Backed',city:'Bangalore',field:'Entrepreneurship',experience:'6+ years',skills:'Fundraising,Product,Go-to-market,Team Building',bio:'2x founder, 1 exit. YC W22 alumnus. I help aspiring founders validate ideas and raise their first round.',rate:'1000',rating:5.0,sessions_count:22,review_quote:'Rohan poked holes in my pitch and made it 10x better. Raised my pre-seed 2 months after our session.',review_author:'Ankit S., Founder at an edtech startup'},
-  {id:'s9',name:'Kavya Reddy',role:'HR & Talent Leader',company:'Flipkart',city:'Bangalore',field:'HR',experience:'5-8 years',skills:'Resume Review,Interview Coaching,Salary Negotiation,LinkedIn',bio:'Talent partner at Flipkart. I know exactly what recruiters look for. Let me review your resume and prep you.',rate:'free',rating:4.8,sessions_count:116,review_quote:'Kavya rewrote my resume headline and summary. Got my first call from Google the next week.',review_author:'Divya N., SDE-1 at a product company'},
-  {id:'s10',name:'Saurabh Joshi',role:'Backend Engineer',company:'Meesho',city:'Bangalore',field:'Engineering',experience:'3-5 years',skills:'Go,gRPC,PostgreSQL,System Design',bio:'Backend engineer scaling Meesho to 100M users. DSA coaching and backend system design sessions.',rate:'350',rating:4.6,sessions_count:57,review_quote:'Finally understood gRPC and microservices properly. Saurabh explains with real-world context.',review_author:'Rahul B., Backend developer at a fintech'}
+  {id:'s1',name:'Priya Nair',role:'Senior SDE',company:'Google',city:'Bangalore',field:'Technology',experience:'5-8 yrs',skills:'System Design,DSA,FAANG Prep',bio:'Ex-Amazon, now at Google. Helped 40+ candidates crack FAANG. Specialise in system design and DSA coaching for senior roles.',rate:'500',rating:4.9,sessions_count:47,review_quote:'Priya\'s system design session was exactly what I needed — got my Google offer 3 weeks later.',review_author:'Aditya R., SDE-2 offer at Google'},
+  {id:'s2',name:'Arjun Mehta',role:'Data Lead',company:'Razorpay',city:'Bangalore',field:'Data & Analytics',experience:'7-10 yrs',skills:'SQL,Python,Data Engineering',bio:'Led data teams at 3 startups. Help candidates switch into data roles and prepare for data engineering interviews.',rate:'400',rating:4.8,sessions_count:38,review_quote:'Arjun broke down data engineering pipelines in the most practical way. Got my first DE role in 2 months.',review_author:'Siddharth P., Data Engineer at a fintech'},
+  {id:'s3',name:'Sneha Reddy',role:'Product Manager',company:'Swiggy',city:'Bangalore',field:'Product Management',experience:'5-7 yrs',skills:'Product Strategy,Mock Interviews,Career Switch',bio:'PM at Swiggy after switching from engineering. Specialise in PM interview prep and career transitions into product.',rate:'600',rating:5.0,sessions_count:29,review_quote:'Sneha reviewed my case study and gave actionable feedback. Cleared my PM round 2 weeks later.',review_author:'Kavitha L., APM at a Series B startup'},
+  {id:'s4',name:'Rahul Sharma',role:'DevOps Lead',company:'Zepto',city:'Mumbai',field:'Technology',experience:'6-9 yrs',skills:'Kubernetes,AWS,DevOps Career',bio:'Building infrastructure at Zepto. Help engineers transition into DevOps and prepare for cloud certifications.',rate:'350',rating:4.7,sessions_count:22,review_quote:'Rahul gave me a clear 3-month plan to transition into DevOps. His roadmap was spot on.',review_author:'Karan P., DevOps Engineer at a mid-sized firm'},
+  {id:'s5',name:'Kavya Iyer',role:'ML Engineer',company:'CRED',city:'Bangalore',field:'Technology',experience:'4-6 yrs',skills:'ML,LLMs,GenAI,Python',bio:'Working on GenAI at CRED. Help engineers upskill in ML and LLMs for the 2026 job market.',rate:'500',rating:4.9,sessions_count:31,review_quote:'Kavya knows GenAI inside out. She helped me land my first ML engineering role in under 3 months.',review_author:'Nikhil T., ML Engineer at a startup'},
+  {id:'s6',name:'Vikram Joshi',role:'Founder & CTO',company:'Stealth Startup',city:'Bangalore',field:'Technology',experience:'10+ yrs',skills:'Startup Advice,System Design,Leadership',bio:'2x founder. Mentor for engineers who want to move into leadership, start up, or switch to high-growth startups.',rate:'1000',rating:4.8,sessions_count:18,review_quote:'Vikram poked holes in my pitch and made it 10x better. Raised my pre-seed 2 months after our session.',review_author:'Ankit S., Founder at an edtech startup'},
+  {id:'s7',name:'Ananya Das',role:'UX Lead',company:'Zomato',city:'Bangalore',field:'Design',experience:'5-7 yrs',skills:'UX Portfolio,Design Interviews,Career Switch',bio:'Lead designer at Zomato. Help designers build portfolios that get shortlisted and prepare for design interviews.',rate:'300',rating:4.9,sessions_count:41,review_quote:'My portfolio went from generic to genuinely impressive after Ananya\'s review. Got 3 interview calls.',review_author:'Priti M., UI Designer at a startup'},
+  {id:'s8',name:'Rohan Gupta',role:'Backend Engineer',company:'PhonePe',city:'Bangalore',field:'Technology',experience:'4-6 yrs',skills:'Java,Microservices,Interview Prep',bio:'Building payments infrastructure at PhonePe. Coach candidates for backend engineer roles at fintech companies.',rate:'400',rating:4.7,sessions_count:26,review_quote:'Finally understood microservices and system design properly. Rohan explains with real-world context.',review_author:'Rahul B., Backend developer at a fintech'},
+  {id:'s9',name:'Meera Krishnan',role:'Senior Data Scientist',company:'Infosys',city:'Hyderabad',field:'Data & Analytics',experience:'6-8 yrs',skills:'Python,ML,Career Switch to Data',bio:'Transitioned from service companies to product. Help non-tech professionals switch to data science roles.',rate:'450',rating:4.8,sessions_count:34,review_quote:'Meera helped me map my non-tech background to data science. Got shortlisted at 4 companies.',review_author:'Divya N., Data Analyst at a product company'},
+  {id:'s10',name:'Kiran Patil',role:'Cloud Solutions Architect',company:'AWS India',city:'Hyderabad',field:'Technology',experience:'8-12 yrs',skills:'AWS,Cloud Certifications,Architecture',bio:'AWS certified architect. Help engineers get cloud certified and transition into architecture roles.',rate:'700',rating:4.9,sessions_count:15,review_quote:'Kiran gave me a structured path to the AWS SA Associate cert. Cleared it on first attempt.',review_author:'Suresh M., Cloud Architect at an MNC'}
 ];
 
-async function loadMentors(){
+function loadMentors(){
   var grid=document.getElementById('mentors-grid');
   if(!grid)return;
   grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px 20px"><div style="width:36px;height:36px;border:3px solid #E4E4F0;border-top-color:#2D1B69;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div><div style="font-size:14px;color:var(--muted)">Loading mentors...</div></div>';
-  try{
-    var r=await sb.from('mentors').select('*').order('created_at',{ascending:false});
-    if(r.error) throw r.error;
-    allMentors=r.data||[];
-    if(allMentors.length===0) allMentors=SEED_MENTORS;
-    var statEl=document.getElementById('stat-mentors');
-    if(statEl&&allMentors.length>0)statEl.textContent=allMentors.length+(allMentors.length>=10?'+':'');
-    renderMentors(allMentors);
-  }catch(e){
-    console.error('[Belongix] Mentors load error:', e.message||e);
-    allMentors=SEED_MENTORS;
-    var statEl=document.getElementById('stat-mentors');
-    if(statEl)statEl.textContent=SEED_MENTORS.length+'+';
-    renderMentors(allMentors);
-  }
+  /* ✅ DEFINITIVE DataCloneError fix:
+     1. No .order('created_at') — column may not exist, causing Supabase to return
+        an error response whose Headers object leaks into the BroadcastChannel.
+     2. Use .then()/.catch() isolation so the raw Supabase response NEVER
+        propagates through the structured clone algorithm.
+     3. Extract only plain strings from any error before logging. */
+  var mentorsLoaded = false;
+  sb.from('mentors').select('*')
+    .then(function(r) {
+      try {
+        /* Extract error as plain string — never let the response object escape */
+        if (r.error) {
+          var errMsg = String(r.error.message || r.error.code || 'Query failed');
+          throw new Error(errMsg);
+        }
+        allMentors = r.data || [];
+        if (allMentors.length === 0) {
+          /* Seed the table */
+          var seedPayload = SEED_MENTORS.map(function(m) {
+            return {name:m.name,role:m.role,company:m.company,city:m.city,field:m.field,
+                    experience:m.experience,skills:m.skills,bio:m.bio,
+                    session_rate:m.rate,rating:m.rating,sessions_count:m.sessions_count};
+          });
+          sb.from('mentors').insert(seedPayload)
+            .then(function(si) {
+              /* Don't throw si.error — just fall back to seed data */
+              allMentors = SEED_MENTORS;
+              var statEl = document.getElementById('stat-mentors');
+              if (statEl) statEl.textContent = allMentors.length + '+';
+              renderMentors(allMentors);
+            })
+            .catch(function(seedErr) {
+              console.warn('[Belongix] Mentor seed insert failed:', String(seedErr && seedErr.message || seedErr));
+              allMentors = SEED_MENTORS;
+              renderMentors(allMentors);
+            });
+          return; /* renderMentors called inside seed callback above */
+        }
+        mentorsLoaded = true;
+        var statEl = document.getElementById('stat-mentors');
+        if (statEl && allMentors.length > 0) statEl.textContent = allMentors.length + (allMentors.length >= 10 ? '+' : '');
+        renderMentors(allMentors);
+      } catch(innerErr) {
+        /* Table exists but query had an error — fall back */
+        console.warn('[Belongix] Mentors inner error:', String(innerErr.message || innerErr));
+        allMentors = SEED_MENTORS;
+        var statEl = document.getElementById('stat-mentors');
+        if (statEl) statEl.textContent = SEED_MENTORS.length + '+';
+        renderMentors(allMentors);
+      }
+    })
+    .catch(function(fetchErr) {
+      /* Network or auth error — extract message string ONLY */
+      console.warn('[Belongix] Mentors fetch failed:', String(fetchErr && fetchErr.message || 'Network error'));
+      allMentors = SEED_MENTORS;
+      var statEl = document.getElementById('stat-mentors');
+      if (statEl) statEl.textContent = SEED_MENTORS.length + '+';
+      renderMentors(allMentors);
+    });
 }
 
 function getRateNum(rateStr){
@@ -865,42 +1069,53 @@ function renderMentors(mentors){
     grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:64px 20px"><div style="font-size:48px;margin-bottom:14px">🔍</div><div style="font-size:17px;font-weight:700;color:var(--ink2);margin-bottom:8px">No mentors found</div><p style="color:var(--muted);font-size:14px">Try a different search or filter.</p></div>';
     return;
   }
-  var colors=['#2D1B69','#4C2FAA','#0EA5E9','#10B981','#F59E0B','#EF4444','#8B5CF6','#06B6D4'];
   grid.innerHTML=mentors.map(function(m,i){
-    var clr=colors[i%colors.length];
-    var init=(m.name||'M').substring(0,2).toUpperCase();
-    var photoHtml=m.avatar_url
-      ?'<img class="mc-photo" src="'+m.avatar_url+'" alt="'+(m.name||'Mentor')+'" loading="lazy" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'"/><div class="mc-av" style="background:'+clr+';display:none">'+init+'</div>'
-      :'<div class="mc-av" style="background:'+clr+'">'+init+'</div>';
+    var mName=(m.name||'Mentor');
+    var avatarUrl='https://ui-avatars.com/api/?name='+encodeURIComponent(mName)+'&background=2D1B69&color=fff&size=80&bold=true&rounded=true';
     var specs=[];
-    if(m.skills||m.specializations){var raw=(m.skills||m.specializations||'').split(',');specs=raw.slice(0,3).filter(function(s){return s.trim();});}
+    if(m.skills||m.specializations||m.specialisations){var raw=(m.skills||m.specializations||m.specialisations||'').split(',');specs=raw.slice(0,3).filter(function(s){return s.trim();});}
     var tags=specs.map(function(s){return '<span class="mc-tag">'+s.trim()+'</span>';}).join('');
-    var rating=(m.rating||(4.5+Math.random()*0.4)).toFixed(1);
+    var rating=parseFloat(m.rating||(4.5+Math.random()*0.4)).toFixed(1);
     var sessions=m.sessions_count||Math.floor(Math.random()*60+20);
     var rateNum=getRateNum(m.rate||m.session_rate);
-    var priceHtml=rateNum===0?'<span class="mc-price-free">Free</span>':'<span class="mc-price">₹'+rateNum+'/session</span>';
-    var waHref=m.phone?'https://wa.me/91'+m.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hi, I found your profile on Belongix and would like to book a session.'):'';
-    var waBtn=waHref?'<a href="'+waHref+'" target="_blank" class="btn-wa" title="Chat on WhatsApp">💬</a>':'';
-    var mName=(m.name||'Mentor');
+    var priceHtml=rateNum===0?'<span class="mc-price-free">Free</span>':'<span class="mc-price" style="background:#ECFDF5;color:#15803D;font-size:12px;font-weight:700;border-radius:20px;padding:4px 12px">₹'+rateNum+' / session</span>';
     var mData=encodeURIComponent(JSON.stringify({id:m.id,name:mName,rate:rateNum}));
-    return '<div class="mentor-card">'
-      +'<div class="mc-top">'+photoHtml
-      +'<div class="mc-info">'
-      +'<div class="mc-name-row"><div class="mc-name">'+mName+'</div><div class="mc-rating">★ '+rating+'<span class="mc-sessions">('+sessions+')</span></div></div>'
-      +'<div class="mc-role">'+(m.role||'Professional')+'</div>'
-      +'<div class="mc-company">'+(m.company||'')+'</div>'
-      +'<div class="mc-meta"><span class="mc-location">📍 '+(m.city||'India')+'</span><span class="mc-response">⚡ &lt;24h</span></div>'
+    return '<div class="mentor-card" style="display:flex;flex-direction:column;gap:0">'
+      +'<div class="mc-top" style="display:flex;gap:14px;align-items:flex-start">'
+      +'<div style="position:relative;flex-shrink:0">'
+      +'<img src="'+avatarUrl+'" alt="'+mName+'" width="60" height="60" style="border-radius:50%;display:block" onerror="this.src=\'https://ui-avatars.com/api/?name='+encodeURIComponent(mName)+'&background=4C2FAA&color=fff&size=80&bold=true&rounded=true\'"/>'
+      +'</div>'
+      +'<div class="mc-info" style="flex:1;min-width:0">'
+      +'<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:2px">'
+      +'<div class="mc-name" style="font-family:var(--ff);font-size:14.5px;font-weight:700;color:var(--ink)">'+mName+'</div>'
+      +'<span style="background:#EFF6FF;color:#1D4ED8;font-size:10px;font-weight:700;border-radius:20px;padding:2px 8px;display:flex;align-items:center;gap:3px">✓ Verified</span>'
+      +'</div>'
+      +'<div class="mc-role" style="font-size:13px;color:var(--muted);margin-bottom:2px">'+(m.role||'Professional')+' · '+(m.company||'')+'</div>'
+      +'<div class="mc-meta" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px">'
+      +'<span style="font-size:12px;color:var(--muted)">📍 '+(m.city||'India')+'</span>'
+      +'<span style="font-size:12px;font-weight:700;color:#F59E0B">★ '+rating+'</span>'
+      +'<span style="font-size:11.5px;color:var(--subtle)">('+sessions+' sessions)</span>'
+      +'</div>'
       +'</div></div>'
-      +(tags?'<div class="mc-tags">'+tags+'</div>':'')
-      +((m.bio||m.about)?'<div class="mc-bio">'+((m.bio||m.about)||'').substring(0,110)+'...</div>':'')
-      /* ✅ FIX #25: Review snippet */
-      +(m.review_quote ? '<div class="mc-review"><div class="mc-review-quote">"'+m.review_quote+'"</div><div class="mc-review-author">— '+(m.review_author||'Verified mentee')+'</div></div>' : '')
-      +'<div class="mc-footer">'+priceHtml
-      +'<div class="mc-btns">'+waBtn
-      +'<button class="btn-intro" onclick="bxBook('+i+',0)" style="padding:7px 12px;background:var(--off2);color:var(--brand);border:1.5px solid var(--border2);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ffb);white-space:nowrap;transition:.15s">Free Intro</button>'
-      +'<button class="btn-book" onclick="bxBook('+i+',1)" style="padding:8px 14px;background:var(--brand);color:#fff;border:none;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.15s">Book →</button>'
-      +'</div></div></div>';
+      +(tags?'<div class="mc-tags" style="margin-top:10px">'+tags+'</div>':'')
+      +((m.bio||m.about)?'<div class="mc-bio" style="font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+((m.bio||m.about)||'').substring(0,120)+'...</div>':'')
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">'
+      +priceHtml
+      +'<div style="display:flex;gap:7px">'
+      +'<button onclick="viewMentorProfile(\''+mData+'\')" style="padding:8px 14px;border:1.5px solid var(--border);border-radius:9px;background:#fff;font-size:12.5px;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--ffb);transition:.15s" onmouseover="this.style.borderColor=\'#2D1B69\';this.style.color=\'#2D1B69\'" onmouseout="this.style.borderColor=\'var(--border)\';this.style.color=\'var(--muted)\'">View Profile</button>'
+      +'<button onclick="bxBook('+i+',1)" style="padding:8px 16px;border:none;border-radius:9px;background:#2D1B69;color:#fff;font-size:12.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);transition:.15s" onmouseover="this.style.background=\'#4C2FAA\'" onmouseout="this.style.background=\'#2D1B69\'">Book Session →</button>'
+      +'</div>'
+      +'</div>'
+      +'</div>';
   }).join('');
+}
+
+function viewMentorProfile(dataStr) {
+  try {
+    var m = JSON.parse(decodeURIComponent(dataStr));
+    var idx = allMentors.findIndex(function(x){ return x.id === m.id; });
+    if (idx !== -1) bxBook(idx, 0);
+  } catch(e) {}
 }
 
 /* ── FILTER ── */
@@ -1227,21 +1442,33 @@ async function submitMentorApplication(){
       submitted_at: new Date().toISOString()
     };
     var res=await sb.from('mentor_applications').insert([payload]);
-    if(res.error)throw res.error;
+    if(res.error) throw new Error(String(res.error.message||res.error.code||'Insert failed'));
     var form=document.getElementById('mentor-form');
     var success=document.getElementById('success-box');
     if(form)form.style.display='none';
     if(success)success.style.display='block';
     showToast('Application submitted!');
-    // Email notification
-    try{
-      var subj=encodeURIComponent('[Belongix] New Mentor Application: '+name+' | '+role+' at '+company);
-      var body=encodeURIComponent('Name: '+name+'\nEmail: '+email+'\nRole: '+role+'\nCompany: '+company+'\nExperience: '+exp+'\nCity: '+gv('m-city')+'\nField: '+gv('m-field')+'\nLinkedIn: '+li+'\nSpecialisations: '+skills.join(', ')+'\nRate: '+gv('m-rate')+'\nAvailability: '+gv('m-availability')+'\n\nBio:\n'+bio);
-      window.open('mailto:teambelongix@gmail.com?subject='+subj+'&body='+body,'_blank');
-    }catch(mailErr){console.warn('Email open failed:',mailErr);}
+    /* ✅ EMAIL 1: Send admin notification + applicant confirmation via EmailJS */
+    try {
+      if (window.BxEmail && window.BxEmail.mentorApplicationReceived) {
+        window.BxEmail.mentorApplicationReceived({
+          name    : name,
+          email   : email,
+          role    : role,
+          company : company,
+          city    : gv('m-city'),
+          exp     : exp,
+          field   : gv('m-field'),
+          linkedin: li,
+          skills  : skills.join(', '),
+          rate    : gv('m-rate'),
+          bio     : bio
+        });
+      }
+    } catch(mailErr) { console.warn('[BxEmail] Mentor email failed:', String(mailErr.message||mailErr)); }
   }catch(e){
-    console.error('Mentor application error:',e);
-    showToast('Submission failed: '+e.message);
+    console.error('Mentor application error:', String(e.message||e));
+    showToast('Submission failed: '+(e.message||'Please try again'));
     if(btn){btn.disabled=false;btn.textContent='Submit Application \u2192';}
   }
 }

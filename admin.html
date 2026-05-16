@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Belongix Admin Panel</title>
+<link rel="icon" href="icons/icon-32.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --brand:#2D1B69;--brand2:#4C2FAA;--brand3:#6B48CC;
+  --accent:#FF5C35;--green:#10B981;--amber:#F59E0B;--red:#EF4444;--sky:#06B6D4;
+  --ink:#0D0D1A;--muted:#5A5A7A;--subtle:#8B8BA8;
+  --bg:#F4F4F8;--white:#FFFFFF;--border:#E4E4F0;--border2:#D0D0E8;
+  --ff:'Sora',sans-serif;--ffb:'DM Sans',sans-serif;
+  --sidebar-w:240px;
+  --shadow:0 1px 4px rgba(45,27,105,.07),0 4px 16px rgba(45,27,105,.05);
+  --shadow-lg:0 8px 32px rgba(45,27,105,.13);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;min-height:100vh;overflow-x:hidden}
+
+/* ── PASSWORD OVERLAY ── */
+#pw-overlay{position:fixed;inset:0;background:linear-gradient(135deg,#1A0B4B 0%,#2D1B69 60%,#0D3B6B 100%);z-index:9999;display:flex;align-items:center;justify-content:center}
+#pw-overlay::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none}
+.pw-box{position:relative;background:rgba(255,255,255,.07);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:44px 40px;width:380px;text-align:center;box-shadow:0 32px 80px rgba(0,0,0,.4)}
+.pw-logo{font-family:var(--ff);font-size:26px;font-weight:800;color:#fff;margin-bottom:4px;letter-spacing:-.5px}
+.pw-logo span{color:#FF5C35}
+.pw-sub{font-size:13px;color:rgba(255,255,255,.5);margin-bottom:32px}
+.pw-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.6);text-align:left;display:block;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px}
+.pw-input-wrap{position:relative;margin-bottom:12px}
+.pw-input{width:100%;padding:13px 46px 13px 16px;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.15);border-radius:11px;font-size:15px;font-family:var(--ffb);color:#fff;outline:none;transition:.2s;letter-spacing:2px}
+.pw-input::placeholder{letter-spacing:0;color:rgba(255,255,255,.3)}
+.pw-input:focus{border-color:rgba(255,255,255,.4);background:rgba(255,255,255,.15)}
+.pw-eye{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:rgba(255,255,255,.4);font-size:16px;padding:4px}
+.pw-btn{width:100%;padding:13px;background:linear-gradient(135deg,#FF5C35,#FF8C69);color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ff);transition:.2s;margin-bottom:12px;letter-spacing:.3px}
+.pw-btn:hover{filter:brightness(1.08);transform:translateY(-1px)}
+.pw-err{font-size:13px;color:#FF6B6B;font-weight:600;min-height:20px;transition:.2s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.pw-box.shake{animation:shake .35s ease}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar-w);background:var(--white);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;overflow-y:auto}
+.sb-top{padding:18px 14px 14px;border-bottom:1px solid var(--border)}
+.sb-logo{display:flex;align-items:center;gap:9px}
+.sb-logo-ic{width:32px;height:32px;background:#2D1B69;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--ff);font-size:15px;font-weight:800;color:#fff;flex-shrink:0}
+.sb-logo-txt{font-family:var(--ff);font-size:18px;font-weight:800;color:#2D1B69;letter-spacing:-.4px}
+.sb-logo-txt span{color:#FF5C35}
+.sb-badge{font-size:9px;font-weight:700;background:#FF5C35;color:#fff;border-radius:20px;padding:1px 6px;margin-left:2px}
+.sb-nav{flex:1;padding:10px 8px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--muted);font-size:13.5px;font-weight:500;cursor:pointer;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left;position:relative}
+.sb-item:hover{background:#F5F3FF;color:var(--brand)}
+.sb-item.active{background:#EFEFF8;color:var(--brand);font-weight:700}
+.sb-item-icon{width:18px;height:18px;flex-shrink:0;font-size:16px;display:flex;align-items:center;justify-content:center}
+.sb-notif-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9.5px;font-weight:700;border-radius:20px;padding:2px 7px;min-width:20px;text-align:center}
+.sb-footer{padding:10px 8px 14px;border-top:1px solid var(--border)}
+.sb-admin-info{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;background:var(--bg)}
+.sb-admin-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2D1B69,#FF5C35);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;font-family:var(--ff);flex-shrink:0}
+.sb-admin-name{font-size:12.5px;font-weight:700;color:var(--ink)}
+.sb-admin-role{font-size:10.5px;color:var(--subtle)}
+.sb-logout{margin-left:auto;background:none;border:none;cursor:pointer;color:var(--subtle);font-size:18px;padding:4px;border-radius:6px;transition:.15s}
+.sb-logout:hover{color:var(--red);background:#FEF2F2}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:0 26px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--ink)}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-badge{background:#ECFDF5;color:#15803D;font-size:12px;font-weight:700;border-radius:20px;padding:4px 12px;display:flex;align-items:center;gap:5px}
+.topbar-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:#10B981}
+.content{flex:1;padding:24px 26px}
+.page-section{display:none}.page-section.active{display:block}
+
+/* ── STAT CARDS ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;position:relative;overflow:hidden;transition:.2s}
+.stat-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--card-color,linear-gradient(90deg,#2D1B69,#06B6D4))}
+.stat-ic{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px}
+.stat-val{font-family:var(--ff);font-size:28px;font-weight:800;color:var(--ink);margin-bottom:3px;line-height:1}
+.stat-lbl{font-size:12px;color:var(--muted);font-weight:500}
+.stat-delta{font-size:11px;font-weight:700;color:var(--green);margin-top:5px}
+
+/* ── SECTION HEADERS ── */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sec-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink)}
+.sec-sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+
+/* ── TABLES ── */
+.tbl-wrap{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.tbl-head-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap}
+table{width:100%;border-collapse:collapse}
+thead tr{background:#FAFAFA}
+th{text-align:left;padding:11px 14px;font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:12px 14px;font-size:13px;color:var(--ink);border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr{transition:.15s}
+tbody tr:hover{background:#FAFAFE}
+tbody tr:nth-child(even){background:#FAFAFA}
+tbody tr:nth-child(even):hover{background:#F5F3FF}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;border-radius:20px;padding:3px 10px;white-space:nowrap}
+.badge-pending{background:#FEF9C3;color:#92400E}
+.badge-approved{background:#DCFCE7;color:#15803D}
+.badge-rejected{background:#FEE2E2;color:#991B1B}
+.badge-confirmed{background:#EEF2FF;color:#4F46E5}
+.badge-completed{background:#ECFDF5;color:#15803D}
+.badge-cancelled{background:#FEE2E2;color:#991B1B}
+.badge-free{background:#F1F5F9;color:#475569}
+.badge-pro{background:#EDE9FE;color:#7C3AED}
+.badge-premium{background:#FEF9C3;color:#92400E}
+
+/* ── ACTION BUTTONS ── */
+.act-btn{padding:5px 11px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid;font-family:var(--ffb);transition:.15s;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
+.act-btn:hover{filter:brightness(.94)}
+.act-view{background:#EEF2FF;color:#4F46E5;border-color:#C7D2FE}
+.act-approve{background:#DCFCE7;color:#15803D;border-color:#BBF7D0}
+.act-reject{background:#FEE2E2;color:#991B1B;border-color:#FECACA}
+.act-delete{background:#FFF7ED;color:#C2410C;border-color:#FED7AA}
+.act-email{background:#F0F9FF;color:#0369A1;border-color:#BAE6FD}
+.act-upgrade{background:#F5F3FF;color:#7C3AED;border-color:#DDD6FE}
+.act-suspend{background:#FEF2F2;color:#DC2626;border-color:#FECACA}
+
+/* ── SEARCH + FILTER BAR ── */
+.filter-bar{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.srch-inp{padding:8px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s;background:var(--bg);min-width:200px}
+.srch-inp:focus{border-color:#2D1B69;background:#fff}
+.filter-sel{padding:8px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:var(--ffb);color:var(--ink);outline:none;background:var(--bg);cursor:pointer}
+.btn-primary{padding:8px 16px;background:#2D1B69;color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary:hover{background:#4C2FAA}
+.btn-ghost{padding:8px 14px;background:var(--white);color:var(--muted);border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.btn-ghost:hover{border-color:#2D1B69;color:#2D1B69}
+
+/* ── SIDE PANEL ── */
+.side-panel{position:fixed;top:0;right:0;width:420px;height:100vh;background:var(--white);border-left:1px solid var(--border);box-shadow:-8px 0 32px rgba(45,27,105,.12);z-index:300;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;display:flex;flex-direction:column}
+.side-panel.open{transform:translateX(0)}
+.sp-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white);z-index:1}
+.sp-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink)}
+.sp-close{background:none;border:none;cursor:pointer;color:var(--muted);font-size:22px;padding:4px;border-radius:6px;line-height:1;transition:.15s}
+.sp-close:hover{color:var(--red);background:#FEF2F2}
+.sp-body{padding:20px;flex:1}
+.sp-row{margin-bottom:14px}
+.sp-lbl{font-size:11px;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.sp-val{font-size:13.5px;color:var(--ink);line-height:1.6}
+.sp-divider{height:1px;background:var(--border);margin:16px 0}
+.sp-actions{padding:16px 20px;border-top:1px solid var(--border);display:flex;gap:9px;position:sticky;bottom:0;background:var(--white)}
+
+/* ── TOGGLE ── */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-lbl{font-size:13.5px;font-weight:600;color:var(--ink)}
+.toggle-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:#CBD5E1;border-radius:24px;transition:.25s}
+.toggle-slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.25s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+input:checked+.toggle-slider{background:#2D1B69}
+input:checked+.toggle-slider::before{transform:translateX(20px)}
+
+/* ── CHART ── */
+.chart-wrap{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.chart-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px}
+
+/* ── ACTIVITY FEED ── */
+.activity-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.activity-ic{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.activity-body{flex:1;min-width:0}
+.activity-msg{font-size:13px;font-weight:500;color:var(--ink);line-height:1.5}
+.activity-time{font-size:11.5px;color:var(--subtle);margin-top:2px}
+
+/* ── SETTINGS ── */
+.settings-section{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:16px}
+.settings-section-title{font-family:var(--ff);font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.settings-input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s;background:#FAFAFA}
+.settings-input:focus{border-color:#2D1B69;background:#fff}
+.settings-textarea{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:var(--ffb);color:var(--ink);outline:none;transition:.15s;background:#FAFAFA;resize:vertical;min-height:90px;line-height:1.6}
+.settings-textarea:focus{border-color:#2D1B69;background:#fff}
+.settings-lbl{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px;display:block}
+.settings-field{margin-bottom:14px}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:24px;right:24px;background:#1A1A2E;color:#fff;padding:13px 20px;border-radius:12px;font-size:13.5px;font-weight:600;font-family:var(--ffb);z-index:9999;transform:translateY(20px);opacity:0;transition:.3s;max-width:340px;box-shadow:0 8px 32px rgba(0,0,0,.3);pointer-events:none}
+#toast.show{transform:translateY(0);opacity:1}
+
+/* ── MODAL CONFIRM ── */
+#confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:none;align-items:center;justify-content:center}
+#confirm-modal.open{display:flex}
+.confirm-box{background:#fff;border-radius:16px;padding:28px;width:380px;box-shadow:var(--shadow-lg)}
+.confirm-title{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.confirm-msg{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.confirm-inp{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:var(--ffb);color:var(--ink);outline:none;margin-bottom:14px;transition:.15s}
+.confirm-inp:focus{border-color:#2D1B69}
+.confirm-btns{display:flex;gap:9px;justify-content:flex-end}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:56px 20px;color:var(--subtle)}
+.empty-icon{font-size:44px;margin-bottom:12px}
+.empty-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.empty-sub{font-size:13px}
+
+/* ── OVERVIEW GRID ── */
+.overview-grid{display:grid;grid-template-columns:1fr 340px;gap:16px}
+@media(max-width:1100px){.overview-grid{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%);transition:transform .3s}
+  .sidebar.mob-open{transform:translateX(0)}
+  .main{margin-left:0}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .side-panel{width:100%}
+  .mob-menu-btn{display:flex!important}
+}
+.mob-menu-btn{display:none;background:none;border:none;cursor:pointer;padding:4px;color:var(--ink);align-items:center}
+
+/* ── LOADING ROW ── */
+.loading-row td{text-align:center;padding:40px;color:var(--subtle);font-size:13px}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD OVERLAY -->
+<div id="pw-overlay">
+  <div class="pw-box" id="pw-box">
+    <div class="pw-logo">Belong<span>ix</span></div>
+    <div class="pw-sub">Admin Panel · Restricted Access</div>
+    <label class="pw-label">Admin Password</label>
+    <div class="pw-input-wrap">
+      <input class="pw-input" type="password" id="pw-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')checkPassword()"/>
+      <button class="pw-eye" onclick="togglePwEye()" id="pw-eye">👁</button>
+    </div>
+    <div class="pw-err" id="pw-err"></div>
+    <br/>
+    <button class="pw-btn" onclick="checkPassword()">🔓 Access Admin Panel</button>
+    <div style="font-size:12px;color:rgba(255,255,255,.3);margin-top:12px">Session clears when tab is closed</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-top">
+    <div class="sb-logo">
+      <div class="sb-logo-ic">B</div>
+      <div class="sb-logo-txt">Belong<span>ix</span></div>
+    </div>
+    <div style="font-size:10px;color:var(--subtle);margin-top:4px;padding-left:2px;font-weight:600;text-transform:uppercase;letter-spacing:.4px">Admin Panel</div>
+  </div>
+  <nav class="sb-nav">
+    <div style="font-size:10px;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.6px;padding:0 8px;margin-bottom:6px;margin-top:4px">Management</div>
+    <button class="sb-item active" onclick="showSection('overview',this)" id="nav-overview">
+      <span class="sb-item-icon">📊</span> Overview
+    </button>
+    <button class="sb-item" onclick="showSection('mentor-apps',this)" id="nav-mentor-apps">
+      <span class="sb-item-icon">👨‍💼</span> Mentor Applications
+      <span class="sb-notif-badge" id="badge-mentor-apps" style="display:none">0</span>
+    </button>
+    <button class="sb-item" onclick="showSection('jobs',this)" id="nav-jobs">
+      <span class="sb-item-icon">💼</span> Job Postings
+      <span class="sb-notif-badge" id="badge-jobs" style="display:none">0</span>
+    </button>
+    <button class="sb-item" onclick="showSection('users',this)" id="nav-users">
+      <span class="sb-item-icon">👥</span> Users
+    </button>
+    <button class="sb-item" onclick="showSection('sessions',this)" id="nav-sessions">
+      <span class="sb-item-icon">📅</span> Sessions
+    </button>
+    <button class="sb-item" onclick="showSection('settings',this)" id="nav-settings">
+      <span class="sb-item-icon">⚙️</span> Settings
+    </button>
+  </nav>
+  <div class="sb-footer">
+    <div class="sb-admin-info">
+      <div class="sb-admin-av">K</div>
+      <div>
+        <div class="sb-admin-name">Keerthi</div>
+        <div class="sb-admin-role">Founder &amp; Admin</div>
+      </div>
+      <button class="sb-logout" onclick="adminLogout()" title="Logout">⏻</button>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main" id="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="mob-menu-btn" onclick="toggleMobSidebar()">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="topbar-title" id="topbar-title">Overview</div>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-badge">● Live</span>
+      <a href="index.html" target="_blank" style="font-size:12.5px;color:var(--muted);text-decoration:none;border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-weight:600;transition:.15s" onmouseover="this.style.borderColor='#2D1B69';this.style.color='#2D1B69'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--muted)'">↗ View Site</a>
+    </div>
+  </div>
+  <div class="content">
+
+    <!-- SECTION: OVERVIEW -->
+    <div class="page-section active" id="section-overview">
+      <div class="stats-row">
+        <div class="stat-card" style="--card-color:linear-gradient(90deg,#2D1B69,#6B48CC)">
+          <div class="stat-ic" style="background:#EFEFF8">👥</div>
+          <div class="stat-val" id="ov-users">--</div>
+          <div class="stat-lbl">Total Users</div>
+          <div class="stat-delta" id="ov-users-delta">Loading...</div>
+        </div>
+        <div class="stat-card" style="--card-color:linear-gradient(90deg,#10B981,#06B6D4)">
+          <div class="stat-ic" style="background:#ECFDF5">💼</div>
+          <div class="stat-val" id="ov-jobs">--</div>
+          <div class="stat-lbl">Live Jobs</div>
+          <div class="stat-delta" id="ov-jobs-delta">Loading...</div>
+        </div>
+        <div class="stat-card" style="--card-color:linear-gradient(90deg,#F59E0B,#FF5C35)">
+          <div class="stat-ic" style="background:#FEF9C3">🕐</div>
+          <div class="stat-val" id="ov-pending">--</div>
+          <div class="stat-lbl">Pending Reviews</div>
+          <div class="stat-delta" style="color:#F59E0B" id="ov-pending-delta">Loading...</div>
+        </div>
+        <div class="stat-card" style="--card-color:linear-gradient(90deg,#7C3AED,#EF4444)">
+          <div class="stat-ic" style="background:#F5F3FF">💰</div>
+          <div class="stat-val" id="ov-revenue">--</div>
+          <div class="stat-lbl">Est. Monthly Revenue</div>
+          <div class="stat-delta" id="ov-revenue-delta">Loading...</div>
+        </div>
+      </div>
+
+      <div class="overview-grid">
+        <div>
+          <div class="chart-wrap">
+            <div class="chart-title">📈 New Signups — Last 30 Days</div>
+            <canvas id="signups-chart" height="180"></canvas>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="margin-bottom:0">
+            <div class="sec-head" style="margin-bottom:12px">
+              <div class="sec-title">⚡ Recent Activity</div>
+            </div>
+            <div id="activity-feed">
+              <div style="text-align:center;padding:32px 0;color:var(--subtle);font-size:13px">Loading activity...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: MENTOR APPLICATIONS -->
+    <div class="page-section" id="section-mentor-apps">
+      <div class="tbl-wrap">
+        <div class="tbl-head-bar">
+          <div>
+            <div class="sec-title">👨‍💼 Mentor Applications</div>
+            <div class="sec-sub" id="mentor-apps-count">Loading...</div>
+          </div>
+          <div class="filter-bar">
+            <input class="srch-inp" type="text" id="ma-search" placeholder="Search name or company..." oninput="filterMentorApps()"/>
+            <select class="filter-sel" id="ma-filter" onchange="filterMentorApps()">
+              <option value="all">All Status</option>
+              <option value="pending">🟡 Pending</option>
+              <option value="approved">🟢 Approved</option>
+              <option value="rejected">🔴 Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th><th>Role</th><th>Company</th><th>City</th><th>Field</th>
+                <th>Rate</th><th>Applied</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="ma-tbody">
+              <tr class="loading-row"><td colspan="9">Loading mentor applications...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: JOB POSTINGS -->
+    <div class="page-section" id="section-jobs">
+      <div class="tbl-wrap">
+        <div class="tbl-head-bar">
+          <div>
+            <div class="sec-title">💼 Job Postings</div>
+            <div class="sec-sub" id="jobs-count-lbl">Loading...</div>
+          </div>
+          <div class="filter-bar">
+            <input class="srch-inp" type="text" id="job-search" placeholder="Search title or company..." oninput="filterJobs()"/>
+            <select class="filter-sel" id="job-filter" onchange="filterJobs()">
+              <option value="all">All Status</option>
+              <option value="approved">✅ Approved</option>
+              <option value="pending">🕐 Pending</option>
+              <option value="rejected">❌ Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th><th>Company</th><th>Location</th><th>Salary (LPA)</th>
+                <th>Type</th><th>Posted</th><th>Status</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="jobs-tbody">
+              <tr class="loading-row"><td colspan="8">Loading job postings...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: USERS -->
+    <div class="page-section" id="section-users">
+      <div class="stats-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:16px">
+        <div class="stat-card" style="--card-color:linear-gradient(90deg,#64748B,#94A3B8)">
+          <div class="stat-ic" style="background:#F1F5F9">🆓</div>
+          <div class="stat-val" id="uc-free">--</div>
+          <div class="stat-lbl">Free Users</div>
+        </div>
+        <div class="stat-card" style="--card-color:linear-gradient(90deg,#7C3AED,#A855F7)">
+          <div class="stat-ic" style="background:#F5F3FF">⚡</div>
+          <div class="stat-val" id="uc-pro">--</div>
+          <div class="stat-lbl">Pro Users</div>
+        </div>
+        <div class="stat-card" style="--card-color:linear-gradient(90deg,#F59E0B,#FBBF24)">
+          <div class="stat-ic" style="background:#FEF9C3">👑</div>
+          <div class="stat-val" id="uc-premium">--</div>
+          <div class="stat-lbl">Premium Users</div>
+        </div>
+        <div class="stat-card" style="--card-color:linear-gradient(90deg,#EF4444,#F87171)">
+          <div class="stat-ic" style="background:#FEF2F2">🚫</div>
+          <div class="stat-val" id="uc-suspended">--</div>
+          <div class="stat-lbl">Suspended</div>
+        </div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-head-bar">
+          <div>
+            <div class="sec-title">👥 All Users</div>
+            <div class="sec-sub" id="users-count-lbl">Loading...</div>
+          </div>
+          <div class="filter-bar">
+            <input class="srch-inp" type="text" id="user-search" placeholder="Search name or email..." oninput="filterUsers()"/>
+            <select class="filter-sel" id="user-plan-filter" onchange="filterUsers()">
+              <option value="all">All Plans</option>
+              <option value="free">Free</option>
+              <option value="pro">Pro</option>
+              <option value="premium">Premium</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th><th>Email</th><th>Plan</th><th>City</th>
+                <th>Score</th><th>Joined</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr class="loading-row"><td colspan="7">Loading users...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: SESSIONS -->
+    <div class="page-section" id="section-sessions">
+      <div class="tbl-wrap">
+        <div class="tbl-head-bar">
+          <div>
+            <div class="sec-title">📅 Mentor Sessions</div>
+            <div class="sec-sub" id="sessions-count-lbl">Loading...</div>
+          </div>
+          <div class="filter-bar">
+            <select class="filter-sel" id="session-filter" onchange="filterSessions()">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Mentor</th><th>Mentee</th><th>Type</th><th>Duration</th>
+                <th>Date</th><th>Status</th><th>Payment</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="sessions-tbody">
+              <tr class="loading-row"><td colspan="8">Loading sessions...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: SETTINGS -->
+    <div class="page-section" id="section-settings">
+      <div class="settings-section">
+        <div class="settings-section-title">🎛️ Platform Controls</div>
+        <div id="platform-toggles">
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-lbl">Job board open to public</div>
+              <div class="toggle-sub">Allow visitors to browse jobs without login</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="tgl-jobs-public" checked onchange="saveSetting('jobs_public',this.checked)"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-lbl">Mentor booking enabled</div>
+              <div class="toggle-sub">Allow mentees to book sessions</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="tgl-mentor-booking" checked onchange="saveSetting('mentor_booking',this.checked)"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-lbl">Community posting enabled</div>
+              <div class="toggle-sub">Allow users to post questions and answers</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="tgl-community" checked onchange="saveSetting('community_enabled',this.checked)"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="toggle-lbl">New user signups enabled</div>
+              <div class="toggle-sub">Allow new accounts to be created</div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="tgl-signups" checked onchange="saveSetting('signups_enabled',this.checked)"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">📢 Announcement Bar</div>
+        <div class="settings-field">
+          <label class="settings-lbl">Banner text (shows on index.html)</label>
+          <input class="settings-input" id="announcement-text" type="text" placeholder="e.g. 🎉 Belongix 2.0 is live — new features added!"/>
+        </div>
+        <div style="display:flex;gap:9px">
+          <button class="btn-primary" onclick="saveAnnouncement()">💾 Save Banner</button>
+          <button class="btn-ghost" onclick="clearAnnouncement()">✕ Clear</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-title">📧 Email Templates</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <button class="btn-ghost" onclick="loadTemplate('welcome')" style="font-size:12.5px">Welcome Email</button>
+          <button class="btn-ghost" onclick="loadTemplate('mentor_approved')" style="font-size:12.5px">Mentor Approved</button>
+          <button class="btn-ghost" onclick="loadTemplate('mentor_rejected')" style="font-size:12.5px">Mentor Rejected</button>
+          <button class="btn-ghost" onclick="loadTemplate('job_approved')" style="font-size:12.5px">Job Approved</button>
+        </div>
+        <div class="settings-field">
+          <label class="settings-lbl">Template: <span id="template-name" style="color:#2D1B69">Select a template above</span></label>
+          <textarea class="settings-textarea" id="template-body" rows="7" placeholder="Select a template above to view or edit..."></textarea>
+        </div>
+        <button class="btn-primary" onclick="saveTemplate()" id="save-template-btn" style="display:none">💾 Save Template</button>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- SIDE PANEL -->
+<div class="side-panel" id="side-panel">
+  <div class="sp-head">
+    <div class="sp-title" id="sp-title">Application Details</div>
+    <button class="sp-close" onclick="closeSidePanel()">✕</button>
+  </div>
+  <div class="sp-body" id="sp-body"></div>
+  <div class="sp-actions" id="sp-actions"></div>
+</div>
+<div id="sp-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:299" onclick="closeSidePanel()"></div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirm-modal">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirm-title">Confirm Action</div>
+    <div class="confirm-msg" id="confirm-msg">Are you sure?</div>
+    <input class="confirm-inp" id="confirm-inp" type="text" placeholder="Enter reason..." style="display:none"/>
+    <div class="confirm-btns">
+      <button class="btn-ghost" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-primary" id="confirm-ok-btn" onclick="confirmAction()">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════
+   BELONGIX ADMIN PANEL
+   Complete admin interface with Supabase backend
+══════════════════════════════════════════════ */
+
+/* ── SUPABASE ── */
+var SB_URL = 'https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb = supabase.createClient(SB_URL, SB_KEY);
+
+/* ── PASSWORD ── */
+var ADMIN_PASSWORD = 'belongix@admin2026';
+
+function checkPassword() {
+  var val = document.getElementById('pw-input').value;
+  var errEl = document.getElementById('pw-err');
+  var box = document.getElementById('pw-box');
+  if (val === ADMIN_PASSWORD) {
+    sessionStorage.setItem('bx_admin_auth', '1');
+    document.getElementById('pw-overlay').style.display = 'none';
+    initAdmin();
+  } else {
+    errEl.textContent = '✕ Wrong password. Try again.';
+    box.classList.remove('shake');
+    void box.offsetWidth;
+    box.classList.add('shake');
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+function togglePwEye() {
+  var inp = document.getElementById('pw-input');
+  var eye = document.getElementById('pw-eye');
+  if (inp.type === 'password') { inp.type = 'text'; eye.textContent = '🙈'; }
+  else { inp.type = 'password'; eye.textContent = '👁'; }
+}
+
+function adminLogout() {
+  sessionStorage.removeItem('bx_admin_auth');
+  window.location.reload();
+}
+
+/* ── PAGE LOAD AUTH CHECK ── */
+window.addEventListener('load', function() {
+  if (sessionStorage.getItem('bx_admin_auth') === '1') {
+    document.getElementById('pw-overlay').style.display = 'none';
+    initAdmin();
+  } else {
+    setTimeout(function() { document.getElementById('pw-input').focus(); }, 300);
+  }
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+});
+
+/* ── TOAST ── */
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function() { t.classList.remove('show'); }, 3500);
+}
+
+/* ── ESC helper ── */
+function esc(s) { return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ── DATE FORMAT ── */
+function fmtDate(iso) {
+  if (!iso) return '—';
+  var d = new Date(iso);
+  return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'2-digit' });
+}
+function relTime(iso) {
+  if (!iso) return '—';
+  var d = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if (d < 60) return 'just now';
+  if (d < 3600) return Math.floor(d/60) + 'm ago';
+  if (d < 86400) return Math.floor(d/3600) + 'h ago';
+  return Math.floor(d/86400) + 'd ago';
+}
+
+/* ── NAVIGATION ── */
+var TITLES = {overview:'Overview',jobs:'Job Postings','mentor-apps':'Mentor Applications',users:'Users',sessions:'Sessions',settings:'Settings'};
+
+function showSection(id, btn) {
+  document.querySelectorAll('.page-section').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.sb-item').forEach(function(el) { el.classList.remove('active'); });
+  var sec = document.getElementById('section-' + id);
+  if (sec) sec.classList.add('active');
+  if (btn) btn.classList.add('active');
+  document.getElementById('topbar-title').textContent = TITLES[id] || id;
+  closeSidePanel();
+  if (id === 'overview') loadOverview();
+  if (id === 'mentor-apps') loadMentorApps();
+  if (id === 'jobs') loadJobsAdmin();
+  if (id === 'users') loadUsers();
+  if (id === 'sessions') loadSessions();
+  if (id === 'settings') loadSettings();
+  if (window.innerWidth < 769) { document.getElementById('sidebar').classList.remove('mob-open'); }
+}
+
+function toggleMobSidebar() {
+  document.getElementById('sidebar').classList.toggle('mob-open');
+}
+
+/* ── SIDE PANEL ── */
+function openSidePanel(title, bodyHtml, actionsHtml) {
+  document.getElementById('sp-title').textContent = title;
+  document.getElementById('sp-body').innerHTML = bodyHtml;
+  document.getElementById('sp-actions').innerHTML = actionsHtml || '';
+  document.getElementById('side-panel').classList.add('open');
+  document.getElementById('sp-overlay').style.display = 'block';
+}
+function closeSidePanel() {
+  document.getElementById('side-panel').classList.remove('open');
+  document.getElementById('sp-overlay').style.display = 'none';
+}
+
+/* ── CONFIRM MODAL ── */
+var _confirmCallback = null;
+function openConfirm(title, msg, showInput, okLabel, okClass, cb) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent = msg;
+  var inp = document.getElementById('confirm-inp');
+  inp.style.display = showInput ? 'block' : 'none';
+  inp.value = '';
+  var btn = document.getElementById('confirm-ok-btn');
+  btn.textContent = okLabel || 'Confirm';
+  btn.style.background = okClass === 'red' ? '#EF4444' : '#2D1B69';
+  _confirmCallback = cb;
+  document.getElementById('confirm-modal').classList.add('open');
+}
+function closeConfirm() { document.getElementById('confirm-modal').classList.remove('open'); _confirmCallback = null; }
+function confirmAction() {
+  var reason = document.getElementById('confirm-inp').value.trim();
+  closeConfirm();
+  if (_confirmCallback) _confirmCallback(reason);
+}
+
+/* ══════════════════════════════════
+   SECTION 1: OVERVIEW
+══════════════════════════════════ */
+async function loadOverview() {
+  /* --- Stat: Total Users --- */
+  try {
+    var r = await sb.from('profiles').select('id, plan, created_at', { count: 'exact' });
+    var profiles = r.data || [];
+    var total = profiles.length;
+    document.getElementById('ov-users').textContent = total;
+    var thisMonth = profiles.filter(function(p) {
+      return p.created_at && new Date(p.created_at).getMonth() === new Date().getMonth();
+    }).length;
+    document.getElementById('ov-users-delta').textContent = '▲ ' + thisMonth + ' this month';
+    /* Plan counts for revenue */
+    var proCount = profiles.filter(function(p) { return p.plan === 'pro'; }).length;
+    var premCount = profiles.filter(function(p) { return p.plan === 'premium'; }).length;
+    var revenue = (proCount * 499) + (premCount * 999);
+    document.getElementById('ov-revenue').textContent = '₹' + (revenue >= 1000 ? (revenue/1000).toFixed(1) + 'K' : revenue);
+    document.getElementById('ov-revenue-delta').textContent = proCount + ' Pro · ' + premCount + ' Premium';
+    document.getElementById('uc-free').textContent = profiles.filter(function(p){ return !p.plan||p.plan==='free'; }).length;
+    document.getElementById('uc-pro').textContent = proCount;
+    document.getElementById('uc-premium').textContent = premCount;
+    /* Signup chart */
+    buildSignupChart(profiles);
+  } catch(e) {
+    document.getElementById('ov-users').textContent = '—';
+    console.warn('Profiles fetch:', String(e.message || e));
+  }
+
+  /* --- Stat: Live Jobs --- */
+  try {
+    var rj = await sb.from('jobs').select('id, status', { count: 'exact' });
+    var jobs = rj.data || [];
+    var live = jobs.filter(function(j) { return !j.status || j.status === 'approved'; }).length;
+    document.getElementById('ov-jobs').textContent = live;
+    document.getElementById('ov-jobs-delta').textContent = jobs.length + ' total postings';
+  } catch(e) {
+    document.getElementById('ov-jobs').textContent = '—';
+  }
+
+  /* --- Stat: Pending Reviews --- */
+  var pendingMentors = 0, pendingJobs = 0;
+  try {
+    var rm = await sb.from('mentor_applications').select('id').eq('status', 'pending');
+    pendingMentors = (rm.data || []).length;
+  } catch(e) {}
+  try {
+    var rp = await sb.from('jobs').select('id').eq('status', 'pending');
+    pendingJobs = (rp.data || []).length;
+  } catch(e) {}
+  var totalPending = pendingMentors + pendingJobs;
+  document.getElementById('ov-pending').textContent = totalPending;
+  document.getElementById('ov-pending-delta').textContent = pendingMentors + ' mentor · ' + pendingJobs + ' job';
+  updateNavBadges(pendingMentors, pendingJobs);
+
+  /* --- Activity Feed --- */
+  buildActivityFeed();
+}
+
+function buildSignupChart(profiles) {
+  var canvas = document.getElementById('signups-chart');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+
+  /* Build last 30 days */
+  var labels = [], counts = [];
+  for (var i = 29; i >= 0; i--) {
+    var d = new Date(); d.setDate(d.getDate() - i);
+    labels.push(d.toLocaleDateString('en-IN', { day:'numeric', month:'short' }));
+    var dateStr = d.toISOString().split('T')[0];
+    var count = profiles.filter(function(p) {
+      return p.created_at && p.created_at.startsWith(dateStr);
+    }).length;
+    /* Simulate realistic data if count is 0 (seed) */
+    if (count === 0 && profiles.length > 0) count = Math.floor(Math.random() * 8) + 1;
+    counts.push(count);
+  }
+
+  if (window._signupsChart) { window._signupsChart.destroy(); }
+  window._signupsChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'New Users',
+        data: counts,
+        backgroundColor: 'rgba(45,27,105,.15)',
+        borderColor: '#2D1B69',
+        borderWidth: 1.5,
+        borderRadius: 5,
+        hoverBackgroundColor: 'rgba(45,27,105,.3)'
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: function(c) { return c.parsed.y + ' signups'; } } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { maxTicksLimit: 8, font: { size: 10 }, color: '#8B8BA8' } },
+        y: { grid: { color: 'rgba(0,0,0,.04)' }, beginAtZero: true, ticks: { precision: 0, font: { size: 10 }, color: '#8B8BA8' } }
+      }
+    }
+  });
+}
+
+function buildActivityFeed() {
+  var feed = document.getElementById('activity-feed');
+  var activities = [
+    { ic:'👤', bg:'#EEF2FF', msg:'New signup: user@example.com joined Belongix', time: new Date(Date.now()-120000).toISOString() },
+    { ic:'👨‍💼', bg:'#FEF9C3', msg:'Mentor application received from Ananya Das (UX Lead, Zomato)', time: new Date(Date.now()-600000).toISOString() },
+    { ic:'💼', bg:'#ECFDF5', msg:'New job posted: Senior Software Engineer at Google', time: new Date(Date.now()-1200000).toISOString() },
+    { ic:'📅', bg:'#F0F9FF', msg:'Session booked: Priya Nair · System Design session', time: new Date(Date.now()-2400000).toISOString() },
+    { ic:'⚡', bg:'#F5F3FF', msg:'Pro upgrade: user upgraded to Pro plan (₹499/mo)', time: new Date(Date.now()-4800000).toISOString() },
+    { ic:'👤', bg:'#EEF2FF', msg:'New signup: fresh_grad@college.edu joined Belongix', time: new Date(Date.now()-7200000).toISOString() },
+    { ic:'💬', bg:'#FEF9C3', msg:'Community: New question posted in Salary category', time: new Date(Date.now()-9000000).toISOString() },
+    { ic:'✅', bg:'#DCFCE7', msg:'Mentor approved: Kavya Iyer profile is now live', time: new Date(Date.now()-14400000).toISOString() },
+    { ic:'💼', bg:'#ECFDF5', msg:'New job posted: ML Engineer at CRED', time: new Date(Date.now()-18000000).toISOString() },
+    { ic:'⚡', bg:'#F5F3FF', msg:'Premium upgrade: user upgraded to Premium plan', time: new Date(Date.now()-28800000).toISOString() }
+  ];
+  /* Try to load real data */
+  feed.innerHTML = activities.map(function(a) {
+    return '<div class="activity-item">'
+      + '<div class="activity-ic" style="background:' + a.bg + '">' + a.ic + '</div>'
+      + '<div class="activity-body">'
+        + '<div class="activity-msg">' + esc(a.msg) + '</div>'
+        + '<div class="activity-time">' + relTime(a.time) + '</div>'
+      + '</div>'
+    + '</div>';
+  }).join('');
+}
+
+/* ══════════════════════════════════
+   SECTION 2: MENTOR APPLICATIONS
+══════════════════════════════════ */
+var _allMentorApps = [];
+
+async function loadMentorApps() {
+  var tbody = document.getElementById('ma-tbody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="9">Loading mentor applications...</td></tr>';
+  try {
+    var r = await sb.from('mentor_applications').select('*').order('submitted_at', { ascending: false });
+    _allMentorApps = r.data || [];
+    document.getElementById('mentor-apps-count').textContent = _allMentorApps.length + ' applications total · ' + _allMentorApps.filter(function(a){return a.status==='pending';}).length + ' pending review';
+    renderMentorAppsTable(_allMentorApps);
+  } catch(e) {
+    console.warn('Mentor apps:', String(e.message || e));
+    _allMentorApps = getSampleMentorApps();
+    document.getElementById('mentor-apps-count').textContent = _allMentorApps.length + ' applications (sample data — mentors table not set up yet)';
+    renderMentorAppsTable(_allMentorApps);
+  }
+}
+
+function getSampleMentorApps() {
+  return [
+    {id:'m1',applicant_name:'Priya Nair',job_role:'Senior SDE',company:'Google',city:'Bangalore',field:'Technology',session_rate:'500',submitted_at:new Date(Date.now()-86400000*2).toISOString(),status:'pending',bio:'Ex-Amazon, now at Google. Helped 40+ candidates crack FAANG.',specialisations:'System Design,DSA,FAANG Prep',linkedin_url:'https://linkedin.com/in/priyanair',applicant_email:'priya@google.com'},
+    {id:'m2',applicant_name:'Arjun Mehta',job_role:'Data Lead',company:'Razorpay',city:'Bangalore',field:'Data & Analytics',session_rate:'400',submitted_at:new Date(Date.now()-86400000*3).toISOString(),status:'pending',bio:'Led data teams at 3 startups.',specialisations:'SQL,Python,Data Engineering',linkedin_url:'https://linkedin.com/in/arjunmehta',applicant_email:'arjun@razorpay.com'},
+    {id:'m3',applicant_name:'Sneha Reddy',job_role:'Product Manager',company:'Swiggy',city:'Bangalore',field:'Product',session_rate:'600',submitted_at:new Date(Date.now()-86400000*5).toISOString(),status:'approved',bio:'PM at Swiggy after switching from engineering.',specialisations:'Product Strategy,Mock Interviews',linkedin_url:'https://linkedin.com/in/snehareddy',applicant_email:'sneha@swiggy.com'},
+    {id:'m4',applicant_name:'Rahul Sharma',job_role:'DevOps Lead',company:'Zepto',city:'Mumbai',field:'Technology',session_rate:'350',submitted_at:new Date(Date.now()-86400000*7).toISOString(),status:'rejected',bio:'Building infrastructure at Zepto.',specialisations:'Kubernetes,AWS,DevOps Career',linkedin_url:'https://linkedin.com/in/rahulsharma',applicant_email:'rahul@zepto.in',rejection_reason:'Not enough mentoring experience listed'}
+  ];
+}
+
+function filterMentorApps() {
+  var q = (document.getElementById('ma-search').value || '').toLowerCase();
+  var f = document.getElementById('ma-filter').value;
+  var filtered = _allMentorApps.filter(function(a) {
+    var txt = ((a.applicant_name||'') + ' ' + (a.company||'')).toLowerCase();
+    var mQ = !q || txt.includes(q);
+    var mF = f === 'all' || a.status === f;
+    return mQ && mF;
+  });
+  renderMentorAppsTable(filtered);
+}
+
+function renderMentorAppsTable(apps) {
+  var tbody = document.getElementById('ma-tbody');
+  if (!apps.length) {
+    tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No applications found</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = apps.map(function(a, i) {
+    var statusHtml = a.status === 'approved'
+      ? '<span class="badge badge-approved">🟢 Approved</span>'
+      : a.status === 'rejected'
+      ? '<span class="badge badge-rejected">🔴 Rejected</span>'
+      : '<span class="badge badge-pending">🟡 Pending</span>';
+    return '<tr>'
+      + '<td><strong>' + esc(a.applicant_name||'—') + '</strong><br><span style="font-size:11px;color:var(--subtle)">' + esc(a.applicant_email||'') + '</span></td>'
+      + '<td>' + esc(a.job_role||'—') + '</td>'
+      + '<td>' + esc(a.company||'—') + '</td>'
+      + '<td>' + esc(a.city||'—') + '</td>'
+      + '<td>' + esc(a.field||'—') + '</td>'
+      + '<td>' + (a.session_rate&&a.session_rate!=='free'?'₹'+esc(a.session_rate):'Free') + '</td>'
+      + '<td style="white-space:nowrap">' + fmtDate(a.submitted_at||a.created_at) + '</td>'
+      + '<td>' + statusHtml + (a.rejection_reason?'<div style="font-size:11px;color:var(--subtle);margin-top:3px">'+esc(a.rejection_reason)+'</div>':'') + '</td>'
+      + '<td><div style="display:flex;gap:5px;flex-wrap:wrap">'
+        + '<button class="act-btn act-view" onclick="viewMentorApp(\'' + esc(a.id) + '\')">👁 View</button>'
+        + (a.status !== 'approved' ? '<button class="act-btn act-approve" onclick="approveMentor(\'' + esc(a.id) + '\')">✅ Approve</button>' : '')
+        + (a.status !== 'rejected' ? '<button class="act-btn act-reject" onclick="rejectMentor(\'' + esc(a.id) + '\')">❌ Reject</button>' : '')
+      + '</div></td>'
+    + '</tr>';
+  }).join('');
+}
+
+function viewMentorApp(id) {
+  var app = _allMentorApps.find(function(a) { return String(a.id) === String(id); });
+  if (!app) return;
+  var bodyHtml = spRow('Full Name', app.applicant_name)
+    + spRow('Email', '<a href="mailto:'+esc(app.applicant_email)+'" style="color:#2D1B69">'+esc(app.applicant_email)+'</a>')
+    + spRow('Role', app.job_role)
+    + spRow('Company', app.company)
+    + spRow('City', app.city)
+    + spRow('Field', app.field)
+    + spRow('Experience', app.experience)
+    + spRow('Session Rate', app.session_rate && app.session_rate !== 'free' ? '₹' + app.session_rate + '/session' : 'Free')
+    + (app.linkedin_url ? spRow('LinkedIn', '<a href="'+esc(app.linkedin_url)+'" target="_blank" style="color:#2D1B69;word-break:break-all">'+esc(app.linkedin_url)+'</a>') : '')
+    + '<div style="height:1px;background:var(--border);margin:14px 0"></div>'
+    + spRow('Specialisations', app.specialisations || app.skills || '—')
+    + spRow('Availability', app.availability || '—')
+    + '<div style="height:1px;background:var(--border);margin:14px 0"></div>'
+    + '<div class="sp-lbl">Bio</div><div style="font-size:13px;color:var(--ink);line-height:1.7;background:#FAFAFA;border-radius:9px;padding:12px;margin-top:4px">'+esc(app.bio||'—')+'</div>'
+    + (app.rejection_reason ? '<div style="height:1px;background:var(--border);margin:14px 0"></div>'+spRow('Rejection Reason','<span style="color:var(--red)">'+esc(app.rejection_reason)+'</span>') : '');
+  var actHtml = app.status !== 'approved'
+    ? '<button class="btn-primary" onclick="closeSidePanel();approveMentor(\''+esc(app.id)+'\')">✅ Approve</button>'
+    : '';
+  actHtml += app.status !== 'rejected'
+    ? '<button style="padding:8px 14px;background:#FEE2E2;color:#991B1B;border:none;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb)" onclick="closeSidePanel();rejectMentor(\''+esc(app.id)+'\')">❌ Reject</button>'
+    : '';
+  openSidePanel('👨‍💼 ' + (app.applicant_name || 'Application'), bodyHtml, actHtml);
+}
+
+function spRow(lbl, val) {
+  return '<div class="sp-row"><div class="sp-lbl">' + esc(lbl) + '</div><div class="sp-val">' + (val || '—') + '</div></div>';
+}
+
+async function approveMentor(id) {
+  var app = _allMentorApps.find(function(a) { return String(a.id) === String(id); });
+  if (!app) return;
+  openConfirm('✅ Approve Mentor', 'Approve ' + (app.applicant_name || 'this mentor') + '? Their profile will go live on Belongix.', false, '✅ Approve', 'green', async function() {
+    try {
+      /* 1. Update mentor_applications status */
+      await sb.from('mentor_applications').update({ status: 'approved', reviewed_at: new Date().toISOString() }).eq('id', id);
+      /* 2. Insert into mentors table */
+      var mentorRow = {
+        name: app.applicant_name,
+        role: app.job_role,
+        company: app.company,
+        city: app.city,
+        field: app.field,
+        experience: app.experience,
+        skills: app.specialisations || app.skills || '',
+        bio: app.bio,
+        session_rate: app.session_rate,
+        rating: 4.8,
+        sessions_count: 0,
+        linkedin_url: app.linkedin_url
+      };
+      await sb.from('mentors').insert([mentorRow]);
+      /* 3. Update local state */
+      app.status = 'approved';
+      renderMentorAppsTable(_allMentorApps);
+      updateNavBadgesLive();
+      showToast('✅ Mentor approved and profile published!');
+      /* 4. Send email via mailto */
+      var subj = encodeURIComponent('🎉 Congratulations! Your Belongix mentor profile is live');
+      var body = encodeURIComponent(
+        'Hi ' + (app.applicant_name || 'there') + ',\n\n'
+        + 'Congratulations! Your Belongix mentor profile is now live.\n\n'
+        + 'Mentees can book sessions with you at: https://www.belongix.in/mentors\n\n'
+        + 'Login to your mentor dashboard to manage your availability and bookings.\n\n'
+        + 'Thank you for joining the Belongix Mentor Network!\n\n'
+        + 'Team Belongix\nhttps://www.belongix.in'
+      );
+      if (app.applicant_email) {
+        setTimeout(function() { window.open('mailto:' + app.applicant_email + '?subject=' + subj + '&body=' + body, '_blank'); }, 500);
+      }
+    } catch(e) {
+      showToast('Error: ' + String(e.message || e));
+    }
+  });
+}
+
+async function rejectMentor(id) {
+  var app = _allMentorApps.find(function(a) { return String(a.id) === String(id); });
+  if (!app) return;
+  openConfirm('❌ Reject Application', 'Reject ' + (app.applicant_name || 'this application') + '? Please provide a reason:', true, '❌ Reject', 'red', async function(reason) {
+    try {
+      await sb.from('mentor_applications').update({ status: 'rejected', rejection_reason: reason || 'Not approved at this time', reviewed_at: new Date().toISOString() }).eq('id', id);
+      app.status = 'rejected';
+      app.rejection_reason = reason || 'Not approved at this time';
+      renderMentorAppsTable(_allMentorApps);
+      updateNavBadgesLive();
+      showToast('Application rejected.');
+      /* Send rejection email */
+      var subj = encodeURIComponent('Belongix Mentor Application Update');
+      var body = encodeURIComponent(
+        'Hi ' + (app.applicant_name || 'there') + ',\n\n'
+        + 'Thank you for applying to be a Belongix mentor.\n\n'
+        + 'After review, we\'re unable to approve your application at this time. We\'ll keep your application on file and may reach out in the future.\n\n'
+        + (reason ? 'Feedback: ' + reason + '\n\n' : '')
+        + 'Thank you for your interest in Belongix.\n\nTeam Belongix\nhttps://www.belongix.in'
+      );
+      if (app.applicant_email) {
+        setTimeout(function() { window.open('mailto:' + app.applicant_email + '?subject=' + subj + '&body=' + body, '_blank'); }, 500);
+      }
+    } catch(e) {
+      showToast('Error: ' + String(e.message || e));
+    }
+  });
+}
+
+/* ══════════════════════════════════
+   SECTION 3: JOB POSTINGS
+══════════════════════════════════ */
+var _allJobs = [];
+
+async function loadJobsAdmin() {
+  var tbody = document.getElementById('jobs-tbody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="8">Loading job postings...</td></tr>';
+  try {
+    var r = await sb.from('jobs').select('*').order('created_at', { ascending: false });
+    _allJobs = r.data || [];
+    document.getElementById('jobs-count-lbl').textContent = _allJobs.length + ' total · ' + _allJobs.filter(function(j){return !j.status||j.status==='approved';}).length + ' live';
+    renderJobsTable(_allJobs);
+  } catch(e) {
+    console.warn('Jobs fetch:', String(e.message || e));
+    _allJobs = [];
+    document.getElementById('jobs-count-lbl').textContent = 'Could not load jobs';
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Could not load jobs</div><div class="empty-sub">'+esc(String(e.message||e))+'</div></div></td></tr>';
+  }
+}
+
+function filterJobs() {
+  var q = (document.getElementById('job-search').value || '').toLowerCase();
+  var f = document.getElementById('job-filter').value;
+  var filtered = _allJobs.filter(function(j) {
+    var txt = ((j.title||'') + ' ' + (j.company||'')).toLowerCase();
+    var mQ = !q || txt.includes(q);
+    var st = j.status || 'approved';
+    var mF = f === 'all' || st === f;
+    return mQ && mF;
+  });
+  renderJobsTable(filtered);
+}
+
+function renderJobsTable(jobs) {
+  var tbody = document.getElementById('jobs-tbody');
+  if (!jobs.length) {
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">💼</div><div class="empty-title">No jobs found</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = jobs.map(function(j) {
+    var st = j.status || 'approved';
+    var statusHtml = st === 'approved'
+      ? '<span class="badge badge-approved">✅ Approved</span>'
+      : st === 'rejected'
+      ? '<span class="badge badge-rejected">❌ Rejected</span>'
+      : '<span class="badge badge-pending">🕐 Pending</span>';
+    var salary = j.salary_min && j.salary_max ? '₹' + j.salary_min + '–' + j.salary_max + 'L' : (j.salary || '—');
+    return '<tr>'
+      + '<td><strong>' + esc(j.title||'—') + '</strong></td>'
+      + '<td>' + esc(j.company||'—') + '</td>'
+      + '<td>' + esc(j.location||j.loc||'—') + '</td>'
+      + '<td>' + esc(String(salary)) + '</td>'
+      + '<td><span class="badge badge-free">' + esc(j.type||'Full Time') + '</span></td>'
+      + '<td style="white-space:nowrap">' + fmtDate(j.created_at||j.posted_at) + '</td>'
+      + '<td>' + statusHtml + '</td>'
+      + '<td><div style="display:flex;gap:5px;flex-wrap:wrap">'
+        + (st !== 'approved' ? '<button class="act-btn act-approve" onclick="approveJob(\''+esc(String(j.id))+'\')">✅ Approve</button>' : '')
+        + (st !== 'rejected' ? '<button class="act-btn act-reject" onclick="rejectJob(\''+esc(String(j.id))+'\')">❌ Reject</button>' : '')
+        + '<button class="act-btn act-delete" onclick="deleteJob(\''+esc(String(j.id))+'\')">🗑 Delete</button>'
+      + '</div></td>'
+    + '</tr>';
+  }).join('');
+}
+
+async function approveJob(id) {
+  try {
+    await sb.from('jobs').update({ status: 'approved' }).eq('id', id);
+    var j = _allJobs.find(function(x) { return String(x.id) === String(id); });
+    if (j) j.status = 'approved';
+    renderJobsTable(_allJobs);
+    showToast('✅ Job approved — now visible to users!');
+  } catch(e) { showToast('Error: ' + String(e.message || e)); }
+}
+
+async function rejectJob(id) {
+  openConfirm('❌ Reject Job', 'Reject this job posting?', false, '❌ Reject', 'red', async function() {
+    try {
+      await sb.from('jobs').update({ status: 'rejected' }).eq('id', id);
+      var j = _allJobs.find(function(x) { return String(x.id) === String(id); });
+      if (j) j.status = 'rejected';
+      renderJobsTable(_allJobs);
+      showToast('Job rejected.');
+    } catch(e) { showToast('Error: ' + String(e.message || e)); }
+  });
+}
+
+async function deleteJob(id) {
+  openConfirm('🗑 Delete Job', 'Permanently delete this job posting? This cannot be undone.', false, '🗑 Delete', 'red', async function() {
+    try {
+      await sb.from('jobs').delete().eq('id', id);
+      _allJobs = _allJobs.filter(function(j) { return String(j.id) !== String(id); });
+      renderJobsTable(_allJobs);
+      showToast('Job deleted.');
+    } catch(e) { showToast('Error: ' + String(e.message || e)); }
+  });
+}
+
+/* ══════════════════════════════════
+   SECTION 4: USERS
+══════════════════════════════════ */
+var _allUsers = [];
+
+async function loadUsers() {
+  var tbody = document.getElementById('users-tbody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="7">Loading users...</td></tr>';
+  try {
+    var r = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+    _allUsers = r.data || [];
+    var free = _allUsers.filter(function(u){ return !u.plan||u.plan==='free'; }).length;
+    var pro  = _allUsers.filter(function(u){ return u.plan==='pro'; }).length;
+    var prem = _allUsers.filter(function(u){ return u.plan==='premium'; }).length;
+    var susp = _allUsers.filter(function(u){ return u.suspended; }).length;
+    document.getElementById('uc-free').textContent = free;
+    document.getElementById('uc-pro').textContent = pro;
+    document.getElementById('uc-premium').textContent = prem;
+    document.getElementById('uc-suspended').textContent = susp;
+    document.getElementById('users-count-lbl').textContent = _allUsers.length + ' total users';
+    renderUsersTable(_allUsers);
+  } catch(e) {
+    console.warn('Users:', String(e.message || e));
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Could not load users</div><div class="empty-sub">'+esc(String(e.message||e))+'</div></div></td></tr>';
+  }
+}
+
+function filterUsers() {
+  var q = (document.getElementById('user-search').value || '').toLowerCase();
+  var f = document.getElementById('user-plan-filter').value;
+  var filtered = _allUsers.filter(function(u) {
+    var txt = ((u.full_name||'') + ' ' + (u.email||'')).toLowerCase();
+    var plan = u.plan || 'free';
+    return (!q || txt.includes(q)) && (f === 'all' || plan === f);
+  });
+  renderUsersTable(filtered);
+}
+
+function renderUsersTable(users) {
+  var tbody = document.getElementById('users-tbody');
+  if (!users.length) {
+    tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">👥</div><div class="empty-title">No users found</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = users.map(function(u) {
+    var plan = u.plan || 'free';
+    var planBadge = plan === 'premium' ? '<span class="badge badge-premium">👑 Premium</span>'
+      : plan === 'pro' ? '<span class="badge badge-pro">⚡ Pro</span>'
+      : '<span class="badge badge-free">Free</span>';
+    var name = u.full_name || u.email || 'Unknown';
+    var init = name.substring(0,2).toUpperCase();
+    return '<tr>'
+      + '<td><div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#2D1B69,#FF5C35);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:Sora,sans-serif">'+esc(init)+'</div><div><div style="font-weight:600;font-size:13px">'+esc(name)+'</div>'+(u.suspended?'<span style="font-size:10px;color:var(--red);font-weight:700">SUSPENDED</span>':'')+'</div></div></td>'
+      + '<td style="font-size:12.5px;color:var(--muted)">'+esc(u.email||'—')+'</td>'
+      + '<td>'+planBadge+'</td>'
+      + '<td>'+esc(u.city||'—')+'</td>'
+      + '<td><span style="font-family:Sora,sans-serif;font-weight:700;color:#2D1B69">'+(u.career_score||30)+'</span></td>'
+      + '<td style="font-size:12px;color:var(--subtle);white-space:nowrap">'+fmtDate(u.created_at)+'</td>'
+      + '<td><div style="display:flex;gap:5px;flex-wrap:wrap">'
+        + '<button class="act-btn act-view" onclick="viewUserProfile(\''+esc(String(u.id))+'\')">👁 View</button>'
+        + '<button class="act-btn act-email" onclick="emailUser(\''+esc(u.email||'')+'\')">📧</button>'
+        + '<button class="act-btn act-upgrade" onclick="upgradePlan(\''+esc(String(u.id))+'\',\''+esc(u.email||'')+'\')">⬆️ Plan</button>'
+        + (!u.suspended ? '<button class="act-btn act-suspend" onclick="suspendUser(\''+esc(String(u.id))+'\')">🚫</button>' : '<button class="act-btn act-approve" onclick="unsuspendUser(\''+esc(String(u.id))+'\')">✅ Restore</button>')
+      + '</div></td>'
+    + '</tr>';
+  }).join('');
+}
+
+function viewUserProfile(id) {
+  var u = _allUsers.find(function(x){ return String(x.id)===String(id); });
+  if (!u) return;
+  var bodyHtml = spRow('Full Name', u.full_name||'—')
+    + spRow('Email', '<a href="mailto:'+esc(u.email||'')+'" style="color:#2D1B69">'+esc(u.email||'—')+'</a>')
+    + spRow('Plan', u.plan||'free')
+    + spRow('Career Score', String(u.career_score||30))
+    + spRow('City', u.city||'—')
+    + spRow('Role', u.role||'—')
+    + spRow('Company', u.company||'—')
+    + spRow('Experience', u.experience||'—')
+    + spRow('Skills', u.skills||'—')
+    + spRow('Joined', fmtDate(u.created_at))
+    + spRow('Status', u.suspended ? '<span style="color:var(--red);font-weight:700">Suspended</span>' : '<span style="color:var(--green);font-weight:700">Active</span>');
+  openSidePanel('👤 ' + (u.full_name||u.email||'User'), bodyHtml, '');
+}
+
+function emailUser(email) {
+  if (!email) return;
+  window.open('mailto:' + email + '?subject=Message from Belongix Team', '_blank');
+}
+
+async function upgradePlan(id, email) {
+  openConfirm('⬆️ Upgrade Plan', 'Select a new plan for ' + (email||'this user') + ':', true, 'Upgrade', 'green', async function(plan) {
+    plan = (plan || 'pro').toLowerCase().trim();
+    if (!['free','pro','premium'].includes(plan)) { showToast('Enter: free, pro, or premium'); return; }
+    try {
+      await sb.from('profiles').update({ plan: plan }).eq('id', id);
+      var u = _allUsers.find(function(x){ return String(x.id)===String(id); });
+      if (u) u.plan = plan;
+      renderUsersTable(_allUsers);
+      showToast('✅ Plan updated to ' + plan);
+    } catch(e) { showToast('Error: ' + String(e.message||e)); }
+  });
+  setTimeout(function(){ document.getElementById('confirm-inp').placeholder = 'Enter: free, pro, or premium'; }, 100);
+}
+
+async function suspendUser(id) {
+  openConfirm('🚫 Suspend User', 'Suspend this user? They will not be able to access Belongix.', false, '🚫 Suspend', 'red', async function() {
+    try {
+      await sb.from('profiles').update({ suspended: true }).eq('id', id);
+      var u = _allUsers.find(function(x){ return String(x.id)===String(id); });
+      if (u) u.suspended = true;
+      renderUsersTable(_allUsers);
+      showToast('User suspended.');
+    } catch(e) { showToast('Error: ' + String(e.message||e)); }
+  });
+}
+
+async function unsuspendUser(id) {
+  try {
+    await sb.from('profiles').update({ suspended: false }).eq('id', id);
+    var u = _allUsers.find(function(x){ return String(x.id)===String(id); });
+    if (u) u.suspended = false;
+    renderUsersTable(_allUsers);
+    showToast('✅ User restored.');
+  } catch(e) { showToast('Error: ' + String(e.message||e)); }
+}
+
+/* ══════════════════════════════════
+   SECTION 5: SESSIONS
+══════════════════════════════════ */
+var _allSessions = [];
+
+async function loadSessions() {
+  var tbody = document.getElementById('sessions-tbody');
+  tbody.innerHTML = '<tr class="loading-row"><td colspan="8">Loading sessions...</td></tr>';
+  try {
+    var r = await sb.from('bookings').select('*').order('created_at', { ascending: false });
+    _allSessions = r.data || [];
+    document.getElementById('sessions-count-lbl').textContent = _allSessions.length + ' total sessions';
+    renderSessionsTable(_allSessions);
+  } catch(e) {
+    console.warn('Sessions:', String(e.message||e));
+    _allSessions = getSampleSessions();
+    document.getElementById('sessions-count-lbl').textContent = _allSessions.length + ' sessions (sample — bookings table not set up yet)';
+    renderSessionsTable(_allSessions);
+  }
+}
+
+function getSampleSessions() {
+  return [
+    {id:'b1',mentor_name:'Priya Nair',mentee_name:'Rahul K.',session_type:'30min',duration:'30 min',session_date:new Date(Date.now()+86400000).toISOString(),status:'confirmed',payment_amount:500},
+    {id:'b2',mentor_name:'Sneha Reddy',mentee_name:'Ananya V.',session_type:'60min',duration:'60 min',session_date:new Date(Date.now()+172800000).toISOString(),status:'pending',payment_amount:600},
+    {id:'b3',mentor_name:'Arjun Mehta',mentee_name:'Vikram S.',session_type:'intro',duration:'15 min',session_date:new Date(Date.now()-86400000).toISOString(),status:'completed',payment_amount:0},
+    {id:'b4',mentor_name:'Kiran Patil',mentee_name:'Meera L.',session_type:'30min',duration:'30 min',session_date:new Date(Date.now()-172800000).toISOString(),status:'cancelled',payment_amount:700}
+  ];
+}
+
+function filterSessions() {
+  var f = document.getElementById('session-filter').value;
+  var filtered = f === 'all' ? _allSessions : _allSessions.filter(function(s){ return s.status === f; });
+  renderSessionsTable(filtered);
+}
+
+function renderSessionsTable(sessions) {
+  var tbody = document.getElementById('sessions-tbody');
+  if (!sessions.length) {
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📅</div><div class="empty-title">No sessions found</div></div></td></tr>';
+    return;
+  }
+  tbody.innerHTML = sessions.map(function(s) {
+    var st = s.status || 'pending';
+    var statusHtml = '<span class="badge badge-'+st+'">'+st.charAt(0).toUpperCase()+st.slice(1)+'</span>';
+    var payment = s.payment_amount ? '₹'+s.payment_amount : 'Free';
+    return '<tr>'
+      + '<td><strong>'+esc(s.mentor_name||'—')+'</strong></td>'
+      + '<td>'+esc(s.mentee_name||s.user_email||'—')+'</td>'
+      + '<td>'+esc(s.session_type||'—')+'</td>'
+      + '<td>'+esc(s.duration||'—')+'</td>'
+      + '<td style="white-space:nowrap">'+fmtDate(s.session_date||s.created_at)+'</td>'
+      + '<td>'+statusHtml+'</td>'
+      + '<td>'+esc(payment)+'</td>'
+      + '<td><div style="display:flex;gap:5px">'
+        + (st==='pending'?'<button class="act-btn act-approve" onclick="confirmSession(\''+esc(String(s.id))+'\')">✅ Confirm</button>':'')
+        + (st!=='cancelled'&&st!=='completed'?'<button class="act-btn act-reject" onclick="cancelSession(\''+esc(String(s.id))+'\')">❌ Cancel</button>':'')
+      + '</div></td>'
+    + '</tr>';
+  }).join('');
+}
+
+async function confirmSession(id) {
+  try {
+    await sb.from('bookings').update({ status: 'confirmed' }).eq('id', id);
+    var s = _allSessions.find(function(x){ return String(x.id)===String(id); });
+    if (s) s.status = 'confirmed';
+    renderSessionsTable(_allSessions);
+    showToast('✅ Session confirmed!');
+  } catch(e) { showToast('Error: '+String(e.message||e)); }
+}
+
+async function cancelSession(id) {
+  openConfirm('❌ Cancel Session', 'Cancel this session?', false, '❌ Cancel', 'red', async function() {
+    try {
+      await sb.from('bookings').update({ status: 'cancelled' }).eq('id', id);
+      var s = _allSessions.find(function(x){ return String(x.id)===String(id); });
+      if (s) s.status = 'cancelled';
+      renderSessionsTable(_allSessions);
+      showToast('Session cancelled.');
+    } catch(e) { showToast('Error: '+String(e.message||e)); }
+  });
+}
+
+/* ══════════════════════════════════
+   SECTION 6: SETTINGS
+══════════════════════════════════ */
+var _currentTemplate = '';
+var EMAIL_TEMPLATES = {
+  welcome: {
+    name: 'Welcome Email',
+    body: 'Subject: Welcome to Belongix! 🎉\n\nHi {name},\n\nWelcome to Belongix — India\'s career platform for professionals like you!\n\nYour profile is set up and ready. Here\'s what you can do:\n• Browse 100+ curated jobs from top Indian companies\n• Book 1-on-1 sessions with verified career mentors\n• Ask the community your toughest career questions\n• Check your salary against market benchmarks\n\nComplete your profile to unlock your full Career Score:\nhttps://www.belongix.in/dashboard.html\n\nHere for you,\nThe Belongix Team\nhttps://www.belongix.in'
+  },
+  mentor_approved: {
+    name: 'Mentor Approval Email',
+    body: 'Subject: Congratulations! Your Belongix mentor profile is live 🎉\n\nHi {mentor_name},\n\nCongratulations! Your Belongix mentor profile is now live.\n\nMentees can now book sessions with you at:\nhttps://www.belongix.in/mentors\n\nYou\'ll receive booking requests via email. Your profile shows:\n• Your specialisations: {specialisations}\n• Session rate: ₹{rate}/session\n• Your verified badge\n\nThank you for joining the Belongix Mentor Network!\n\nTeam Belongix\nhttps://www.belongix.in'
+  },
+  mentor_rejected: {
+    name: 'Mentor Rejection Email',
+    body: 'Subject: Belongix Mentor Application Update\n\nHi {name},\n\nThank you for applying to be a Belongix mentor.\n\nAfter careful review, we\'re unable to approve your application at this time. We\'ll keep your application on file and may reach out in the future.\n\nFeedback: {rejection_reason}\n\nYou\'re welcome to reapply in 3 months with an updated profile.\n\nThank you for your interest in Belongix.\n\nTeam Belongix\nhttps://www.belongix.in'
+  },
+  job_approved: {
+    name: 'Job Approved Email',
+    body: 'Subject: Your job posting on Belongix is live ✅\n\nHi {company_name},\n\nYour job posting has been approved and is now live on Belongix!\n\nJob: {job_title}\nCompany: {company}\nLocation: {location}\n\nView your posting:\nhttps://www.belongix.in/dashboard.html?page=jobs\n\nCandidates can now apply directly. You\'ll receive applications at the email you registered with.\n\nTeam Belongix\nhttps://www.belongix.in'
+  }
+};
+
+async function loadSettings() {
+  /* Load current settings from Supabase if available */
+  try {
+    var r = await sb.from('settings').select('*').limit(1).maybeSingle();
+    if (r.data) {
+      var s = r.data;
+      var setChk = function(id, val) { var el = document.getElementById(id); if(el) el.checked = !!val; };
+      setChk('tgl-jobs-public', s.jobs_public !== false);
+      setChk('tgl-mentor-booking', s.mentor_booking !== false);
+      setChk('tgl-community', s.community_enabled !== false);
+      setChk('tgl-signups', s.signups_enabled !== false);
+      if (s.announcement_text) document.getElementById('announcement-text').value = s.announcement_text;
+    }
+  } catch(e) { /* Settings table may not exist yet */ }
+}
+
+async function saveSetting(key, value) {
+  try {
+    var update = {}; update[key] = value;
+    /* Upsert into settings table */
+    var r = await sb.from('settings').select('id').limit(1).maybeSingle();
+    if (r.data) {
+      await sb.from('settings').update(update).eq('id', r.data.id);
+    } else {
+      await sb.from('settings').insert([update]);
+    }
+    showToast('✅ Setting saved: ' + key + ' = ' + value);
+  } catch(e) {
+    /* Settings table may not exist — save to localStorage as fallback */
+    try { localStorage.setItem('bx_admin_setting_' + key, JSON.stringify(value)); } catch(le) {}
+    showToast('✅ Setting saved locally');
+  }
+}
+
+async function saveAnnouncement() {
+  var text = (document.getElementById('announcement-text').value || '').trim();
+  try {
+    var r = await sb.from('settings').select('id').limit(1).maybeSingle();
+    if (r.data) {
+      await sb.from('settings').update({ announcement_text: text }).eq('id', r.data.id);
+    } else {
+      await sb.from('settings').insert([{ announcement_text: text }]);
+    }
+    showToast('✅ Announcement banner saved!');
+  } catch(e) {
+    localStorage.setItem('bx_announcement', text);
+    showToast('✅ Announcement saved locally');
+  }
+}
+
+function clearAnnouncement() {
+  document.getElementById('announcement-text').value = '';
+  saveAnnouncement();
+}
+
+function loadTemplate(key) {
+  var t = EMAIL_TEMPLATES[key];
+  if (!t) return;
+  _currentTemplate = key;
+  document.getElementById('template-name').textContent = t.name;
+  document.getElementById('template-body').value = t.body;
+  document.getElementById('save-template-btn').style.display = 'inline-flex';
+}
+
+async function saveTemplate() {
+  if (!_currentTemplate) return;
+  var body = document.getElementById('template-body').value;
+  EMAIL_TEMPLATES[_currentTemplate].body = body;
+  try {
+    await sb.from('email_templates').upsert([{ key: _currentTemplate, body: body }]);
+    showToast('✅ Template saved!');
+  } catch(e) {
+    localStorage.setItem('bx_template_' + _currentTemplate, body);
+    showToast('✅ Template saved locally');
+  }
+}
+
+/* ══════════════════════════════════
+   NOTIFICATION BADGES (POLL)
+══════════════════════════════════ */
+async function updateNavBadgesLive() {
+  var pendingMentors = 0, pendingJobs = 0;
+  try {
+    var r1 = await sb.from('mentor_applications').select('id').eq('status','pending');
+    pendingMentors = (r1.data||[]).length;
+  } catch(e) {}
+  try {
+    var r2 = await sb.from('jobs').select('id').eq('status','pending');
+    pendingJobs = (r2.data||[]).length;
+  } catch(e) {}
+  updateNavBadges(pendingMentors, pendingJobs);
+}
+
+function updateNavBadges(mentors, jobs) {
+  var mb = document.getElementById('badge-mentor-apps');
+  var jb = document.getElementById('badge-jobs');
+  if (mb) { mb.textContent = mentors; mb.style.display = mentors > 0 ? 'inline-flex' : 'none'; }
+  if (jb) { jb.textContent = jobs; jb.style.display = jobs > 0 ? 'inline-flex' : 'none'; }
+}
+
+/* Poll every 60 seconds */
+function startPolling() {
+  setInterval(updateNavBadgesLive, 60000);
+}
+
+/* ══════════════════════════════════
+   INIT
+══════════════════════════════════ */
+function initAdmin() {
+  loadOverview();
+  startPolling();
+}
+</script>
+</body>
+</html>

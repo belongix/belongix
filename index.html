@@ -548,6 +548,51 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   </div>
 </div>
 
+<!-- ── FIX 4: ACTIVITY TICKER ── -->
+<div id="activity-ticker" style="background:#F3F0FF;border-bottom:1px solid #DDD6FE;padding:9px 0;font-size:12px;color:#4C1D95;text-align:center;position:relative;display:flex;align-items:center;justify-content:center">
+  <span id="ticker-msg" style="transition:opacity 0.4s;opacity:1;flex:1;text-align:center;padding:0 44px;font-weight:500">🔥 Rohan from Bangalore just applied to a ₹18LPA DevOps role</span>
+  <button onclick="dismissTicker()" title="Dismiss" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:#7C3AED;line-height:1;padding:4px;border-radius:4px;opacity:.55;transition:.15s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.55'">✕</button>
+</div>
+<script>
+(function(){
+  var TICKER_MSGS = [
+    '🔥 Rohan from Bangalore just applied to a ₹18LPA DevOps role',
+    '✅ Sneha just completed her AWS Cloud Practitioner course',
+    '📅 Vikram just booked a session with a Google SDE mentor',
+    '💰 Priya discovered she was 35% underpaid using Salary Intel',
+    '🎯 Arjun\'s Career Score jumped from 40 to 72 today',
+    '🚀 Kavya just got an interview call from Razorpay',
+    '📄 Meera built her ATS resume in 8 minutes',
+    '🔥 Kiran from Hyderabad applied to a ₹22LPA ML role',
+    '✅ Rahul switched from non-tech to data analytics in 3 months',
+    '💼 Ananya landed her first job after B.Tech',
+    '🧠 Deepak asked Bexi 3 questions and got his career roadmap',
+    '📈 Shruti negotiated a ₹4LPA hike using Belongix salary data',
+    '🎓 Aditya from Chennai completed 3 courses this week',
+    '🔥 52 new jobs added in Bangalore today',
+    '✅ Nisha\'s profile hit Career Score 65 this morning'
+  ];
+  var bar = document.getElementById('activity-ticker');
+  var msgEl = document.getElementById('ticker-msg');
+  if (!bar || !msgEl) return;
+  try { if (localStorage.getItem('ticker_dismissed') === 'true') { bar.style.display = 'none'; return; } } catch(e) {}
+  var idx = 0;
+  function rotateTicker() {
+    msgEl.style.opacity = '0';
+    setTimeout(function() {
+      idx = (idx + 1) % TICKER_MSGS.length;
+      msgEl.textContent = TICKER_MSGS[idx];
+      msgEl.style.opacity = '1';
+    }, 400);
+  }
+  setInterval(rotateTicker, 4000);
+  window.dismissTicker = function() {
+    bar.style.display = 'none';
+    try { localStorage.setItem('ticker_dismissed', 'true'); } catch(e) {}
+  };
+})();
+</script>
+
 <!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-mesh">
@@ -716,7 +761,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 <!-- F4: COMPANIES HIRING STRIP -->
 <div style="padding:0 5%;margin-top:32px">
   <div class="companies-wrap">
-    <div class="companies-label">Trusted by professionals from</div>
+    <div class="companies-label">Our members work at</div>
     <div class="companies-track" id="companies-track">
       <span class="co-badge">Google</span><span class="co-badge">Microsoft</span>
       <span class="co-badge">Amazon</span><span class="co-badge">Swiggy</span>
@@ -1047,7 +1092,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         <h2 style="margin-bottom:32px">Frequently asked <span>questions</span></h2>
         <div class="faq-wrap" style="max-width:100%">
           <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Who is Belongix built for?<div class="fi-ic">+</div></div><div class="fia">Belongix is built for everyone at every career stage in India — college students seeking internships, fresh graduates landing their first job, working professionals growing their careers, and career changers switching fields.</div></div>
-          <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Is Belongix really free to use?<div class="fi-ic">+</div></div><div class="fia">Yes! The Starter plan is completely free and includes job board, career score, salary insights, Bexi AI (unlimited — no daily cap) and 5 learning tracks. Pro at ₹499/month unlocks mentor sessions, full salary data, and all 48+ courses.</div></div>
+          <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Is Belongix really free to use?<div class="fi-ic">+</div></div><div class="fia">Yes! The Starter plan is completely free and includes job board, career score, salary insights, Bexi AI (10 questions/day), and 5 learning tracks. Pro at ₹499/month unlocks mentor sessions, full salary data, all 48+ courses and unlimited Bexi AI.</div></div>
           <div class="fi"><div class="fiq" onclick="toggleFaq(this)">How does the Career Score work?<div class="fi-ic">+</div></div><div class="fia">Your Career Score starts at 30 and grows based on real actions — completing your profile (+30), verifying email (+10), adding skills, applying to jobs (+15), and completing courses. It's a real reflection of your career readiness, not a fake number.</div></div>
           <div class="fi"><div class="fiq" onclick="toggleFaq(this)">Are the job listings real and verified?<div class="fi-ic">+</div></div><div class="fia">Yes. Belongix aggregates real job and internship listings from verified companies across India. All listings are verified before being shown. We're building direct partnerships with companies for exclusive Belongix-only opportunities.</div></div>
           <div class="fi"><div class="fiq" onclick="toggleFaq(this)">How does mentor booking work?<div class="fi-ic">+</div></div><div class="fia">Pro members can browse verified mentors filtered by field, experience, company and specialisation. Book 30 or 60-minute sessions directly. Sessions are coordinated securely through Belongix.</div></div>
@@ -1740,6 +1785,20 @@ var FALLBACK_TESTIMONIALS = [
 /* Avatar background colours — cycled by index */
 var TEST_COLORS = ['#2D1B69','#10B981','#FF5C35','#F59E0B','#6B48CC','#06B6D4'];
 
+/* Metric pills per person */
+var TEST_METRICS = {
+  'Arjun Kumar'  : '₹22 LPA offer at Swiggy',
+  'Priya Sharma' : 'Career switch in 5 months',
+  'Rahul Mehta'  : '+₹6 LPA hike achieved'
+};
+
+/* Avatar URL via ui-avatars.com */
+var TEST_AVATAR_BG = {
+  'Arjun Kumar'  : '2D1B69',
+  'Priya Sharma' : '7C4DFF',
+  'Rahul Mehta'  : '1A3A6E'
+};
+
 /* Render a single testimonial card */
 function buildTestCard(t, idx) {
   var initials = (t.name || 'U').split(' ').map(function(w){return w[0]||'';}).join('').toUpperCase().slice(0,2);
@@ -1747,32 +1806,43 @@ function buildTestCard(t, idx) {
   var stars    = '★'.repeat(Math.min(5, Math.max(1, parseInt(t.rating)||5)));
   var emptyStars = '☆'.repeat(5 - stars.length);
 
-  /* Avatar: real photo if available, else coloured initials */
-  var avatarHtml = t.avatar_url
-    ? '<img src="'+t.avatar_url+'" alt="'+escHtml(t.name)+'" style="width:36px;height:36px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.style.display=\'none\';this.nextSibling.style.display=\'flex\'">'
-      + '<div class="test-av" style="background:'+color+';display:none">'+initials+'</div>'
-    : '<div class="test-av" style="background:'+color+'">'+initials+'</div>';
+  /* ── FIX 3: Avatar — ui-avatars.com with name-based bg colour ── */
+  var avatarBg = TEST_AVATAR_BG[t.name] || color.replace('#','');
+  var avatarUrl = t.avatar_url
+    ? t.avatar_url
+    : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(t.name || 'U')
+        + '&background=' + avatarBg + '&color=fff&size=80&bold=true&rounded=true';
 
-  /* LinkedIn link — only shown if url is set */
+  var avatarHtml = '<img src="' + avatarUrl + '" alt="' + escHtml(t.name)
+    + '" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)"'
+    + ' onerror="this.src=\'https://ui-avatars.com/api/?name=' + encodeURIComponent(t.name||'U') + '&background=2D1B69&color=fff&size=80&bold=true&rounded=true\'">';
+
+  /* ── FIX 3: Verified badge ── */
+  var verifiedHtml = '<span style="display:inline-block;background:#E8F5E9;color:#2E7D32;font-size:11px;font-weight:600;border-radius:20px;padding:2px 10px;margin-bottom:8px">✓ Verified Belongix User</span>';
+
+  /* ── FIX 3: Metric pill ── */
+  var metricText = TEST_METRICS[t.name] || t.win || '';
+  var metricHtml = metricText
+    ? '<div style="display:inline-block;background:#EDE7FF;color:#4A2FCF;font-weight:700;border-radius:20px;padding:4px 14px;font-size:12px;margin-bottom:10px">' + escHtml(metricText) + '</div>'
+    : '';
+
+  /* LinkedIn link */
   var liHtml = t.linkedin_url
     ? '<a href="'+escHtml(t.linkedin_url)+'" target="_blank" rel="noopener" class="test-li-link" title="View on LinkedIn">'
       + '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/></svg>'
       + '</a>'
     : '';
 
-  /* Verified badge */
-  var verifiedHtml = t.verified
-    ? '<span class="test-verified">✓ Verified</span>'
-    : '';
-
   return '<div class="test-card">'
+    + '<div style="text-align:left">' + verifiedHtml + '</div>'
+    + '<div style="text-align:left">' + metricHtml + '</div>'
     + '<div class="test-stars" style="color:#F59E0B">'+stars+'<span style="color:var(--border)">'+emptyStars+'</span></div>'
     + '<div class="test-quote">&#8220;'+escHtml(t.quote)+'&#8221;</div>'
     + '<div class="test-divider"></div>'
     + '<div class="test-person">'
     +   avatarHtml
     +   '<div>'
-    +     '<div class="test-name">'+escHtml(t.name)+liHtml+verifiedHtml+'</div>'
+    +     '<div class="test-name">'+escHtml(t.name)+liHtml+'</div>'
     +     '<div class="test-role">'+escHtml(t.role||'')+'</div>'
     +   '</div>'
     +   (t.win ? '<div class="test-win">'+escHtml(t.win)+'</div>' : '')
@@ -1833,6 +1903,352 @@ var obs=new IntersectionObserver(function(entries){
   entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('on');});
 },{threshold:0.07,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.rv').forEach(function(el){obs.observe(el);});
+</script>
+
+<!-- ════════════════════════════════════════════════════════
+     FIX 1 — BEXI AI FLOATING CHAT WIDGET
+     Self-contained: CSS + HTML + JS, no external deps
+════════════════════════════════════════════════════════ -->
+<style>
+/* ── WIDGET CONTAINER ── */
+#bexi-widget{position:fixed;bottom:24px;right:24px;z-index:9999;font-family:'DM Sans',sans-serif}
+
+/* ── BUBBLE ── */
+#bexi-bubble{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#2D1B69,#7C4DFF);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(124,77,255,.45);transition:.2s;position:relative;user-select:none}
+#bexi-bubble:hover{transform:scale(1.08)}
+#bexi-bubble-icon{font-size:26px;line-height:1}
+@keyframes bexiPulse{0%{box-shadow:0 0 0 0 rgba(124,77,255,.5)}70%{box-shadow:0 0 0 16px rgba(124,77,255,0)}100%{box-shadow:0 0 0 0 rgba(124,77,255,0)}}
+#bexi-bubble{animation:bexiPulse 3s ease-out infinite}
+#bexi-bubble:hover{animation:none}
+#bexi-tooltip{position:absolute;bottom:70px;right:0;background:#1A1A2E;color:#fff;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:10px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+#bexi-tooltip::after{content:'';position:absolute;top:100%;right:18px;border:5px solid transparent;border-top-color:#1A1A2E}
+#bexi-bubble:hover #bexi-tooltip{opacity:1}
+#bexi-notif-dot{position:absolute;top:4px;right:4px;width:12px;height:12px;border-radius:50%;background:#FF5C35;border:2px solid #fff;display:none}
+#bexi-notif-dot.show{display:block}
+
+/* ── CHAT PANEL ── */
+#bexi-panel{position:fixed;bottom:100px;right:24px;width:360px;height:520px;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);display:none;flex-direction:column;overflow:hidden;z-index:9998;transition:opacity .2s,transform .2s;opacity:0;transform:translateY(10px) scale(.97)}
+#bexi-panel.open{display:flex;opacity:1;transform:translateY(0) scale(1)}
+
+/* ── HEADER ── */
+#bexi-header{background:linear-gradient(135deg,#2D1B69,#7C4DFF);padding:14px 16px;display:flex;align-items:center;gap:11px;flex-shrink:0}
+#bexi-header-av{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+#bexi-header-info{flex:1}
+#bexi-header-name{font-size:15px;font-weight:700;color:#fff;font-family:'Sora',sans-serif;letter-spacing:-.2px}
+#bexi-header-sub{font-size:11px;color:rgba(255,255,255,.7);margin-top:1px}
+#bexi-close{background:none;border:none;color:rgba(255,255,255,.8);font-size:20px;cursor:pointer;padding:4px;border-radius:6px;line-height:1;transition:.15s;flex-shrink:0}
+#bexi-close:hover{color:#fff;background:rgba(255,255,255,.15)}
+#bexi-free-bar{background:#EDE9FE;padding:6px 16px;text-align:center;font-size:12px;font-weight:600;color:#5B21B6;flex-shrink:0}
+
+/* ── MESSAGES ── */
+#bexi-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+#bexi-msgs::-webkit-scrollbar{width:4px}
+#bexi-msgs::-webkit-scrollbar-thumb{background:#E4E4F0;border-radius:4px}
+.bexi-msg-row{display:flex;align-items:flex-end;gap:7px}
+.bexi-msg-row.user{justify-content:flex-end}
+.bexi-msg-av{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#2D1B69,#7C4DFF);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.bexi-bubble-user{background:linear-gradient(135deg,#2D1B69,#7C4DFF);color:#fff;padding:10px 14px;border-radius:18px 18px 4px 18px;font-size:13px;line-height:1.55;max-width:240px;word-break:break-word;box-shadow:0 2px 8px rgba(45,27,105,.25)}
+.bexi-bubble-ai{background:#fff;color:#1A1A2E;padding:10px 14px;border-radius:18px 18px 18px 4px;font-size:13px;line-height:1.55;max-width:240px;word-break:break-word;box-shadow:0 2px 10px rgba(0,0,0,.08);border:1px solid #F1F1F8}
+
+/* ── TYPING INDICATOR ── */
+#bexi-typing{display:none;align-items:flex-end;gap:7px}
+#bexi-typing.show{display:flex}
+.bexi-typing-dots{background:#fff;border:1px solid #F1F1F8;border-radius:18px 18px 18px 4px;padding:12px 16px;display:flex;gap:5px;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.bexi-dot{width:7px;height:7px;border-radius:50%;background:#CBD5E1}
+@keyframes bexiDotBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.bexi-dot:nth-child(1){animation:bexiDotBob .9s ease infinite}
+.bexi-dot:nth-child(2){animation:bexiDotBob .9s ease .2s infinite}
+.bexi-dot:nth-child(3){animation:bexiDotBob .9s ease .4s infinite}
+
+/* ── SUGGESTIONS ── */
+#bexi-suggestions{padding:0 16px 14px;flex-shrink:0}
+#bexi-sug-label{font-size:12px;color:#94A3B8;text-align:center;margin-bottom:8px;font-weight:500}
+.bexi-chip-row{display:flex;flex-direction:column;gap:7px}
+.bexi-chip{background:#fff;border:1.5px solid #E4E4F0;border-radius:22px;padding:8px 14px;font-size:12.5px;font-weight:500;color:#1A1A2E;cursor:pointer;text-align:left;transition:.15s;font-family:'DM Sans',sans-serif}
+.bexi-chip:hover{border-color:#7C4DFF;color:#2D1B69;background:#F5F3FF}
+
+/* ── INPUT ── */
+#bexi-input-bar{border-top:1px solid #F1F1F8;padding:12px 14px;display:flex;gap:9px;align-items:center;background:#fff;flex-shrink:0;box-shadow:0 -2px 10px rgba(0,0,0,.04)}
+#bexi-input{flex:1;border:1.5px solid #E4E4F0;border-radius:22px;padding:9px 14px;font-size:13.5px;font-family:'DM Sans',sans-serif;color:#1A1A2E;outline:none;resize:none;transition:.15s;height:40px;line-height:1.4}
+#bexi-input:focus{border-color:#7C4DFF;box-shadow:0 0 0 3px rgba(124,77,255,.08)}
+#bexi-send{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2D1B69,#7C4DFF);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
+#bexi-send:disabled{background:#E4E4F0;cursor:default}
+#bexi-send:not(:disabled):hover{filter:brightness(1.12);transform:scale(1.06)}
+#bexi-send svg{pointer-events:none}
+
+/* ── UPGRADE MESSAGE BUTTONS ── */
+.bexi-upgrade-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.bexi-upgrade-btn{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:.15s;text-decoration:none;display:inline-block}
+.bexi-upgrade-btn.primary{background:linear-gradient(135deg,#2D1B69,#7C4DFF);color:#fff}
+.bexi-upgrade-btn.ghost{background:#F3F0FF;color:#4A2FCF;border:1.5px solid #DDD6FE}
+.bexi-upgrade-btn:hover{filter:brightness(.92)}
+
+/* ── MOBILE FULL SCREEN ── */
+@media(max-width:640px){
+  #bexi-panel{width:100vw;height:100vh;bottom:0;right:0;border-radius:0;z-index:10000}
+  #bexi-close{font-size:26px;padding:8px}
+  #bexi-input-bar{padding-bottom:20px}
+  #bexi-bubble{bottom:80px}
+}
+</style>
+
+<!-- Widget HTML -->
+<div id="bexi-widget">
+  <div id="bexi-bubble" onclick="bexiToggle()" role="button" aria-label="Chat with Bexi AI">
+    <div id="bexi-tooltip">Chat with Bexi — Free</div>
+    <span id="bexi-bubble-icon">🤖</span>
+    <span id="bexi-notif-dot"></span>
+  </div>
+</div>
+
+<div id="bexi-panel" role="dialog" aria-label="Bexi AI Chat">
+  <div id="bexi-header">
+    <div id="bexi-header-av">🤖</div>
+    <div id="bexi-header-info">
+      <div id="bexi-header-name">Bexi AI</div>
+      <div id="bexi-header-sub">Your Career Guide</div>
+    </div>
+    <button id="bexi-close" onclick="bexiClose()" aria-label="Close chat">✕</button>
+  </div>
+  <div id="bexi-free-bar">✨ 3 free questions · No signup needed</div>
+
+  <div id="bexi-msgs">
+    <!-- Opening message from Bexi -->
+    <div class="bexi-msg-row">
+      <div class="bexi-msg-av">🤖</div>
+      <div class="bexi-bubble-ai">Hi! I'm Bexi 👋 Your AI career guide for the Indian job market. Ask me anything — salary, skills, career switch, interview prep. What's on your mind?</div>
+    </div>
+  </div>
+
+  <div id="bexi-typing">
+    <div class="bexi-msg-av">🤖</div>
+    <div class="bexi-typing-dots">
+      <div class="bexi-dot"></div>
+      <div class="bexi-dot"></div>
+      <div class="bexi-dot"></div>
+    </div>
+  </div>
+
+  <div id="bexi-suggestions">
+    <div id="bexi-sug-label">Try asking 👇</div>
+    <div class="bexi-chip-row">
+      <button class="bexi-chip" onclick="bexiSendChip(this)">💰 Am I being paid fairly?</button>
+      <button class="bexi-chip" onclick="bexiSendChip(this)">🚀 How to reach ₹20 LPA?</button>
+      <button class="bexi-chip" onclick="bexiSendChip(this)">🔄 Switch to data analytics?</button>
+    </div>
+  </div>
+
+  <div id="bexi-input-bar">
+    <input id="bexi-input" type="text" placeholder="Ask Bexi anything..." oninput="bexiInputChange()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();bexiSend()}" maxlength="300" autocomplete="off"/>
+    <button id="bexi-send" onclick="bexiSend()" disabled aria-label="Send">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════
+   BEXI AI WIDGET — Complete Implementation
+══════════════════════════════════════════ */
+(function(){
+  var BEXI_LIMIT = 3;
+  var BEXI_COUNT_KEY = 'bexi_widget_count';
+  var BEXI_DATE_KEY  = 'bexi_widget_date';
+
+  /* ── Free limit helpers ── */
+  function todayStr() {
+    return new Date().toISOString().split('T')[0];
+  }
+  function getCount() {
+    try {
+      if (localStorage.getItem(BEXI_DATE_KEY) !== todayStr()) {
+        localStorage.setItem(BEXI_DATE_KEY, todayStr());
+        localStorage.setItem(BEXI_COUNT_KEY, '0');
+        return 0;
+      }
+      return parseInt(localStorage.getItem(BEXI_COUNT_KEY) || '0');
+    } catch(e) { return 0; }
+  }
+  function incCount() {
+    try {
+      localStorage.setItem(BEXI_DATE_KEY, todayStr());
+      localStorage.setItem(BEXI_COUNT_KEY, String(getCount() + 1));
+    } catch(e) {}
+  }
+
+  /* ── Panel open/close ── */
+  var _panelOpen = false;
+  window.bexiToggle = function() {
+    _panelOpen ? bexiClose() : bexiOpen();
+  };
+  function bexiOpen() {
+    _panelOpen = true;
+    var p = document.getElementById('bexi-panel');
+    if (p) { p.style.display = 'flex'; requestAnimationFrame(function(){ p.classList.add('open'); }); }
+    var dot = document.getElementById('bexi-notif-dot');
+    if (dot) dot.classList.remove('show');
+    setTimeout(function() {
+      var inp = document.getElementById('bexi-input');
+      if (inp) inp.focus();
+    }, 300);
+  }
+  window.bexiClose = function() {
+    _panelOpen = false;
+    var p = document.getElementById('bexi-panel');
+    if (p) { p.classList.remove('open'); setTimeout(function(){ p.style.display='none'; }, 200); }
+  };
+
+  /* Close on outside click */
+  document.addEventListener('click', function(e) {
+    var panel = document.getElementById('bexi-panel');
+    var bubble = document.getElementById('bexi-bubble');
+    if (_panelOpen && panel && bubble && !panel.contains(e.target) && !bubble.contains(e.target)) {
+      bexiClose();
+    }
+  });
+
+  /* ── Chip click ── */
+  window.bexiSendChip = function(btn) {
+    var text = btn.textContent.trim();
+    /* Strip emoji prefix */
+    text = text.replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\s]+/u, '').trim() || btn.textContent.trim();
+    var inp = document.getElementById('bexi-input');
+    if (inp) { inp.value = text; bexiInputChange(); }
+    bexiSend();
+  };
+
+  /* ── Input change ── */
+  window.bexiInputChange = function() {
+    var inp = document.getElementById('bexi-input');
+    var btn = document.getElementById('bexi-send');
+    if (inp && btn) btn.disabled = !inp.value.trim();
+  };
+
+  /* ── Send message ── */
+  window.bexiSend = function() {
+    var inp = document.getElementById('bexi-input');
+    if (!inp || !inp.value.trim()) return;
+    var msg = inp.value.trim();
+    inp.value = '';
+    bexiInputChange();
+
+    /* Hide suggestions on first message */
+    var sugs = document.getElementById('bexi-suggestions');
+    if (sugs) sugs.style.display = 'none';
+
+    /* Append user bubble */
+    appendMsg(msg, 'user');
+
+    /* Check limit */
+    if (getCount() >= BEXI_LIMIT) {
+      showLimitMsg();
+      return;
+    }
+
+    /* Call API */
+    showTyping(true);
+    callBexiAPI(msg).then(function(reply) {
+      showTyping(false);
+      incCount();
+      appendMsg(reply, 'ai');
+      /* Show limit message after 3rd answer */
+      if (getCount() >= BEXI_LIMIT) {
+        setTimeout(function() { showLimitMsg(); }, 500);
+      }
+    }).catch(function(err) {
+      showTyping(false);
+      appendMsg('Sorry, I\'m having a moment! Try again in a few seconds 😅', 'ai');
+      console.warn('[Bexi]', err);
+    });
+  };
+
+  /* ── Append message bubble ── */
+  function appendMsg(text, sender) {
+    var msgs = document.getElementById('bexi-msgs');
+    var typing = document.getElementById('bexi-typing');
+    if (!msgs) return;
+    var row = document.createElement('div');
+    row.className = 'bexi-msg-row' + (sender === 'user' ? ' user' : '');
+    if (sender === 'ai') {
+      row.innerHTML = '<div class="bexi-msg-av">🤖</div>'
+        + '<div class="bexi-bubble-ai">' + esc(text) + '</div>';
+    } else {
+      row.innerHTML = '<div class="bexi-bubble-user">' + esc(text) + '</div>';
+    }
+    /* Insert before typing indicator */
+    msgs.insertBefore(row, typing || null);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  /* ── Typing indicator ── */
+  function showTyping(show) {
+    var t = document.getElementById('bexi-typing');
+    if (t) t.className = 'bexi-msg-row' + (show ? ' show' : '');
+    var msgs = document.getElementById('bexi-msgs');
+    if (msgs) msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  /* ── Limit message ── */
+  function showLimitMsg() {
+    var msgs = document.getElementById('bexi-msgs');
+    var typing = document.getElementById('bexi-typing');
+    if (!msgs) return;
+    var row = document.createElement('div');
+    row.className = 'bexi-msg-row';
+    row.innerHTML = '<div class="bexi-msg-av">🤖</div>'
+      + '<div class="bexi-bubble-ai">'
+      + "You've used your 3 free questions today! 🎉<br>Join Belongix free for 10 questions/day or go Pro for unlimited career guidance."
+      + '<div class="bexi-upgrade-btns">'
+      + '<a class="bexi-upgrade-btn primary" href="index.html#signup" onclick="openModal(\'signup\')">Join Free →</a>'
+      + '<a class="bexi-upgrade-btn ghost" href="dashboard.html?page=upgrade">Go Pro →</a>'
+      + '</div>'
+      + '</div>';
+    msgs.insertBefore(row, typing || null);
+    msgs.scrollTop = msgs.scrollHeight;
+    /* Disable input */
+    var inp = document.getElementById('bexi-input');
+    var btn = document.getElementById('bexi-send');
+    if (inp) { inp.disabled = true; inp.placeholder = 'Sign up for more questions...'; }
+    if (btn) btn.disabled = true;
+  }
+
+  /* ── HTML escape ── */
+  function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  }
+
+  /* ── Claude API call ── */
+  async function callBexiAPI(userMessage) {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': 'YOUR_CLAUDE_API_KEY_HERE',
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 350,
+        system: 'You are Bexi, AI career guide built by Belongix for Indian professionals. India 2026 job market expert — salaries in LPA, top companies (Swiggy, Razorpay, Google India, Infosys, TCS, CRED, Zepto, PhonePe, Meesho), skills (Python, React, SQL, AWS, GenAI, LangChain, Kafka, dbt). Always give specific India-focused advice. Never generic. Warm, direct, encouraging. End every response with one bold next step. Under 100 words. Use 1-2 emojis max.',
+        messages: [{ role: 'user', content: userMessage }]
+      })
+    });
+    if (!res.ok) throw new Error('API ' + res.status);
+    var data = await res.json();
+    return (data.content || []).map(function(b){ return b.text || ''; }).join('').trim()
+      || 'Hmm, I couldn\'t get a response. Try again!';
+  }
+
+  /* ── Show notif dot after 8s if panel not open ── */
+  setTimeout(function() {
+    if (!_panelOpen) {
+      var dot = document.getElementById('bexi-notif-dot');
+      if (dot) dot.classList.add('show');
+    }
+  }, 8000);
+
+})();
 </script>
 </body>
 </html>
