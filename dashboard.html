@@ -87,7 +87,7 @@
 body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;min-height:100vh;overflow-x:hidden}
 
 /* LOADING */
-#loading-screen{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px;transition:opacity .3s}
+#loading-screen{position:fixed;inset:0;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:16px;transition:opacity .3s;pointer-events:none}
 .loader-logo{font-family:var(--ff);font-size:28px;font-weight:800;color:#2D1B69;white-space:nowrap}
 .loader-bar{width:180px;height:3px;background:#E4E4F0;border-radius:3px;overflow:hidden}
 .loader-fill{height:100%;background:linear-gradient(90deg,#2D1B69,#06B6D4,#FF5C35);border-radius:3px;animation:lf 1.4s ease-in-out infinite}
@@ -3328,57 +3328,70 @@ showPage = function(page, btn) {
   }
 };
 
+/* ══════════════════════════════════════════════════════
+   hideLoader — call this to dismiss the loading screen.
+   Always hides immediately. Never blocks navigation.
+══════════════════════════════════════════════════════ */
+function hideLoader() {
+  var ls = document.getElementById('loading-screen');
+  if (!ls) return;
+  ls.style.opacity = '0';
+  ls.style.pointerEvents = 'none';
+  ls.style.display = 'none';
+}
+
+/* ══════════════════════════════════════════════════════
+   init() — NEVER blocks navigation on auth.
+   Step 1: Immediately show the dashboard (navigation works).
+   Step 2: Try auth in background and load user data.
+   Step 3: Redirect to login only if NOT authenticated.
+══════════════════════════════════════════════════════ */
 async function init() {
-  var _safetyTimer = setTimeout(function(){
-    var ls=document.getElementById('loading-screen');
-    if(ls){ ls.style.opacity='0'; ls.style.pointerEvents='none'; setTimeout(function(){ls.style.display='none';},320); }
-  }, 5000);
+  /* STEP 1: Show the dashboard immediately — no auth gate */
+  hideLoader();
+
+  /* STEP 2: Route to correct starting page */
+  var PAGE_MAP = {
+    overview:'overview', jobs:'jobs', salary:'salary', upskill:'upskill',
+    network:'network', mentor:'network', tracker:'tracker', applications:'tracker',
+    profile:'profile', settings:'settings', upgrade:'upgrade'
+  };
+  var urlPage  = new URLSearchParams(window.location.search).get('page');
+  var hashPage = window.location.hash.replace('#', '');
+  var startPage = PAGE_MAP[urlPage] || PAGE_MAP[hashPage] || 'overview';
+  var startBtn  = document.querySelector('[data-page="' + startPage + '"]');
+  showPage(startPage, startBtn);
+
+  /* Pre-load jobs data */
+  if (startPage !== 'jobs') loadJobs();
+
+  /* STEP 3: Try auth in background — navigation already works */
   try {
-  var res = await supaClient.auth.getSession();
-  if (!res.data.session) { clearTimeout(_safetyTimer); window.location.href = 'index.html'; return; }
-  currentUser = res.data.session.user;
-  loadUserData();
-  /* ✅ EMAIL 2: Welcome email — fires once per user */
-  try {
-    var _welcomeKey = 'bx_welcome_sent_' + currentUser.id;
-    if (!localStorage.getItem(_welcomeKey)) {
-      localStorage.setItem(_welcomeKey, '1');
-      var _uMeta = currentUser.user_metadata || {};
-      var _uName = _uMeta.full_name || _uMeta.name || currentUser.email;
-      if (window.BxEmail && window.BxEmail.welcomeNewUser) {
-        window.BxEmail.welcomeNewUser({ email: currentUser.email, name: _uName });
-      }
+    var res = await supaClient.auth.getSession();
+    if (!res.data || !res.data.session) {
+      /* Not logged in — redirect to index */
+      window.location.href = 'index.html';
+      return;
     }
-  } catch(we) { console.warn('[BxEmail] Welcome:', String(we.message||we)); }
-  setTimeout(function(){
-    clearTimeout(_safetyTimer);
-    var ls=document.getElementById('loading-screen');
-    if(ls){ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(function(){ls.style.display='none';},320);}
+    currentUser = res.data.session.user;
+    loadUserData();
 
-    /* ── ROUTING: support ?page=X, #hash, and default to overview ── */
-    var PAGE_MAP = {overview:'overview',jobs:'jobs',salary:'salary',upskill:'upskill',
-                    network:'network',mentor:'network',tracker:'tracker',applications:'tracker',
-                    profile:'profile',settings:'settings',upgrade:'upgrade'};
+    /* Welcome email — once per user */
+    try {
+      var _welcomeKey = 'bx_welcome_sent_' + currentUser.id;
+      if (!localStorage.getItem(_welcomeKey)) {
+        localStorage.setItem(_welcomeKey, '1');
+        var _uMeta = currentUser.user_metadata || {};
+        var _uName = _uMeta.full_name || _uMeta.name || currentUser.email;
+        if (window.BxEmail && window.BxEmail.welcomeNewUser) {
+          window.BxEmail.welcomeNewUser({ email: currentUser.email, name: _uName });
+        }
+      }
+    } catch(we) { /* non-fatal */ }
 
-    /* 1. Check ?page= query param */
-    var urlPage = new URLSearchParams(window.location.search).get('page');
-    /* 2. Check #hash */
-    var hashPage = window.location.hash.replace('#','');
-    /* 3. Resolve */
-    var startPage = PAGE_MAP[urlPage] || PAGE_MAP[hashPage] || 'overview';
-
-    /* Find matching sidebar button to pass as btn */
-    var startBtn = document.querySelector('[data-page="' + startPage + '"]');
-    showPage(startPage, startBtn);
-
-    /* Also pre-load jobs for faster tab switching */
-    if (startPage !== 'jobs') loadJobs();
-  }, 900);
   } catch(e) {
-    console.error('Init error:', String(e.message||e));
-    var ls=document.getElementById('loading-screen');
-    if(ls)ls.style.display='none';
-    window.location.href='index.html';
+    /* Auth check failed — still show dashboard, don't redirect */
+    console.warn('Auth check failed:', String(e.message || e));
   }
 }
 init();
