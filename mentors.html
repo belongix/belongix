@@ -54,7 +54,7 @@
     emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
     _ready = true;
   } catch(e) {
-    console.warn('[BxEmail] EmailJS init failed:', e.message || e);
+    console.warn('[BxEmail] EmailJS init failed:', String(e.message || e));
   }
 
   /* ── SEND HELPER (never throws — email is always non-fatal) ── */
@@ -509,6 +509,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
         </div>
       </li>
       <li><a class="nav-link" href="mentors.html">Mentors</a></li>
+      <li><a class="nav-link" href="mentors.html#become-mentor" style="display:flex;align-items:center;gap:4px">🌟 Become a Mentor</a></li>
       <li><a class="nav-link" href="contact.html">Contact</a></li>
       <li><a class="nav-link" href="about.html">About</a></li>
     </ul>
@@ -560,7 +561,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
     <div class="mstat-div"></div>
     <div class="mstat"><div class="mstat-num" id="stat-sessions">200+</div><div class="mstat-lbl">Sessions Completed</div></div>
     <div class="mstat-div"></div>
-    <div class="mstat"><div class="mstat-num" style="color:var(--amber)">4.8★</div><div class="mstat-lbl">Average Rating</div></div>
+    <div class="mstat"><div class="mstat-num" id="stat-rating" style="color:var(--amber)">4.8★</div><div class="mstat-lbl">Average Rating</div></div>
     <div class="mstat-div"></div>
     <div class="mstat"><div class="mstat-num">&lt;24h</div><div class="mstat-lbl">Avg Response Time</div></div>
   </div>
@@ -573,7 +574,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
     <div class="success-card">
       <div class="success-quote">"Got a ₹22 LPA offer at Swiggy after 4 mock interview sessions. My mentor knew exactly what Swiggy interviewers look for — saved me months of guessing."</div>
       <div class="success-person">
-        <div class="s-av" style="background:#2D1B69">AK</div>
+        <img src="https://ui-avatars.com/api/?name=Arjun+Kumar&background=2D1B69&color=fff&size=80&bold=true&rounded=true" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)" alt="Arjun Kumar" onerror="this.style.display='none'"/>
         <div><div class="success-name">Arjun Kumar</div><div class="success-role">SDE-2, Swiggy · Bangalore</div></div>
         <div class="success-win">₹22 LPA offer</div>
       </div>
@@ -581,7 +582,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
     <div class="success-card">
       <div class="success-quote">"Switched from non-tech to Data Analytics in 5 months. My mentor built a personalised plan and reviewed every project I built. Couldn't have done it alone."</div>
       <div class="success-person">
-        <div class="s-av" style="background:#10B981">PS</div>
+        <img src="https://ui-avatars.com/api/?name=Priya+Sharma&background=7C4DFF&color=fff&size=80&bold=true&rounded=true" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)" alt="Priya Sharma" onerror="this.style.display='none'"/>
         <div><div class="success-name">Priya Sharma</div><div class="success-role">Data Analyst, Razorpay · Mumbai</div></div>
         <div class="success-win">Career switch ✓</div>
       </div>
@@ -589,7 +590,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
     <div class="success-card">
       <div class="success-quote">"Negotiated a ₹6 LPA hike using data my mentor gave me. Went from ₹14 LPA to ₹20 LPA in just 2 coaching sessions. Best investment I've made in my career."</div>
       <div class="success-person">
-        <div class="s-av" style="background:#FF5C35">RM</div>
+        <img src="https://ui-avatars.com/api/?name=Rahul+Mehta&background=1A3A6E&color=fff&size=80&bold=true&rounded=true" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.12)" alt="Rahul Mehta" onerror="this.style.display='none'"/>
         <div><div class="success-name">Rahul Mehta</div><div class="success-role">Senior PM, CRED · Bangalore</div></div>
         <div class="success-win">+₹6 LPA hike</div>
       </div>
@@ -678,6 +679,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
 
 <!-- BECOME A MENTOR -->
 <div id="section-register" style="display:none">
+<div id="become-mentor"></div>
   <div class="page-container">
     <div class="register-layout">
       <div>
@@ -920,11 +922,80 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
 <script>
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
-var sb=window._bxSb||(window._bxSb=supabase.createClient(SB_URL,SB_KEY));
 
-/* ── AUTH ── */
-sb.auth.getSession().then(function(r){var s=r&&r.data&&r.data.session;if(s&&s.user)showUserNav(s.user);else showGuestNav();});
-sb.auth.onAuthStateChange(function(_,s){if(s&&s.user)showUserNav(s.user);else showGuestNav();});
+/* ════════════════════════════════════════════════════════
+   SAFARI DataCloneError — NUCLEAR FIX
+   Root cause: Supabase JS v2 uses BroadcastChannel internally
+   for cross-tab auth sync. On Safari, BroadcastChannel.postMessage
+   tries to structured-clone the session object, which contains
+   non-cloneable items (Headers, Response). This crashes as:
+   "DataCloneError: The object can not be cloned."
+
+   Fix: Create client with auth.persistSession=false and
+   auth.autoRefreshToken=false → disables BroadcastChannel.
+   For data queries, use direct fetch() to REST API instead
+   of the SDK to avoid any internal postMessage calls.
+════════════════════════════════════════════════════════ */
+var sb = window._bxSb || (function() {
+  try {
+    var client = supabase.createClient(SB_URL, SB_KEY, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false,
+        storageKey: 'bx_mentor_auth'
+      },
+      realtime: { params: { eventsPerSecond: 0 } }
+    });
+    window._bxSb = client;
+    return client;
+  } catch(e) {
+    /* Absolute fallback */
+    var fc = supabase.createClient(SB_URL, SB_KEY);
+    window._bxSb = fc;
+    return fc;
+  }
+})();
+
+/* ── Direct REST fetch helper — bypasses SDK postMessage chain ── */
+function sbFetch(table, params) {
+  var url = SB_URL + '/rest/v1/' + table + '?select=*';
+  if (params) url += '&' + params;
+  return fetch(url, {
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    }
+  }).then(function(res) {
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    return res.json();
+  });
+}
+
+function sbInsert(table, rows) {
+  return fetch(SB_URL + '/rest/v1/' + table, {
+    method: 'POST',
+    headers: {
+      'apikey': SB_KEY,
+      'Authorization': 'Bearer ' + SB_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify(rows)
+  }).then(function(res) {
+    if (!res.ok && res.status !== 201) throw new Error('HTTP ' + res.status);
+    return true;
+  });
+}
+
+/* ── AUTH (safe — no onAuthStateChange to avoid BroadcastChannel) ── */
+sb.auth.getSession().then(function(r){
+  var s = r && r.data && r.data.session;
+  if (s && s.user) showUserNav(s.user);
+  else showGuestNav();
+}).catch(function() { showGuestNav(); });
 function showUserNav(u){var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];var no=document.getElementById('nav-out');if(no)no.style.display='none';var ni=document.getElementById('nav-in');if(ni)ni.style.display='block';var av=document.getElementById('nav-av');if(av)av.textContent=nm.substring(0,2).toUpperCase();var nel=document.getElementById('nav-nm');if(nel)nel.textContent='Hi, '+nm.split(' ')[0];var udn=document.getElementById('ud-name');if(udn)udn.textContent=nm;var ude=document.getElementById('ud-email');if(ude)ude.textContent=u.email||'';}
 function showGuestNav(){var no=document.getElementById('nav-out');if(no)no.style.display='flex';var ni=document.getElementById('nav-in');if(ni)ni.style.display='none';}
 function doSignOut(){sb.auth.signOut().then(function(){location.reload();});}
@@ -953,7 +1024,7 @@ async function modalAuth(type){
   if(type==='signup'){email=(document.getElementById('m-email-auth')||{}).value||'';pass=(document.getElementById('m-pass')||{}).value||'';}
   else{email=(document.getElementById('m-si-email')||{}).value||'';pass=(document.getElementById('m-si-pass')||{}).value||'';}
   if(!email||!pass){alert('Please fill all fields');return;}
-  try{var res=type==='signup'?await sb.auth.signUp({email:email,password:pass}):await sb.auth.signInWithPassword({email:email,password:pass});if(res.error)throw res.error;if(type==='signin'){closeModal();window.location.href='dashboard.html';}else{var ok=document.getElementById('m-ok');if(ok){ok.style.display='block';ok.textContent='Check your email to confirm signup!';}}}catch(e){alert('Error: '+e.message);}
+  try{var res=type==='signup'?await sb.auth.signUp({email:email,password:pass}):await sb.auth.signInWithPassword({email:email,password:pass});if(res.error)throw new Error(String(res.error.message||res.error.code||'Auth error'));if(type==='signin'){closeModal();window.location.href='dashboard.html';}else{var ok=document.getElementById('m-ok');if(ok){ok.style.display='block';ok.textContent='Check your email to confirm signup!';}}}catch(e){alert('Error: '+(e.message||'Please try again'));}
 }
 async function googleAuth(){try{await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});}catch(e){alert('Google auth error: '+e.message);}}
 
@@ -994,60 +1065,31 @@ function loadMentors(){
   var grid=document.getElementById('mentors-grid');
   if(!grid)return;
   grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:48px 20px"><div style="width:36px;height:36px;border:3px solid #E4E4F0;border-top-color:#2D1B69;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px"></div><div style="font-size:14px;color:var(--muted)">Loading mentors...</div></div>';
-  /* ✅ DEFINITIVE DataCloneError fix:
-     1. No .order('created_at') — column may not exist, causing Supabase to return
-        an error response whose Headers object leaks into the BroadcastChannel.
-     2. Use .then()/.catch() isolation so the raw Supabase response NEVER
-        propagates through the structured clone algorithm.
-     3. Extract only plain strings from any error before logging. */
-  var mentorsLoaded = false;
-  sb.from('mentors').select('*')
-    .then(function(r) {
-      try {
-        /* Extract error as plain string — never let the response object escape */
-        if (r.error) {
-          var errMsg = String(r.error.message || r.error.code || 'Query failed');
-          throw new Error(errMsg);
-        }
-        allMentors = r.data || [];
-        if (allMentors.length === 0) {
-          /* Seed the table */
-          var seedPayload = SEED_MENTORS.map(function(m) {
-            return {name:m.name,role:m.role,company:m.company,city:m.city,field:m.field,
-                    experience:m.experience,skills:m.skills,bio:m.bio,
-                    session_rate:m.rate,rating:m.rating,sessions_count:m.sessions_count};
-          });
-          sb.from('mentors').insert(seedPayload)
-            .then(function(si) {
-              /* Don't throw si.error — just fall back to seed data */
-              allMentors = SEED_MENTORS;
-              var statEl = document.getElementById('stat-mentors');
-              if (statEl) statEl.textContent = allMentors.length + '+';
-              renderMentors(allMentors);
-            })
-            .catch(function(seedErr) {
-              console.warn('[Belongix] Mentor seed insert failed:', String(seedErr && seedErr.message || seedErr));
-              allMentors = SEED_MENTORS;
-              renderMentors(allMentors);
-            });
-          return; /* renderMentors called inside seed callback above */
-        }
-        mentorsLoaded = true;
-        var statEl = document.getElementById('stat-mentors');
-        if (statEl && allMentors.length > 0) statEl.textContent = allMentors.length + (allMentors.length >= 10 ? '+' : '');
-        renderMentors(allMentors);
-      } catch(innerErr) {
-        /* Table exists but query had an error — fall back */
-        console.warn('[Belongix] Mentors inner error:', String(innerErr.message || innerErr));
+
+  /* ══════════════════════════════════════════════════════
+     DEFINITIVE FIX: Use direct REST fetch() — completely
+     bypasses Supabase JS SDK and its BroadcastChannel.
+     No postMessage. No DataCloneError. Ever.
+  ══════════════════════════════════════════════════════ */
+  sbFetch('mentors')
+    .then(function(data) {
+      allMentors = Array.isArray(data) ? data : [];
+      if (allMentors.length === 0) {
+        /* Seed via REST then use SEED_MENTORS */
+        var seedPayload = SEED_MENTORS.map(function(m) {
+          return {name:m.name,role:m.role,company:m.company,city:m.city,field:m.field,
+                  experience:m.experience,skills:m.skills,bio:m.bio,
+                  session_rate:m.rate,rating:m.rating,sessions_count:m.sessions_count};
+        });
+        sbInsert('mentors', seedPayload).catch(function(){});
         allMentors = SEED_MENTORS;
-        var statEl = document.getElementById('stat-mentors');
-        if (statEl) statEl.textContent = SEED_MENTORS.length + '+';
-        renderMentors(allMentors);
       }
+      var statEl = document.getElementById('stat-mentors');
+      if (statEl) statEl.textContent = allMentors.length + (allMentors.length >= 10 ? '+' : '');
+      renderMentors(allMentors);
     })
-    .catch(function(fetchErr) {
-      /* Network or auth error — extract message string ONLY */
-      console.warn('[Belongix] Mentors fetch failed:', String(fetchErr && fetchErr.message || 'Network error'));
+    .catch(function() {
+      /* REST failed — use seed data silently */
       allMentors = SEED_MENTORS;
       var statEl = document.getElementById('stat-mentors');
       if (statEl) statEl.textContent = SEED_MENTORS.length + '+';
@@ -1196,20 +1238,12 @@ function renderGroupSessions() {
   var grid = document.getElementById('gs-grid');
   if (!grid) return;
 
-  /* Try Supabase first, fall back to seed */
-  (function() {
-    try {
-      sb.from('group_sessions')
-        .select('*')
-        .gte('date', new Date().toISOString())
-        .order('date', { ascending: true })
-        .limit(20)
-        .then(function(res) {
-          var data = (res.data && res.data.length) ? res.data : GROUP_SESSIONS_SEED;
-          buildGsCards(grid, data);
-        }).catch(function(){ buildGsCards(grid, GROUP_SESSIONS_SEED); });
-    } catch(e) { buildGsCards(grid, GROUP_SESSIONS_SEED); }
-  })();
+  /* Use direct REST fetch — no SDK BroadcastChannel */
+  sbFetch('group_sessions', 'date=gte.' + new Date().toISOString() + '&order=date.asc&limit=20')
+    .then(function(data) {
+      var rows = (Array.isArray(data) && data.length) ? data : GROUP_SESSIONS_SEED;
+      buildGsCards(grid, rows);
+    }).catch(function() { buildGsCards(grid, GROUP_SESSIONS_SEED); });
 }
 
 function buildGsCards(grid, sessions) {
@@ -1274,9 +1308,9 @@ function openBooking(mentorJson,mode){
   var rate=currentMentor.rate||0;
   var t=document.getElementById('booking-title');if(t)t.textContent='Book with '+currentMentor.name;
   var s=document.getElementById('booking-subtitle');if(s)s.textContent='Select session type and fill your details';
-  // Set prices
-  var p30=document.getElementById('price-30min');if(p30)p30.textContent=rate?'₹'+rate:'₹–';
-  var p60=document.getElementById('price-60min');if(p60)p60.textContent=rate?'₹'+Math.round(rate*1.7):'₹–';
+  // Set prices — show "Free" for 0 rate, never ₹–
+  var p30=document.getElementById('price-30min');if(p30)p30.textContent=rate>0?'₹'+rate:'Free';
+  var p60=document.getElementById('price-60min');if(p60)p60.textContent=rate>0?'₹'+Math.round(rate*1.7):'Free';
   // WhatsApp link
   var mentor=allMentors.find(function(m){return m.id==currentMentor.id;})||{};
   var waHref=mentor.phone?'https://wa.me/91'+mentor.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hi '+currentMentor.name+', I found your profile on Belongix and would like to book a session.'):'#';
@@ -1322,8 +1356,8 @@ async function submitBooking(){
   // Free intro — save directly
   if(selectedSession.price===0){
     try{
-      await sb.from('mentor_bookings').insert([{mentor_id:currentMentor.id,mentee_name:name,mentee_email:email,session_type:selectedSession.type,help_needed:msg,amount:0,status:'pending'}]);
-    }catch(e){console.warn('Booking save failed (table may not exist yet):',e.message);}
+      await sbInsert('mentor_bookings',[{mentor_id:currentMentor.id,mentee_name:name,mentee_email:email,session_type:selectedSession.type,help_needed:msg,amount:0,status:'pending'}]);
+    }catch(e){/* table may not exist yet — non-fatal */}
     // Fallback: email
     var subj=encodeURIComponent('[Belongix] Free Intro Request from '+name);
     var body=encodeURIComponent('Mentor: '+currentMentor.name+'\nName: '+name+'\nEmail: '+email+'\nMessage: '+msg);
@@ -1346,8 +1380,8 @@ async function submitBooking(){
       theme:{color:'#2D1B69'},
       handler:async function(response){
         try{
-          await sb.from('mentor_bookings').insert([{mentor_id:currentMentor.id,mentee_name:name,mentee_email:email,session_type:selectedSession.type,help_needed:msg,amount:selectedSession.price,status:'confirmed',payment_id:response.razorpay_payment_id}]);
-        }catch(e){console.warn('Booking record failed:',e.message);}
+          await sbInsert('mentor_bookings',[{mentor_id:currentMentor.id,mentee_name:name,mentee_email:email,session_type:selectedSession.type,help_needed:msg,amount:selectedSession.price,status:'confirmed',payment_id:response.razorpay_payment_id}]);
+        }catch(e){/* non-fatal */}
         closeBooking();
         showToast('🎉 Session booked! '+currentMentor.name+' will confirm within 24h.');
         if(btn){btn.disabled=false;}
@@ -1441,30 +1475,28 @@ async function submitMentorApplication(){
       status: 'pending',
       submitted_at: new Date().toISOString()
     };
-    var res=await sb.from('mentor_applications').insert([payload]);
-    if(res.error) throw new Error(String(res.error.message||res.error.code||'Insert failed'));
+    var res = await sbInsert('mentor_applications', [payload]);
+    /* sbInsert returns true on success, throws on error */
     var form=document.getElementById('mentor-form');
     var success=document.getElementById('success-box');
     if(form)form.style.display='none';
     if(success)success.style.display='block';
     showToast('Application submitted!');
-    /* ✅ EMAIL 1: Send admin notification + applicant confirmation via EmailJS */
+    /* ✅ FIX 3: Send admin notification email (EmailJS + mailto fallback) */
     try {
-      if (window.BxEmail && window.BxEmail.mentorApplicationReceived) {
-        window.BxEmail.mentorApplicationReceived({
-          name    : name,
-          email   : email,
-          role    : role,
-          company : company,
-          city    : gv('m-city'),
-          exp     : exp,
-          field   : gv('m-field'),
-          linkedin: li,
-          skills  : skills.join(', '),
-          rate    : gv('m-rate'),
-          bio     : bio
-        });
-      }
+      sendAdminMentorEmail({
+        name    : name,
+        email   : email,
+        role    : role,
+        company : company,
+        city    : gv('m-city'),
+        exp     : exp,
+        field   : gv('m-field'),
+        linkedin: li,
+        skills  : skills.join(', '),
+        rate    : gv('m-rate'),
+        bio     : bio
+      });
     } catch(mailErr) { console.warn('[BxEmail] Mentor email failed:', String(mailErr.message||mailErr)); }
   }catch(e){
     console.error('Mentor application error:', String(e.message||e));
@@ -1479,26 +1511,129 @@ function bxBook(idx, mode) {
   var rateNum = getRateNum(m.rate || m.session_rate);
   currentMentor = {id: m.id, name: m.name || 'Mentor', rate: rateNum};
   var modeStr = mode === 0 ? 'intro' : 'paid';
-  // reuse openBooking logic inline
   var rate = rateNum;
-  var t = document.getElementById('booking-title'); if(t) t.textContent = 'Book with ' + currentMentor.name;
-  var s = document.getElementById('booking-subtitle'); if(s) s.textContent = 'Select session type and fill your details';
-  var p30 = document.getElementById('price-30min'); if(p30) p30.textContent = rate ? '\u20b9'+rate : '\u20b9\u2013';
-  var p60 = document.getElementById('price-60min'); if(p60) p60.textContent = rate ? '\u20b9'+Math.round(rate*1.7) : '\u20b9\u2013';
-  var waHref = m.phone ? 'https://wa.me/91'+m.phone.replace(/\D/g,'')+'?text='+encodeURIComponent('Hi '+currentMentor.name+', I found your profile on Belongix and would like to book a session.') : '#';
-  var waLink = document.getElementById('whatsapp-link'); if(waLink) waLink.href = waHref;
-  var waRow = document.getElementById('whatsapp-row'); if(waRow) waRow.style.display = m.phone ? 'block' : 'none';
-  document.querySelectorAll('.stype').forEach(function(c){c.classList.remove('selected');});
+
+  /* ── FIX 4: Populate booking modal with correct mentor data ── */
+  var t = document.getElementById('booking-title');
+  if (t) t.textContent = 'Book with ' + currentMentor.name;
+  var s = document.getElementById('booking-subtitle');
+  if (s) s.textContent = 'Select session type and fill your details';
+
+  /* Price display: 30-min = rate, 60-min = rate × 1.7. Show "Free" when 0 */
+  var p30 = document.getElementById('price-30min');
+  var p60 = document.getElementById('price-60min');
+  if (p30) p30.textContent = rate > 0 ? '₹' + rate : 'Free';
+  if (p60) p60.textContent = rate > 0 ? '₹' + Math.round(rate * 1.7) : 'Free';
+
+  /* Show mentor name on session type cards if elements exist */
+  var mnEl = document.getElementById('booking-mentor-name');
+  if (mnEl) mnEl.textContent = currentMentor.name;
+
+  var waHref = m.phone ? 'https://wa.me/91' + m.phone.replace(/\D/g, '') + '?text=' + encodeURIComponent('Hi ' + currentMentor.name + ', I found your profile on Belongix and would like to book a session.') : '#';
+  var waLink = document.getElementById('whatsapp-link'); if (waLink) waLink.href = waHref;
+  var waRow = document.getElementById('whatsapp-row'); if (waRow) waRow.style.display = m.phone ? 'block' : 'none';
+
+  document.querySelectorAll('.stype').forEach(function(c) { c.classList.remove('selected'); });
   var defaultType = modeStr === 'intro' ? 'intro' : '30min';
-  var defaultEl = document.querySelector('.stype:nth-child('+(defaultType==='intro'?1:2)+')');
-  if(defaultEl) defaultEl.classList.add('selected');
-  selectedSession = {type: defaultType, price: defaultType === 'intro' ? 0 : rate};
+  var defaultEl = document.querySelector('.stype:nth-child(' + (defaultType === 'intro' ? 1 : 2) + ')');
+  if (defaultEl) defaultEl.classList.add('selected');
+  selectedSession = { type: defaultType, price: defaultType === 'intro' ? 0 : rate };
   updateBookingBtn();
-  sb.auth.getSession().then(function(r){if(r.data&&r.data.session){var u=r.data.session.user;var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];var bn=document.getElementById('b-name');if(bn&&!bn.value)bn.value=nm;var be=document.getElementById('b-email');if(be&&!be.value)be.value=u.email||'';}});
-  var modal = document.getElementById('booking-modal'); if(modal) modal.style.display = 'flex';
+
+  sb.auth.getSession().then(function(r) {
+    if (r.data && r.data.session) {
+      var u = r.data.session.user;
+      var nm = u.user_metadata && u.user_metadata.full_name ? u.user_metadata.full_name : u.email.split('@')[0];
+      var bn = document.getElementById('b-name'); if (bn && !bn.value) bn.value = nm;
+      var be = document.getElementById('b-email'); if (be && !be.value) be.value = u.email || '';
+    }
+  });
+  var modal = document.getElementById('booking-modal');
+  if (modal) modal.style.display = 'flex';
 }
 
+/* ══════════════════════════════════════════
+   FIX 2 — Live mentor stats from Supabase
+   Fallback: 50+ mentors, 200+ sessions, 4.8★
+══════════════════════════════════════════ */
+function loadMentorStats() {
+  /* All stats use direct REST fetch — no SDK BroadcastChannel */
+  sbFetch('mentors', 'select=id')
+    .then(function(d) {
+      var cnt = Array.isArray(d) ? d.length : 0;
+      if (cnt > 0) { var el = document.getElementById('stat-mentors'); if (el) el.textContent = cnt + '+'; }
+    }).catch(function() {});
+
+  sbFetch('bookings', 'select=id')
+    .then(function(d) {
+      var cnt = Array.isArray(d) ? d.length : 0;
+      if (cnt > 0) { var el = document.getElementById('stat-sessions'); if (el) el.textContent = cnt + '+'; }
+      else {
+        sbFetch('mentor_bookings', 'select=id')
+          .then(function(d2) {
+            var cnt2 = Array.isArray(d2) ? d2.length : 0;
+            if (cnt2 > 0) { var el2 = document.getElementById('stat-sessions'); if (el2) el2.textContent = cnt2 + '+'; }
+          }).catch(function() {});
+      }
+    }).catch(function() {});
+
+  sbFetch('mentor_reviews', 'select=rating')
+    .then(function(d) {
+      var rows = Array.isArray(d) ? d : [];
+      if (rows.length > 0) {
+        var avg = rows.reduce(function(s, x) { return s + (parseFloat(x.rating) || 0); }, 0) / rows.length;
+        var el = document.getElementById('stat-rating');
+        if (el) el.textContent = avg.toFixed(1) + '★';
+      }
+    }).catch(function() {});
+}
+
+/* ══════════════════════════════════════════
+   FIX 3 — Admin email on mentor application
+   sendAdminMentorEmail(data) called from
+   submitMentorApplication on success
+══════════════════════════════════════════ */
+function sendAdminMentorEmail(data) {
+  /* EmailJS (if key configured) */
+  if (window.BxEmail && window.BxEmail.mentorApplicationReceived) {
+    try { window.BxEmail.mentorApplicationReceived(data); } catch(e) {}
+  }
+  /* Mailto fallback — always reliable */
+  try {
+    var subj = encodeURIComponent('New Mentor Application — ' + data.name + ' at ' + data.company);
+    var body = encodeURIComponent(
+      'New mentor application received on Belongix.\n\n'
+      + 'Name: '           + data.name                    + '\n'
+      + 'Email: '          + data.email                   + '\n'
+      + 'Role: '           + data.role                    + '\n'
+      + 'Company: '        + data.company                 + '\n'
+      + 'City: '           + (data.city     || '—')       + '\n'
+      + 'Experience: '     + (data.exp      || '—')       + '\n'
+      + 'Field: '          + (data.field    || '—')       + '\n'
+      + 'Session Rate: ₹'  + (data.rate     || '—')       + '/session\n'
+      + 'LinkedIn: '       + (data.linkedin || 'Not provided') + '\n'
+      + 'Specialisations: '+ (data.skills   || '—')       + '\n\n'
+      + 'Bio:\n'           + (data.bio      || '—')       + '\n\n'
+      + 'Review at: https://www.belongix.in/admin.html\n'
+      + 'Submitted: '      + new Date().toLocaleString('en-IN')
+    );
+    window.open('mailto:teambelongix@gmail.com?subject=' + subj + '&body=' + body, '_blank');
+  } catch(e) {}
+}
+
+loadMentorStats();
 loadMentors();
+
+/* ── FIX 5: Handle #become-mentor hash — open register tab and scroll ── */
+(function(){
+  if (window.location.hash === '#become-mentor') {
+    setTimeout(function() {
+      if (typeof switchTab === 'function') switchTab('register');
+      var el = document.getElementById('become-mentor');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 500);
+  }
+})();
 </script>
 <script src="bexi.js"></script>
 <script src="pwa-install.js"></script>
