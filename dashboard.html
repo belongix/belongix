@@ -103,7 +103,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
 .sb-nav{flex:1;padding:12px 8px}
 .sb-group{margin-bottom:18px}
 .sb-group-label{font-size:10px;font-weight:700;color:var(--subtle);text-transform:uppercase;letter-spacing:.6px;padding:0 8px;margin-bottom:5px}
-.sb-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--muted);font-size:13.5px;font-weight:500;cursor:pointer;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left}
+.sb-link{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;color:var(--muted);font-size:13.5px;font-weight:500;cursor:pointer!important;pointer-events:all!important;user-select:none;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left;position:relative;z-index:1}
 .sb-link svg{width:17px;height:17px;flex-shrink:0;color:inherit}
 .sb-link:hover,.sb-link.active{background:var(--blue-lt);color:var(--blue)}
 .sb-upgrade{margin:8px;background:linear-gradient(135deg,#2D1B69,#6B48CC,#FF5C35);border-radius:12px;padding:14px;cursor:pointer;border:none;width:calc(100% - 16px);font-family:var(--ffb);transition:.2s;text-align:left}
@@ -671,31 +671,31 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
   <nav class="sb-nav">
     <div class="sb-group">
       <div class="sb-group-label">Main</div>
-      <button class="sb-link active" onclick="showPage('overview',this)">
+      <button class="sb-link active" data-page="overview" onclick="showPage('overview',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Portfolio
       </button>
-      <button class="sb-link" onclick="showPage('jobs',this)">
+      <button class="sb-link" data-page="jobs" onclick="showPage('jobs',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>Jobs &amp; Internships
       </button>
-      <button class="sb-link" onclick="showPage('upskill',this)">
+      <button class="sb-link" data-page="upskill" onclick="showPage('upskill',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Upskilling Hub
       </button>
-      <button class="sb-link" onclick="showPage('salary',this)">
+      <button class="sb-link" data-page="salary" onclick="showPage('salary',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Salary Insights
       </button>
-      <button class="sb-link" onclick="showPage('network',this)">
+      <button class="sb-link" data-page="network" onclick="showPage('network',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Find a Mentor
       </button>
-      <button class="sb-link" onclick="showPage('tracker',this)">
+      <button class="sb-link" data-page="tracker" onclick="showPage('tracker',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>My Applications
       </button>
     </div>
     <div class="sb-group">
       <div class="sb-group-label">Account</div>
-      <button class="sb-link" onclick="showPage('profile',this)">
+      <button class="sb-link" data-page="profile" onclick="showPage('profile',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>My Profile
       </button>
-      <button class="sb-link" onclick="showPage('settings',this)">
+      <button class="sb-link" data-page="settings" onclick="showPage('settings',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings
       </button>
     </div>
@@ -716,7 +716,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       </a>
     </div>
   </nav>
-  <button class="sb-upgrade" onclick="showPage('upgrade',null)">
+  <button class="sb-upgrade" data-page="upgrade" onclick="showPage('upgrade',null)" style="cursor:pointer!important;pointer-events:all!important">
     <div class="sb-upgrade-title">&#9889; Upgrade your plan</div>
     <div class="sb-upgrade-text">Go Pro &mdash; &#8377;499/month</div>
   </button>
@@ -2250,18 +2250,48 @@ function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')
 
 // ── NAVIGATION ──
 function showPage(page, btn) {
-  document.querySelectorAll('.page-section').forEach(function(el){ el.classList.remove('active'); });
-  document.querySelectorAll('.sb-link').forEach(function(el){ el.classList.remove('active'); });
+  /* ── Hide ALL sections explicitly (class + style) ── */
+  document.querySelectorAll('.page-section').forEach(function(el) {
+    el.classList.remove('active');
+    el.style.display = 'none';
+  });
+  /* ── Remove active from ALL sidebar items ── */
+  document.querySelectorAll('.sb-link').forEach(function(el) {
+    el.classList.remove('active');
+  });
+  /* ── Show target section ── */
   var sec = document.getElementById('page-' + page);
-  if (sec) sec.classList.add('active');
-  if (btn) btn.classList.add('active');
-  var titles = {overview:'Portfolio',jobs:'Jobs & Internships',upskill:'Upskilling Hub',salary:'Salary Insights',network:'Find a Mentor',tracker:'My Applications',profile:'My Profile',settings:'Settings',upgrade:'Upgrade Plan'};
+  if (sec) {
+    sec.classList.add('active');
+    sec.style.display = 'block';
+  }
+  /* ── Mark sidebar item active — by passed btn OR by data-page attr ── */
+  if (btn && btn.classList) {
+    btn.classList.add('active');
+  } else {
+    var navBtn = document.querySelector('[data-page="' + page + '"]');
+    if (navBtn) navBtn.classList.add('active');
+  }
+  /* ── Update topbar title ── */
+  var titles = {
+    overview:'Portfolio', jobs:'Jobs & Internships',
+    upskill:'Upskilling Hub', salary:'Salary Insights',
+    network:'Find a Mentor', tracker:'My Applications',
+    profile:'My Profile', settings:'Settings', upgrade:'Upgrade Plan'
+  };
   var tb = document.getElementById('topbar-title');
   if (tb) tb.textContent = titles[page] || 'Dashboard';
+  /* ── Save to hash for bookmarkable URLs ── */
+  try { window.history.replaceState(null, '', '#' + page); } catch(e) {}
+  /* ── Page-specific loaders ── */
   if (page === 'jobs') loadJobs();
   if (page === 'network') setTimeout(loadDashMentors, 100);
   if (page === 'tracker') loadTracker();
   if (page === 'upskill') { setTimeout(function(){ if(typeof renderFilters==='function'){renderFilters();renderTracks();} }, 50); }
+  if (page === 'upgrade') { setTimeout(function(){ if(typeof checkMentorSessionLimit==='function') checkMentorSessionLimit(); }, 100); }
+  /* ── Mobile: close sidebar after nav ── */
+  var sb = document.querySelector('.sidebar');
+  if (sb) sb.classList.remove('open');
 }
 
 // ── TOAST ──
@@ -3299,7 +3329,6 @@ showPage = function(page, btn) {
 };
 
 async function init() {
-  /* Safety: always hide loading screen after 5s max, even if errors */
   var _safetyTimer = setTimeout(function(){
     var ls=document.getElementById('loading-screen');
     if(ls){ ls.style.opacity='0'; ls.style.pointerEvents='none'; setTimeout(function(){ls.style.display='none';},320); }
@@ -3309,7 +3338,7 @@ async function init() {
   if (!res.data.session) { clearTimeout(_safetyTimer); window.location.href = 'index.html'; return; }
   currentUser = res.data.session.user;
   loadUserData();
-  /* ✅ EMAIL 2: Welcome email — fires once per user, guarded by flag */
+  /* ✅ EMAIL 2: Welcome email — fires once per user */
   try {
     var _welcomeKey = 'bx_welcome_sent_' + currentUser.id;
     if (!localStorage.getItem(_welcomeKey)) {
@@ -3323,22 +3352,30 @@ async function init() {
   } catch(we) { console.warn('[BxEmail] Welcome:', String(we.message||we)); }
   setTimeout(function(){
     clearTimeout(_safetyTimer);
-    var ls=document.getElementById('loading-screen'); if(ls){ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(function(){ls.style.display='none';},320);}
-    loadJobs();
-    var urlPage=new URLSearchParams(window.location.search).get('page');
-    if(urlPage){
-      var pm={overview:'overview',jobs:'jobs',salary:'salary',upskill:'upskill',network:'network',tracker:'tracker',profile:'profile',settings:'settings',upgrade:'upgrade'};
-      var target=pm[urlPage];
-      if(target){
-        document.querySelectorAll('.sb-link').forEach(function(btn){
-          var oc=btn.getAttribute('onclick')||'';
-          if(oc.indexOf("'"+target+"'")!==-1){showPage(target,btn);}
-        });
-      }
-    }
+    var ls=document.getElementById('loading-screen');
+    if(ls){ls.style.opacity='0';ls.style.pointerEvents='none';setTimeout(function(){ls.style.display='none';},320);}
+
+    /* ── ROUTING: support ?page=X, #hash, and default to overview ── */
+    var PAGE_MAP = {overview:'overview',jobs:'jobs',salary:'salary',upskill:'upskill',
+                    network:'network',mentor:'network',tracker:'tracker',applications:'tracker',
+                    profile:'profile',settings:'settings',upgrade:'upgrade'};
+
+    /* 1. Check ?page= query param */
+    var urlPage = new URLSearchParams(window.location.search).get('page');
+    /* 2. Check #hash */
+    var hashPage = window.location.hash.replace('#','');
+    /* 3. Resolve */
+    var startPage = PAGE_MAP[urlPage] || PAGE_MAP[hashPage] || 'overview';
+
+    /* Find matching sidebar button to pass as btn */
+    var startBtn = document.querySelector('[data-page="' + startPage + '"]');
+    showPage(startPage, startBtn);
+
+    /* Also pre-load jobs for faster tab switching */
+    if (startPage !== 'jobs') loadJobs();
   }, 900);
   } catch(e) {
-    console.error('Init error:', e);
+    console.error('Init error:', String(e.message||e));
     var ls=document.getElementById('loading-screen');
     if(ls)ls.style.display='none';
     window.location.href='index.html';
