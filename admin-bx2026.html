@@ -209,7 +209,8 @@ body.dark .tab-btn.active{color:#EDE9FF;border-bottom-color:var(--accent)}
 /* ═══ CARDS ═══ */
 .card{background:var(--card);border-radius:var(--r-lg);border:1px solid var(--border);padding:20px 22px;margin-bottom:14px}
 .card-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.chart-wrap{background:var(--card);border-radius:var(--r-lg);border:1px solid var(--border);padding:18px 20px;margin-bottom:14px}
+.chart-wrap{background:var(--card);border-radius:var(--r-lg);border:1px solid var(--border);padding:18px 20px;margin-bottom:14px;overflow:hidden}
+.chart-canvas-wrap{position:relative;width:100%;overflow:hidden}
 .chart-title{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:14px}
 .charts-2{display:grid;grid-template-columns:55fr 45fr;gap:14px;margin-bottom:14px}
 .charts-eq{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
@@ -587,12 +588,12 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
         <div class="stat-card" style="--stat-color:#3B82F6"><div class="sc-ic">⏳</div><div class="sc-val" id="stat-pending">—</div><div class="sc-lbl">Pending Actions</div><div class="sc-delta warn"></div></div>
       </div>
       <div class="charts-2">
-        <div class="chart-wrap"><div class="chart-title">📈 Signups — Last 30 Days</div><canvas id="chart-signups" height="210"></canvas></div>
-        <div class="chart-wrap"><div class="chart-title">🍩 Plan Distribution</div><canvas id="chart-plans" height="210"></canvas></div>
+        <div class="chart-wrap"><div class="chart-title">📈 Signups — Last 30 Days</div><div class="chart-canvas-wrap" style="height:210px"><canvas id="chart-signups"></canvas></div></div>
+        <div class="chart-wrap"><div class="chart-title">🍩 Plan Distribution</div><div class="chart-canvas-wrap" style="height:210px"><canvas id="chart-plans"></canvas></div></div>
       </div>
       <div class="charts-eq">
-        <div class="chart-wrap"><div class="chart-title">📋 New Users Per Day (14 days)</div><canvas id="chart-apps" height="190"></canvas></div>
-        <div class="chart-wrap"><div class="chart-title">🏙️ Users by City</div><canvas id="chart-cities" height="190"></canvas></div>
+        <div class="chart-wrap"><div class="chart-title">📋 New Users Per Day (14 days)</div><div class="chart-canvas-wrap" style="height:190px"><canvas id="chart-apps"></canvas></div></div>
+        <div class="chart-wrap"><div class="chart-title">🏙️ Users by City</div><div class="chart-canvas-wrap" style="height:190px"><canvas id="chart-cities"></canvas></div></div>
       </div>
       <div class="card">
         <div class="card-title">⚡ Platform Health</div>
@@ -734,8 +735,8 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
         <div class="stat-card"><div class="sc-val" id="rev-arr">—</div><div class="sc-lbl">Annual Run Rate</div></div>
       </div>
       <div class="charts-eq">
-        <div class="chart-wrap"><div class="chart-title">📈 MRR — Last 12 Months</div><canvas id="chart-mrr" height="210"></canvas></div>
-        <div class="chart-wrap"><div class="chart-title">📊 Plan Distribution Over Time</div><canvas id="chart-plans-time" height="210"></canvas></div>
+        <div class="chart-wrap"><div class="chart-title">📈 MRR — Last 12 Months</div><div class="chart-canvas-wrap" style="height:210px"><canvas id="chart-mrr"></canvas></div></div>
+        <div class="chart-wrap"><div class="chart-title">📊 Plan Distribution Over Time</div><div class="chart-canvas-wrap" style="height:210px"><canvas id="chart-plans-time"></canvas></div></div>
       </div>
       <div class="tbl-wrap"><div class="card-title" style="padding:16px 18px 0;font-size:14px;font-weight:700">Pro & Premium Subscribers</div><div class="tbl-scroll">
         <table><thead><tr><th>User</th><th>Plan</th><th>Amount</th><th>Joined</th><th>Status</th><th>Actions</th></tr></thead>
@@ -804,8 +805,8 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
         <div class="stat-card"><div class="sc-val" id="bexi-split">—</div><div class="sc-lbl">Free vs Pro</div></div>
       </div>
       <div class="charts-eq">
-        <div class="chart-wrap"><div class="chart-title">📈 Daily Questions (30 days)</div><canvas id="chart-bexi-daily" height="190"></canvas></div>
-        <div class="chart-wrap"><div class="chart-title">🕐 Peak Hours</div><canvas id="chart-bexi-hours" height="190"></canvas></div>
+        <div class="chart-wrap"><div class="chart-title">📈 Daily Questions (30 days)</div><div class="chart-canvas-wrap" style="height:190px"><canvas id="chart-bexi-daily"></canvas></div></div>
+        <div class="chart-wrap"><div class="chart-title">🕐 Peak Hours</div><div class="chart-canvas-wrap" style="height:190px"><canvas id="chart-bexi-hours"></canvas></div></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
         <div class="card"><div class="card-title">🔥 Top Question Topics</div><div id="bexi-topics"></div></div>
@@ -1239,7 +1240,21 @@ function markAllRead(){_notifs.forEach(function(n){n.read=true;});renderNotifs()
 async function globalSearch(q){var res=document.getElementById('search-results');if(!q||q.length<2){if(res){res.innerHTML='';res.classList.remove('open');}return;}res.classList.add('open');res.innerHTML='<div style="padding:10px 14px;font-size:13px;color:var(--muted)">Searching…</div>';try{var[users,mentors]=await Promise.all([sbFetch('profiles','or=(full_name.ilike.*'+q+'*,email.ilike.*'+q+'*)&limit=3&select=id,full_name,email,plan').catch(function(){return[];}),sbFetch('mentor_applications','or=(name.ilike.*'+q+'*,company.ilike.*'+q+'*)&limit=3&select=id,name,company,status').catch(function(){return[];})]);var html='';if(users.length){html+='<div style="padding:5px 14px;font-size:10.5px;font-weight:700;color:var(--muted);background:var(--bg);text-transform:uppercase;letter-spacing:.5px">Users</div>'+users.map(function(u){return '<div class="srch-item" onclick="showSection(\'users\')"><div class="srch-av">'+initials(u.full_name||u.email)+'</div><div><div style="font-size:13px;font-weight:600">'+esc(u.full_name||'No name')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(u.email)+' · '+(u.plan||'free')+'</div></div></div>';}).join('');}if(mentors.length){html+='<div style="padding:5px 14px;font-size:10.5px;font-weight:700;color:var(--muted);background:var(--bg);text-transform:uppercase;letter-spacing:.5px">Mentors</div>'+mentors.map(function(m){return '<div class="srch-item" onclick="showSection(\'mentors\')"><div class="srch-av" style="background:linear-gradient(135deg,#00B37E,#0F0B1E)">'+initials(m.name)+'</div><div><div style="font-size:13px;font-weight:600">'+esc(m.name)+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(m.company)+' · '+esc(m.status)+'</div></div></div>';}).join('');}res.innerHTML=html||'<div style="padding:16px;text-align:center;font-size:13px;color:var(--muted)">No results</div>';}catch(e){res.innerHTML='<div style="padding:12px;font-size:13px;color:var(--danger)">Search failed</div>';}}
 
 /* CHARTS */
-function mkChart(id,type,labels,datasets,extra){if(_charts[id])_charts[id].destroy();var ctx=document.getElementById(id);if(!ctx)return;_charts[id]=new Chart(ctx,{type:type,data:{labels:labels,datasets:datasets},options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Plus Jakarta Sans',size:12},usePointStyle:true}}},scales:type==='doughnut'||type==='pie'?{}:{x:{grid:{display:false},ticks:{font:{family:'Plus Jakarta Sans',size:10},maxTicksLimit:8,color:'#9CA3AF'}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{family:'Plus Jakarta Sans',size:10},color:'#9CA3AF'},beginAtZero:true}}},extra||{})});}
+function mkChart(id,type,labels,datasets,extra){
+  if(_charts[id]){_charts[id].destroy();delete _charts[id];}
+  var ctx=document.getElementById(id);if(!ctx)return;
+  var opts=Object.assign({
+    responsive:true,
+    maintainAspectRatio:false,
+    animation:{duration:400},
+    plugins:{legend:{labels:{font:{family:'Plus Jakarta Sans',size:12},usePointStyle:true}}},
+    scales:type==='doughnut'||type==='pie'?{}:{
+      x:{grid:{display:false},ticks:{font:{family:'Plus Jakarta Sans',size:10},maxTicksLimit:8,color:'#9CA3AF'}},
+      y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{family:'Plus Jakarta Sans',size:10},color:'#9CA3AF'},beginAtZero:true}
+    }
+  },extra||{});
+  _charts[id]=new Chart(ctx,{type:type,data:{labels:labels,datasets:datasets},options:opts});
+}
 /* DASHBOARD */
 async function loadDashboard(){
   try{
