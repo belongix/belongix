@@ -1695,21 +1695,21 @@ async function doLogin(){
 function showLoginErr(msg){var el=document.getElementById('lf-err');if(el){el.textContent='⚠️ '+msg;el.style.display='flex';}var box=document.querySelector('.login-form-wrap');if(box){box.classList.remove('shake');void box.offsetWidth;box.classList.add('shake');}}
 function resetBtn(){var btn=document.getElementById('lf-btn');if(btn){btn.disabled=false;btn.textContent='Sign In →';}}
 function togglePassEye(){var inp=document.getElementById('lf-pass');var eye=document.getElementById('lf-eye');if(!inp||!eye)return;inp.type=inp.type==='password'?'text':'password';eye.textContent=inp.type==='password'?'👁':'🙈';}
-function doSignOut(){sessionStorage.removeItem('bx_admin');adminSession=null;if(_pollTimer)clearInterval(_pollTimer);document.getElementById('admin-app').style.display='none';document.getElementById('login-page').style.display='flex';var lp=document.getElementById('lf-pass');if(lp)lp.value='';}
+function adminSignOut(){sessionStorage.removeItem('bx_admin');adminSession=null;if(_pollTimer)clearInterval(_pollTimer);document.getElementById('admin-layout').style.display='none';document.getElementById('login-page').style.display='flex';var lp=document.getElementById('lf-pass');if(lp)lp.value='';}
 function startSessionWatch(){['mousemove','keydown','click','scroll'].forEach(function(ev){document.addEventListener(ev,function(){_lastActivity=Date.now();},{passive:true});});setInterval(function(){if(adminSession&&Date.now()-_lastActivity>SESSION_TIMEOUT){var ov=document.getElementById('session-overlay');if(ov)ov.style.display='flex';}},30000);}
 function restartSession(){var ov=document.getElementById('session-overlay');if(ov)ov.style.display='none';doSignOut();}
 
 function launchAdmin(){
   document.getElementById('login-page').style.display='none';
-  document.getElementById('admin-app').style.display='flex';
+  document.getElementById('admin-layout').style.display='flex';
   var n=adminSession.name,ini=initials(n);
-  setText('sb-name',n);var sav=document.getElementById('sb-av');if(sav)sav.textContent=ini;
-  setText('topbar-name',n);var tav=document.getElementById('topbar-av');if(tav)tav.textContent=ini;
+  setText('sb-admin-name',n);var sav=document.getElementById('sb-av');if(sav)sav.textContent=ini;
+  setText('aab-name',n);var tav=document.getElementById('aab-av');if(tav)tav.textContent=ini;
   var rmap={super_admin:{lbl:'Super Admin',cls:'role-super'},manager:{lbl:'Manager',cls:'role-manager'},support:{lbl:'Support',cls:'role-support'}};
   var rv=rmap[adminSession.role]||{lbl:adminSession.role,cls:'role-support'};
   var rb=document.getElementById('sb-role-badge');if(rb){rb.textContent=rv.lbl;rb.className='sb-user-role '+rv.cls;}
-  var pn=document.getElementById('profile-name');if(pn)pn.value=adminSession.name;
-  var pe=document.getElementById('profile-email');if(pe)pe.value=adminSession.email;
+  var pn=document.getElementById('my-name');if(pn)pn.value=adminSession.name;
+  var pe=document.getElementById('my-email');if(pe)pe.value=adminSession.email;
   applyRoleVisibility();startSessionWatch();showSection('dashboard');buildNotifications();
   _pollTimer=setInterval(pollBadges,30000);
 }
@@ -1750,7 +1750,12 @@ function renderNotifs(){var unread=_notifs.filter(function(n){return !n.read;}).
 function handleNotif(i){_notifs[i].read=true;renderNotifs();toggleDropdown('notif-dropdown');showSection(_notifs[i].sec||'dashboard');}
 function markAllRead(){_notifs.forEach(function(n){n.read=true;});renderNotifs();}
 function toggleDropdown(id){var el=document.getElementById(id);if(!el)return;var isOpen=el.style.display==='block';document.querySelectorAll('.dropdown').forEach(function(d){d.style.display='none';});el.style.display=isOpen?'none':'block';}
-document.addEventListener('click',function(e){if(!e.target.closest('.notif-wrap')&&!e.target.closest('.admin-user-wrap'))document.querySelectorAll('.dropdown').forEach(function(d){d.style.display='none';});if(!e.target.closest('.action-menu-wrap'))document.querySelectorAll('.action-menu.open').forEach(function(m){m.classList.remove('open');});});
+document.addEventListener('click',function(e){
+  if(!e.target.closest('.notif-wrap')&&!e.target.closest('.admin-user-wrap')&&!e.target.closest('.admin-avatar-btn')&&!e.target.closest('.aab-dropdown'))
+    document.querySelectorAll('.dropdown,.aab-dropdown').forEach(function(d){d.style.display='none';});
+  if(!e.target.closest('.action-menu-wrap'))
+    document.querySelectorAll('.action-menu.open').forEach(function(m){m.classList.remove('open');});
+});
 function toggleActionMenu(id){document.querySelectorAll('.action-menu.open').forEach(function(m){if(m.id!==id)m.classList.remove('open');});var el=document.getElementById(id);if(el)el.classList.toggle('open');}
 
 async function pollBadges(){try{var[mp,jp,tp,rp]=await Promise.all([sbFetch('mentor_applications','status=eq.applied&select=id').then(function(r){return r.length;}).catch(function(){return 0;}),sbFetch('jobs','status=eq.pending&select=id').then(function(r){return r.length;}).catch(function(){return 0;}),sbFetch('support_tickets','status=in.(open,in_progress)&select=id').then(function(r){return r.length;}).catch(function(){return 0;}),sbFetch('refund_requests','status=eq.pending&select=id').then(function(r){return r.length;}).catch(function(){return 0;})]);setBadge('badge-mentors',mp);setBadge('badge-jobs',jp);setBadge('badge-tickets',tp);setBadge('badge-refunds',rp);}catch(e){}}
@@ -1968,12 +1973,32 @@ var EMAIL_TEMPLATES={
 function loadTemplate(){var key=gv('template-select');if(!key){var ed=document.getElementById('template-editor');if(ed)ed.style.display='none';return;}_currentTemplate=key;var tmpl=EMAIL_TEMPLATES[key];var ed=document.getElementById('template-editor');if(!tmpl){if(ed)ed.style.display='none';return;}if(ed)ed.style.display='block';var subj=document.getElementById('tmpl-subject');if(subj)subj.value=tmpl.subject||'';var body=document.getElementById('tmpl-body');if(body)body.value=tmpl.body||'';}
 async function saveTemplate(){if(!_currentTemplate)return;EMAIL_TEMPLATES[_currentTemplate]={subject:gv('tmpl-subject'),body:gv('tmpl-body')};try{await sbInsert('email_templates',[{key:_currentTemplate,subject:gv('tmpl-subject'),body:gv('tmpl-body'),updated_by:adminSession.name}]);toast('Template saved','success');}catch(e){localStorage.setItem('bx_tmpl_'+_currentTemplate,JSON.stringify(EMAIL_TEMPLATES[_currentTemplate]));toast('Template saved locally','warning');}}
 function sendTestTemplate(){if(adminSession&&adminSession.email)window.open('mailto:'+adminSession.email+'?subject='+encodeURIComponent('[TEST] '+(gv('tmpl-subject')||'Template Test'))+'&body='+encodeURIComponent(gv('tmpl-body')||''),'_blank');toast('Test email opened in mail client','success');}
-async function saveAdminProfile(){var name=gv('profile-name'),email=gv('profile-email');if(!name){toast('Name required','warning');return;}try{await sbUpdate('admin_users',adminSession.id,{name:name,email:email});adminSession.name=name;adminSession.email=email;sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));setText('sb-name',name);setText('topbar-name',name);var sav=document.getElementById('sb-av');if(sav)sav.textContent=initials(name);var tav=document.getElementById('topbar-av');if(tav)tav.textContent=initials(name);toast('Profile updated','success');}catch(e){toast('Error','error');}}
+async function saveAdminProfile(){var name=gv('my-name'),email=gv('my-email');if(!name){toast('Name required','warning');return;}try{await sbUpdate('admin_users',adminSession.id,{name:name,email:email});adminSession.name=name;adminSession.email=email;sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));setText('sb-admin-name',name);setText('aab-name',name);var sav=document.getElementById('sb-av');if(sav)sav.textContent=initials(name);var tav=document.getElementById('aab-av');if(tav)tav.textContent=initials(name);toast('Profile updated','success');}catch(e){toast('Error','error');}}
 async function changePassword(){var cur=gv('cur-pw'),nw=gv('new-pw'),conf=gv('confirm-pw');if(!cur||!nw||!conf){toast('Fill all password fields','warning');return;}if(nw!==conf){toast('Passwords do not match','error');return;}if(nw.length<8){toast('Password must be 8+ characters','warning');return;}try{await sbUpdate('admin_users',adminSession.id,{password_hash:nw});['cur-pw','new-pw','confirm-pw'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});toast('Password changed successfully','success');await writeAudit('PASSWORD_CHANGE','admin',adminSession.id,adminSession.name,'Password updated');}catch(e){toast('Error changing password','error');}}
 
 /* ── MISC ── */
 function openBlogEditor(){toast('Blog editor — coming in next update','warning');}
-function openChangePassword(){showSection('settings');}
+
+/* ── MISSING FUNCTION STUBS ── */
+function toggleAabDropdown(){
+  var dd=document.getElementById('aab-dropdown');
+  if(!dd)return;
+  var open=dd.style.display==='block';
+  document.querySelectorAll('.aab-dropdown,.dropdown').forEach(function(d){d.style.display='none';});
+  dd.style.display=open?'none':'block';
+}
+function closeMentorModal(){closeModal('mentor-modal');}
+function closeUserDrawer(){
+  var d=document.getElementById('user-drawer');if(d)d.classList.remove('open');
+  var o=document.getElementById('user-drawer-overlay');if(o)o.classList.remove('open');
+}
+function gdprDeleteUser(){toast('GDPR deletion — select a user first','warning');}
+function gdprExportUser(){toast('GDPR export — select a user first','warning');}
+function loadActivityFeed(){buildActivityFeed();}
+function openMentorView(id){openMentorModal&&openMentorModal(id);}
+/* Alias for HTML refs */
+function adminSignOutBtn(){adminSignOut();}
+function openChangePassword(){showSection('settings');}function showChangePassword(){showSection('settings');}
 
 /* ══════════════════════════════════════════════
    FEATURE 1: DARK MODE
