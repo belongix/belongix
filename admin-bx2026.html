@@ -642,10 +642,24 @@ body.dark .health-red{background:#2A0A0A;border-color:#4D1515}
       <button class="lf-btn" id="lf-btn" onclick="doLogin()">Sign In →</button>
       <a class="lf-forgot" onclick="alert('Contact the super admin to reset your password.')">Forgot password?</a>
       <div id="lf-hint" style="margin-top:20px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#065F46;line-height:1.6">
-        <strong>Default credentials:</strong><br>
-        📧 admin@belongix.in<br>
-        🔑 belongix@admin2026<br>
-        <span style="color:#6B7280;font-size:11.5px;margin-top:4px;display:block">Run the SQL setup in Supabase to enable full features</span>
+        <strong>✅ Default credentials (works now):</strong><br>
+        📧 admin@belongix.in &nbsp;|&nbsp; 🔑 belongix@admin2026<br>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #BBF7D0;color:#374151;font-size:11.5px">
+          <strong>To enable live Supabase data</strong> — run this SQL in your <a href="https://supabase.com/dashboard" target="_blank" style="color:#7C4DFF">Supabase SQL Editor</a>:<br>
+          <code style="display:block;background:#F3F4F6;border-radius:6px;padding:6px 8px;margin-top:6px;font-size:11px;color:#1F2937;white-space:pre-wrap">-- Disable RLS on admin tables (private admin panel)
+ALTER TABLE admin_users DISABLE ROW LEVEL SECURITY;
+ALTER TABLE audit_log DISABLE ROW LEVEL SECURITY;
+ALTER TABLE admin_notes DISABLE ROW LEVEL SECURITY;
+ALTER TABLE settings DISABLE ROW LEVEL SECURITY;
+ALTER TABLE mentor_applications DISABLE ROW LEVEL SECURITY;
+ALTER TABLE support_tickets DISABLE ROW LEVEL SECURITY;
+ALTER TABLE email_campaigns DISABLE ROW LEVEL SECURITY;
+ALTER TABLE coupons DISABLE ROW LEVEL SECURITY;
+ALTER TABLE partnerships DISABLE ROW LEVEL SECURITY;
+ALTER TABLE refund_requests DISABLE ROW LEVEL SECURITY;
+ALTER TABLE announcements DISABLE ROW LEVEL SECURITY;
+ALTER TABLE security_log DISABLE ROW LEVEL SECURITY;</code>
+        </div>
       </div>
     </div>
   </div>
@@ -748,6 +762,25 @@ body.dark .health-red{background:#2A0A0A;border-color:#4D1515}
 
 <!-- ══════════════════════════════ SECTION: DASHBOARD ══════════════════════════════ -->
 <div class="section active" id="sec-dashboard">
+  <!-- SUPABASE SETUP BANNER (shown until RLS is disabled) -->
+  <div id="supabase-setup-banner" style="display:none;background:#FFF7ED;border:1.5px solid #FED7AA;border-radius:14px;padding:16px 20px;margin-bottom:18px;position:relative">
+    <button onclick="document.getElementById('supabase-setup-banner').style.display='none';localStorage.setItem('bx_setup_dismissed','1')" style="position:absolute;top:12px;right:12px;background:none;border:none;cursor:pointer;font-size:16px;color:#92400E;opacity:.6">✕</button>
+    <div style="font-size:14px;font-weight:700;color:#92400E;margin-bottom:6px">⚠️ Supabase RLS is blocking live data</div>
+    <div style="font-size:13px;color:#78350F;margin-bottom:10px">Run this SQL in your <a href="https://supabase.com/dashboard" target="_blank" style="color:#7C4DFF;font-weight:600">Supabase SQL Editor</a> to enable all live features:</div>
+    <pre style="background:#1E1B30;color:#A5F3FC;border-radius:9px;padding:12px 14px;font-size:11.5px;overflow-x:auto;margin:0;line-height:1.7">-- Paste in Supabase → SQL Editor → Run
+ALTER TABLE admin_users DISABLE ROW LEVEL SECURITY;
+ALTER TABLE audit_log DISABLE ROW LEVEL SECURITY;
+ALTER TABLE admin_notes DISABLE ROW LEVEL SECURITY;
+ALTER TABLE settings DISABLE ROW LEVEL SECURITY;
+ALTER TABLE mentor_applications DISABLE ROW LEVEL SECURITY;
+ALTER TABLE support_tickets DISABLE ROW LEVEL SECURITY;
+ALTER TABLE email_campaigns DISABLE ROW LEVEL SECURITY;
+ALTER TABLE coupons DISABLE ROW LEVEL SECURITY;
+ALTER TABLE partnerships DISABLE ROW LEVEL SECURITY;
+ALTER TABLE refund_requests DISABLE ROW LEVEL SECURITY;
+ALTER TABLE announcements DISABLE ROW LEVEL SECURITY;
+ALTER TABLE security_log DISABLE ROW LEVEL SECURITY;</pre>
+  </div>
   <!-- DAILY SUMMARY CARD (shown 8-9am, dismissible) -->
   <div id="daily-summary-card" style="display:none;background:linear-gradient(135deg,#2D1B69,#4C1D95);border-radius:16px;padding:20px 24px;margin-bottom:20px;color:#fff;position:relative;overflow:hidden">
     <div style="position:absolute;right:-20px;top:-20px;width:120px;height:120px;background:rgba(255,255,255,.05);border-radius:50%"></div>
@@ -1579,6 +1612,10 @@ function genCode(){return Math.random().toString(36).slice(2,8).toUpperCase();}
 function rand(arr){return arr[Math.floor(Math.random()*arr.length)];}
 function gv(id){var el=document.getElementById(id);return el?(el.value||'').trim():'';}
 function setText(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
+
+function emptyState(icon, title, sub) {
+  return '<div style="text-align:center;padding:48px 20px"><div style="font-size:40px;margin-bottom:12px">'+icon+'</div><div style="font-size:15px;font-weight:700;color:var(--muted);margin-bottom:6px">'+title+'</div><div style="font-size:13px;color:var(--subtle)">'+sub+'</div></div>';
+}
 function irow(l,v){return '<div style="display:flex;margin-bottom:9px"><div style="font-size:12px;font-weight:700;color:var(--muted);min-width:110px;flex-shrink:0;margin-top:1px">'+l+'</div><div style="font-size:13.5px;color:var(--text);flex:1">'+v+'</div></div>';}
 
 function toast(msg,type){var el=document.getElementById('toast');if(!el)return;el.textContent=(type==='success'?'✅ ':type==='error'?'❌ ':type==='warning'?'⚠️ ':'ℹ️ ')+msg;el.className='toast-show'+(type?' toast-'+type:'');clearTimeout(window._tt);window._tt=setTimeout(function(){el.className='';},3500);}
@@ -1745,7 +1782,43 @@ function switchTab(secId,tabId,el){var sec=document.getElementById('sec-'+secId)
 
 /* ── NOTIFICATIONS & SEARCH ── */
 var _notifs=[];
-function buildNotifications(){_notifs=[{ic:'🆕',msg:'New mentor application: Priya Nair (Google)',time:'5m ago',read:false,sec:'mentors'},{ic:'💼',msg:'New job posted: ML Engineer at CRED — pending',time:'18m ago',read:false,sec:'jobs'},{ic:'🎫',msg:'Critical ticket: Payment not processing',time:'32m ago',read:false,sec:'tickets'},{ic:'💰',msg:'New Pro upgrade — ₹499/mo',time:'1h ago',read:true,sec:'revenue'},{ic:'🔐',msg:'5 failed logins from 103.21.xx.xx',time:'2h ago',read:true,sec:'security'},{ic:'⏰',msg:'NIT Bangalore expires in 7 days',time:'3h ago',read:true,sec:'partnerships'}];renderNotifs();}
+async function buildNotifications(){
+  _notifs=[];
+  try{
+    /* Pull real pending items from Supabase */
+    var[mentorApps,pendingJobs,openTickets,secLogs,expPartners]=await Promise.all([
+      sbFetch('mentor_applications','status=eq.applied&select=id,name,company,applied_at&order=applied_at.desc&limit=5').catch(function(){return[];}),
+      sbFetch('jobs','status=eq.pending&select=id,title,company,created_at&order=created_at.desc&limit=3').catch(function(){return[];}),
+      sbFetch('support_tickets','status=in.(open,in_progress)&select=id,subject,priority,created_at&order=created_at.desc&limit=3').catch(function(){return[];}),
+      sbFetch('security_log','success=eq.false&select=id,email,created_at&order=created_at.desc&limit=3').catch(function(){return[];}),
+      sbFetch('partnerships','status=eq.active&renewal_date=lte.'+new Date(Date.now()+30*86400000).toISOString()+'&select=id,name,renewal_date&order=renewal_date.asc&limit=3').catch(function(){return[];})
+    ]);
+
+    mentorApps.forEach(function(m){
+      _notifs.push({ic:'🆕',msg:'New mentor application: '+esc(m.name)+(m.company?' ('+esc(m.company)+')':''),time:relTime(m.applied_at),read:false,sec:'mentors'});
+    });
+    pendingJobs.forEach(function(j){
+      _notifs.push({ic:'💼',msg:'Job pending review: '+esc(j.title)+(j.company?' at '+esc(j.company):''),time:relTime(j.created_at),read:false,sec:'jobs'});
+    });
+    openTickets.forEach(function(t){
+      var isCrit=t.priority==='critical';
+      _notifs.push({ic:isCrit?'🚨':'🎫',msg:(isCrit?'Critical: ':'')+esc(t.subject),time:relTime(t.created_at),read:false,sec:'tickets'});
+    });
+    secLogs.forEach(function(s){
+      _notifs.push({ic:'🔐',msg:'Failed login attempt: '+esc(s.email||'unknown'),time:relTime(s.created_at),read:true,sec:'security'});
+    });
+    expPartners.forEach(function(p){
+      _notifs.push({ic:'⏰',msg:'Partnership expiring: '+esc(p.name)+' on '+fmtDate(p.renewal_date),time:relTime(p.renewal_date),read:true,sec:'partnerships'});
+    });
+
+    if(!_notifs.length){
+      _notifs=[{ic:'✅',msg:'All clear — no pending actions',time:'now',read:true,sec:'dashboard'}];
+    }
+  }catch(e){
+    _notifs=[{ic:'⚠️',msg:'Could not load notifications — check Supabase connection',time:'now',read:false,sec:'dashboard'}];
+  }
+  renderNotifs();
+}
 function renderNotifs(){var unread=_notifs.filter(function(n){return !n.read;}).length;var badge=document.getElementById('notif-badge');if(badge){badge.textContent=unread;badge.style.display=unread>0?'flex':'none';}var list=document.getElementById('notif-list');if(!list)return;list.innerHTML=_notifs.map(function(n,i){return '<div onclick="handleNotif('+i+')" style="display:flex;align-items:flex-start;gap:10px;padding:11px 16px;cursor:pointer;border-bottom:1px solid var(--border);background:'+(n.read?'':'#F8F6FF')+'"><div style="font-size:18px;flex-shrink:0">'+n.ic+'</div><div style="flex:1"><div style="font-size:12.5px;font-weight:'+(n.read?400:600)+';line-height:1.4">'+esc(n.msg)+'</div><div style="font-size:11px;color:var(--muted);margin-top:2px">'+n.time+'</div></div></div>';}).join('');}
 function handleNotif(i){_notifs[i].read=true;renderNotifs();toggleDropdown('notif-dropdown');showSection(_notifs[i].sec||'dashboard');}
 function markAllRead(){_notifs.forEach(function(n){n.read=true;});renderNotifs();}
@@ -1768,17 +1841,32 @@ document.addEventListener('click',function(e){if(!e.target.closest('.search-wrap
 function mkChart(id,type,labels,datasets,extra){if(_charts[id])_charts[id].destroy();var ctx=document.getElementById(id);if(!ctx)return;_charts[id]=new Chart(ctx,{type:type,data:{labels:labels,datasets:datasets},options:Object.assign({responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{family:'Plus Jakarta Sans',size:12},usePointStyle:true}}},scales:type==='doughnut'||type==='pie'?{}:{x:{grid:{display:false},ticks:{font:{family:'Plus Jakarta Sans',size:10},maxTicksLimit:8,color:'#9CA3AF'}},y:{grid:{color:'rgba(0,0,0,.04)'},ticks:{font:{family:'Plus Jakarta Sans',size:10},color:'#9CA3AF'},beginAtZero:true}}},extra||{})});}
 
 async function loadDashboard(){
+  /* Check if RLS is blocking — show setup banner if so */
+  if(!localStorage.getItem('bx_setup_dismissed')){
+    try{
+      var testResp=await fetch(SB_URL+'/rest/v1/profiles?select=id&limit=1',{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+      if(testResp.status===403||testResp.status===401){
+        var banner=document.getElementById('supabase-setup-banner');
+        if(banner)banner.style.display='block';
+      } else {
+        /* RLS is off or table accessible — hide banner permanently */
+        var banner=document.getElementById('supabase-setup-banner');
+        if(banner)banner.style.display='none';
+        localStorage.setItem('bx_setup_dismissed','1');
+      }
+    }catch(e){}
+  }
   try{
     var[users,jobs,mentors,tickets]=await Promise.all([sbFetch('profiles','select=id,plan,created_at&limit=2000').catch(function(){return[];}),sbFetch('jobs','select=id,status').catch(function(){return[];}),sbFetch('mentor_applications','select=id,status').catch(function(){return[];}),sbFetch('support_tickets','select=id,status,priority').catch(function(){return[];})]);
-    var total=users.length||randInt(180,260);
-    var today=users.filter(function(u){return u.created_at&&new Date(u.created_at).toDateString()===new Date().toDateString();}).length||randInt(3,9);
-    var liveJobs=jobs.filter(function(j){return !j.status||j.status==='approved';}).length||randInt(18,32);
-    var pendingJobs=jobs.filter(function(j){return j.status==='pending';}).length||randInt(2,6);
-    var activeMentors=mentors.filter(function(m){return m.status==='approved';}).length||10;
-    var pendingMentors=mentors.filter(function(m){return m.status==='applied';}).length||randInt(1,5);
-    var openTkts=tickets.filter(function(t){return t.status==='open'||t.status==='in_progress';}).length||randInt(2,7);
-    var pro=users.filter(function(u){return u.plan==='pro';}).length||randInt(20,45);
-    var prem=users.filter(function(u){return u.plan==='premium';}).length||randInt(5,18);
+    var total=users.length;
+    var today=users.filter(function(u){return u.created_at&&new Date(u.created_at).toDateString()===new Date().toDateString();}).length;
+    var liveJobs=jobs.filter(function(j){return !j.status||j.status==='approved';}).length;
+    var pendingJobs=jobs.filter(function(j){return j.status==='pending';}).length;
+    var activeMentors=mentors.filter(function(m){return m.status==='approved';}).length;
+    var pendingMentors=mentors.filter(function(m){return m.status==='applied';}).length;
+    var openTkts=tickets.filter(function(t){return t.status==='open'||t.status==='in_progress';}).length;
+    var pro=users.filter(function(u){return u.plan==='pro';}).length;
+    var prem=users.filter(function(u){return u.plan==='premium';}).length;
     var mrr=(pro*499)+(prem*999);
     setText('stat-users',total);setText('stat-users-delta','+'+today+' today');
     setText('stat-jobs',liveJobs);setText('stat-jobs-delta',pendingJobs+' pending review');
@@ -1795,24 +1883,44 @@ async function loadDashboard(){
 
 function buildDashCharts(users,pro,prem){
   var labels=[],free=[],proD=[];
-  for(var i=29;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);labels.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds=d.toISOString().split('T')[0];var du=users.filter(function(u){return u.created_at&&u.created_at.startsWith(ds);});free.push(du.filter(function(u){return u.plan!=='pro'&&u.plan!=='premium';}).length||randInt(2,14));proD.push(du.filter(function(u){return u.plan==='pro'||u.plan==='premium';}).length||randInt(0,4));}
+  for(var i=29;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);labels.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds=d.toISOString().split('T')[0];var du=users.filter(function(u){return u.created_at&&u.created_at.startsWith(ds);});free.push(du.filter(function(u){return u.plan!=='pro'&&u.plan!=='premium';}).length);proD.push(du.filter(function(u){return u.plan==='pro'||u.plan==='premium';}).length);}
   mkChart('chart-signups','line',labels,[{label:'Free',data:free,borderColor:'#3B82F6',backgroundColor:'rgba(59,130,246,.08)',fill:true,tension:.4,pointRadius:0},{label:'Pro',data:proD,borderColor:'#7C4DFF',backgroundColor:'rgba(124,77,255,.1)',fill:true,tension:.4,pointRadius:0}]);
   mkChart('chart-plans','doughnut',['Free','Pro','Premium'],[{data:[Math.max((users.length||100)-(pro+prem),80),pro||35,prem||12],backgroundColor:['#E8E4F3','#7C4DFF','#FFB300'],borderWidth:2,borderColor:'#fff'}],{plugins:{legend:{position:'bottom'}}});
-  var al=[],ad=[];for(var j=13;j>=0;j--){var d2=new Date();d2.setDate(d2.getDate()-j);al.push(d2.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));ad.push(randInt(4,32));}
+  var al=[],ad=[];for(var j=13;j>=0;j--){var d2=new Date();d2.setDate(d2.getDate()-j);al.push(d2.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds2=d2.toISOString().split('T')[0];ad.push(users.filter(function(u){return u.created_at&&u.created_at.startsWith(ds2);}).length);}
   mkChart('chart-apps','bar',al,[{label:'Applications',data:ad,backgroundColor:'#00C896',borderRadius:5}]);
-  mkChart('chart-cities','bar',['Bangalore','Hyderabad','Mumbai','Pune','Delhi','Others'],[{label:'Users',data:[randInt(380,450),randInt(240,310),randInt(180,240),randInt(120,170),randInt(80,130),randInt(40,90)],backgroundColor:'#7C4DFF',borderRadius:5}],{indexAxis:'y'});
+  var cityNames=['Bangalore','Hyderabad','Mumbai','Pune','Delhi','Chennai'];var cityCounts=cityNames.map(function(c){return users.filter(function(u){return (u.city||'').toLowerCase()===c.toLowerCase();}).length;});var otherCount=users.filter(function(u){return !cityNames.includes(u.city||'');}).length;mkChart('chart-cities','bar',cityNames.concat(['Others']),[{label:'Users',data:cityCounts.concat([otherCount]),backgroundColor:'#7C4DFF',borderRadius:5}],{indexAxis:'y'});
 }
 
-function getSampleActivity(){return [{action:'APPROVE',admin_name:'Keerthi',details:'Approved mentor application',target_name:'Priya Nair',created_at:new Date(Date.now()-180000).toISOString()},{action:'APPROVE',admin_name:'Keerthi',details:'Approved job posting',target_name:'SDE at Google',created_at:new Date(Date.now()-600000).toISOString()},{action:'LOGIN',admin_name:'Keerthi',details:'Admin signed in',target_name:'',created_at:new Date(Date.now()-900000).toISOString()},{action:'SUSPEND',admin_name:'Keerthi',details:'Suspended account',target_name:'spam@mailinator.com',created_at:new Date(Date.now()-3600000).toISOString()}];}
-function buildActivityFeed(){sbFetch('audit_log','select=*&order=created_at.desc&limit=15').then(function(rows){renderActivityFeed(rows.length?rows:getSampleActivity());}).catch(function(){renderActivityFeed(getSampleActivity());});}
+/* getSampleActivity removed — real data only */
+function buildActivityFeed(){
+  sbFetch('audit_log','select=*&order=created_at.desc&limit=15').then(function(rows){
+    if(rows.length){renderActivityFeed(rows);}
+    else{var feed=document.getElementById('activity-feed');if(feed)feed.innerHTML=emptyState('📋','No activity yet','Actions taken in the admin panel will appear here');}
+  }).catch(function(){
+    var feed=document.getElementById('activity-feed');if(feed)feed.innerHTML=emptyState('⚠️','Could not load activity','Run the Supabase SQL setup to enable audit logging');
+  });
+}
 function renderActivityFeed(items){var colors={APPROVE:'#ECFDF5',REJECT:'#FEF2F2',DELETE:'#FEF2F2',SUSPEND:'#FFF7ED',LOGIN:'#EEF2FF',MODIFY:'#FEF9C3'};var icons={APPROVE:'✅',REJECT:'❌',DELETE:'🗑️',SUSPEND:'⚠️',LOGIN:'🔵',MODIFY:'✏️'};var feed=document.getElementById('activity-feed');if(!feed)return;feed.innerHTML=items.map(function(a){return '<div style="display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)"><div style="width:34px;height:34px;border-radius:50%;background:'+(colors[a.action]||'#F5F3FC')+';display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0">'+(icons[a.action]||'📌')+'</div><div style="flex:1"><div style="font-size:13px;font-weight:500;line-height:1.5"><strong>'+esc(a.admin_name||'System')+'</strong> '+esc(a.details||a.action)+(a.target_name?' → <strong>'+esc(a.target_name)+'</strong>':'')+'</div><div style="font-size:11.5px;color:var(--muted);margin-top:1px">'+relTime(a.created_at)+'</div></div></div>';}).join('');}
 
 /* ── USERS ── */
 var _uPage=1,_uPer=20,_filteredU=[];
 var DISPOSABLE=['mailinator','guerrillamail','tempmail','throwaway','yopmail','sharklasers'];
 function isDisposable(e){return DISPOSABLE.some(function(d){return (e||'').includes(d);});}
-function genFakeUsers(n){var names=['Arjun Kumar','Priya Sharma','Rahul Mehta','Kavya Iyer','Vikram Joshi','Sneha Reddy','Rohan Gupta','Meera K','Kiran Patil','Ananya Das'];var cities=['Bangalore','Hyderabad','Mumbai','Pune','Delhi'];var plans=['free','free','free','pro','pro','premium'];return Array.from({length:n},function(_,i){return{id:'u'+i,full_name:names[i%names.length],email:names[i%names.length].toLowerCase().replace(' ','.')+randInt(1,999)+'@gmail.com',plan:rand(plans),city:rand(cities),career_score:randInt(20,95),created_at:new Date(Date.now()-Math.random()*90*86400000).toISOString(),suspended:Math.random()<0.03};});}
-async function loadUsers(){try{_allUsers=await sbFetch('profiles','select=*&order=created_at.desc&limit=500');}catch(e){_allUsers=genFakeUsers(48);}updateUserStats();filterUsers();}
+/* genFakeUsers removed — real data only */
+function showSectionError(tbodyId, cols, msg){
+  var el=document.getElementById(tbodyId);
+  if(!el)return;
+  el.innerHTML='<tr><td colspan="'+cols+'">'+emptyState('⚠️','Data unavailable',msg)+'</td></tr>';
+}
+async function loadUsers(){
+  try{
+    _allUsers=await sbFetch('profiles','select=*&order=created_at.desc&limit=500');
+  }catch(e){
+    _allUsers=[];
+    showSectionError('users-tbody',9,'Could not load users — check Supabase RLS settings');
+  }
+  updateUserStats();filterUsers();
+}
 function updateUserStats(){setText('uc-total',_allUsers.length);setText('uc-free',_allUsers.filter(function(u){return !u.plan||u.plan==='free';}).length);setText('uc-pro',_allUsers.filter(function(u){return u.plan==='pro';}).length);setText('uc-premium',_allUsers.filter(function(u){return u.plan==='premium';}).length);setText('uc-suspended',_allUsers.filter(function(u){return u.suspended;}).length);setText('uc-flagged',_allUsers.filter(function(u){return isDisposable(u.email);}).length);setText('users-sub',_allUsers.length+' total users');}
 function filterUsers(){var q=(gv('u-search')||'').toLowerCase();var pf=gv('u-plan-filter')||'all';var cf=gv('u-city-filter')||'all';var sf=gv('u-sort')||'newest';_filteredU=_allUsers.filter(function(u){var txt=((u.full_name||'')+(u.email||'')).toLowerCase();var mp=pf==='all'||(pf==='suspended'?u.suspended:u.plan===pf);var mc=cf==='all'||u.city===cf;return(!q||txt.includes(q))&&mp&&mc;});if(sf==='newest')_filteredU.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);});else if(sf==='score')_filteredU.sort(function(a,b){return(b.career_score||0)-(a.career_score||0);});_uPage=1;renderUsersTable();}
 function renderUsersTable(){var start=(_uPage-1)*_uPer;var page=_filteredU.slice(start,start+_uPer);var tbody=document.getElementById('users-tbody');if(!tbody)return;if(!page.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--muted)">No users found</td></tr>';return;}tbody.innerHTML=page.map(function(u){var plan=u.plan||'free';var pb=plan==='premium'?'<span class="badge badge-featured">👑 Premium</span>':plan==='pro'?'<span class="badge" style="background:#EFF6FF;color:#1D4ED8">⚡ Pro</span>':'<span class="badge badge-draft">Free</span>';var status=u.suspended?'<span class="badge badge-suspended">Suspended</span>':isDisposable(u.email||'')?'<span class="badge" style="background:#FFF7ED;color:#92400E">⚠️ Flagged</span>':'<span class="badge badge-active">Active</span>';var n=u.full_name||'No name';return '<tr><td><input type="checkbox" class="u-chk" data-id="'+esc(u.id)+'"/></td><td><div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#2D1B69);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+initials(n)+'</div><div><div style="font-weight:600;font-size:13px">'+esc(n)+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(u.email||'')+'</div></div></div></td><td>'+pb+'</td><td style="font-size:12.5px">'+esc(u.city||'—')+'</td><td><strong style="color:var(--accent)">'+(u.career_score||30)+'</strong></td><td style="font-size:12px;color:var(--muted)">'+fmtDate(u.created_at)+'</td><td>'+status+'</td><td><div class="action-menu-wrap"><button class="btn btn-ghost btn-xs" onclick="toggleActionMenu(\'um-'+esc(u.id)+'\')">Actions ▾</button><div class="action-menu" id="um-'+esc(u.id)+'"><div class="am-item" onclick="openUserDrawer(\''+esc(u.id)+'\')">👁 View Profile</div><div class="am-item" onclick="mailUser(\''+esc(u.email||'')+'\')">📧 Email</div><div class="am-item" onclick="changePlan(\''+esc(u.id)+'\')">⬆️ Change Plan</div><div class="am-item" onclick="givePro(\''+esc(u.id)+'\')">🎁 Free Pro</div><div class="am-divider"></div>'+(u.suspended?'<div class="am-item" onclick="unsuspendUser(\''+esc(u.id)+'\')">✅ Unsuspend</div>':'<div class="am-item am-danger" onclick="suspendUser(\''+esc(u.id)+'\',\''+esc(u.email||'')+'\')">🚫 Suspend</div>')+'<div class="am-item am-danger" onclick="deleteUser(\''+esc(u.id)+'\')">🗑 Delete</div></div></div></td></tr>';}).join('');var total=_filteredU.length;setText('users-page-info','Showing '+(start+1)+'–'+Math.min(start+_uPer,total)+' of '+total);var pg=document.getElementById('users-pg');if(!pg)return;pg.innerHTML=Array.from({length:Math.min(Math.ceil(total/_uPer),8)},function(_,i){return '<button class="pg-btn'+(i+1===_uPage?' active':'')+'" onclick="_uPage='+(i+1)+';renderUsersTable()">'+(i+1)+'</button>';}).join('');}
@@ -1827,9 +1935,17 @@ async function deleteUser(id){openConfirm('🗑 Delete','Type DELETE to confirm:
 function exportUsersCSV(){var rows=[['Name','Email','Plan','City','Score','Joined']];_filteredU.forEach(function(u){rows.push([u.full_name||'',u.email||'',u.plan||'free',u.city||'',u.career_score||30,fmtDate(u.created_at)]);});var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='users_'+new Date().toISOString().split('T')[0]+'.csv';a.click();toast('CSV exported','success');}
 
 /* ── JOBS ── */
-function genFakeJobs(n){var co=['Google','Razorpay','CRED','Swiggy','Zepto','Flipkart','Meesho'];var titles=['Senior SDE','ML Engineer','Backend Engineer','Product Manager','Data Scientist'];var sts=['approved','approved','approved','pending','pending','rejected'];return Array.from({length:n},function(_,i){return{id:'j'+i,title:rand(titles),company:rand(co),location:rand(['Bangalore','Mumbai','Hyderabad','Pune']),salary_min:randInt(8,18),salary_max:randInt(20,40),type:'Full Time',status:rand(sts),created_at:new Date(Date.now()-Math.random()*30*86400000).toISOString()};});}
-async function loadJobs(){try{_allJobs=await sbFetch('jobs','select=*&order=created_at.desc&limit=300');}catch(e){_allJobs=genFakeJobs(24);}updateJobStats();filterJobsTable();}
-function updateJobStats(){setText('jc-live',_allJobs.filter(function(j){return !j.status||j.status==='approved';}).length);setText('jc-pending',_allJobs.filter(function(j){return j.status==='pending';}).length);setText('jc-expired',_allJobs.filter(function(j){return j.status==='expired';}).length);setText('jc-apps',randInt(20,65));setBadge('badge-jobs',_allJobs.filter(function(j){return j.status==='pending';}).length);}
+/* genFakeJobs removed — real data only */
+async function loadJobs(){
+  try{
+    _allJobs=await sbFetch('jobs','select=*&order=created_at.desc&limit=300');
+  }catch(e){
+    _allJobs=[];
+    showSectionError('jobs-tbody',10,'Could not load jobs — check Supabase RLS settings');
+  }
+  updateJobStats();filterJobsTable();
+}
+function updateJobStats(){setText('jc-live',_allJobs.filter(function(j){return !j.status||j.status==='approved';}).length);setText('jc-pending',_allJobs.filter(function(j){return j.status==='pending';}).length);setText('jc-expired',_allJobs.filter(function(j){return j.status==='expired';}).length);setText('jc-apps','—');setBadge('badge-jobs',_allJobs.filter(function(j){return j.status==='pending';}).length);}
 function filterJobsTable(){var q=(gv('j-search')||'').toLowerCase();var sf=gv('j-status')||'all';var filtered=_allJobs.filter(function(j){return(!q||((j.title||'')+(j.company||'')).toLowerCase().includes(q))&&(sf==='all'||(j.status||'approved')===sf);});renderJobsTable(filtered);}
 function renderJobsTable(jobs){var tbody=document.getElementById('jobs-tbody');if(!tbody)return;if(!jobs.length){tbody.innerHTML='<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--muted)">No jobs found</td></tr>';return;}tbody.innerHTML=jobs.map(function(j){var st=j.status||'approved';var sb='<span class="badge badge-'+(st==='approved'?'active':st==='pending'?'pending':'rejected')+'">'+st+'</span>';var sal=j.salary_min?'₹'+j.salary_min+'–'+j.salary_max+'L':'—';return '<tr><td><input type="checkbox"/></td><td><strong>'+esc(j.title||'—')+'</strong></td><td>'+esc(j.company||'—')+'</td><td>'+esc(j.location||'—')+'</td><td style="color:var(--accent);font-weight:700">'+sal+'</td><td><span class="badge badge-draft">'+esc(j.type||'Full Time')+'</span></td><td style="font-size:12px;color:var(--muted)">'+fmtDate(j.created_at)+'</td><td>'+sb+'</td><td>'+(!j.salary_min||!j.salary_max?'<span style="color:var(--warning)" title="Missing salary">⚠️</span>':'')+'</td><td><div style="display:flex;gap:5px">'+(st!=='approved'?'<button class="btn btn-success btn-xs" onclick="approveJob(\''+j.id+'\')">✅</button>':'')+(st!=='rejected'?'<button class="btn btn-danger btn-xs" onclick="rejectJobRow(\''+j.id+'\')">❌</button>':'')+'<button class="btn btn-ghost btn-xs" onclick="deleteJobRow(\''+j.id+'\')">🗑</button></div></td></tr>';}).join('');}
 async function approveJob(id){try{await sbUpdate('jobs',id,{status:'approved'});var j=_allJobs.find(function(x){return x.id===id;});if(j)j.status='approved';filterJobsTable();updateJobStats();toast('Job approved!','success');await writeAudit('APPROVE','job',id,j&&j.title,'Approved');}catch(e){toast('Failed','error');}}
@@ -1837,10 +1953,18 @@ async function rejectJobRow(id){openConfirm('❌ Reject','Reason:','Enter reason
 async function deleteJobRow(id){openConfirm('🗑 Delete','Permanently delete?',null,'Delete','danger',async function(){try{await sbDelete('jobs',id);_allJobs=_allJobs.filter(function(j){return j.id!==id;});filterJobsTable();updateJobStats();toast('Deleted','success');}catch(e){toast('Failed','error');}});}
 
 /* ── MENTORS ── */
-function genFakeMentors(){return [{id:'m1',name:'Priya Nair',role:'Senior SDE',company:'Google',city:'Bangalore',field:'Technology',rate:500,status:'applied',applied_at:new Date(Date.now()-172800000).toISOString(),email:'priya@google.com',bio:'Ex-Amazon. Helped 40+ candidates crack FAANG. Specialise in system design and DSA.',specialisations:'System Design,DSA,FAANG Prep',linkedin_url:'https://linkedin.com/in/priyanair'},{id:'m2',name:'Arjun Mehta',role:'Data Lead',company:'Razorpay',city:'Bangalore',field:'Data',rate:400,status:'under_review',applied_at:new Date(Date.now()-259200000).toISOString(),email:'arjun@razorpay.com',bio:'Led data teams at 3 startups.',specialisations:'SQL,Python,Data Engineering'},{id:'m3',name:'Sneha Reddy',role:'Product Manager',company:'Swiggy',city:'Bangalore',field:'Product',rate:600,status:'approved',applied_at:new Date(Date.now()-432000000).toISOString(),email:'sneha@swiggy.com',bio:'PM at Swiggy after engineering switch.',specialisations:'Product Strategy,Mock Interviews,Career Switch'},{id:'m4',name:'Rahul Sharma',role:'DevOps Lead',company:'Zepto',city:'Mumbai',field:'Technology',rate:350,status:'rejected',applied_at:new Date(Date.now()-604800000).toISOString(),email:'rahul@zepto.in',bio:'Infrastructure at Zepto.',specialisations:'Kubernetes,AWS,DevOps',rejection_reason:'Insufficient mentoring experience'},{id:'m5',name:'Kavya Iyer',role:'ML Engineer',company:'CRED',city:'Bangalore',field:'Technology',rate:500,status:'on_hold',applied_at:new Date(Date.now()-172800000).toISOString(),email:'kavya@cred.club',bio:'GenAI at CRED.',specialisations:'ML,LLMs,GenAI,Python'}];}
+/* genFakeMentors removed — real data only */
 function calcQS(m){var s=0;if(m.linkedin_url)s+=30;if(m.rate>=300&&m.rate<=800)s+=15;if(m.bio&&m.bio.length>100)s+=10;if(m.specialisations&&m.specialisations.split(',').length>=3)s+=10;if(['Google','Amazon','Microsoft','Flipkart','Swiggy','Razorpay','CRED','PhonePe'].includes(m.company||''))s+=15;return Math.min(s,100);}
 function qsBadge(s){if(s>=80)return '<span style="background:#ECFDF5;color:#065F46;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700">🟢 '+s+' Strong</span>';if(s>=50)return '<span style="background:#FEF9C3;color:#92400E;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700">🟡 '+s+' Good</span>';return '<span style="background:#FEF2F2;color:#991B1B;border-radius:20px;padding:2px 9px;font-size:11px;font-weight:700">🔴 '+s+' Weak</span>';}
-async function loadMentors(){try{_allMentorApps=await sbFetch('mentor_applications','select=*&order=applied_at.desc');}catch(e){_allMentorApps=genFakeMentors();}renderKanban();setBadge('badge-mentors',_allMentorApps.filter(function(m){return m.status==='applied';}).length);}
+async function loadMentors(){
+  try{
+    _allMentorApps=await sbFetch('mentor_applications','select=*&order=applied_at.desc');
+  }catch(e){
+    _allMentorApps=[];
+  }
+  renderKanban();
+  setBadge('badge-mentors',_allMentorApps.filter(function(m){return m.status==='applied';}).length);
+}
 function renderKanban(){var cols=['applied','under_review','on_hold','approved','rejected'];var titles={applied:'📥 Applied',under_review:'👀 Under Review',on_hold:'⭐ On Hold',approved:'✅ Approved',rejected:'❌ Rejected'};var board=document.getElementById('kanban-board');if(!board)return;board.innerHTML=cols.map(function(st){var items=_allMentorApps.filter(function(m){return m.status===st;});return '<div style="background:#F5F3FC;border-radius:12px;padding:12px;min-height:200px" ondragover="event.preventDefault();this.style.background=\'rgba(124,77,255,.08)\'" ondragleave="this.style.background=\'#F5F3FC\'" ondrop="dropOnCol(event,\''+st+'\')"><div style="font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">'+titles[st]+' <span style="background:#fff;border:1px solid var(--border);border-radius:20px;padding:1px 8px;font-size:11px;font-weight:700;color:var(--text)">'+items.length+'</span></div>'+items.map(function(m){var qs=calcQS(m);return '<div draggable="true" ondragstart="event.dataTransfer.setData(\'mid\',\''+m.id+'\')" onclick="openMentorView(\''+m.id+'\')" style="background:#fff;border-radius:10px;padding:13px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);cursor:pointer;border:1.5px solid var(--border)"><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px">'+esc(m.name)+'</div><div style="font-size:11.5px;color:var(--muted);margin-bottom:7px">'+esc(m.role||'')+(m.company?' · '+esc(m.company):'')+'</div><div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:7px">'+(m.field?'<span style="background:#F1F5F9;color:#475569;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:600">'+esc(m.field)+'</span>':'')+(m.rate?'<span style="background:#ECFDF5;color:#065F46;border-radius:20px;padding:2px 8px;font-size:10px;font-weight:600">₹'+m.rate+'</span>':'')+'</div><div style="display:flex;align-items:center;justify-content:space-between">'+qsBadge(qs)+'<span style="font-size:11px;color:var(--muted)">'+relTime(m.applied_at)+'</span></div><div style="display:flex;gap:5px;margin-top:8px">'+(m.status!=='approved'?'<button class="btn btn-success btn-xs" onclick="event.stopPropagation();approveMentor(\''+m.id+'\')">✅</button>':'')+(m.status!=='rejected'?'<button class="btn btn-danger btn-xs" onclick="event.stopPropagation();rejectMentor(\''+m.id+'\')">❌</button>':'')+'</div></div>';}).join('')+'</div>';}).join('');}
 async function dropOnCol(e,st){e.preventDefault();var id=e.dataTransfer.getData('mid');if(!id)return;e.currentTarget.style.background='#F5F3FC';try{await sbUpdate('mentor_applications',id,{status:st});var m=_allMentorApps.find(function(x){return x.id===id;});if(m)m.status=st;renderKanban();toast('→ '+st,'success');await writeAudit('STATUS_CHANGE','mentor_application',id,m&&m.name,'→ '+st);}catch(e2){toast('Failed','error');}}
 function openMentorView(id){var m=_allMentorApps.find(function(x){return x.id===id;});if(!m)return;var qs=calcQS(m);var mt=document.getElementById('mentor-modal-title');if(mt)mt.textContent='Application: '+m.name;var mc=document.getElementById('mentor-modal-content');if(!mc)return;mc.innerHTML='<div style="display:grid;grid-template-columns:1fr 260px;gap:20px"><div><div style="display:flex;align-items:center;gap:14px;margin-bottom:16px"><img src="https://ui-avatars.com/api/?name='+encodeURIComponent(m.name||'M')+'&background=2D1B69&color=fff&size=80&bold=true&rounded=true" style="width:56px;height:56px;border-radius:50%"/><div><div style="font-size:17px;font-weight:800">'+esc(m.name)+'</div><div style="color:var(--muted);font-size:13.5px">'+esc(m.role||'')+(m.company?' · '+esc(m.company):'')+'</div></div></div>'+irow('Email','<a href="mailto:'+esc(m.email||'')+'" style="color:var(--accent)">'+esc(m.email||'—')+'</a>')+irow('City',m.city||'—')+irow('Field',m.field||'—')+irow('Rate',m.rate?'₹'+m.rate+'/session':'—')+(m.linkedin_url?irow('LinkedIn','<a href="'+esc(m.linkedin_url)+'" target="_blank" style="color:var(--accent)">View →</a>'):'')+irow('Applied',fmtDate(m.applied_at))+'<div style="margin-top:13px;padding-top:13px;border-top:1px solid var(--border)"><div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:7px">Bio</div><div style="background:#F9F8FF;border-radius:9px;padding:12px;font-size:13px;line-height:1.7">'+esc(m.bio||'—')+'</div></div><div style="margin-top:12px"><div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:7px">Specialisations</div><div style="display:flex;gap:6px;flex-wrap:wrap">'+((m.specialisations||'').split(',').map(function(s){return '<span style="background:#EDE9FE;color:#4C1D95;border-radius:20px;padding:3px 10px;font-size:11.5px;font-weight:600">'+esc(s.trim())+'</span>';}).join(''))+'</div></div></div><div style="background:#F9F8FF;border-radius:12px;padding:16px"><div style="font-size:13px;font-weight:700;margin-bottom:8px">Quality Score</div>'+qsBadge(qs)+'<div style="margin-top:10px;font-size:12px;line-height:2;color:var(--muted)">'+(m.linkedin_url?'✅':'❌')+' LinkedIn (+30)<br>'+(m.rate>=300&&m.rate<=800?'✅':'⚠️')+' Market rate (+15)<br>'+(m.bio&&m.bio.length>100?'✅':'❌')+' Detailed bio (+10)<br>'+(m.specialisations&&m.specialisations.split(',').length>=3?'✅':'⚠️')+' 3+ specialisations (+10)</div><div style="border-top:1px solid var(--border);margin-top:13px;padding-top:13px"><div style="font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px">Notes</div><textarea id="mnote-'+m.id+'" style="width:100%;min-height:70px;padding:9px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-family:var(--ff);resize:vertical;outline:none;background:#FAFAFE"></textarea><button class="btn btn-ghost btn-sm" style="width:100%;margin-top:6px" onclick="saveAdminNote(\''+esc(m.id)+'\',\'mentor_application\',\'mnote-'+esc(m.id)+'\')">💾 Save</button></div></div></div>';var mf=document.getElementById('mentor-modal-footer');if(mf)mf.innerHTML='<button class="btn btn-ghost" onclick="closeModal(\'mentor-modal\')">Close</button>'+(m.status!=='approved'?'<button class="btn btn-success" onclick="approveMentor(\''+m.id+'\')">✅ Approve</button>':'')+(m.status!=='rejected'?'<button class="btn btn-danger" onclick="rejectMentor(\''+m.id+'\')">❌ Reject</button>':'');openModal('mentor-modal');}
@@ -1849,21 +1973,31 @@ async function rejectMentor(id){openConfirm('❌ Reject','Rejection reason:','e.
 
 /* ── CONTENT ── */
 async function loadContent(){try{_allCourses=await sbFetch('courses','select=*&order=created_at.desc').catch(function(){return[];});}catch(e){_allCourses=[];}renderCoursesTable();}
-function renderCoursesTable(){var tbody=document.getElementById('courses-tbody');if(!tbody)return;var sample=[{id:'c1',title:'Google Data Analytics Professional Certificate',provider:'Google/Coursera',duration:'6 months',level:'Beginner',popularity:1240},{id:'c2',title:'AWS Cloud Practitioner Essentials',provider:'AWS',duration:'6 hours',level:'Beginner',popularity:890},{id:'c3',title:'Machine Learning Specialization',provider:'DeepLearning.AI',duration:'3 months',level:'Intermediate',popularity:760},{id:'c4',title:'React — The Complete Guide',provider:'Udemy',duration:'48 hours',level:'Intermediate',popularity:650},{id:'c5',title:'System Design for Interviews',provider:'Educative',duration:'10 hours',level:'Advanced',popularity:580}];var courses=_allCourses.length?_allCourses:sample;tbody.innerHTML=courses.map(function(c){return '<tr><td><strong>'+esc(c.title||'—')+'</strong></td><td>'+esc(c.provider||'—')+'</td><td>'+esc(c.duration||'—')+'</td><td><span class="badge badge-draft">'+esc(c.level||'—')+'</span></td><td style="font-weight:700;color:var(--accent)">'+(c.popularity||0)+'</td><td><span class="badge badge-active">Active</span></td><td><div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs" onclick="openCourseModal()">✏️</button><button class="btn btn-danger btn-xs" onclick="deleteCourse(\''+esc(c.id)+'\')">🗑</button></div></td></tr>';}).join('');}
+function renderCoursesTable(){var tbody=document.getElementById('courses-tbody');if(!tbody)return;var courses=_allCourses;tbody.innerHTML=courses.map(function(c){return '<tr><td><strong>'+esc(c.title||'—')+'</strong></td><td>'+esc(c.provider||'—')+'</td><td>'+esc(c.duration||'—')+'</td><td><span class="badge badge-draft">'+esc(c.level||'—')+'</span></td><td style="font-weight:700;color:var(--accent)">'+(c.popularity||0)+'</td><td><span class="badge badge-active">Active</span></td><td><div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs" onclick="openCourseModal()">✏️</button><button class="btn btn-danger btn-xs" onclick="deleteCourse(\''+esc(c.id)+'\')">🗑</button></div></td></tr>';}).join('');}
 function openCourseModal(){openModal('course-modal');}
 async function saveCourse(){var data={title:gv('course-title'),provider:gv('course-provider'),level:gv('course-level'),duration:gv('course-duration'),tags:gv('course-tags'),url:gv('course-url'),description:gv('course-desc')};if(!data.title){toast('Title required','warning');return;}try{await sbInsert('courses',[data]);closeModal('course-modal');_loaded['content']=false;loadContent();toast('Course saved','success');}catch(e){toast('Saved (courses table may not exist)','warning');closeModal('course-modal');}}
 async function deleteCourse(id){openConfirm('🗑 Delete','Delete this course?',null,'Delete','danger',async function(){_allCourses=_allCourses.filter(function(c){return c.id!==id;});renderCoursesTable();toast('Removed','success');});}
 
 /* ── COMMUNITY ── */
 async function loadCommunity(){try{var posts=await sbFetch('community_posts','select=*&order=created_at.desc&limit=100');renderCommunityTable(posts);updateCommStats(posts);}catch(e){renderCommunityTable([]);updateCommStats([]);}}
-function updateCommStats(posts){setText('comm-questions',posts.length||randInt(40,80));setText('comm-answers',randInt(80,200));setText('comm-flagged',randInt(0,5));setText('comm-banned',0);}
-function renderCommunityTable(posts){var tbody=document.getElementById('community-tbody');if(!tbody)return;var sample=[{id:'p1',title:'How do I negotiate salary for my first job?',author:'Fresher_Priya',city:'Bangalore',answers:8,upvotes:34,created_at:new Date(Date.now()-3600000*4).toISOString()},{id:'p2',title:'Is ₹14 LPA good for 3 years in Bangalore?',author:'SDE_Arjun',city:'Bangalore',answers:12,upvotes:67,created_at:new Date(Date.now()-3600000*20).toISOString()},{id:'p3',title:'Best way to prepare for FAANG in 6 months?',author:'Aspirant_Kavya',city:'Hyderabad',answers:21,upvotes:112,created_at:new Date(Date.now()-3600000*72).toISOString()}];var data=posts.length?posts:sample;tbody.innerHTML=data.map(function(p){return '<tr><td><strong>'+esc(p.title||'—')+'</strong></td><td>'+esc(p.author||p.user_name||'—')+'</td><td>'+esc(p.city||'—')+'</td><td>'+(p.answers||0)+'</td><td>'+(p.upvotes||p.likes||0)+'</td><td>0</td><td style="font-size:12px;color:var(--muted)">'+relTime(p.created_at)+'</td><td><div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs">📌</button><button class="btn btn-danger btn-xs" onclick="deletePost(\''+esc(p.id)+'\')">🗑</button></div></td></tr>';}).join('');}
+async function updateCommStats(posts){
+  setText('comm-questions',posts.length);
+  /* Real answers count */
+  try{var ans=await sbFetch('community_answers','select=id');setText('comm-answers',ans.length);}catch(e){setText('comm-answers','—');}
+  setText('comm-flagged','0');
+  setText('comm-banned','0');
+}
+function renderCommunityTable(posts){var tbody=document.getElementById('community-tbody');if(!tbody)return;var data=posts;tbody.innerHTML=data.map(function(p){return '<tr><td><strong>'+esc(p.title||'—')+'</strong></td><td>'+esc(p.author||p.user_name||'—')+'</td><td>'+esc(p.city||'—')+'</td><td>'+(p.answers||0)+'</td><td>'+(p.upvotes||p.likes||0)+'</td><td>0</td><td style="font-size:12px;color:var(--muted)">'+relTime(p.created_at)+'</td><td><div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs">📌</button><button class="btn btn-danger btn-xs" onclick="deletePost(\''+esc(p.id)+'\')">🗑</button></div></td></tr>';}).join('');}
 async function deletePost(id){openConfirm('🗑 Delete Post','Delete this post?',null,'Delete','danger',async function(){try{await sbDelete('community_posts',id);toast('Post deleted','success');_loaded['community']=false;loadCommunity();}catch(e){toast('Error','error');}});}
 function addKeyword(){var inp=document.getElementById('kw-input');if(!inp||!inp.value.trim())return;_autoKeywords.push(inp.value.trim());inp.value='';renderKeywords();}
 function renderKeywords(){var el=document.getElementById('keyword-tags');if(!el)return;el.innerHTML=_autoKeywords.map(function(k,i){return '<span style="display:inline-flex;align-items:center;gap:5px;background:#FEF2F2;color:#991B1B;border-radius:20px;padding:4px 12px;font-size:13px;font-weight:600;margin:3px">'+esc(k)+'<button onclick="_autoKeywords.splice('+i+',1);renderKeywords()" style="background:none;border:none;cursor:pointer;font-size:14px;color:#991B1B;line-height:1">×</button></span>';}).join('');}
 
 /* ── EMAIL CAMPAIGNS ── */
-async function loadCampaigns(){try{_allCampaigns=await sbFetch('email_campaigns','select=*&order=created_at.desc');}catch(e){_allCampaigns=[{id:'ec1',name:'June Pro Upsell',subject:'Unlock unlimited Bexi AI',segment:'Free Users',status:'sent',recipients_count:320,opened_count:89,clicked_count:32,sent_at:new Date(Date.now()-86400000*3).toISOString()},{id:'ec2',name:'New Jobs Alert',subject:'🔥 15 new jobs in Bangalore',segment:'Bangalore Users',status:'sent',recipients_count:180,opened_count:76,clicked_count:41,sent_at:new Date(Date.now()-86400000*7).toISOString()},{id:'ec3',name:'Re-engagement',subject:'We miss you!',segment:'Inactive 7+ Days',status:'draft',recipients_count:0,opened_count:0,clicked_count:0}];}renderCampaignsTable();renderEmailSequences();}
+async function loadCampaigns(){
+  try{_allCampaigns=await sbFetch('email_campaigns','select=*&order=created_at.desc');}
+  catch(e){_allCampaigns=[];}
+  renderCampaignsTable();renderEmailSequences();
+}
 function renderCampaignsTable(){var tbody=document.getElementById('campaigns-tbody');if(!tbody)return;tbody.innerHTML=_allCampaigns.map(function(c){var st=c.status||'draft';var sb='<span class="badge badge-'+st+'">'+st+'</span>';var or=c.recipients_count>0?Math.round(c.opened_count/c.recipients_count*100)+'%':'—';var cr=c.recipients_count>0?Math.round(c.clicked_count/c.recipients_count*100)+'%':'—';return '<tr><td><strong>'+esc(c.name||'—')+'</strong></td><td>'+esc(c.segment||'All')+'</td><td>'+sb+'</td><td>'+esc(String(c.recipients_count||0))+'</td><td>'+or+'</td><td>'+cr+'</td><td style="font-size:12px;color:var(--muted)">'+fmtDate(c.sent_at||c.created_at)+'</td><td><div style="display:flex;gap:5px">'+(st==='draft'?'<button class="btn btn-primary btn-xs" onclick="sendCampaignById(\''+c.id+'\')">📨</button>':'')+'<button class="btn btn-danger btn-xs" onclick="deleteCampaignById(\''+esc(c.id)+'\')">🗑</button></div></td></tr>';}).join('');}
 function renderEmailSequences(){var onb=[{day:0,name:'Welcome Email',rate:'68%'},{day:2,name:'Complete Profile',rate:'54%'},{day:5,name:'5 Jobs Matched',rate:'61%'},{day:7,name:'Book a Mentor',rate:'38%'},{day:14,name:'Upgrade to Pro',rate:'22%'}];var re=[{day:7,name:'We Miss You'},{day:10,name:'5 New Jobs in Your City'}];var seqEl=document.getElementById('onboarding-sequence');if(seqEl)seqEl.innerHTML=onb.map(function(e){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:12px"><div style="width:32px;height:32px;border-radius:50%;background:#EFEFF8;color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0">D'+e.day+'</div><div style="font-size:13px;font-weight:600">'+esc(e.name)+'</div></div><div style="display:flex;align-items:center;gap:10px"><span style="font-size:12px;color:var(--success);font-weight:700">'+e.rate+' open</span><button class="btn btn-ghost btn-xs">✏️</button></div></div>';}).join('');var reEl=document.getElementById('reengagement-sequence');if(reEl)reEl.innerHTML=re.map(function(e){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)"><div style="font-size:13px;font-weight:600">'+esc(e.name)+'<div style="font-size:12px;color:var(--muted);font-weight:400">Trigger: no login for '+e.day+' days</div></div><button class="btn btn-ghost btn-xs">✏️</button></div>';}).join('');}
 function openCampaignModal(){_campStep=1;_campDraft={};renderCampaignStep();openModal('campaign-modal');}
@@ -1885,13 +2019,57 @@ async function toggleAnn(id,active){try{await sbUpdate('announcements',id,{is_ac
 async function deleteAnn(id){try{await sbDelete('announcements',id);_loaded['announcements']=false;loadAnnouncements();toast('Deleted','success');}catch(e){toast('Error','error');}}
 
 /* ── REVENUE ── */
-async function loadRevenue(){if(!adminSession||adminSession.role!=='super_admin')return;try{var users=await sbFetch('profiles','select=id,plan&limit=2000').catch(function(){return[];});var pro=users.filter(function(u){return u.plan==='pro';}).length||randInt(25,50);var prem=users.filter(function(u){return u.plan==='premium';}).length||randInt(8,20);var mrr=(pro*499)+(prem*999);setText('rev-mrr',fmtINR(mrr));setText('rev-last',fmtINR(Math.round(mrr*0.88)));setText('rev-growth','+'+randInt(8,22)+'%');setText('rev-arr',fmtINR(mrr*12));}catch(e){}buildRevenueCharts();renderSubsTable();}
-function buildRevenueCharts(){var months=['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May'];var mrrData=months.map(function(_,i){return randInt(15000+i*8000,25000+i*12000);});mkChart('chart-mrr','line',months,[{label:'MRR (₹)',data:mrrData,borderColor:'#7C4DFF',backgroundColor:'rgba(124,77,255,.08)',fill:true,tension:.4}]);mkChart('chart-plans-time','bar',months,[{label:'Free',data:months.map(function(){return randInt(200,420);}),backgroundColor:'#E8E4F3',borderRadius:4},{label:'Pro',data:months.map(function(){return randInt(20,55);}),backgroundColor:'#7C4DFF',borderRadius:4},{label:'Premium',data:months.map(function(){return randInt(5,20);}),backgroundColor:'#FFB300',borderRadius:4}],{scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true}}});}
-function renderSubsTable(){var tbody=document.getElementById('subs-tbody');if(!tbody)return;var names=['Arjun Kumar','Priya Sharma','Rahul Mehta','Kavya Iyer','Vikram Joshi'];tbody.innerHTML=names.map(function(n,i){var plan=i<2?'pro':'premium';return '<tr><td><div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#2D1B69);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">'+initials(n)+'</div><strong>'+n+'</strong></div></td><td><span class="badge badge-featured">'+plan+'</span></td><td style="font-weight:700">'+(plan==='pro'?'₹499':'₹999')+'</td><td>'+fmtDate(new Date(Date.now()-randInt(10,90)*86400000).toISOString())+'</td><td>'+fmtDate(new Date(Date.now()+randInt(3,25)*86400000).toISOString())+'</td><td><span class="badge badge-active">✅ Active</span></td><td><div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs">📧</button></div></td></tr>';}).join('');}
+async function loadRevenue(){if(!adminSession||adminSession.role!=='super_admin')return;try{var users=await sbFetch('profiles','select=id,plan&limit=2000').catch(function(){return[];});var pro=users.filter(function(u){return u.plan==='pro';}).length;
+    var prem=users.filter(function(u){return u.plan==='premium';}).length;
+    var mrr=(pro*499)+(prem*999);
+    setText('rev-mrr',fmtINR(mrr));
+    setText('rev-last','—');
+    setText('rev-growth','—');
+    setText('rev-arr',fmtINR(mrr*12));}catch(e){}buildRevenueCharts();renderSubsTable();}
+async function buildRevenueCharts(){
+  try{
+    var allUsers=await sbFetch('profiles','select=plan,created_at&limit=5000').catch(function(){return[];});
+    var months=[];var mrrData=[];var freeData=[];var proData=[];var premData=[];
+    for(var i=11;i>=0;i--){
+      var d=new Date();d.setDate(1);d.setMonth(d.getMonth()-i);
+      var label=d.toLocaleDateString('en-IN',{month:'short',year:'2-digit'});
+      var start=d.toISOString().split('T')[0];
+      var nextD=new Date(d);nextD.setMonth(nextD.getMonth()+1);
+      var end=nextD.toISOString().split('T')[0];
+      var monthUsers=allUsers.filter(function(u){return u.created_at&&u.created_at>=start&&u.created_at<end;});
+      var p=monthUsers.filter(function(u){return u.plan==='pro';}).length;
+      var pm=monthUsers.filter(function(u){return u.plan==='premium';}).length;
+      var f=monthUsers.filter(function(u){return u.plan!=='pro'&&u.plan!=='premium';}).length;
+      months.push(label);mrrData.push((p*499)+(pm*999));proData.push(p);premData.push(pm);freeData.push(f);
+    }
+    mkChart('chart-mrr','line',months,[{label:'MRR (₹)',data:mrrData,borderColor:'#7C4DFF',backgroundColor:'rgba(124,77,255,.08)',fill:true,tension:.4}]);
+    mkChart('chart-plans-time','bar',months,[{label:'Free',data:freeData,backgroundColor:'#E8E4F3',borderRadius:4},{label:'Pro',data:proData,backgroundColor:'#7C4DFF',borderRadius:4},{label:'Premium',data:premData,backgroundColor:'#FFB300',borderRadius:4}],{scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true}}});
+  }catch(e){mkChart('chart-mrr','line',[],[]);mkChart('chart-plans-time','bar',[],[]);}
+}
+async function renderSubsTable(){
+  var tbody=document.getElementById('subs-tbody');if(!tbody)return;
+  try{
+    var users=await sbFetch('profiles','select=id,full_name,email,plan,created_at&or=(plan.eq.pro,plan.eq.premium)&order=created_at.desc&limit=50').catch(function(){return[];});
+    if(!users.length){tbody.innerHTML='<tr><td colspan="7">'+emptyState('💳','No paid subscribers yet','Users who upgrade to Pro or Premium will appear here')+'</td></tr>';return;}
+    tbody.innerHTML=users.map(function(u){
+      var plan=u.plan||'pro';
+      return '<tr><td><div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#2D1B69);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">'+initials(u.full_name||u.email)+'</div><div><div style="font-weight:600;font-size:13px">'+esc(u.full_name||'—')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(u.email||'')+'</div></div></div></td>'
+        +'<td><span class="badge badge-featured">'+plan+'</span></td>'
+        +'<td style="font-weight:700">'+(plan==='pro'?'₹499':'₹999')+'</td>'
+        +'<td>'+fmtDate(u.created_at)+'</td><td>—</td>'
+        +'<td><span class="badge badge-active">✅ Active</span></td>'
+        +'<td><button class="btn btn-ghost btn-xs" onclick="mailUser(''+esc(u.email||'')+'')">📧</button></td></tr>';
+    }).join('');
+  }catch(e){tbody.innerHTML='<tr><td colspan="7">'+emptyState('⚠️','Could not load subscriptions','Check Supabase RLS settings')+'</td></tr>';}
+}
 function bulkRenewalEmails(){toast('Renewal emails sent','success');}
 
 /* ── COUPONS ── */
-async function loadCoupons(){try{_allCoupons=await sbFetch('coupons','select=*&order=created_at.desc');}catch(e){_allCoupons=[{id:'cp1',code:'LAUNCH50',discount_type:'percent',discount_value:50,max_uses:100,used_count:23,valid_until:new Date(Date.now()+30*86400000).toISOString(),is_active:true},{id:'cp2',code:'STUDENT200',discount_type:'fixed',discount_value:200,max_uses:200,used_count:67,valid_until:new Date(Date.now()+60*86400000).toISOString(),is_active:true},{id:'cp3',code:'FRIEND100',discount_type:'fixed',discount_value:100,max_uses:500,used_count:145,valid_until:new Date(Date.now()+90*86400000).toISOString(),is_active:true}];}renderCouponsTable();}
+async function loadCoupons(){
+  try{_allCoupons=await sbFetch('coupons','select=*&order=created_at.desc');}
+  catch(e){_allCoupons=[];}
+  renderCouponsTable();
+}
 function renderCouponsTable(){var tbody=document.getElementById('coupons-tbody');if(!tbody)return;tbody.innerHTML=_allCoupons.map(function(c){var val=c.discount_type==='percent'?c.discount_value+'% Off':'₹'+c.discount_value+' Off';return '<tr><td><code style="background:#F5F3FC;padding:3px 9px;border-radius:5px;font-weight:700;font-size:13px;color:var(--accent)">'+esc(c.code)+'</code></td><td>'+esc(c.discount_type||'—')+'</td><td style="font-weight:700;color:var(--success)">'+val+'</td><td>'+c.used_count+'/'+c.max_uses+'</td><td style="font-size:12px;color:var(--muted)">'+fmtDate(c.valid_until)+'</td><td>'+(c.is_active?'<span class="badge badge-active">Active</span>':'<span class="badge badge-suspended">Inactive</span>')+'</td><td><div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs" onclick="copyCoupon(\''+esc(c.code)+'\')">📋</button><button class="btn btn-danger btn-xs" onclick="deactivateCoupon(\''+esc(c.id)+'\')">🚫</button></div></td></tr>';}).join('');}
 function openCouponModal(){var el=document.getElementById('cp-code');if(el)el.value='';openModal('coupon-modal');}
 function closeCouponModal(){closeModal('coupon-modal');}
@@ -1901,14 +2079,22 @@ function copyCoupon(code){navigator.clipboard.writeText(code).then(function(){to
 async function deactivateCoupon(id){try{await sbUpdate('coupons',id,{is_active:false});_loaded['coupons']=false;loadCoupons();toast('Deactivated','success');}catch(e){toast('Error','error');}}
 
 /* ── PARTNERSHIPS ── */
-async function loadPartnerships(){try{_allPartnerships=await sbFetch('partnerships','select=*&order=created_at.desc');}catch(e){_allPartnerships=[{id:'p1',type:'college',name:'NIT Bangalore',city:'Bangalore',contact_name:'Dr. Ramesh',contact_email:'placement@nitblr.ac.in',status:'active',users_referred:67,renewal_date:new Date(Date.now()+7*86400000).toISOString()},{id:'p2',type:'college',name:'VTU Belgaum',city:'Belgaum',contact_name:'Prof. Sharma',contact_email:'tnp@vtu.ac.in',status:'negotiating',users_referred:12,renewal_date:new Date(Date.now()+120*86400000).toISOString()}];}renderPartnershipsTable();checkExpiringPartners();}
+async function loadPartnerships(){
+  try{_allPartnerships=await sbFetch('partnerships','select=*&order=created_at.desc');}
+  catch(e){_allPartnerships=[];}
+  renderPartnershipsTable();checkExpiringPartners();
+}
 function renderPartnershipsTable(){var tbody=document.getElementById('colleges-tbody');if(!tbody)return;var colleges=_allPartnerships.filter(function(p){return p.type==='college';});if(!colleges.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No college partnerships yet</td></tr>';return;}tbody.innerHTML=colleges.map(function(p){var exp=p.renewal_date&&new Date(p.renewal_date)<new Date(Date.now()+30*86400000);return '<tr><td><strong>'+esc(p.name)+'</strong></td><td>'+esc(p.city||'—')+'</td><td style="font-size:12.5px">'+esc(p.contact_name||'—')+'<div style="color:var(--muted);font-size:11.5px">'+esc(p.contact_email||'')+'</div></td><td style="font-weight:700">'+(p.users_referred||0)+'</td><td><span class="badge badge-'+(p.status==='active'?'active':'pending')+'">'+esc(p.status||'—')+'</span></td><td style="font-size:12px;color:'+(exp?'var(--warning)':'var(--muted)')+'">'+fmtDate(p.renewal_date)+(exp?' ⚠️':'')+'</td><td><div style="display:flex;gap:5px"><button class="btn btn-ghost btn-xs" onclick="mailUser(\''+esc(p.contact_email||'')+'\')">📧</button></div></td></tr>';}).join('');}
 function checkExpiringPartners(){var exp=_allPartnerships.filter(function(p){return p.renewal_date&&new Date(p.renewal_date)<new Date(Date.now()+30*86400000);});var al=document.getElementById('expiring-alert');if(al)al.style.display=exp.length?'block':'none';}
 function openPartnershipModal(){openModal('partner-modal');}
 async function savePartnership(){var data={type:gv('pt-type'),name:gv('pt-name'),contact_name:gv('pt-contact-name'),contact_email:gv('pt-contact-email'),city:gv('pt-city'),revenue_share_percent:parseInt(gv('pt-revenue'))||0,start_date:gv('pt-start')||null,renewal_date:gv('pt-renewal')||null,agreement_terms:gv('pt-terms'),status:'negotiating'};if(!data.name){toast('Name required','warning');return;}try{await sbInsert('partnerships',[data]);toast('Saved','success');}catch(e){toast('Saved locally','warning');}closeModal('partner-modal');_loaded['partnerships']=false;loadPartnerships();}
 
 /* ── TICKETS ── */
-async function loadTickets(){try{_allTickets=await sbFetch('support_tickets','select=*&order=created_at.desc&limit=200');}catch(e){_allTickets=[{id:'t1',user_name:'Arjun Kumar',user_email:'arjun@gmail.com',type:'bug',priority:'critical',subject:'Payment not processing — error 500',description:'Tried to upgrade to Pro but payment keeps failing.',status:'open',created_at:new Date(Date.now()-7200000).toISOString()},{id:'t2',user_name:'Priya Sharma',user_email:'priya@gmail.com',type:'account_issue',priority:'high',subject:'Cannot reset my password',description:'Reset email never arrives.',status:'in_progress',assigned_to:'Keerthi',created_at:new Date(Date.now()-86400000).toISOString()}];}updateTicketStats();filterTickets();}
+async function loadTickets(){
+  try{_allTickets=await sbFetch('support_tickets','select=*&order=created_at.desc&limit=200');}
+  catch(e){_allTickets=[];}
+  updateTicketStats();filterTickets();
+}
 function updateTicketStats(){setText('tkt-open',_allTickets.filter(function(t){return t.status==='open';}).length);setText('tkt-inprog',_allTickets.filter(function(t){return t.status==='in_progress';}).length);setText('tkt-resolved',_allTickets.filter(function(t){return t.status==='resolved';}).length);setText('tkt-avgtime','18h');setBadge('badge-tickets',_allTickets.filter(function(t){return t.status==='open'||t.status==='in_progress';}).length);}
 function filterTickets(){var tf=gv('tkt-type')||'all';var pf=gv('tkt-priority')||'all';var sf=gv('tkt-status')||'all';var filtered=_allTickets.filter(function(t){return(tf==='all'||t.type===tf)&&(pf==='all'||t.priority===pf)&&(sf==='all'||t.status===sf);});renderTicketsTable(filtered);}
 function renderTicketsTable(tickets){var tbody=document.getElementById('tickets-tbody');if(!tbody)return;if(!tickets.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">No tickets</td></tr>';return;}var pc={critical:'background:#FEF2F2;color:#991B1B',high:'background:#FFF7ED;color:#C2410C',medium:'background:#FEF9C3;color:#92400E',low:'background:#ECFDF5;color:#065F46'};tbody.innerHTML=tickets.map(function(t,i){return '<tr><td style="font-weight:700;color:var(--muted)">#'+(i+1)+'</td><td><div style="font-size:13px;font-weight:600">'+esc(t.user_name||'—')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(t.user_email||'')+'</div></td><td><span class="badge badge-draft" style="font-size:10.5px">'+esc(t.type||'—')+'</span></td><td><span class="badge" style="'+(pc[t.priority]||'background:#F3F4F6;color:#374151')+'">'+esc(t.priority||'medium')+'</span></td><td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><strong>'+esc(t.subject||'—')+'</strong></td><td style="font-size:12px;color:var(--muted)">'+relTime(t.created_at)+'</td><td style="font-size:12.5px">'+esc(t.assigned_to||'Unassigned')+'</td><td><span class="badge badge-'+(t.status==='open'?'rejected':t.status==='in_progress'?'pending':t.status==='resolved'?'active':'suspended')+'">'+esc(t.status||'open')+'</span></td><td><div style="display:flex;gap:5px"><button class="btn btn-primary btn-xs" onclick="openTicket(\''+esc(t.id)+'\')">👁 View</button></div></td></tr>';}).join('');}
@@ -1917,36 +2103,133 @@ async function updateTicketStatus(id,status){try{await sbUpdate('support_tickets
 function replyTicket(id,email){var txt=gv('tkt-reply-'+id);if(!txt.trim()){toast('Write a reply first','warning');return;}if(email)window.open('mailto:'+email+'?subject='+encodeURIComponent('Re: Support Ticket — Belongix')+'&body='+encodeURIComponent(txt),'_blank');toast('Reply email opened','success');}
 
 /* ── REFUNDS ── */
-async function loadRefunds(){try{_allRefunds=await sbFetch('refund_requests','select=*&order=created_at.desc');}catch(e){_allRefunds=[{id:'r1',user_name:'Sneha Patel',user_email:'sneha@gmail.com',plan:'pro',amount:499,reason:'Service not as expected',status:'pending',created_at:new Date(Date.now()-86400000).toISOString()},{id:'r2',user_name:'Vikram Singh',user_email:'vikram@gmail.com',plan:'premium',amount:999,reason:'Accidentally purchased',status:'pending',created_at:new Date(Date.now()-172800000).toISOString()}];}renderRefundsTable();setBadge('badge-refunds',_allRefunds.filter(function(r){return r.status==='pending';}).length);}
+async function loadRefunds(){
+  try{_allRefunds=await sbFetch('refund_requests','select=*&order=created_at.desc');}
+  catch(e){_allRefunds=[];}
+  renderRefundsTable();
+  setBadge('badge-refunds',_allRefunds.filter(function(r){return r.status==='pending';}).length);
+}
 function renderRefundsTable(){var tbody=document.getElementById('refunds-tbody');if(!tbody)return;tbody.innerHTML=_allRefunds.map(function(r){return '<tr><td><div style="font-weight:600">'+esc(r.user_name||'—')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(r.user_email||'')+'</div></td><td><span class="badge badge-draft">'+esc(r.plan||'—')+'</span></td><td style="font-weight:700;color:var(--accent)">₹'+esc(String(r.amount||0))+'</td><td style="font-size:12.5px;max-width:160px">'+esc(r.reason||'—')+'</td><td style="font-size:12px;color:var(--muted)">'+relTime(r.created_at)+'</td><td><span class="badge badge-'+(r.status==='approved'?'active':r.status==='rejected'?'rejected':'pending')+'">'+esc(r.status||'pending')+'</span></td><td><div style="display:flex;gap:5px">'+(r.status==='pending'?'<button class="btn btn-success btn-xs" onclick="approveRefund(\''+esc(r.id)+'\','+esc(String(r.amount||0))+')">✅</button><button class="btn btn-danger btn-xs" onclick="rejectRefund(\''+esc(r.id)+'\')">❌</button>':'')+'</div></td></tr>';}).join('');}
 async function approveRefund(id,amount){openConfirm('✅ Approve Refund','Approve refund of ₹'+amount+'?','Razorpay / UPI / Bank Transfer','Approve','success',async function(method){try{await sbUpdate('refund_requests',id,{status:'approved',reviewed_by:adminSession.name,admin_notes:'Via '+(method||'manual'),resolved_at:new Date().toISOString()});var r=_allRefunds.find(function(x){return x.id===id;});if(r)r.status='approved';renderRefundsTable();setBadge('badge-refunds',_allRefunds.filter(function(x){return x.status==='pending';}).length);toast('Approved. Process the actual payment.','success');await writeAudit('APPROVE','refund',id,'','₹'+amount+' via '+(method||'manual'));}catch(e){toast('Error','error');}});}
 async function rejectRefund(id){openConfirm('❌ Reject','Select reason:','Beyond 7-day window / Session used','Reject','danger',async function(reason){try{await sbUpdate('refund_requests',id,{status:'rejected',reviewed_by:adminSession.name,admin_notes:reason||'Policy does not cover','resolved_at':new Date().toISOString()});var r=_allRefunds.find(function(x){return x.id===id;});if(r)r.status='rejected';renderRefundsTable();setBadge('badge-refunds',_allRefunds.filter(function(x){return x.status==='pending';}).length);toast('Rejected','success');}catch(e){toast('Error','error');}});}
 
 /* ── BEXI AI MONITOR ── */
-async function loadBexi(){setText('bexi-today',randInt(180,340));setText('bexi-month',randInt(4200,9000));setText('bexi-avg','4.2');setText('bexi-split','72% Free / 28% Pro');buildBexiCharts();renderBexiTopics();renderBexiCost();loadBexiPrompt();}
-function buildBexiCharts(){var days30=[],hours24=[];for(var i=29;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);days30.push({l:d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}),v:randInt(60,350)});}for(var h=0;h<24;h++)hours24.push({l:h+':00',v:h>=9&&h<=22?randInt(20,80):randInt(2,15)});mkChart('chart-bexi-daily','line',days30.map(function(d){return d.l;}),[{label:'Questions',data:days30.map(function(d){return d.v;}),borderColor:'#7C4DFF',backgroundColor:'rgba(124,77,255,.08)',fill:true,tension:.4,pointRadius:0}]);mkChart('chart-bexi-hours','bar',hours24.map(function(h){return h.l;}),[{label:'Queries',data:hours24.map(function(h){return h.v;}),backgroundColor:'rgba(124,77,255,.6)',borderRadius:3}]);}
-function renderBexiTopics(){var el=document.getElementById('bexi-topics');if(!el)return;var topics=[['salary negotiation',234],['switch to data science',189],['FAANG preparation',156],['resume tips',143],['remote jobs India',127],['Python career path',118],['AWS certification',98],['PM interview prep',87]];el.innerHTML=topics.map(function(t){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)"><span style="font-size:13.5px">'+esc(t[0])+'</span><span style="font-size:12px;font-weight:700;color:var(--accent)">'+t[1]+' queries</span></div>';}).join('');}
-function renderBexiCost(){var el=document.getElementById('bexi-cost');if(!el)return;var today=randInt(45,85),monthly=randInt(800,1500);el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px"><div style="background:#F9F8FF;border-radius:10px;padding:14px;text-align:center"><div style="font-size:22px;font-weight:800;color:var(--accent)">₹'+today+'</div><div style="font-size:12px;color:var(--muted)">Today</div></div><div style="background:#F9F8FF;border-radius:10px;padding:14px;text-align:center"><div style="font-size:22px;font-weight:800">₹'+monthly+'</div><div style="font-size:12px;color:var(--muted)">Monthly Projected</div></div></div><div style="font-size:13px;color:var(--muted)">Alert threshold: ₹2,000/day</div><div style="margin-top:10px;background:#ECFDF5;border-radius:9px;padding:11px;font-size:13px;color:#065F46;font-weight:600">✅ API costs within normal range</div>';}
+async function loadBexi(){
+  try{
+    /* Count Bexi usage from audit_log where action='BEXI_QUERY' */
+    var today=new Date().toISOString().split('T')[0];
+    var monthStart=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().split('T')[0];
+    var[todayLogs,monthLogs,allUsers]=await Promise.all([
+      sbFetch('audit_log','action=eq.BEXI_QUERY&created_at=gte.'+today+'T00:00:00&select=id').catch(function(){return[];}),
+      sbFetch('audit_log','action=eq.BEXI_QUERY&created_at=gte.'+monthStart+'T00:00:00&select=id').catch(function(){return[];}),
+      sbFetch('profiles','select=id,plan&limit=2000').catch(function(){return[];})
+    ]);
+    setText('bexi-today',todayLogs.length||'0');
+    setText('bexi-month',monthLogs.length||'0');
+    var proUsers=allUsers.filter(function(u){return u.plan==='pro'||u.plan==='premium';}).length;
+    var freeUsers=allUsers.length-proUsers;
+    setText('bexi-split',freeUsers+' Free / '+proUsers+' Pro');
+    /* Avg per user per day (this month) */
+    var daysInMonth=new Date().getDate();
+    var avg=allUsers.length>0?(monthLogs.length/(allUsers.length*daysInMonth)).toFixed(1):'0';
+    setText('bexi-avg',avg);
+  }catch(e){
+    setText('bexi-today','0');setText('bexi-month','0');setText('bexi-avg','0');setText('bexi-split','—');
+  }
+  buildBexiCharts();renderBexiTopics();renderBexiCost();loadBexiPrompt();
+}
+async function buildBexiCharts(){
+  try{
+    var thirtyDaysAgo=new Date();thirtyDaysAgo.setDate(thirtyDaysAgo.getDate()-30);
+    var logs=await sbFetch('audit_log','action=eq.BEXI_QUERY&created_at=gte.'+thirtyDaysAgo.toISOString()+'&select=created_at&order=created_at.asc').catch(function(){return[];});
+    var labels=[],counts=[];
+    for(var i=29;i>=0;i--){
+      var d=new Date();d.setDate(d.getDate()-i);
+      labels.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));
+      var ds=d.toISOString().split('T')[0];
+      counts.push(logs.filter(function(l){return l.created_at&&l.created_at.startsWith(ds);}).length);
+    }
+    mkChart('chart-bexi-daily','line',labels,[{label:'Questions',data:counts,borderColor:'#7C4DFF',backgroundColor:'rgba(124,77,255,.08)',fill:true,tension:.4,pointRadius:0}]);
+    /* Hours breakdown */
+    var hourCounts=Array(24).fill(0);
+    logs.forEach(function(l){if(l.created_at){var h=new Date(l.created_at).getHours();hourCounts[h]++;}});
+    mkChart('chart-bexi-hours','bar',Array.from({length:24},function(_,h){return h+':00';}),[{label:'Queries',data:hourCounts,backgroundColor:'rgba(124,77,255,.6)',borderRadius:3}]);
+  }catch(e){
+    mkChart('chart-bexi-daily','line',[],[]);
+    mkChart('chart-bexi-hours','bar',[],[]);
+  }
+}
+async function renderBexiTopics(){
+  var el=document.getElementById('bexi-topics');if(!el)return;
+  try{
+    var logs=await sbFetch('audit_log','action=eq.BEXI_QUERY&select=details&order=created_at.desc&limit=500').catch(function(){return[];});
+    if(!logs.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">No Bexi query data yet. Queries will appear here once users start using Bexi AI.</div>';return;}
+    /* Count keyword frequency from details field */
+    var freq={};
+    logs.forEach(function(l){
+      var words=(l.details||'').toLowerCase().split(/\s+/);
+      words.forEach(function(w){if(w.length>4){freq[w]=(freq[w]||0)+1;}});
+    });
+    var sorted=Object.keys(freq).sort(function(a,b){return freq[b]-freq[a];}).slice(0,10);
+    el.innerHTML=sorted.length?sorted.map(function(k){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)"><span style="font-size:13.5px">'+esc(k)+'</span><span style="font-size:12px;font-weight:700;color:var(--accent)">'+freq[k]+' queries</span></div>';}).join(''):'<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Not enough data yet</div>';
+  }catch(e){
+    el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">Could not load topic data</div>';
+  }
+}
+async function renderBexiCost(){
+  var el=document.getElementById('bexi-cost');if(!el)return;
+  try{
+    var today=new Date().toISOString().split('T')[0];
+    var monthStart=new Date(new Date().getFullYear(),new Date().getMonth(),1).toISOString().split('T')[0];
+    var[todayQ,monthQ]=await Promise.all([
+      sbFetch('audit_log','action=eq.BEXI_QUERY&created_at=gte.'+today+'T00:00:00&select=id').catch(function(){return[];}),
+      sbFetch('audit_log','action=eq.BEXI_QUERY&created_at=gte.'+monthStart+'T00:00:00&select=id').catch(function(){return[];})
+    ]);
+    /* Approx cost: $0.003 per query × 83 INR/USD */
+    var todayCost=Math.round(todayQ.length*0.003*83);
+    var monthCost=Math.round(monthQ.length*0.003*83);
+    el.innerHTML='<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">'
+      +'<div style="background:#F9F8FF;border-radius:10px;padding:14px;text-align:center"><div style="font-size:22px;font-weight:800;color:var(--accent)">₹'+todayCost+'</div><div style="font-size:12px;color:var(--muted)">Today ('+todayQ.length+' queries)</div></div>'
+      +'<div style="background:#F9F8FF;border-radius:10px;padding:14px;text-align:center"><div style="font-size:22px;font-weight:800">₹'+monthCost+'</div><div style="font-size:12px;color:var(--muted)">This month ('+monthQ.length+' queries)</div></div>'
+      +'</div>'
+      +'<div style="font-size:13px;color:var(--muted)">~₹0.25 per query · Alert threshold: ₹2,000/day</div>'
+      +'<div style="margin-top:10px;background:'+(todayCost>2000?'#FEF2F2':'#ECFDF5')+';border-radius:9px;padding:11px;font-size:13px;color:'+(todayCost>2000?'#991B1B':'#065F46')+';font-weight:600">'
+      +(todayCost>2000?'⚠️ Daily cost exceeds ₹2,000 — consider rate limiting':'✅ API costs within normal range')+'</div>';
+  }catch(e){
+    el.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">No Bexi usage data yet — usage is tracked when users ask Bexi questions</div>';
+  }
+}
 async function loadBexiPrompt(){try{var rows=await sbFetch('settings','key=eq.bexi_system_prompt&select=value');if(rows&&rows[0]){var el=document.getElementById('bexi-prompt');if(el)el.value=rows[0].value;}}catch(e){}var ta=document.getElementById('bexi-prompt');if(ta&&!ta.value)ta.value='You are Bexi, AI career guide built by Belongix for Indian professionals. India 2026 job market expert — salaries in LPA, top companies (Swiggy, Razorpay, Google India, Infosys, TCS, CRED, Zepto, PhonePe, Meesho), skills (Python, React, SQL, AWS, GenAI, LangChain). Always give specific India-focused advice. Warm, direct, encouraging. End every response with one bold next step. Under 100 words. 1-2 emojis max.';}
 async function saveBexiPrompt(){var prompt=(document.getElementById('bexi-prompt')||{}).value||'';try{var rows=await sbFetch('settings','key=eq.bexi_system_prompt');if(rows&&rows.length){await sbUpdate('settings','bexi_system_prompt',{value:prompt,updated_by:adminSession.name});}else{await sbInsert('settings',[{key:'bexi_system_prompt',value:prompt,updated_by:adminSession.name}]);}toast('Prompt saved and deployed','success');await writeAudit('MODIFY','settings',null,'bexi_prompt','System prompt updated');}catch(e){toast('Saved locally','warning');}}
 function testBexiPrompt(){window.open('dashboard.html','_blank');toast('Opening dashboard to test Bexi AI','success');}
 async function saveBexiLimits(){var freeLimit=parseInt(gv('bexi-free-limit'))||10;try{var rows=await sbFetch('settings','key=eq.free_bexi_limit');if(rows&&rows.length){await sbUpdate('settings','free_bexi_limit',{value:String(freeLimit),updated_by:adminSession.name});}else{await sbInsert('settings',[{key:'free_bexi_limit',value:String(freeLimit),updated_by:adminSession.name}]);}toast('Rate limits saved','success');}catch(e){toast('Saved locally','warning');}}
 
 /* ── TEAM ── */
-async function loadTeam(){try{_allTeam=await sbFetch('admin_users','select=*&order=created_at.asc');}catch(e){_allTeam=[{id:adminSession&&adminSession.id||'t0',name:adminSession&&adminSession.name||'Keerthi',role:'super_admin',department:'Founder',email:adminSession&&adminSession.email||'admin@belongix.in',is_active:true,created_at:new Date(Date.now()-180*86400000).toISOString()}];}renderTeamGrid();}
+async function loadTeam(){
+  try{_allTeam=await sbFetch('admin_users','select=*&order=created_at.asc');}
+  catch(e){
+    /* If Supabase unavailable, show only current logged-in admin */
+    _allTeam=adminSession?[{id:adminSession.id,name:adminSession.name,role:adminSession.role,department:adminSession.dept||'Founder',email:adminSession.email,is_active:true,created_at:new Date().toISOString()}]:[];
+  }
+  renderTeamGrid();
+}
 function renderTeamGrid(){var el=document.getElementById('team-grid');if(!el)return;var rmap={super_admin:{lbl:'Super Admin',cls:'role-super'},manager:{lbl:'Manager',cls:'role-manager'},support:{lbl:'Support',cls:'role-support'}};el.innerHTML=_allTeam.map(function(m){var rv=rmap[m.role]||{lbl:m.role,cls:'role-support'};return '<div style="background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:22px;text-align:center"><div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#7C4DFF,#2D1B69);color:#fff;font-size:18px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px">'+initials(m.name)+'</div><div style="font-size:15px;font-weight:700;margin-bottom:4px">'+esc(m.name)+'</div><div class="sb-user-role '+rv.cls+'" style="margin:0 auto 8px;display:inline-block">'+rv.lbl+'</div><div style="font-size:12px;color:var(--muted);margin-bottom:4px">'+esc(m.department||'—')+'</div><div style="font-size:12px;color:var(--muted);margin-bottom:14px">'+esc(m.email||'—')+'</div><div style="font-size:11.5px;color:'+(m.is_active?'var(--success)':'var(--danger)')+';font-weight:600;margin-bottom:12px">'+(m.is_active?'🟢 Active':'🔴 Inactive')+'</div><div style="display:flex;gap:7px;justify-content:center">'+(m.id!==adminSession.id?'<button class="btn btn-danger btn-sm" onclick="deactivateTeam(\''+esc(m.id)+'\')">🔴 Deactivate</button>':'<button class="btn btn-ghost btn-sm" onclick="showSection(\'settings\')">✏️ Edit Profile</button>')+'</div></div>';}).join('');}
 function openTeamModal(){openModal('team-modal');}
 async function createTeamMember(){var name=gv('tm-name'),email=gv('tm-email'),role=gv('tm-role'),dept=gv('tm-dept'),phone=gv('tm-phone');if(!name||!email){toast('Name and email required','warning');return;}var tempPass=genCode()+randInt(10,99)+'!';var perms={approve_mentors:(document.getElementById('perm-approve-mentor')||{}).checked,approve_jobs:(document.getElementById('perm-approve-jobs')||{}).checked,view_users:(document.getElementById('perm-view-users')||{}).checked,email_users:(document.getElementById('perm-email-users')||{}).checked,community:(document.getElementById('perm-community')||{}).checked,tickets:(document.getElementById('perm-tickets')||{}).checked};try{await sbInsert('admin_users',[{name:name,email:email,password_hash:tempPass,role:role,department:dept,phone:phone,permissions:perms,is_active:true}]);window.open('mailto:'+email+'?subject='+encodeURIComponent('You\'ve been added to Belongix Admin Team')+'&body='+encodeURIComponent('Hi '+name+',\n\nYou\'ve been added to the Belongix Admin Team.\n\nLogin: '+email+'\nTemporary Password: '+tempPass+'\nAdmin Portal: https://www.belongix.in/admin-bx2026.html\n\nChange your password on first login.\n\n— Belongix Founder'),'_blank');toast('Team member created! Login details emailed.','success');await writeAudit('CREATE_ADMIN','admin',email,name,'Added: '+role);}catch(e){toast('Error creating team member','error');}closeModal('team-modal');_loaded['team']=false;loadTeam();}
 async function deactivateTeam(id){openConfirm('🔴 Deactivate','Remove admin access?',null,'Deactivate','danger',async function(){try{await sbUpdate('admin_users',id,{is_active:false});_loaded['team']=false;loadTeam();toast('Account deactivated','success');await writeAudit('DEACTIVATE','admin',id,'','Deactivated');}catch(e){toast('Error','error');}});}
 
 /* ── AUDIT LOG ── */
-async function loadAudit(){try{_allAudit=await sbFetch('audit_log','select=*&order=created_at.desc&limit=500');}catch(e){_allAudit=getSampleActivity().concat(getSampleActivity());}filterAuditTable();}
+async function loadAudit(){
+  try{_allAudit=await sbFetch('audit_log','select=*&order=created_at.desc&limit=500');}
+  catch(e){_allAudit=[];}
+  filterAuditTable();
+}
 function filterAuditTable(){var q=(gv('audit-search')||'').toLowerCase();var af=gv('audit-action')||'all';var filtered=_allAudit.filter(function(a){var txt=((a.admin_name||'')+(a.action||'')+(a.details||'')+(a.target_name||'')).toLowerCase();return(!q||txt.includes(q))&&(af==='all'||a.action===af);});renderAuditTable(filtered);}
 function renderAuditTable(items){var tbody=document.getElementById('audit-tbody');if(!tbody)return;var rc={APPROVE:'background:#ECFDF5',REJECT:'background:#FEF2F2',DELETE:'background:#FEF2F2',SUSPEND:'background:#FFF7ED',LOGIN:'background:#EEF2FF',MODIFY:'background:#FEF9C3'};tbody.innerHTML=items.map(function(a){return '<tr style="'+(rc[a.action]||'')+'"><td style="font-size:11.5px;white-space:nowrap">'+fmtDT(a.created_at)+'</td><td><strong>'+esc(a.admin_name||'System')+'</strong></td><td><span class="badge badge-draft" style="font-size:10px">'+esc(a.admin_role||'—')+'</span></td><td><code style="font-size:11.5px;background:rgba(0,0,0,.06);padding:2px 7px;border-radius:4px">'+esc(a.action||'—')+'</code></td><td>'+esc(a.target_name||a.target_type||'—')+'</td><td style="font-size:12.5px;color:var(--muted)">'+esc(a.details||'—')+'</td><td style="font-size:11.5px;color:var(--muted)">'+esc(a.ip_address||'—')+'</td></tr>';}).join('');setText('audit-count',items.length+' entries');}
 function exportAuditCSV(){var rows=[['Timestamp','Admin','Role','Action','Target','Details']];_allAudit.forEach(function(a){rows.push([fmtDT(a.created_at),a.admin_name||'',a.admin_role||'',a.action||'',a.target_name||'',a.details||'']);});var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='audit_log_'+new Date().toISOString().split('T')[0]+'.csv';a.click();toast('Audit exported','success');}
 
 /* ── SECURITY ── */
-async function loadSecurity(){if(!adminSession||adminSession.role!=='super_admin')return;try{var logs=await sbFetch('security_log','select=*&order=created_at.desc&limit=100').catch(function(){return[];});var failed=logs.filter(function(l){return !l.success&&new Date(l.created_at).toDateString()===new Date().toDateString();});setText('sec-failed',failed.length);setText('sec-suspicious',randInt(0,3));setText('sec-sessions',1);setText('sec-devices',randInt(0,2));renderFailedLogins(failed.slice(0,20));renderActiveSessions();}catch(e){}}
+async function loadSecurity(){if(!adminSession||adminSession.role!=='super_admin')return;try{var logs=await sbFetch('security_log','select=*&order=created_at.desc&limit=100').catch(function(){return[];});var failed=logs.filter(function(l){return !l.success&&new Date(l.created_at).toDateString()===new Date().toDateString();});setText('sec-failed',failed.length);setText('sec-suspicious','0');setText('sec-sessions','1');setText('sec-devices','0');renderFailedLogins(failed.slice(0,20));renderActiveSessions();}catch(e){}}
 function renderFailedLogins(logs){var tbody=document.getElementById('failed-logins-tbody');if(!tbody)return;if(!logs.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--muted)">No failed logins today ✅</td></tr>';return;}tbody.innerHTML=logs.map(function(l){return '<tr><td>'+esc(l.email||'—')+'</td><td style="font-size:12px">'+esc(l.ip_address||'—')+'</td><td style="font-size:12px;color:var(--muted)">'+relTime(l.created_at)+'</td><td>1</td><td><button class="btn btn-danger btn-xs">🚫 Block IP</button></td></tr>';}).join('');}
 function renderActiveSessions(){var tbody=document.getElementById('active-sessions-tbody');if(!tbody)return;var rmap={super_admin:'Super Admin',manager:'Manager',support:'Support'};tbody.innerHTML='<tr><td><strong>'+esc(adminSession.name)+'</strong></td><td><span class="badge badge-rejected">'+esc(rmap[adminSession.role]||adminSession.role)+'</span></td><td style="font-size:12px">Current</td><td style="font-size:12px">'+navigator.platform+'</td><td style="font-size:12px;color:var(--muted)">'+new Date(adminSession.loginTime).toLocaleTimeString('en-IN')+'</td><td><span class="badge badge-active">Current Session</span></td></tr>';}
 async function saveSecuritySettings(){var timeout=parseInt(gv('sec-timeout'))||120;SESSION_TIMEOUT=timeout*60*1000;try{var rows=await sbFetch('settings','key=eq.session_timeout_minutes');if(rows&&rows.length){await sbUpdate('settings','session_timeout_minutes',{value:String(timeout),updated_by:adminSession.name});}else{await sbInsert('settings',[{key:'session_timeout_minutes',value:String(timeout),updated_by:adminSession.name}]);}toast('Security settings saved','success');}catch(e){toast('Saved locally','warning');}}
