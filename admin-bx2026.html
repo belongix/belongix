@@ -641,6 +641,12 @@ body.dark .health-red{background:#2A0A0A;border-color:#4D1515}
       </div>
       <button class="lf-btn" id="lf-btn" onclick="doLogin()">Sign In →</button>
       <a class="lf-forgot" onclick="alert('Contact the super admin to reset your password.')">Forgot password?</a>
+      <div id="lf-hint" style="margin-top:20px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#065F46;line-height:1.6">
+        <strong>Default credentials:</strong><br>
+        📧 admin@belongix.in<br>
+        🔑 belongix@admin2026<br>
+        <span style="color:#6B7280;font-size:11.5px;margin-top:4px;display:block">Run the SQL setup in Supabase to enable full features</span>
+      </div>
     </div>
   </div>
 </div>
@@ -1586,32 +1592,105 @@ async function writeAudit(action,tType,tId,tName,details){if(!adminSession)retur
 async function writeSecLog(email,success,details){try{await sbInsert('security_log',[{event_type:'admin_login',email:email,success:success,details:details}]);}catch(e){}}
 
 /* ── AUTH ── */
+/* ── LOCAL ADMIN ACCOUNTS (works even if Supabase table doesn't exist yet) ── */
+var LOCAL_ADMINS=[
+  {id:'local-001',email:'admin@belongix.in',password_hash:'belongix@admin2026',name:'Keerthi',role:'super_admin',department:'Founder',is_active:true,failed_attempts:0},
+  {id:'local-002',email:'keerthireddykv32@gmail.com',password_hash:'belongix@admin2026',name:'Keerthi Reddy',role:'super_admin',department:'Founder',is_active:true,failed_attempts:0}
+];
+
 async function doLogin(){
-  var email=(gv('lf-email')||'').toLowerCase(),pass=gv('lf-pass');
+  var email=(gv('lf-email')||'').toLowerCase().trim();
+  var pass=(document.getElementById('lf-pass')||{}).value||'';
   var btn=document.getElementById('lf-btn');
-  if(!email||!pass){showLoginErr('Enter email and password');return;}
+  if(!email||!pass){showLoginErr('Please enter your email and password');return;}
   btn.disabled=true;btn.textContent='Signing in…';
   var errEl=document.getElementById('lf-err');if(errEl)errEl.style.display='none';
-  try{
-    var rows=await sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&is_active=eq.true&select=*');
-    var admin=rows&&rows[0];
-    if(!admin){showLoginErr('No admin account found');await writeSecLog(email,false,'Not found');resetBtn();return;}
-    if(admin.locked_until&&new Date(admin.locked_until)>new Date()){var mins=Math.ceil((new Date(admin.locked_until)-Date.now())/60000);showLoginErr('Locked — try again in '+mins+' min');resetBtn();return;}
-    var valid=(pass===admin.password_hash);
-    if(!valid){try{var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass)))).map(function(b){return b.toString(16).padStart(2,'0');}).join('');valid=(hash===admin.password_hash);}catch(e){}}
-    if(!valid){
-      var att=(admin.failed_attempts||0)+1;var upd={failed_attempts:att};
-      if(att>=5){upd.locked_until=new Date(Date.now()+30*60000).toISOString();showLoginErr('5 failed attempts — locked for 30 minutes');}
-      else{showLoginErr('Wrong password — '+(5-att)+' attempts left');}
-      await sbUpdate('admin_users',admin.id,upd);await writeSecLog(email,false,'Wrong pw #'+att);resetBtn();return;
+
+  /* ── STEP 1: Try local accounts first (instant, no network needed) ── */
+  var localAdmin=LOCAL_ADMINS.find(function(a){return a.email===email&&a.is_active;});
+  if(localAdmin){
+    if(pass===localAdmin.password_hash){
+      /* Local login success */
+      adminSession={id:localAdmin.id,name:localAdmin.name,role:localAdmin.role,email:localAdmin.email,dept:localAdmin.department,loginTime:Date.now(),isLocal:true};
+      sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
+      /* Hide the hint card permanently after first login */
+      localStorage.setItem('bx_admin_hint_dismissed','1');
+      /* Try to sync last_login to Supabase (non-blocking) */
+      sbInsert('audit_log',[{admin_id:localAdmin.id,admin_name:localAdmin.name,admin_role:localAdmin.role,action:'LOGIN',details:'Local admin signed in'}]).catch(function(){});
+      launchAdmin();
+      return;
+    } else {
+      showLoginErr('Wrong password — check your credentials');
+      resetBtn();
+      return;
     }
-    await sbUpdate('admin_users',admin.id,{failed_attempts:0,last_login:new Date().toISOString()});
-    await writeSecLog(email,true,'Success');
+  }
+
+  /* ── STEP 2: Try Supabase admin_users table ── */
+  try{
+    var rows=await Promise.race([
+      sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&is_active=eq.true&select=*'),
+      new Promise(function(_,reject){setTimeout(function(){reject(new Error('timeout'));},8000);})
+    ]);
+    var admin=rows&&rows[0];
+
+    if(!admin){
+      showLoginErr('No admin account found for this email');
+      await writeSecLog(email,false,'Not found').catch(function(){});
+      resetBtn();return;
+    }
+    if(admin.locked_until&&new Date(admin.locked_until)>new Date()){
+      var mins=Math.ceil((new Date(admin.locked_until)-Date.now())/60000);
+      showLoginErr('Account locked — try again in '+mins+' minutes');
+      resetBtn();return;
+    }
+
+    /* Password check — plain text OR SHA-256 hash */
+    var valid=(pass===admin.password_hash);
+    if(!valid){
+      try{
+        var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass))))
+          .map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+        valid=(hash===admin.password_hash);
+      }catch(he){}
+    }
+
+    if(!valid){
+      var att=(admin.failed_attempts||0)+1;
+      var upd={failed_attempts:att};
+      if(att>=5){
+        upd.locked_until=new Date(Date.now()+30*60000).toISOString();
+        showLoginErr('5 failed attempts — account locked for 30 minutes');
+      } else {
+        showLoginErr('Wrong password — '+(5-att)+' attempt'+(5-att!==1?'s':'')+' remaining');
+      }
+      sbUpdate('admin_users',admin.id,upd).catch(function(){});
+      writeSecLog(email,false,'Wrong pw #'+att).catch(function(){});
+      resetBtn();return;
+    }
+
+    /* ── Success ── */
+    sbUpdate('admin_users',admin.id,{failed_attempts:0,last_login:new Date().toISOString()}).catch(function(){});
+    writeSecLog(email,true,'Login success').catch(function(){});
     adminSession={id:admin.id,name:admin.name,role:admin.role,email:admin.email,dept:admin.department,loginTime:Date.now()};
     sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-    await writeAudit('LOGIN',null,null,admin.name,'Admin signed in');
+    writeAudit('LOGIN',null,null,admin.name,'Admin signed in').catch(function(){});
     launchAdmin();
-  }catch(e){showLoginErr('Connection error');console.warn(String(e.message||e));resetBtn();}
+
+  }catch(e){
+    var errMsg=String(e.message||e);
+    if(errMsg.includes('timeout')){
+      showLoginErr('Connection timed out — check your internet or try again');
+    } else if(errMsg.includes('403')||errMsg.includes('401')){
+      showLoginErr('Database access denied — run the SQL setup in Supabase first');
+    } else if(errMsg.includes('404')){
+      showLoginErr('admin_users table not found — run the SQL setup in Supabase');
+    } else {
+      showLoginErr('Could not reach database — check connection and try again');
+    }
+    console.warn('[Belongix Admin] Login error:',errMsg);
+    resetBtn();
+  }
 }
 function showLoginErr(msg){var el=document.getElementById('lf-err');if(el){el.textContent='⚠️ '+msg;el.style.display='flex';}var box=document.querySelector('.login-form-wrap');if(box){box.classList.remove('shake');void box.offsetWidth;box.classList.add('shake');}}
 function resetBtn(){var btn=document.getElementById('lf-btn');if(btn){btn.disabled=false;btn.textContent='Sign In →';}}
@@ -1637,6 +1716,10 @@ function launchAdmin(){
 window.addEventListener('load',function(){
   var stored=sessionStorage.getItem('bx_admin');
   if(stored){try{adminSession=JSON.parse(stored);launchAdmin();return;}catch(e){}}
+  /* Hide credential hint if user has logged in before */
+  if(localStorage.getItem('bx_admin_hint_dismissed')==='1'){
+    var hint=document.getElementById('lf-hint');if(hint)hint.style.display='none';
+  }
   setTimeout(function(){var el=document.getElementById('lf-email');if(el)el.focus();},200);
   var lp=document.getElementById('lf-pass');if(lp)lp.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
   var le=document.getElementById('lf-email');if(le)le.addEventListener('keydown',function(e){if(e.key==='Enter'){var p=document.getElementById('lf-pass');if(p)p.focus();}});
