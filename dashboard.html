@@ -3245,7 +3245,11 @@ function setMobActive(id) {
 // ════════════════════════════════════════════
 function closeModal(id) { var el=document.getElementById(id); if(el)el.classList.remove('open'); }
 function closeModalOuter(e, id) { if(e.target===document.getElementById(id)) closeModal(id); }
-document.addEventListener('keydown',function(e){ if(e.key==='Escape'){ ['alert-modal','apply-modal','rb-modal'].forEach(closeModal); }});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){ ['alert-modal','apply-modal','rb-modal'].forEach(closeModal); }
+  /* Ctrl+Shift+A → Admin Panel */
+  if(e.ctrlKey&&e.shiftKey&&e.key==='A'){e.preventDefault();window.location.href='admin-bx2026.html';}
+});
 
 
 /* ═══════════════════════════════════════════════
