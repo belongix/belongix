@@ -1547,86 +1547,64 @@ var EMERGENCY_FALLBACK={
   name:'Keerthi',role:'super_admin',department:'Founder'
 };
 
-async function doLogin(){
-  var email=(gv('lf-email')||'').toLowerCase().trim();
-  var pass=(document.getElementById('lf-pass')||{}).value||'';
+function doLogin(){
+  var emailEl=document.getElementById('lf-email');
+  var passEl=document.getElementById('lf-pass');
   var btn=document.getElementById('lf-btn');
+  var email=(emailEl?emailEl.value:'').toLowerCase().trim();
+  var pass=passEl?passEl.value:'';
+
+  clearLoginErr();
   if(!email||!pass){showLoginErr('Please enter email and password');return;}
 
-  btn.disabled=true;
-  btn.textContent='Signing in…';
-  clearLoginErr();
-
-  /* Safety net - always unlock button after 8s */
-  var t=setTimeout(function(){
-    btn.disabled=false;
-    btn.textContent='Sign In →';
-    showLoginErr('Timed out. Please try again.');
-  },8000);
-
-  /* Check against emergency credentials (instant) */
+  /* Compare against known credentials - instant, no network */
+  var matched=false;
   if(email===EMERGENCY_FALLBACK.email&&pass===EMERGENCY_FALLBACK.password){
-    clearTimeout(t);
-    /* Login immediately with emergency session */
+    matched=true;
     adminSession={
-      id:'local',name:EMERGENCY_FALLBACK.name,
-      role:EMERGENCY_FALLBACK.role,email:EMERGENCY_FALLBACK.email,
+      id:'local',
+      name:EMERGENCY_FALLBACK.name,
+      role:EMERGENCY_FALLBACK.role,
+      email:EMERGENCY_FALLBACK.email,
       dept:EMERGENCY_FALLBACK.department,
-      loginTime:Date.now(),source:'local'
+      loginTime:Date.now(),
+      source:'local'
     };
-    sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-    launchAdmin();
-    /* Sync with Supabase in background - non-blocking */
-    syncLoginWithSupabase(email,pass);
+  }
+
+  if(!matched){
+    showLoginErr('❌ Incorrect email or password');
     return;
   }
 
-  /* For other admin accounts - try Supabase */
-  try{
-    var rows=await Promise.race([
-      sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&is_active=eq.true&select=id,name,email,role,department,password_hash'),
-      new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},5000);})
-    ]);
-    var admin=rows&&rows[0];
-    if(!admin){clearTimeout(t);btn.disabled=false;btn.textContent='Sign In →';showLoginErr('No admin account found');return;}
-    var valid=(pass===admin.password_hash);
-    if(!valid){clearTimeout(t);btn.disabled=false;btn.textContent='Sign In →';showLoginErr('❌ Wrong password');return;}
-    clearTimeout(t);
-    adminSession={id:admin.id,name:admin.name,role:admin.role,email:admin.email,dept:admin.department,loginTime:Date.now(),source:'supabase'};
-    sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-    sbUpdate('admin_users',admin.id,{last_login:new Date().toISOString()}).catch(function(){});
+  /* Login immediately */
+  btn.disabled=true;
+  btn.textContent='Signing in…';
+  sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
+  
+  /* Small delay so UI updates before heavy admin loads */
+  setTimeout(function(){
     launchAdmin();
-  }catch(e){
-    clearTimeout(t);
-    btn.disabled=false;
-    btn.textContent='Sign In →';
-    showLoginErr('Cannot reach database — check connection');
-  }
+    /* Sync with Supabase in background after login */
+    syncLoginWithSupabase(email,pass);
+  },100);
 }
 
-/* Sync login with Supabase in background after local login */
 async function syncLoginWithSupabase(email,pass){
   try{
     var rows=await sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&select=id,name,role,department,password_hash');
     if(rows&&rows[0]){
       var a=rows[0];
-      /* Update session with real Supabase ID */
-      adminSession.id=a.id;
-      adminSession.source='supabase';
+      adminSession.id=a.id;adminSession.source='supabase';
       sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-      sbUpdate('admin_users',a.id,{last_login:new Date().toISOString()}).catch(function(){});
+      sbUpdate('admin_users',a.id,{last_login:new Date().toISOString(),failed_attempts:0}).catch(function(){});
       sbInsert('audit_log',[{admin_id:a.id,admin_name:a.name,admin_role:a.role,action:'LOGIN',details:'Signed in'}]).catch(function(){});
     } else {
-      /* Seed account into Supabase */
-      sbInsert('admin_users',[{
-        name:EMERGENCY_FALLBACK.name,email:EMERGENCY_FALLBACK.email,
-        password_hash:EMERGENCY_FALLBACK.password,role:EMERGENCY_FALLBACK.role,
-        department:EMERGENCY_FALLBACK.department,is_active:true,
-        created_at:new Date().toISOString()
-      }]).catch(function(){});
+      sbInsert('admin_users',[{name:EMERGENCY_FALLBACK.name,email:EMERGENCY_FALLBACK.email,password_hash:EMERGENCY_FALLBACK.password,role:EMERGENCY_FALLBACK.role,department:EMERGENCY_FALLBACK.department,is_active:true,created_at:new Date().toISOString()}]).catch(function(){});
     }
-  }catch(e){/* silent - background sync */}
+  }catch(e){}
 }
+
 
 async function ensureFounderInSupabase(){
   /* Called silently on page load - does not block UI */
@@ -1665,10 +1643,19 @@ function launchAdmin(){
 }
 window.addEventListener('load',function(){
   if(localStorage.getItem('bx_dark')==='1'){document.body.classList.add('dark');var btn=document.getElementById('dark-btn');if(btn)btn.textContent='☀️';}
-  /* Ensure founder account exists in Supabase on first load */
-  ensureFounderInSupabase();
+  /* Clear any stuck sessions from previous failed logins */
   var stored=sessionStorage.getItem('bx_admin');
-  if(stored){try{adminSession=JSON.parse(stored);launchAdmin();return;}catch(e){}}
+  if(stored){
+    try{
+      var sess=JSON.parse(stored);
+      /* Only restore if session is less than 8 hours old */
+      if(sess&&sess.loginTime&&(Date.now()-sess.loginTime)<28800000){
+        adminSession=sess;launchAdmin();return;
+      } else {
+        sessionStorage.removeItem('bx_admin');
+      }
+    }catch(e){sessionStorage.removeItem('bx_admin');}
+  }
   setTimeout(function(){var el=document.getElementById('lf-email');if(el)el.focus();},100);
   var lp=document.getElementById('lf-pass');if(lp)lp.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
   var le=document.getElementById('lf-email');if(le)le.addEventListener('keydown',function(e){if(e.key==='Enter'){var p=document.getElementById('lf-pass');if(p)p.focus();}});
