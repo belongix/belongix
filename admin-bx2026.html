@@ -1581,12 +1581,19 @@ function doLogin(){
   btn.disabled=true;
   btn.textContent='Signing in…';
   sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-  
-  /* Small delay so UI updates before heavy admin loads */
+
   setTimeout(function(){
-    launchAdmin();
-    /* Sync with Supabase in background after login */
-    syncLoginWithSupabase(email,pass);
+    try{
+      launchAdmin();
+      syncLoginWithSupabase(email,pass);
+    }catch(err){
+      console.error('launchAdmin error:',err);
+      /* Reset button if launchAdmin crashes */
+      btn.disabled=false;
+      btn.textContent='Sign In →';
+      showLoginErr('Error loading admin. Please refresh and try again.');
+      sessionStorage.removeItem('bx_admin');
+    }
   },100);
 }
 
@@ -1642,22 +1649,16 @@ function launchAdmin(){
   _pollTimer=setInterval(pollBadges,30000);
 }
 window.addEventListener('load',function(){
-  if(localStorage.getItem('bx_dark')==='1'){document.body.classList.add('dark');var btn=document.getElementById('dark-btn');if(btn)btn.textContent='☀️';}
-  /* Clear any stuck sessions from previous failed logins */
-  var stored=sessionStorage.getItem('bx_admin');
-  if(stored){
-    try{
-      var sess=JSON.parse(stored);
-      /* Only restore if session is less than 8 hours old */
-      if(sess&&sess.loginTime&&(Date.now()-sess.loginTime)<28800000){
-        adminSession=sess;launchAdmin();return;
-      } else {
-        sessionStorage.removeItem('bx_admin');
-      }
-    }catch(e){sessionStorage.removeItem('bx_admin');}
-  }
-  setTimeout(function(){var el=document.getElementById('lf-email');if(el)el.focus();},100);
-  var lp=document.getElementById('lf-pass');if(lp)lp.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+  /* Always clear any previous session on fresh load */
+  sessionStorage.removeItem('bx_admin');
+  if(localStorage.getItem('bx_dark')==='1'){document.body.classList.add('dark');var dbtn=document.getElementById('dark-btn');if(dbtn)dbtn.textContent='☀️';}
+  /* Make sure login page is visible */
+  var lp=document.getElementById('login-page');
+  if(lp)lp.style.display='flex';
+  var al=document.getElementById('admin-layout');
+  if(al)al.classList.remove('show');
+  setTimeout(function(){var el=document.getElementById('lf-email');if(el)el.focus();},200);
+  var lpw=document.getElementById('lf-pass');if(lpw)lpw.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
   var le=document.getElementById('lf-email');if(le)le.addEventListener('keydown',function(e){if(e.key==='Enter'){var p=document.getElementById('lf-pass');if(p)p.focus();}});
 });
 function startSessionWatch(){['mousemove','keydown','click','scroll'].forEach(function(ev){document.addEventListener(ev,function(){_lastActivity=Date.now();},{passive:true});});setInterval(function(){if(adminSession&&Date.now()-_lastActivity>SESSION_TIMEOUT){var ov=document.getElementById('session-overlay');if(ov)ov.classList.add('show');}},30000);}
