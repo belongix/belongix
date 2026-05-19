@@ -1557,113 +1557,76 @@ async function doLogin(){
   btn.textContent='Signing in…';
   clearLoginErr();
 
-  /* Hard safety: reset button after 10s no matter what */
-  var safetyTimer=setTimeout(function(){
+  /* Safety net - always unlock button after 8s */
+  var t=setTimeout(function(){
     btn.disabled=false;
     btn.textContent='Sign In →';
-    showLoginErr('Login timed out — please try again');
-  },10000);
+    showLoginErr('Timed out. Please try again.');
+  },8000);
 
-  function resetBtn(){
-    clearTimeout(safetyTimer);
-    btn.disabled=false;
-    btn.textContent='Sign In →';
+  /* Check against emergency credentials (instant) */
+  if(email===EMERGENCY_FALLBACK.email&&pass===EMERGENCY_FALLBACK.password){
+    clearTimeout(t);
+    /* Login immediately with emergency session */
+    adminSession={
+      id:'local',name:EMERGENCY_FALLBACK.name,
+      role:EMERGENCY_FALLBACK.role,email:EMERGENCY_FALLBACK.email,
+      dept:EMERGENCY_FALLBACK.department,
+      loginTime:Date.now(),source:'local'
+    };
+    sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
+    launchAdmin();
+    /* Sync with Supabase in background - non-blocking */
+    syncLoginWithSupabase(email,pass);
+    return;
   }
 
-  /* STEP 1: Check emergency credentials first (instant, no network) */
-  var isEmergencyEmail=(email===EMERGENCY_FALLBACK.email);
-  var isEmergencyPass=(pass===EMERGENCY_FALLBACK.password);
-
-  /* STEP 2: Try Supabase */
-  var rows=null;
+  /* For other admin accounts - try Supabase */
   try{
-    rows=await Promise.race([
-      sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&is_active=eq.true&select=id,name,email,role,department,password_hash,failed_attempts,locked_until'),
+    var rows=await Promise.race([
+      sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&is_active=eq.true&select=id,name,email,role,department,password_hash'),
       new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},5000);})
     ]);
-  }catch(fetchErr){
-    rows=null; /* Supabase unreachable */
-  }
-
-  /* STEP 3: Handle Supabase response */
-  if(rows!==null){
     var admin=rows&&rows[0];
-
-    /* Account not found in Supabase - try to seed it */
-    if(!admin&&isEmergencyEmail){
-      try{
-        await sbInsert('admin_users',[{
-          name:EMERGENCY_FALLBACK.name,email:EMERGENCY_FALLBACK.email,
-          password_hash:EMERGENCY_FALLBACK.password,role:EMERGENCY_FALLBACK.role,
-          department:EMERGENCY_FALLBACK.department,is_active:true,
-          created_at:new Date().toISOString()
-        }]);
-        /* Fetch newly created account */
-        var rows2=await sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&select=id,name,email,role,department,password_hash');
-        admin=rows2&&rows2[0];
-      }catch(seedErr){admin=null;}
-    }
-
-    if(!admin){
-      resetBtn();
-      showLoginErr('No admin account found for this email');
-      return;
-    }
-
-    /* Lockout check */
-    if(admin.locked_until&&new Date(admin.locked_until)>new Date()){
-      resetBtn();
-      showLoginErr('Account locked — try again in '+Math.ceil((new Date(admin.locked_until)-Date.now())/60000)+' minutes');
-      return;
-    }
-
-    /* Password check */
+    if(!admin){clearTimeout(t);btn.disabled=false;btn.textContent='Sign In →';showLoginErr('No admin account found');return;}
     var valid=(pass===admin.password_hash);
-    if(!valid){
-      try{
-        var hb=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass));
-        var hx=Array.from(new Uint8Array(hb)).map(function(b){return b.toString(16).padStart(2,'0');}).join('');
-        valid=(hx===admin.password_hash);
-      }catch(he){}
-    }
-
-    if(!valid){
-      resetBtn();
-      var att=(admin.failed_attempts||0)+1;
-      if(att>=5){
-        sbUpdate('admin_users',admin.id,{failed_attempts:att,locked_until:new Date(Date.now()+30*60000).toISOString()}).catch(function(){});
-        showLoginErr('5 failed attempts — locked for 30 minutes');
-      }else{
-        sbUpdate('admin_users',admin.id,{failed_attempts:att}).catch(function(){});
-        showLoginErr('❌ Wrong password — '+(5-att)+' attempt'+(5-att===1?'':'s')+' left');
-      }
-      return;
-    }
-
-    /* SUCCESS via Supabase */
-    clearTimeout(safetyTimer);
-    sbUpdate('admin_users',admin.id,{failed_attempts:0,last_login:new Date().toISOString()}).catch(function(){});
+    if(!valid){clearTimeout(t);btn.disabled=false;btn.textContent='Sign In →';showLoginErr('❌ Wrong password');return;}
+    clearTimeout(t);
     adminSession={id:admin.id,name:admin.name,role:admin.role,email:admin.email,dept:admin.department,loginTime:Date.now(),source:'supabase'};
     sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-    sbInsert('audit_log',[{admin_id:admin.id,admin_name:admin.name,admin_role:admin.role,action:'LOGIN',details:'Signed in'}]).catch(function(){});
+    sbUpdate('admin_users',admin.id,{last_login:new Date().toISOString()}).catch(function(){});
     launchAdmin();
-    return;
+  }catch(e){
+    clearTimeout(t);
+    btn.disabled=false;
+    btn.textContent='Sign In →';
+    showLoginErr('Cannot reach database — check connection');
   }
-
-  /* STEP 4: Supabase unreachable - emergency fallback */
-  if(isEmergencyEmail&&isEmergencyPass){
-    clearTimeout(safetyTimer);
-    adminSession={id:'emergency',name:EMERGENCY_FALLBACK.name,role:EMERGENCY_FALLBACK.role,email:EMERGENCY_FALLBACK.email,dept:EMERGENCY_FALLBACK.department,loginTime:Date.now(),source:'emergency'};
-    sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-    launchAdmin();
-    setTimeout(function(){toast('⚠️ Offline mode — database unreachable. Password changes disabled.','warning');},1500);
-    return;
-  }
-
-  resetBtn();
-  showLoginErr('Cannot reach database — check your internet connection');
 }
 
+/* Sync login with Supabase in background after local login */
+async function syncLoginWithSupabase(email,pass){
+  try{
+    var rows=await sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&select=id,name,role,department,password_hash');
+    if(rows&&rows[0]){
+      var a=rows[0];
+      /* Update session with real Supabase ID */
+      adminSession.id=a.id;
+      adminSession.source='supabase';
+      sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
+      sbUpdate('admin_users',a.id,{last_login:new Date().toISOString()}).catch(function(){});
+      sbInsert('audit_log',[{admin_id:a.id,admin_name:a.name,admin_role:a.role,action:'LOGIN',details:'Signed in'}]).catch(function(){});
+    } else {
+      /* Seed account into Supabase */
+      sbInsert('admin_users',[{
+        name:EMERGENCY_FALLBACK.name,email:EMERGENCY_FALLBACK.email,
+        password_hash:EMERGENCY_FALLBACK.password,role:EMERGENCY_FALLBACK.role,
+        department:EMERGENCY_FALLBACK.department,is_active:true,
+        created_at:new Date().toISOString()
+      }]).catch(function(){});
+    }
+  }catch(e){/* silent - background sync */}
+}
 
 async function ensureFounderInSupabase(){
   /* Called silently on page load - does not block UI */
