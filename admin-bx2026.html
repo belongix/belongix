@@ -1533,83 +1533,122 @@ function closeModal(id){var m=document.getElementById(id);if(m)m.classList.remov
 function openConfirm(title,msg,ph,okLabel,okClass,cb){setText('confirm-title',title);var pm=document.getElementById('confirm-msg');if(pm)pm.textContent=msg;var inp=document.getElementById('confirm-inp');if(inp){inp.style.display=ph?'block':'none';inp.placeholder=ph||'';inp.value='';}var btn=document.getElementById('confirm-ok-btn');if(btn){btn.textContent=okLabel||'Confirm';btn.className='btn btn-'+(okClass||'danger');}_confirmCb=cb;openModal('confirm-modal');}
 function runConfirmCallback(){closeModal('confirm-modal');if(_confirmCb)_confirmCb(gv('confirm-inp'));_confirmCb=null;}
 async function writeAudit(action,tType,tId,tName,details){if(!adminSession)return;try{await sbInsert('audit_log',[{admin_id:adminSession.id,admin_name:adminSession.name,admin_role:adminSession.role,action:action,target_type:tType||'',target_id:String(tId||''),target_name:tName||'',details:details||''}]);}catch(e){}}
-/* AUTH */
-var LOCAL_ADMINS=[
-  {id:'local-001',email:'teambelongix@gmail.com',password_hash:'belongix@admin2026',name:'Keerthi',role:'super_admin',department:'Founder',is_active:true}
-];
+/* ══════════════════════════════════════════════
+   AUTH — Supabase is source of truth
+   Emergency fallback ONLY if network is down
+══════════════════════════════════════════════ */
+
+/* Emergency fallback — used ONLY when Supabase is completely unreachable.
+   Never checked if Supabase responds, even with wrong password.
+   Update password in Settings to change the real password in Supabase. */
+var EMERGENCY_FALLBACK={
+  email:'teambelongix@gmail.com',
+  password:'belongix@admin2026',
+  name:'Keerthi',role:'super_admin',department:'Founder'
+};
+
 async function doLogin(){
   var email=(gv('lf-email')||'').toLowerCase().trim();
   var pass=(document.getElementById('lf-pass')||{}).value||'';
   var btn=document.getElementById('lf-btn');
   if(!email||!pass){showLoginErr('Please enter email and password');return;}
-  btn.disabled=true;btn.textContent='Signing in…';clearLoginErr();
-  var local=LOCAL_ADMINS.find(function(a){return a.email===email&&a.is_active;});
-  if(local){
-    if(pass===local.password_hash){
-      adminSession={id:local.id,name:local.name,role:local.role,email:local.email,dept:local.department,loginTime:Date.now(),isLocal:true};
-      sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-      sbInsert('audit_log',[{admin_name:local.name,admin_role:local.role,action:'LOGIN',details:'Signed in'}]).catch(function(){});
-      launchAdmin();return;
-    }
-    showLoginErr('Incorrect password');btn.disabled=false;btn.textContent='Sign In →';return;
-  }
+  btn.disabled=true;btn.textContent='Signing in\u2026';clearLoginErr();
+
+  /* ── STEP 1: Always try Supabase first (source of truth) ── */
+  var networkError=false;
   try{
     var rows=await Promise.race([
-      sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&is_active=eq.true&select=*'),
+      sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&is_active=eq.true&select=id,name,email,role,department,password_hash,failed_attempts,locked_until'),
       new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},8000);})
     ]);
-    var admin=rows&&rows[0];
-    if(!admin){showLoginErr('No admin account found');btn.disabled=false;btn.textContent='Sign In →';return;}
-    if(admin.locked_until&&new Date(admin.locked_until)>new Date()){showLoginErr('Account locked — try again later');btn.disabled=false;btn.textContent='Sign In →';return;}
-    var valid=(pass===admin.password_hash);
-    if(!valid){try{var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass)))).map(function(b){return b.toString(16).padStart(2,'0');}).join('');valid=(hash===admin.password_hash);}catch(he){}}
-    if(!valid){var att=(admin.failed_attempts||0)+1;var upd={failed_attempts:att};if(att>=5){upd.locked_until=new Date(Date.now()+30*60000).toISOString();showLoginErr('5 failed attempts — locked 30 minutes');}else{showLoginErr('Incorrect password — '+(5-att)+' attempts left');}sbUpdate('admin_users',admin.id,upd).catch(function(){});btn.disabled=false;btn.textContent='Sign In →';return;}
-    sbUpdate('admin_users',admin.id,{failed_attempts:0,last_login:new Date().toISOString()}).catch(function(){});
-    adminSession={id:admin.id,name:admin.name,role:admin.role,email:admin.email,dept:admin.department,loginTime:Date.now()};
-    sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-    writeAudit('LOGIN',null,null,admin.name,'Admin signed in').catch(function(){});
-    launchAdmin();
-  }catch(e){
-    var msg=String(e.message||e);
-    if(msg.includes('timeout'))showLoginErr('Connection timed out — check your internet');
-    else if(msg.includes('403')||msg.includes('401'))showLoginErr('Database access blocked — run ALTER TABLE...DISABLE ROW LEVEL SECURITY in Supabase');
-    else showLoginErr('Could not connect — check internet connection');
-    btn.disabled=false;btn.textContent='Sign In →';
-  }
-}
-function showLoginErr(msg){var el=document.getElementById('lf-err');if(el){el.textContent=msg;el.classList.add('show');}var box=document.querySelector('.lr-box');if(box){box.classList.remove('shake');void box.offsetWidth;box.classList.add('shake');}}
-function clearLoginErr(){var el=document.getElementById('lf-err');if(el)el.classList.remove('show');}
-function togglePassEye(){var inp=document.getElementById('lf-pass');var eye=document.getElementById('lf-eye');if(!inp||!eye)return;inp.type=inp.type==='password'?'text':'password';eye.textContent=inp.type==='password'?'👁':'🙈';}
 
-/* ── FORGOT PASSWORD ── */
-function handleForgotPassword(){
-  var panel=document.getElementById('forgot-panel');
-  if(!panel)return;
-  var isOpen=panel.style.display==='block';
-  panel.style.display=isOpen?'none':'block';
-  if(!isOpen){
-    /* Pre-fill with whatever email they typed */
-    var emailInp=document.getElementById('forgot-email');
-    var loginEmail=document.getElementById('lf-email');
-    if(emailInp&&loginEmail&&loginEmail.value)emailInp.value=loginEmail.value;
-    setTimeout(function(){if(emailInp)emailInp.focus();},100);
+    var admin=rows&&rows[0];
+
+    if(!admin){
+      showLoginErr('No admin account found for this email');
+      btn.disabled=false;btn.textContent='Sign In \u2192';return;
+    }
+
+    if(admin.locked_until&&new Date(admin.locked_until)>new Date()){
+      var mins=Math.ceil((new Date(admin.locked_until)-Date.now())/60000);
+      showLoginErr('Account locked \u2014 try again in '+mins+' minutes');
+      btn.disabled=false;btn.textContent='Sign In \u2192';return;
+    }
+
+    /* Verify password against Supabase record */
+    var valid=(pass===admin.password_hash);
+    if(!valid){
+      try{
+        var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass))))
+          .map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+        valid=(hash===admin.password_hash);
+      }catch(he){}
+    }
+
+    if(!valid){
+      var att=(admin.failed_attempts||0)+1;
+      var upd={failed_attempts:att};
+      if(att>=5){
+        upd.locked_until=new Date(Date.now()+30*60000).toISOString();
+        showLoginErr('5 failed attempts \u2014 account locked for 30 minutes');
+      } else {
+        showLoginErr('\u274c Incorrect password \u2014 '+(5-att)+' attempt'+(5-att===1?'':'s')+' remaining');
+      }
+      sbUpdate('admin_users',admin.id,upd).catch(function(){});
+      btn.disabled=false;btn.textContent='Sign In \u2192';return;
+    }
+
+    /* ── SUCCESS via Supabase ── */
+    sbUpdate('admin_users',admin.id,{failed_attempts:0,last_login:new Date().toISOString()}).catch(function(){});
+    adminSession={id:admin.id,name:admin.name,role:admin.role,email:admin.email,dept:admin.department,loginTime:Date.now(),source:'supabase'};
+    sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
+    sbInsert('audit_log',[{admin_id:admin.id,admin_name:admin.name,admin_role:admin.role,action:'LOGIN',details:'Signed in'}]).catch(function(){});
+    launchAdmin();
+    return;
+
+  }catch(e){
+    /* Only fall through to emergency on genuine network failure */
+    networkError=true;
+    console.warn('[Belongix Admin] Supabase unreachable:',e.message||e);
   }
-}
-function submitForgotPassword(){
-  var email=(document.getElementById('forgot-email')||{}).value||'';
-  if(!email||!email.includes('@')){toast('Enter a valid email address','warning');return;}
-  /* Show a clear message to contact super admin via phone/WhatsApp */
-  var panel=document.getElementById('forgot-panel');
-  if(panel){
-    panel.innerHTML='<div style="font-size:13.5px;font-weight:700;color:#0369A1;margin-bottom:8px">📞 Contact Super Admin</div>'
-      +'<div style="font-size:13px;color:#0284C7;line-height:1.7">'
-      +'Your reset request has been noted for: <strong>'+esc(email)+'</strong><br/><br/>'
-      +'Please <strong>call or WhatsApp</strong> the Belongix founder directly to get your password reset. '
-      +'They will reset it from <strong>Team Management → Reset PW</strong> and send you the new password.'
-      +'</div>';
+
+  /* ── STEP 2: Emergency fallback (only if Supabase truly unreachable) ── */
+  if(networkError&&email===EMERGENCY_FALLBACK.email&&pass===EMERGENCY_FALLBACK.password){
+    adminSession={id:'emergency',name:EMERGENCY_FALLBACK.name,role:EMERGENCY_FALLBACK.role,email:EMERGENCY_FALLBACK.email,dept:EMERGENCY_FALLBACK.department,loginTime:Date.now(),source:'emergency'};
+    sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
+    launchAdmin();
+    setTimeout(function(){toast('\u26a0\ufe0f Emergency login \u2014 Supabase unreachable. Password changes disabled until connection restores.','warning');},1500);
+    return;
   }
-  toast('Contact the Super Admin directly to reset your password','warning');
+
+  if(networkError){
+    showLoginErr('Cannot reach database \u2014 check your internet connection');
+  } else {
+    showLoginErr('\u274c Incorrect password');
+  }
+  btn.disabled=false;btn.textContent='Sign In \u2192';
 }
+
+/* Run on page load: ensure founder account exists in Supabase */
+async function ensureFounderInSupabase(){
+  try{
+    var rows=await sbFetch('admin_users','email=eq.'+encodeURIComponent(EMERGENCY_FALLBACK.email)+'&select=id');
+    if(rows&&rows.length===0){
+      /* First time: create the founder account in Supabase */
+      await sbInsert('admin_users',[{
+        name:EMERGENCY_FALLBACK.name,
+        email:EMERGENCY_FALLBACK.email,
+        password_hash:EMERGENCY_FALLBACK.password,
+        role:EMERGENCY_FALLBACK.role,
+        department:EMERGENCY_FALLBACK.department,
+        is_active:true,
+        created_at:new Date().toISOString()
+      }]);
+      console.log('[Belongix Admin] Founder account seeded to Supabase');
+    }
+  }catch(e){/* Silent - Supabase may be unreachable */}
+}
+
 function adminSignOut(){sessionStorage.removeItem('bx_admin');adminSession=null;if(_pollTimer)clearInterval(_pollTimer);document.getElementById('admin-layout').classList.remove('show');document.getElementById('login-page').style.display='flex';var lp=document.getElementById('lf-pass');if(lp)lp.value='';}
 function restartSession(){document.getElementById('session-overlay').classList.remove('show');adminSignOut();}
 function launchAdmin(){
@@ -1628,6 +1667,8 @@ function launchAdmin(){
 }
 window.addEventListener('load',function(){
   if(localStorage.getItem('bx_dark')==='1'){document.body.classList.add('dark');var btn=document.getElementById('dark-btn');if(btn)btn.textContent='☀️';}
+  /* Ensure founder account exists in Supabase on first load */
+  ensureFounderInSupabase();
   var stored=sessionStorage.getItem('bx_admin');
   if(stored){try{adminSession=JSON.parse(stored);launchAdmin();return;}catch(e){}}
   setTimeout(function(){var el=document.getElementById('lf-email');if(el)el.focus();},100);
@@ -2170,102 +2211,89 @@ async function changePassword(){
   var nw=(document.getElementById('new-pw')||{}).value||'';
   var conf=(document.getElementById('confirm-pw')||{}).value||'';
 
-  /* ── Validation ── */
+  /* ── Validate inputs ── */
   if(!cur){toast('Enter your current password','warning');document.getElementById('cur-pw').focus();return;}
   if(!nw){toast('Enter a new password','warning');document.getElementById('new-pw').focus();return;}
   if(!conf){toast('Confirm your new password','warning');document.getElementById('confirm-pw').focus();return;}
   if(nw!==conf){
-    var matchMsg=document.getElementById('pw-match-msg');
-    if(matchMsg){matchMsg.textContent='❌ Passwords do not match';matchMsg.style.color='var(--danger)';}
+    var mm=document.getElementById('pw-match-msg');
+    if(mm){mm.textContent='\u274c Passwords do not match';mm.style.color='var(--danger)';}
     toast('New passwords do not match','error');return;
   }
   if(nw.length<8){toast('New password must be at least 8 characters','warning');return;}
   if(cur===nw){toast('New password must be different from current password','warning');return;}
 
-  /* ── Step 1: Verify current password ── */
-  var valid=false;
-  var isLocalAdmin=adminSession.isLocal||adminSession.id.startsWith('local-');
-
-  if(isLocalAdmin){
-    /* Local admin: check against LOCAL_ADMINS array */
-    var localAdmin=LOCAL_ADMINS.find(function(a){return a.id===adminSession.id||a.email===adminSession.email;});
-    if(localAdmin){
-      valid=(cur===localAdmin.password_hash);
-    }
-    if(!valid){
-      /* Highlight wrong password field */
-      var inp=document.getElementById('cur-pw');
-      if(inp){inp.style.borderColor='var(--danger)';inp.style.boxShadow='0 0 0 3px rgba(239,68,68,.1)';setTimeout(function(){inp.style.borderColor='';inp.style.boxShadow='';},3000);}
-      toast('❌ Current password is incorrect','error');
-      return;
-    }
-    /* Update LOCAL_ADMINS in memory */
-    var localIdx=LOCAL_ADMINS.findIndex(function(a){return a.id===adminSession.id||a.email===adminSession.email;});
-    if(localIdx>=0)LOCAL_ADMINS[localIdx].password_hash=nw;
-
-    /* Try to also save to Supabase if admin_users table has this user */
-    try{
-      var sbRows=await sbFetch('admin_users','email=eq.'+encodeURIComponent(adminSession.email)+'&select=id');
-      if(sbRows&&sbRows[0]){
-        await sbUpdate('admin_users',sbRows[0].id,{password_hash:nw,must_change_password:false,password_updated_at:new Date().toISOString()});
-      }
-    }catch(e){/* Supabase save optional for local admins */}
-
-  } else {
-    /* Supabase admin: fetch and verify from database */
-    try{
-      var rows=await sbFetch('admin_users','email=eq.'+encodeURIComponent(adminSession.email)+'&select=id,password_hash');
-      var admin=rows&&rows[0];
-
-      if(!admin){toast('Could not verify — try signing out and back in','error');return;}
-
-      /* Plain text check */
-      valid=(cur===admin.password_hash);
-
-      /* SHA-256 hash check */
-      if(!valid){
-        try{
-          var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(cur))))
-            .map(function(b){return b.toString(16).padStart(2,'0');}).join('');
-          valid=(hash===admin.password_hash);
-        }catch(he){}
-      }
-
-      if(!valid){
-        var inp2=document.getElementById('cur-pw');
-        if(inp2){inp2.style.borderColor='var(--danger)';inp2.style.boxShadow='0 0 0 3px rgba(239,68,68,.1)';setTimeout(function(){inp2.style.borderColor='';inp2.style.boxShadow='';},3000);}
-        toast('❌ Current password is incorrect','error');
-        return;
-      }
-
-      /* Save new password to Supabase */
-      await sbUpdate('admin_users',admin.id,{
-        password_hash:nw,
-        must_change_password:false,
-        password_updated_at:new Date().toISOString()
-      });
-
-    }catch(e){
-      console.error('Password change error:',e);
-      toast('Connection error — check internet and try again','error');
-      return;
-    }
+  /* ── Block if in emergency mode (Supabase was unreachable at login) ── */
+  if(adminSession.source==='emergency'){
+    toast('\u26a0\ufe0f Cannot change password \u2014 Supabase is unreachable. Please check your connection and sign in again.','error');
+    return;
   }
 
-  /* ── Step 2: Update session immediately (new pw works right away) ── */
-  adminSession.passwordHash=nw;
-  sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
+  /* ── Fetch current password from Supabase to verify ── */
+  var btn=document.querySelector('#stab-profile .btn-danger');
+  if(btn){btn.disabled=true;btn.textContent='Verifying...';}
+  
+  try{
+    var rows=await sbFetch('admin_users','email=eq.'+encodeURIComponent(adminSession.email)+'&select=id,password_hash');
+    var admin=rows&&rows[0];
 
-  /* ── Step 3: Clear all fields ── */
-  ['cur-pw','new-pw','confirm-pw'].forEach(function(fid){
-    var el=document.getElementById(fid);if(el)el.value='';
-  });
-  var bar=document.getElementById('pw-strength-fill');if(bar)bar.style.width='0%';
-  var lbl=document.getElementById('pw-strength-label');if(lbl)lbl.textContent='';
-  var msg=document.getElementById('pw-match-msg');if(msg)msg.textContent='';
+    if(!admin){
+      toast('Account not found in database. Sign out and sign back in.','error');
+      if(btn){btn.disabled=false;btn.textContent='\uD83D\uDD11 Update Password';}
+      return;
+    }
 
-  toast('✅ Password updated successfully! Use your new password next login.','success');
-  try{await writeAudit('PASSWORD_CHANGE','admin',adminSession.id,adminSession.name,'Password changed');}catch(e){}
+    /* ── Verify current password ── */
+    var valid=(cur===admin.password_hash);
+    if(!valid){
+      /* Try SHA-256 hash */
+      try{
+        var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(cur))))
+          .map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+        valid=(hash===admin.password_hash);
+      }catch(he){}
+    }
+
+    if(!valid){
+      var inp=document.getElementById('cur-pw');
+      if(inp){
+        inp.style.borderColor='var(--danger)';
+        inp.style.boxShadow='0 0 0 3px rgba(239,68,68,.12)';
+        setTimeout(function(){inp.style.borderColor='';inp.style.boxShadow='';},3000);
+        inp.focus();
+      }
+      toast('\u274c Current password is incorrect','error');
+      if(btn){btn.disabled=false;btn.textContent='\uD83D\uDD11 Update Password';}
+      return;
+    }
+
+    /* ── Save new password to Supabase (single source of truth) ── */
+    if(btn)btn.textContent='Saving...';
+    await sbUpdate('admin_users',admin.id,{
+      password_hash:nw,
+      must_change_password:false,
+      password_updated_at:new Date().toISOString(),
+      failed_attempts:0
+    });
+
+    /* ── Clear fields ── */
+    ['cur-pw','new-pw','confirm-pw'].forEach(function(fid){var el=document.getElementById(fid);if(el)el.value='';});
+    var bar=document.getElementById('pw-strength-fill');if(bar)bar.style.width='0%';
+    var lbl=document.getElementById('pw-strength-label');if(lbl)lbl.textContent='';
+    var mm2=document.getElementById('pw-match-msg');if(mm2)mm2.textContent='';
+    if(btn){btn.disabled=false;btn.textContent='\uD83D\uDD11 Update Password';}
+
+    await writeAudit('PASSWORD_CHANGE','admin',admin.id,adminSession.name,'Password updated successfully').catch(function(){});
+
+    /* ── Force re-login with new password ── */
+    toast('\u2705 Password updated! You will be signed out now. Please sign in with your new password.','success');
+    setTimeout(function(){adminSignOut();},2500);
+
+  }catch(e){
+    console.error('[changePassword]',e);
+    toast('Failed to update \u2014 check your internet connection','error');
+    if(btn){btn.disabled=false;btn.textContent='\uD83D\uDD11 Update Password';}
+  }
 }
 /* MISC */
 function openBlogEditor(){toast('Blog editor — coming soon','warning');}
