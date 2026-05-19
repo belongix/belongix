@@ -2160,6 +2160,8 @@ async function saveTemplate(){if(!_currentTemplate)return;EMAIL_TEMPLATES[_curre
 function sendTestTemplate(){if(adminSession&&adminSession.email)window.open('mailto:'+adminSession.email+'?subject='+encodeURIComponent('[TEST] '+(gv('tmpl-subject')||'Template Test'))+'&body='+encodeURIComponent((document.getElementById('tmpl-body')||{}).value||''),'_blank');toast('Test email opened','success');}
 async function saveAdminProfile(){var name=gv('my-name'),email=gv('my-email');if(!name){toast('Name required','warning');return;}try{await sbUpdate('admin_users',adminSession.id,{name:name,email:email});adminSession.name=name;adminSession.email=email;sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));setText('sb-admin-name',name);setText('aab-name',name);var sav=document.getElementById('sb-av');if(sav)sav.textContent=initials(name);var tav=document.getElementById('aab-av');if(tav)tav.textContent=initials(name);toast('Profile updated','success');}catch(e){toast('Error','error');}}
 /* ── PASSWORD FIELD TOGGLE ── */
+/* Login password eye toggle */
+function togglePassEye(){togglePwField('lf-pass','lf-eye');}
 function togglePwField(inputId,btnId){
   var inp=document.getElementById(inputId);
   var btn=document.getElementById(btnId);
