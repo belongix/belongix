@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<meta http-equiv="Pragma" content="no-cache"/>
+<meta http-equiv="Expires" content="0"/>
 <title>Belongix Admin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
@@ -451,7 +454,7 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
         <input type="checkbox" id="lf-remember"/>
         <label for="lf-remember">Remember this device</label>
       </div>
-      <button class="lf-btn" id="lf-btn" onclick="doLogin()">Sign In →</button>
+      <button class="lf-btn" id="lf-btn" onclick="doLogin()">Sign In -></button>
       <div class="lf-forgot" onclick="handleForgotPassword()">Forgot password?</div>
       <!-- Forgot password panel (hidden by default) -->
       <div id="forgot-panel" style="display:none;margin-top:16px;background:#F0F9FF;border:1.5px solid #BAE6FD;border-radius:var(--r-lg);padding:16px">
@@ -1590,7 +1593,7 @@ function doLogin(){
       console.error('launchAdmin error:',err);
       /* Reset button if launchAdmin crashes */
       btn.disabled=false;
-      btn.textContent='Sign In →';
+      btn.textContent='Sign In ->';
       showLoginErr('Error loading admin. Please refresh and try again.');
       sessionStorage.removeItem('bx_admin');
     }
