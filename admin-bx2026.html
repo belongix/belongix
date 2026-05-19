@@ -1535,7 +1535,27 @@ function openModal(id){var m=document.getElementById(id);if(m)m.classList.add('o
 function closeModal(id){var m=document.getElementById(id);if(m)m.classList.remove('open');}
 function openConfirm(title,msg,ph,okLabel,okClass,cb){setText('confirm-title',title);var pm=document.getElementById('confirm-msg');if(pm)pm.textContent=msg;var inp=document.getElementById('confirm-inp');if(inp){inp.style.display=ph?'block':'none';inp.placeholder=ph||'';inp.value='';}var btn=document.getElementById('confirm-ok-btn');if(btn){btn.textContent=okLabel||'Confirm';btn.className='btn btn-'+(okClass||'danger');}_confirmCb=cb;openModal('confirm-modal');}
 function runConfirmCallback(){closeModal('confirm-modal');if(_confirmCb)_confirmCb(gv('confirm-inp'));_confirmCb=null;}
-async function writeAudit(action,tType,tId,tName,details){if(!adminSession)return;try{await sbInsert('audit_log',[{admin_id:adminSession.id,admin_name:adminSession.name,admin_role:adminSession.role,action:action,target_type:tType||'',target_id:String(tId||''),target_name:tName||'',details:details||''}]);}catch(e){}}
+async function writeAudit(action,tType,tId,tName,details){
+  if(!adminSession)return;
+  try{
+    var entry={
+      admin_name:adminSession.name,
+      admin_role:adminSession.role,
+      action:action,
+      target_type:tType||'',
+      target_id:String(tId||''),
+      target_name:tName||'',
+      details:details||'',
+      created_at:new Date().toISOString()
+    };
+    /* Only add admin_id if it's a real UUID (not local-001 or emergency) */
+    var id=adminSession.id||'';
+    if(id&&!id.startsWith('local')&&id!=='emergency'&&id.length===36){
+      entry.admin_id=id;
+    }
+    await sbInsert('audit_log',[entry]);
+  }catch(e){}
+}
 /* ══════════════════════════════════════════════
    AUTH — Supabase is source of truth
    Emergency fallback ONLY if network is down
@@ -1559,7 +1579,7 @@ async function doLogin(){
     if(pass===currentPassword){
       adminSession={id:'local-001',name:'Keerthi',role:'super_admin',email:ADMIN_EMAIL,dept:'Founder',loginTime:Date.now(),isLocal:true};
       sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-      sbInsert('audit_log',[{admin_name:'Keerthi',admin_role:'super_admin',action:'LOGIN',details:'Signed in'}]).catch(function(){});
+      sbInsert('audit_log',[{admin_name:'Keerthi',admin_role:'super_admin',action:'LOGIN',details:'Signed in via local auth',created_at:new Date().toISOString()}]).catch(function(){});
       launchAdmin();return;
     }
     showLoginErr('Incorrect password');btn.disabled=false;btn.textContent='Sign In →';return;
