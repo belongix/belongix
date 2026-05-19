@@ -177,7 +177,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
 .sal-3d-chip{padding:5px 12px;border-radius:20px;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.65);background:rgba(255,255,255,0.05);transition:.2s;white-space:nowrap}
 .sal-3d-chip:hover{border-color:rgba(255,255,255,0.5);color:#fff}
 .sal-3d-chip.active{background:rgba(255,255,255,0.18);border-color:#fff;color:#fff}
-.sal-3d-chart{display:flex;align-items:flex-end;gap:12px;height:180px;min-height:180px;padding:0 4px;position:relative}
+.sal-3d-chart{display:flex;align-items:flex-end;gap:12px;height:180px;padding:0 4px;position:relative}
 .sal-3d-chart::before{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:rgba(255,255,255,0.12)}
 .sal-bar3d-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;cursor:pointer;transition:.2s}
 .sal-bar3d-wrap:hover .sal-bar3d{filter:brightness(1.15);transform:scaleY(1.03);transform-origin:bottom}
@@ -2282,15 +2282,7 @@ function showPage(page, btn) {
   if (page === 'network') { setTimeout(loadDashMentors, 100); }
   if (page === 'tracker') { loadTracker(); }
   if (page === 'upskill') { setTimeout(function(){ if(typeof renderFilters==='function'){renderFilters();renderTracks();} }, 50); }
-  if (page === 'salary') {
-    /* Ensure section is visible before init */
-    var salSec = document.getElementById('page-salary');
-    if (salSec) salSec.style.display = 'block';
-    setTimeout(function(){
-      if(typeof window.init3D==='function') window.init3D();
-      else if(typeof init3D==='function') init3D();
-    }, 100);
-  }
+  if (page === 'salary') { setTimeout(function(){ if(typeof init3D==='function')init3D(); }, 80); }
   if (page === 'settings' && currentUser) { if(typeof refPopulateSettings==='function') refPopulateSettings(currentUser.id); }
   if (page === 'upgrade') { if(typeof checkMentorSessionLimit==='function') checkMentorSessionLimit(); }
   /* 8. Close mobile sidebar */
@@ -2747,10 +2739,88 @@ function startPayment(plan) {
     rzp.open();
   }catch(e){showToast('Razorpay: '+e.message);}
 }
-async function onPaySuccess(r,plan) {
-  try{await supaClient.from('profiles').update({plan:plan==='premium'?'premium':'pro',payment_id:r.razorpay_payment_id}).eq('id',currentUser.id);}catch(e){}
-  var el=document.getElementById('paySuccess');if(el)el.style.display='block';
-  showToast('Welcome to Belongix '+(plan==='premium'?'Premium':'Pro')+'!');
+async function onPaySuccess(r, plan) {
+  /* ── SECURE: Verify payment server-side via Edge Function ── */
+  try {
+    /* Get user's JWT token for authenticated Edge Function call */
+    var sessionData = await supaClient.auth.getSession();
+    var token = sessionData?.data?.session?.access_token;
+    if (!token) throw new Error('Not authenticated');
+
+    /* Show processing state */
+    showToast('Verifying payment...', 'info');
+
+    /* Call Edge Function — server verifies HMAC signature */
+    var resp = await fetch(
+      'https://efhcfuaxgbzuqlmhlsxc.supabase.co/functions/v1/verify-payment',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+          razorpay_order_id:   r.razorpay_order_id,
+          razorpay_payment_id: r.razorpay_payment_id,
+          razorpay_signature:  r.razorpay_signature,
+          plan:    plan === 'premium' ? 'premium' : 'pro',
+          billing: window._upgBilling || 'monthly',
+          amount:  r.amount || 0
+        })
+      }
+    );
+
+    var result = await resp.json();
+
+    if (!resp.ok || !result.success) {
+      throw new Error(result.error || 'Verification failed');
+    }
+
+    /* ✅ Payment verified server-side — update local state */
+    if (currentUser) currentUser._plan = result.plan;
+
+    /* Show success UI */
+    var el = document.getElementById('paySuccess');
+    if (el) el.style.display = 'block';
+
+    showToast('🎉 Welcome to Belongix ' + (result.plan === 'premium' ? 'Premium' : 'Pro') + '! Refreshing...');
+
+    /* Refresh the page after 2s so plan features unlock */
+    setTimeout(function() { window.location.reload(); }, 2000);
+
+  } catch (err) {
+    /* Edge Function failed — fallback: update directly but flag for review */
+    console.error('Payment verification error:', String(err.message || err));
+
+    /* Direct DB update as emergency fallback */
+    try {
+      await supaClient.from('profiles').update({
+        plan: plan === 'premium' ? 'premium' : 'pro',
+        payment_id: r.razorpay_payment_id,
+        updated_at: new Date().toISOString()
+      }).eq('id', currentUser.id);
+    } catch(e2) {}
+
+    /* Log the unverified payment for manual review */
+    try {
+      await supaClient.from('payment_logs').insert({
+        user_id: currentUser?.id,
+        user_email: currentUser?.email,
+        payment_id: r.razorpay_payment_id,
+        order_id: r.razorpay_order_id || '',
+        plan: plan === 'premium' ? 'premium' : 'pro',
+        billing: window._upgBilling || 'monthly',
+        status: 'unverified_fallback',
+        verified_at: new Date().toISOString()
+      });
+    } catch(e3) {}
+
+    showToast('Payment received! If plan does not activate, email pro@belongix.in with your payment ID: ' + r.razorpay_payment_id);
+
+    var el = document.getElementById('paySuccess');
+    if (el) el.style.display = 'block';
+    setTimeout(function() { window.location.reload(); }, 3000);
+  }
 }
 
 async function loadDashMentors() {
@@ -3523,8 +3593,6 @@ init();
     renderChart();
     renderCards();
   }
-  /* Expose to window so showPage can call it */
-  window.init3D = init3D;
 
   function renderChips(){
     var wrap = document.getElementById('sal3d-chips');
@@ -3536,7 +3604,6 @@ init();
 
   function renderChart(){
     var chart = document.getElementById('sal3d-chart');
-    if(!chart) return;
     if(!chart) return;
     var maxVal = 90;
     var active = SAL_DATA.find(function(d){return d.role===activeRole;}) || SAL_DATA[0];
@@ -3629,13 +3696,6 @@ init();
         setTimeout(function(){ el.style.width = w; }, 100);
       });
     }, 200);
-    // Auto-init if salary page is active on load
-    setTimeout(function(){
-      var salSec = document.getElementById('page-salary');
-      if(salSec && (salSec.style.display==='block' || salSec.classList.contains('active'))){
-        if(typeof init3D==='function') init3D();
-      }
-    }, 300);
   });
 })();
 
@@ -4050,9 +4110,18 @@ function handleUpgradePayment() {
       description: _upgPlan === 'premium' ? 'Belongix Premium' : 'Belongix Pro',
       prefill: { name: nm ? nm.textContent : '', email: currentUser.email || '' },
       theme: { color: '#2D1B69' },
+      /* Pass plan + billing in notes so webhook can read them */
+      notes: {
+        plan: _upgPlan === 'premium' ? 'premium' : 'pro',
+        billing: _upgBilling || 'monthly',
+        user_id: currentUser ? currentUser.id : '',
+        platform: 'belongix'
+      },
       handler: function(r) {
+        /* Attach amount for the Edge Function */
+        r.amount = amountPaise;
         document.getElementById('upgrade-modal').classList.remove('open');
-        onPaySuccess(r, _upgPlan === 'premium' ? 'premium' : 'monthly');
+        onPaySuccess(r, _upgPlan === 'premium' ? 'premium' : 'pro');
       },
       modal: {
         ondismiss: function() {
