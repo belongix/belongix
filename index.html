@@ -489,10 +489,10 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
           It's For You <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="dd-panel" id="dd-who">
-          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
-          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#ECFDF5">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
-          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#FFF7ED">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
-          <a class="dd-item" href="#for-who"><div class="dd-icon" style="background:#FFF1F2">🔄</div><div class="dd-text"><strong>Career Changers</strong><span>Switch fields with mentor support</span></div></a>
+          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
+          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#ECFDF5">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
+          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#FFF7ED">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
+          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#FFF1F2">🔄</div><div class="dd-text"><strong>Career Changers</strong><span>Switch fields with mentor support</span></div></a>
         </div>
       </li>
       <li>
@@ -798,25 +798,25 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       <h2>Built for <span>every career stage</span></h2>
     </div>
     <div class="who-grid rv" style="margin-bottom:64px">
-      <div class="who-card" onclick="openModal('signup')">
+      <div class="who-card" onclick="whoCardClick()">
         <span class="who-icon">🎓</span>
         <div class="who-title">College Students</div>
         <div class="who-desc">Internship guidance, placement prep, skill building and career score from day one.</div>
         <span class="who-tag">Internships &amp; Placements</span>
       </div>
-      <div class="who-card" onclick="openModal('signup')">
+      <div class="who-card" onclick="whoCardClick()">
         <span class="who-icon">🌱</span>
         <div class="who-title">Fresh Graduates</div>
         <div class="who-desc">First job roadmap, resume tips, interview prep and salary benchmarks for freshers.</div>
         <span class="who-tag">First Job Ready</span>
       </div>
-      <div class="who-card" onclick="openModal('signup')">
+      <div class="who-card" onclick="whoCardClick()">
         <span class="who-icon">💼</span>
         <div class="who-title">Working Professionals</div>
         <div class="who-desc">Salary negotiation, promotions, upskilling and mentor sessions for real growth.</div>
         <span class="who-tag">Grow Your Career</span>
       </div>
-      <div class="who-card" onclick="openModal('signup')">
+      <div class="who-card" onclick="whoCardClick()">
         <span class="who-icon">🔄</span>
         <div class="who-title">Career Changers</div>
         <div class="who-desc">Field transition roadmaps, reskilling paths and mentors who've made the switch.</div>
@@ -1329,6 +1329,36 @@ if(navBtn&&navDd){
 }
 
 // NAV DROPDOWNS
+function scrollToForWho(){
+  /* Close all dropdowns */
+  document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
+  document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
+  /* Smooth scroll to section */
+  var sec=document.getElementById('for-who');
+  if(sec)sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function whoCardClick(){
+  /* If logged in → go to dashboard; if not → show signup modal */
+  var navIn=document.getElementById('nav-in');
+  if(navIn&&navIn.style.display!=='none'&&navIn.style.display!==''){
+    window.location.href='dashboard.html';
+  } else {
+    /* Also check Supabase session */
+    if(typeof sb!=='undefined'){
+      sb.auth.getSession().then(function(r){
+        if(r&&r.data&&r.data.session&&r.data.session.user){
+          window.location.href='dashboard.html';
+        } else {
+          openModal('signup');
+        }
+      }).catch(function(){openModal('signup');});
+    } else {
+      openModal('signup');
+    }
+  }
+}
+
 function toggleDD(id,btn){
   var dd=document.getElementById(id);
   if(!dd)return;
