@@ -77,7 +77,7 @@
      EMAIL 1 — MENTOR APPLICATION
      Triggered from: mentors.html → submitMentorApplication()
      ══════════════════════════════════════════════════════
-     Template 1a (tpl_mentor_app_admin) — To: admin@belongix.in
+     Template 1a (tpl_mentor_app_admin) — To: teambelongix@gmail.com
      Subject: New Mentor Application — {{applicant_name}} from {{company}}
      Body: Use template variables below as {{variable_name}}
 
@@ -90,7 +90,7 @@
     var now = new Date();
     /* 1a — admin notification */
     send(TPL.MENTOR_APP_ADMIN, {
-      to_email        : 'admin@belongix.in',
+      to_email        : 'teambelongix@gmail.com',
       applicant_name  : data.name || '',
       applicant_email : data.email || '',
       job_role        : data.role || '',
