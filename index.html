@@ -112,6 +112,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;ali
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(45,27,105,.07),rgba(107,72,204,.07));border:1px solid rgba(45,27,105,.15);border-radius:100px;padding:5px 16px 5px 8px;font-size:12px;font-weight:600;color:var(--brand);margin-bottom:26px;letter-spacing:.2px}
 .badge-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+@keyframes scrollBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 h1{font-family:var(--ff);font-size:clamp(36px,4.2vw,58px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink)}
 h1 .hl{position:relative;display:inline-block;color:var(--brand)}
 h1 .hl::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent),var(--brand3));border-radius:2px}
@@ -443,6 +444,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   .hero-cta .btn-primary,.hero-cta .btn-ghost{width:100%;justify-content:center}
   .quiz-opts{grid-template-columns:1fr}
   nav{padding:0 4%}
+  #hero-scroll-arrow{display:none}
 }
 /* ✅ FIX #41: Referral banner */
 #ref-banner{display:none}
@@ -460,7 +462,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 <!-- F6: STICKY CTA BAR -->
 <div id="sticky-bar">
   <p>Start your career journey for free</p>
-  <button onclick="openModal('signup')" aria-label="Join Belongix free">Join Free →</button>
+  <button onclick="openModal('signup')" aria-label="Join Belongix free">Join Free <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
   <button id="sticky-bar-close" onclick="this.parentElement.remove()" aria-label="Close bar">×</button>
 </div>
 
@@ -498,19 +500,19 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
           Learn <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
         </button>
         <div class="dd-panel" id="dd-learn">
-          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>48+ curated courses</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>150+ curated courses</span></div></a>
           <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#F5F3FF">🏆</div><div class="dd-text"><strong>Certifications</strong><span>AWS, Google, Microsoft</span></div></a>
           <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#FFF1F2">🎯</div><div class="dd-text"><strong>DSA &amp; Interview Prep</strong><span>Crack FAANG &amp; top startups</span></div></a>
         </div>
       </li>
       <li><a class="nav-link" href="mentors.html">Mentors</a></li>
       <li><a class="nav-link" href="community.html" style="display:flex;align-items:center;gap:5px">Community <span style="font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 5px">NEW</span></a></li>
-      <li><a class="nav-link" href="contact.html">Contact</a></li>
+      <li><a class="nav-link" href="mentors.html#become-mentor" style="display:flex;align-items:center;gap:5px">🌟 Become a Mentor</a></li>
       <li><a class="nav-link" href="about.html">About</a></li>
     </ul>
     <div class="nbtns" id="nav-out">
       <button class="nghost" onclick="openModal('signin')">Sign In</button>
-      <button class="nfill" onclick="openModal('signup')">Join Free →</button>
+      <button class="nfill" onclick="openModal('signup')">Join Free <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
     </div>
     <div class="nav-user-wrap" id="nav-in">
       <button class="nav-user-btn" id="nav-user-btn">
@@ -540,11 +542,11 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   <a class="mm-link" href="dashboard.html?page=upskill">Upskilling Hub</a>
   <a class="mm-link" href="mentors.html">Mentors</a>
   <a class="mm-link" href="community.html">Community 🆕</a>
+  <a class="mm-link" href="mentors.html#become-mentor">🌟 Become a Mentor</a>
   <a class="mm-link" href="about.html">About</a>
-  <a class="mm-link" href="contact.html">Contact</a>
   <div class="mm-btns">
     <button class="nghost" style="width:100%;text-align:center" onclick="openModal('signin');toggleMobileMenu()">Sign In</button>
-    <button class="nfill" style="width:100%;text-align:center;padding:12px" onclick="openModal('signup');toggleMobileMenu()">Join Free →</button>
+    <button class="nfill" style="width:100%;text-align:center;padding:12px" onclick="openModal('signup');toggleMobileMenu()">Join Free <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
   </div>
 </div>
 
@@ -622,7 +624,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
           <option value="Delhi NCR">Delhi NCR</option>
           <option value="Remote">Remote</option>
         </select>
-        <button class="hero-search-btn" onclick="heroJobSearch()" aria-label="Search jobs">Search Jobs →</button>
+        <button class="hero-search-btn" onclick="heroJobSearch()" aria-label="Search jobs">Search Jobs <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
       </div>
       <!-- Preview jobs for non-logged-in users -->
       <div id="preview-jobs">
@@ -664,7 +666,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
           </div>
         </div>
         <div class="pj-overlay">
-          <button class="pj-overlay-btn" onclick="openModal('signup')">Sign in to apply to 1,500+ jobs →</button>
+          <button class="pj-overlay-btn" onclick="openModal('signup')">Sign in to apply to 1,500+ jobs <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
         </div>
       </div>
       <div class="hero-cta" id="hero-guest-cta">
@@ -679,13 +681,13 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       </div>
       <div class="hero-cta" id="hero-signed-cta" style="display:none">
         <a href="dashboard.html" class="btn-primary" style="text-decoration:none">Go to Dashboard <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
-        <a href="dashboard.html?page=jobs" class="btn-ghost" style="text-decoration:none">Browse Jobs</a>
+        <a href="dashboard.html?page=jobs" class="btn-ghost" style="text-decoration:none">Browse Jobs <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
       </div>
       <div class="hero-note" id="hero-guest-note">Free to join &middot; No credit card &middot; Cancel anytime</div>
       <div class="hero-note" id="hero-signed-note" style="display:none">Welcome back! Continue where you left off.</div>
       <div class="hero-stats">
         <div class="hstat"><div class="hstat-n">Live</div><div class="hstat-l">Job Board</div></div>
-        <div class="hstat"><div class="hstat-n">48+</div><div class="hstat-l">Skill Courses</div></div>
+        <div class="hstat"><div class="hstat-n">150+</div><div class="hstat-l">Skill Courses</div></div>
         <div class="hstat"><div class="hstat-n">7</div><div class="hstat-l">Career Tools</div></div>
         <div class="hstat"><div class="hstat-n">24/7</div><div class="hstat-l">Bexi AI Guide</div></div>
       </div>
@@ -706,7 +708,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
           <label class="hc-label">Password</label>
           <input class="hc-input" type="password" id="hc-pass" placeholder="Create a password"/>
         </div>
-        <button class="hc-btn" onclick="heroAuth('signup')">Create Account →</button>
+        <button class="hc-btn" onclick="heroAuth('signup')">Create Account <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
         <div class="hc-or">or</div>
         <button class="hc-google" onclick="googleAuth()">
           <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
@@ -723,7 +725,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
           <label class="hc-label">Password</label>
           <input class="hc-input" type="password" id="hc-si-pass" placeholder="Your password"/>
         </div>
-        <button class="hc-btn" onclick="heroAuth('signin')">Sign In →</button>
+        <button class="hc-btn" onclick="heroAuth('signin')">Sign In <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
         <div class="hc-or">or</div>
         <button class="hc-google" onclick="googleAuth()">
           <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
@@ -733,6 +735,11 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       </div>
       <div class="hc-fine">Free plan always available · No credit card needed</div>
     </div>
+  </div>
+  <!-- Scroll down indicator -->
+  <div id="hero-scroll-arrow" onclick="document.getElementById('for-who').scrollIntoView({behavior:'smooth'})" style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:10;opacity:.7;transition:.2s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.7'">
+    <span style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase">Scroll</span>
+    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="var(--brand)" stroke-width="2.2" style="animation:scrollBounce 1.8s ease-in-out infinite"><path d="M19 9l-7 7-7-7"/></svg>
   </div>
 </section>
 
@@ -882,21 +889,21 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         <div style="width:48px;height:48px;background:linear-gradient(135deg,#2D1B69,#6B48CC);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px">📄</div>
         <div style="font-family:var(--ff);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:6px">Resume Builder</div>
         <div style="font-size:13.5px;color:var(--muted);line-height:1.65;flex:1">Build an ATS-optimised resume in minutes. 3 templates, AI-enhanced summary, live preview &amp; PDF download.</div>
-        <div style="margin-top:16px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#2D1B69">Build your resume <span>→</span></div>
+        <div style="margin-top:16px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#2D1B69">Build your resume <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
         <div style="position:absolute;top:16px;right:16px;background:#ECFDF5;color:#15803D;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">FREE</div>
       </a>
       <a href="post-job.html" style="text-decoration:none;display:flex;flex-direction:column;background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;transition:.2s;position:relative;overflow:hidden" onmouseover="this.style.borderColor='#C4B0F8';this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 40px rgba(45,27,105,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none';this.style.boxShadow='none'">
         <div style="width:48px;height:48px;background:linear-gradient(135deg,#FF5C35,#FF8C42);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px">🏢</div>
         <div style="font-family:var(--ff);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:6px">Post a Job</div>
         <div style="font-size:13.5px;color:var(--muted);line-height:1.65;flex:1">Hire from 2,400+ verified Indian tech professionals. First job post is free. Average first applicant in 4 hours.</div>
-        <div style="margin-top:16px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#FF5C35">Post for free <span>→</span></div>
+        <div style="margin-top:16px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#FF5C35">Post for free <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
         <div style="position:absolute;top:16px;right:16px;background:#FFF7ED;color:#C2410C;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">FOR EMPLOYERS</div>
       </a>
       <a href="recruiter-dashboard.html" style="text-decoration:none;display:flex;flex-direction:column;background:var(--white);border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;transition:.2s;position:relative;overflow:hidden" onmouseover="this.style.borderColor='#C4B0F8';this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 40px rgba(45,27,105,.12)'" onmouseout="this.style.borderColor='var(--border)';this.style.transform='none';this.style.boxShadow='none'">
         <div style="width:48px;height:48px;background:linear-gradient(135deg,#06B6D4,#0891B2);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;margin-bottom:16px">👥</div>
         <div style="font-family:var(--ff);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:6px">Recruiter Dashboard</div>
         <div style="font-size:13.5px;color:var(--muted);line-height:1.65;flex:1">Track applicants, search candidates by skill &amp; city, and use Bexi AI to rank candidates by fit score.</div>
-        <div style="margin-top:16px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#0891B2">View dashboard <span>→</span></div>
+        <div style="margin-top:16px;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:#0891B2">View dashboard <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
         <div style="position:absolute;top:16px;right:16px;background:#ECFDF5;color:#15803D;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px">FREE</div>
       </a>
     </div>
@@ -942,7 +949,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         </div>
         <div id="quiz-tier-desc" style="font-size:14px;color:var(--muted);margin-bottom:16px"></div>
         <button class="btn-primary" onclick="openModal('signup')" style="width:100%;justify-content:center">
-          Sign up to track &amp; grow your real Career Score →
+          Sign up to track &amp; grow your real Career Score <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
         </button>
         <div style="font-size:12px;color:var(--subtle);margin-top:10px;cursor:pointer" onclick="resetQuiz()">Take quiz again</div>
       </div>
@@ -990,7 +997,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       <a class="ct-card" href="dashboard.html?page=upskill"><div class="ct-icon">🎯</div><div class="ct-title">DSA &amp; Interview Prep</div><div class="ct-sub">Crack FAANG and top startups</div><span class="ct-badge hot">Top Pick</span></a>
     </div>
     <div style="text-align:center;margin-top:36px">
-      <a href="dashboard.html?page=upskill" class="btn-primary" style="display:inline-flex;text-decoration:none">Browse All Courses &rarr;</a>
+      <a href="dashboard.html?page=upskill" class="btn-primary" style="display:inline-flex;text-decoration:none">Browse All Courses <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
     </div>
   </div>
 </section>
@@ -1030,7 +1037,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       </div>
     </div>
     <div style="text-align:center">
-      <a href="dashboard.html?page=salary" class="btn-primary" style="text-decoration:none;display:inline-flex">See all 15+ salary benchmarks →</a>
+      <a href="dashboard.html?page=salary" class="btn-primary" style="text-decoration:none;display:inline-flex">See all 15+ salary benchmarks <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
     </div>
   </div>
 </section>
@@ -1112,7 +1119,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
               <div style="display:flex;align-items:center;gap:9px;font-size:13px;color:rgba(255,255,255,.85)"><span style="width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">✓</span>Career switch support</div>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <a href="mentors.html" class="btn-white" style="padding:11px 22px;font-size:14px">Find a Mentor →</a>
+              <a href="mentors.html" class="btn-white" style="padding:11px 22px;font-size:14px">Find a Mentor <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
               <a href="mentors.html" class="btn-white-ghost" style="padding:11px 22px;font-size:14px">Become a Mentor</a>
             </div>
           </div>
@@ -1187,12 +1194,12 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
     <div id="modal-signup">
       <input class="m-inp" type="email" id="m-email" placeholder="Email address"/>
       <input class="m-inp" type="password" id="m-pass" placeholder="Password (min 6 chars)"/>
-      <button class="m-btn" onclick="modalAuth('signup')">Create Account →</button>
+      <button class="m-btn" onclick="modalAuth('signup')">Create Account <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
     </div>
     <div id="modal-signin" style="display:none">
       <input class="m-inp" type="email" id="m-si-email" placeholder="Email address"/>
       <input class="m-inp" type="password" id="m-si-pass" placeholder="Password"/>
-      <button class="m-btn" onclick="modalAuth('signin')">Sign In →</button>
+      <button class="m-btn" onclick="modalAuth('signin')">Sign In <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
     </div>
     <button class="m-google" onclick="googleAuth()">
       <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
@@ -1225,7 +1232,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         <option value="switch">Switch careers</option>
         <option value="learn">Learn new skills</option>
       </select>
-      <button class="m-btn" style="margin-top:14px" onclick="submitStep2()">Get Started →</button>
+      <button class="m-btn" style="margin-top:14px" onclick="submitStep2()">Get Started <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
       <div style="text-align:center;margin-top:8px"><a href="dashboard.html" style="font-size:12.5px;color:var(--subtle);cursor:pointer;text-decoration:none">Skip for now</a></div>
     </div>
     <div class="m-fine" id="m-fine-txt">By signing up, you agree to our <a href="terms.html" style="color:var(--brand)">Terms</a> and <a href="privacy.html" style="color:var(--brand)">Privacy Policy</a>.</div>
@@ -1239,6 +1246,31 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
 var sb=supabase.createClient(SB_URL,SB_KEY);
+
+// Load live stats from Supabase
+(function(){
+  // Update hero stats from Supabase
+  try {
+    sb.from('profiles').select('id',{count:'exact',head:true}).then(function(r){
+      if(r&&r.count>0){
+        var el=document.getElementById('stat-users');
+        if(el)el.textContent=(r.count>999?(Math.floor(r.count/100)/10)+'K+':r.count+'+');
+      }
+    });
+    sb.from('jobs').select('id',{count:'exact',head:true}).eq('status','approved').then(function(r){
+      if(r&&r.count>0){
+        var el=document.getElementById('stat-jobs');
+        if(el)el.textContent=r.count+'+';
+      }
+    });
+    sb.from('mentors').select('id',{count:'exact',head:true}).then(function(r){
+      if(r&&r.count>0){
+        var el=document.getElementById('stat-mentors');
+        if(el)el.textContent=r.count+'+';
+      }
+    });
+  } catch(e){}
+})();
 
 // AUTH STATE
 (function(){
@@ -1905,356 +1937,5 @@ var obs=new IntersectionObserver(function(entries){
 document.querySelectorAll('.rv').forEach(function(el){obs.observe(el);});
 </script>
 
-<!-- ════════════════════════════════════════════════════════
-     FIX 1 — BEXI AI FLOATING CHAT WIDGET
-     Self-contained: CSS + HTML + JS, no external deps
-════════════════════════════════════════════════════════ -->
-<style>
-/* ── WIDGET CONTAINER ── */
-#bexi-widget{position:fixed;bottom:24px;right:24px;z-index:9999;font-family:'DM Sans',sans-serif}
-
-/* ── BUBBLE ── */
-#bexi-bubble{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#2D1B69,#7C4DFF);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 20px rgba(124,77,255,.45);transition:.2s;position:relative;user-select:none}
-#bexi-bubble:hover{transform:scale(1.08)}
-#bexi-bubble-icon{font-size:26px;line-height:1}
-@keyframes bexiPulse{0%{box-shadow:0 0 0 0 rgba(124,77,255,.5)}70%{box-shadow:0 0 0 16px rgba(124,77,255,0)}100%{box-shadow:0 0 0 0 rgba(124,77,255,0)}}
-#bexi-bubble{animation:bexiPulse 3s ease-out infinite}
-#bexi-bubble:hover{animation:none}
-#bexi-tooltip{position:absolute;bottom:70px;right:0;background:#1A1A2E;color:#fff;font-size:12.5px;font-weight:600;padding:7px 13px;border-radius:10px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s;box-shadow:0 4px 16px rgba(0,0,0,.2)}
-#bexi-tooltip::after{content:'';position:absolute;top:100%;right:18px;border:5px solid transparent;border-top-color:#1A1A2E}
-#bexi-bubble:hover #bexi-tooltip{opacity:1}
-#bexi-notif-dot{position:absolute;top:4px;right:4px;width:12px;height:12px;border-radius:50%;background:#FF5C35;border:2px solid #fff;display:none}
-#bexi-notif-dot.show{display:block}
-
-/* ── CHAT PANEL ── */
-#bexi-panel{position:fixed;bottom:100px;right:24px;width:360px;height:520px;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);display:none;flex-direction:column;overflow:hidden;z-index:9998;transition:opacity .2s,transform .2s;opacity:0;transform:translateY(10px) scale(.97)}
-#bexi-panel.open{display:flex;opacity:1;transform:translateY(0) scale(1)}
-
-/* ── HEADER ── */
-#bexi-header{background:linear-gradient(135deg,#2D1B69,#7C4DFF);padding:14px 16px;display:flex;align-items:center;gap:11px;flex-shrink:0}
-#bexi-header-av{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-#bexi-header-info{flex:1}
-#bexi-header-name{font-size:15px;font-weight:700;color:#fff;font-family:'Sora',sans-serif;letter-spacing:-.2px}
-#bexi-header-sub{font-size:11px;color:rgba(255,255,255,.7);margin-top:1px}
-#bexi-close{background:none;border:none;color:rgba(255,255,255,.8);font-size:20px;cursor:pointer;padding:4px;border-radius:6px;line-height:1;transition:.15s;flex-shrink:0}
-#bexi-close:hover{color:#fff;background:rgba(255,255,255,.15)}
-#bexi-free-bar{background:#EDE9FE;padding:6px 16px;text-align:center;font-size:12px;font-weight:600;color:#5B21B6;flex-shrink:0}
-
-/* ── MESSAGES ── */
-#bexi-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
-#bexi-msgs::-webkit-scrollbar{width:4px}
-#bexi-msgs::-webkit-scrollbar-thumb{background:#E4E4F0;border-radius:4px}
-.bexi-msg-row{display:flex;align-items:flex-end;gap:7px}
-.bexi-msg-row.user{justify-content:flex-end}
-.bexi-msg-av{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#2D1B69,#7C4DFF);display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
-.bexi-bubble-user{background:linear-gradient(135deg,#2D1B69,#7C4DFF);color:#fff;padding:10px 14px;border-radius:18px 18px 4px 18px;font-size:13px;line-height:1.55;max-width:240px;word-break:break-word;box-shadow:0 2px 8px rgba(45,27,105,.25)}
-.bexi-bubble-ai{background:#fff;color:#1A1A2E;padding:10px 14px;border-radius:18px 18px 18px 4px;font-size:13px;line-height:1.55;max-width:240px;word-break:break-word;box-shadow:0 2px 10px rgba(0,0,0,.08);border:1px solid #F1F1F8}
-
-/* ── TYPING INDICATOR ── */
-#bexi-typing{display:none;align-items:flex-end;gap:7px}
-#bexi-typing.show{display:flex}
-.bexi-typing-dots{background:#fff;border:1px solid #F1F1F8;border-radius:18px 18px 18px 4px;padding:12px 16px;display:flex;gap:5px;align-items:center;box-shadow:0 2px 10px rgba(0,0,0,.08)}
-.bexi-dot{width:7px;height:7px;border-radius:50%;background:#CBD5E1}
-@keyframes bexiDotBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
-.bexi-dot:nth-child(1){animation:bexiDotBob .9s ease infinite}
-.bexi-dot:nth-child(2){animation:bexiDotBob .9s ease .2s infinite}
-.bexi-dot:nth-child(3){animation:bexiDotBob .9s ease .4s infinite}
-
-/* ── SUGGESTIONS ── */
-#bexi-suggestions{padding:0 16px 14px;flex-shrink:0}
-#bexi-sug-label{font-size:12px;color:#94A3B8;text-align:center;margin-bottom:8px;font-weight:500}
-.bexi-chip-row{display:flex;flex-direction:column;gap:7px}
-.bexi-chip{background:#fff;border:1.5px solid #E4E4F0;border-radius:22px;padding:8px 14px;font-size:12.5px;font-weight:500;color:#1A1A2E;cursor:pointer;text-align:left;transition:.15s;font-family:'DM Sans',sans-serif}
-.bexi-chip:hover{border-color:#7C4DFF;color:#2D1B69;background:#F5F3FF}
-
-/* ── INPUT ── */
-#bexi-input-bar{border-top:1px solid #F1F1F8;padding:12px 14px;display:flex;gap:9px;align-items:center;background:#fff;flex-shrink:0;box-shadow:0 -2px 10px rgba(0,0,0,.04)}
-#bexi-input{flex:1;border:1.5px solid #E4E4F0;border-radius:22px;padding:9px 14px;font-size:13.5px;font-family:'DM Sans',sans-serif;color:#1A1A2E;outline:none;resize:none;transition:.15s;height:40px;line-height:1.4}
-#bexi-input:focus{border-color:#7C4DFF;box-shadow:0 0 0 3px rgba(124,77,255,.08)}
-#bexi-send{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2D1B69,#7C4DFF);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s}
-#bexi-send:disabled{background:#E4E4F0;cursor:default}
-#bexi-send:not(:disabled):hover{filter:brightness(1.12);transform:scale(1.06)}
-#bexi-send svg{pointer-events:none}
-
-/* ── UPGRADE MESSAGE BUTTONS ── */
-.bexi-upgrade-btns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
-.bexi-upgrade-btn{padding:7px 14px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:.15s;text-decoration:none;display:inline-block}
-.bexi-upgrade-btn.primary{background:linear-gradient(135deg,#2D1B69,#7C4DFF);color:#fff}
-.bexi-upgrade-btn.ghost{background:#F3F0FF;color:#4A2FCF;border:1.5px solid #DDD6FE}
-.bexi-upgrade-btn:hover{filter:brightness(.92)}
-
-/* ── MOBILE FULL SCREEN ── */
-@media(max-width:640px){
-  #bexi-panel{width:100vw;height:100vh;bottom:0;right:0;border-radius:0;z-index:10000}
-  #bexi-close{font-size:26px;padding:8px}
-  #bexi-input-bar{padding-bottom:20px}
-  #bexi-bubble{bottom:80px}
-}
-</style>
-
-<!-- Widget HTML -->
-<div id="bexi-widget">
-  <div id="bexi-bubble" onclick="bexiToggle()" role="button" aria-label="Chat with Bexi AI">
-    <div id="bexi-tooltip">Chat with Bexi — Free</div>
-    <span id="bexi-bubble-icon">🤖</span>
-    <span id="bexi-notif-dot"></span>
-  </div>
-</div>
-
-<div id="bexi-panel" role="dialog" aria-label="Bexi AI Chat">
-  <div id="bexi-header">
-    <div id="bexi-header-av">🤖</div>
-    <div id="bexi-header-info">
-      <div id="bexi-header-name">Bexi AI</div>
-      <div id="bexi-header-sub">Your Career Guide</div>
-    </div>
-    <button id="bexi-close" onclick="bexiClose()" aria-label="Close chat">✕</button>
-  </div>
-  <div id="bexi-free-bar">✨ 3 free questions · No signup needed</div>
-
-  <div id="bexi-msgs">
-    <!-- Opening message from Bexi -->
-    <div class="bexi-msg-row">
-      <div class="bexi-msg-av">🤖</div>
-      <div class="bexi-bubble-ai">Hi! I'm Bexi 👋 Your AI career guide for the Indian job market. Ask me anything — salary, skills, career switch, interview prep. What's on your mind?</div>
-    </div>
-  </div>
-
-  <div id="bexi-typing">
-    <div class="bexi-msg-av">🤖</div>
-    <div class="bexi-typing-dots">
-      <div class="bexi-dot"></div>
-      <div class="bexi-dot"></div>
-      <div class="bexi-dot"></div>
-    </div>
-  </div>
-
-  <div id="bexi-suggestions">
-    <div id="bexi-sug-label">Try asking 👇</div>
-    <div class="bexi-chip-row">
-      <button class="bexi-chip" onclick="bexiSendChip(this)">💰 Am I being paid fairly?</button>
-      <button class="bexi-chip" onclick="bexiSendChip(this)">🚀 How to reach ₹20 LPA?</button>
-      <button class="bexi-chip" onclick="bexiSendChip(this)">🔄 Switch to data analytics?</button>
-    </div>
-  </div>
-
-  <div id="bexi-input-bar">
-    <input id="bexi-input" type="text" placeholder="Ask Bexi anything..." oninput="bexiInputChange()" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();bexiSend()}" maxlength="300" autocomplete="off"/>
-    <button id="bexi-send" onclick="bexiSend()" disabled aria-label="Send">
-      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2.2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
-    </button>
-  </div>
-</div>
-
-<script>
-/* ══════════════════════════════════════════
-   BEXI AI WIDGET — Complete Implementation
-══════════════════════════════════════════ */
-(function(){
-  var BEXI_LIMIT = 3;
-  var BEXI_COUNT_KEY = 'bexi_widget_count';
-  var BEXI_DATE_KEY  = 'bexi_widget_date';
-
-  /* ── Free limit helpers ── */
-  function todayStr() {
-    return new Date().toISOString().split('T')[0];
-  }
-  function getCount() {
-    try {
-      if (localStorage.getItem(BEXI_DATE_KEY) !== todayStr()) {
-        localStorage.setItem(BEXI_DATE_KEY, todayStr());
-        localStorage.setItem(BEXI_COUNT_KEY, '0');
-        return 0;
-      }
-      return parseInt(localStorage.getItem(BEXI_COUNT_KEY) || '0');
-    } catch(e) { return 0; }
-  }
-  function incCount() {
-    try {
-      localStorage.setItem(BEXI_DATE_KEY, todayStr());
-      localStorage.setItem(BEXI_COUNT_KEY, String(getCount() + 1));
-    } catch(e) {}
-  }
-
-  /* ── Panel open/close ── */
-  var _panelOpen = false;
-  window.bexiToggle = function() {
-    _panelOpen ? bexiClose() : bexiOpen();
-  };
-  function bexiOpen() {
-    _panelOpen = true;
-    var p = document.getElementById('bexi-panel');
-    if (p) { p.style.display = 'flex'; requestAnimationFrame(function(){ p.classList.add('open'); }); }
-    var dot = document.getElementById('bexi-notif-dot');
-    if (dot) dot.classList.remove('show');
-    setTimeout(function() {
-      var inp = document.getElementById('bexi-input');
-      if (inp) inp.focus();
-    }, 300);
-  }
-  window.bexiClose = function() {
-    _panelOpen = false;
-    var p = document.getElementById('bexi-panel');
-    if (p) { p.classList.remove('open'); setTimeout(function(){ p.style.display='none'; }, 200); }
-  };
-
-  /* Close on outside click */
-  document.addEventListener('click', function(e) {
-    var panel = document.getElementById('bexi-panel');
-    var bubble = document.getElementById('bexi-bubble');
-    if (_panelOpen && panel && bubble && !panel.contains(e.target) && !bubble.contains(e.target)) {
-      bexiClose();
-    }
-  });
-
-  /* ── Chip click ── */
-  window.bexiSendChip = function(btn) {
-    var text = btn.textContent.trim();
-    /* Strip emoji prefix */
-    text = text.replace(/^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\s]+/u, '').trim() || btn.textContent.trim();
-    var inp = document.getElementById('bexi-input');
-    if (inp) { inp.value = text; bexiInputChange(); }
-    bexiSend();
-  };
-
-  /* ── Input change ── */
-  window.bexiInputChange = function() {
-    var inp = document.getElementById('bexi-input');
-    var btn = document.getElementById('bexi-send');
-    if (inp && btn) btn.disabled = !inp.value.trim();
-  };
-
-  /* ── Send message ── */
-  window.bexiSend = function() {
-    var inp = document.getElementById('bexi-input');
-    if (!inp || !inp.value.trim()) return;
-    var msg = inp.value.trim();
-    inp.value = '';
-    bexiInputChange();
-
-    /* Hide suggestions on first message */
-    var sugs = document.getElementById('bexi-suggestions');
-    if (sugs) sugs.style.display = 'none';
-
-    /* Append user bubble */
-    appendMsg(msg, 'user');
-
-    /* Check limit */
-    if (getCount() >= BEXI_LIMIT) {
-      showLimitMsg();
-      return;
-    }
-
-    /* Call API */
-    showTyping(true);
-    callBexiAPI(msg).then(function(reply) {
-      showTyping(false);
-      incCount();
-      appendMsg(reply, 'ai');
-      /* Show limit message after 3rd answer */
-      if (getCount() >= BEXI_LIMIT) {
-        setTimeout(function() { showLimitMsg(); }, 500);
-      }
-    }).catch(function(err) {
-      showTyping(false);
-      appendMsg('Sorry, I\'m having a moment! Try again in a few seconds 😅', 'ai');
-      console.warn('[Bexi]', err);
-    });
-  };
-
-  /* ── Append message bubble ── */
-  function appendMsg(text, sender) {
-    var msgs = document.getElementById('bexi-msgs');
-    var typing = document.getElementById('bexi-typing');
-    if (!msgs) return;
-    var row = document.createElement('div');
-    row.className = 'bexi-msg-row' + (sender === 'user' ? ' user' : '');
-    if (sender === 'ai') {
-      row.innerHTML = '<div class="bexi-msg-av">🤖</div>'
-        + '<div class="bexi-bubble-ai">' + esc(text) + '</div>';
-    } else {
-      row.innerHTML = '<div class="bexi-bubble-user">' + esc(text) + '</div>';
-    }
-    /* Insert before typing indicator */
-    msgs.insertBefore(row, typing || null);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  /* ── Typing indicator ── */
-  function showTyping(show) {
-    var t = document.getElementById('bexi-typing');
-    if (t) t.className = 'bexi-msg-row' + (show ? ' show' : '');
-    var msgs = document.getElementById('bexi-msgs');
-    if (msgs) msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  /* ── Limit message ── */
-  function showLimitMsg() {
-    var msgs = document.getElementById('bexi-msgs');
-    var typing = document.getElementById('bexi-typing');
-    if (!msgs) return;
-    var row = document.createElement('div');
-    row.className = 'bexi-msg-row';
-    row.innerHTML = '<div class="bexi-msg-av">🤖</div>'
-      + '<div class="bexi-bubble-ai">'
-      + "You've used your 3 free questions today! 🎉<br>Join Belongix free for 10 questions/day or go Pro for unlimited career guidance."
-      + '<div class="bexi-upgrade-btns">'
-      + '<a class="bexi-upgrade-btn primary" href="index.html#signup" onclick="openModal(\'signup\')">Join Free →</a>'
-      + '<a class="bexi-upgrade-btn ghost" href="dashboard.html?page=upgrade">Go Pro →</a>'
-      + '</div>'
-      + '</div>';
-    msgs.insertBefore(row, typing || null);
-    msgs.scrollTop = msgs.scrollHeight;
-    /* Disable input */
-    var inp = document.getElementById('bexi-input');
-    var btn = document.getElementById('bexi-send');
-    if (inp) { inp.disabled = true; inp.placeholder = 'Sign up for more questions...'; }
-    if (btn) btn.disabled = true;
-  }
-
-  /* ── HTML escape ── */
-  function esc(s) {
-    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-  }
-
-  /* ── Claude API call ── */
-  async function callBexiAPI(userMessage) {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': 'YOUR_CLAUDE_API_KEY_HERE',
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 350,
-        system: 'You are Bexi, AI career guide built by Belongix for Indian professionals. India 2026 job market expert — salaries in LPA, top companies (Swiggy, Razorpay, Google India, Infosys, TCS, CRED, Zepto, PhonePe, Meesho), skills (Python, React, SQL, AWS, GenAI, LangChain, Kafka, dbt). Always give specific India-focused advice. Never generic. Warm, direct, encouraging. End every response with one bold next step. Under 100 words. Use 1-2 emojis max.',
-        messages: [{ role: 'user', content: userMessage }]
-      })
-    });
-    if (!res.ok) throw new Error('API ' + res.status);
-    var data = await res.json();
-    return (data.content || []).map(function(b){ return b.text || ''; }).join('').trim()
-      || 'Hmm, I couldn\'t get a response. Try again!';
-  }
-
-  /* ── Show notif dot after 8s if panel not open ── */
-  setTimeout(function() {
-    if (!_panelOpen) {
-      var dot = document.getElementById('bexi-notif-dot');
-      if (dot) dot.classList.add('show');
-    }
-  }, 8000);
-
-})();
-</script>
-<script>
-/* Ctrl+Shift+A → Belongix Admin (founder shortcut) */
-document.addEventListener('keydown',function(e){
-  if(e.ctrlKey&&e.shiftKey&&e.key==='A'){e.preventDefault();window.location.href='admin-bx2026.html';}
-});
-</script>
 </body>
 </html>
