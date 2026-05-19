@@ -504,6 +504,14 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
       <button class="sb-item" data-sec="bexi" onclick="showSection('bexi')"><span class="sb-item-ic">🤖</span>Bexi AI Monitor</button>
     </div>
     <div class="sb-section">
+      <span class="sb-section-label">Activity</span>
+      <button class="sb-item" data-sec="applications" onclick="showSection('applications')"><span class="sb-item-ic">📨</span>Job Applications<span class="sb-badge" id="badge-applications" style="display:none">0</span></button>
+      <button class="sb-item" data-sec="bookings" onclick="showSection('bookings')"><span class="sb-item-ic">📅</span>Mentor Bookings<span class="sb-badge" id="badge-bookings" style="display:none">0</span></button>
+      <button class="sb-item" data-sec="reviews" onclick="showSection('reviews')"><span class="sb-item-ic">⭐</span>Company Reviews</button>
+      <button class="sb-item" data-sec="referrals" onclick="showSection('referrals')"><span class="sb-item-ic">🔗</span>Referrals</button>
+      <button class="sb-item" data-sec="notifications" onclick="showSection('notifications')"><span class="sb-item-ic">🔔</span>Notifications</button>
+    </div>
+    <div class="sb-section">
       <span class="sb-section-label">Team</span>
       <button class="sb-item" data-sec="team" onclick="showSection('team')"><span class="sb-item-ic">👨‍💻</span>Team Management</button>
       <button class="sb-item" data-sec="auditlog" onclick="showSection('auditlog')"><span class="sb-item-ic">📋</span>Audit Log</button>
@@ -946,6 +954,193 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
       </div>
     </div>
 
+
+    <!-- ══ JOB APPLICATIONS ══ -->
+    <div class="section" id="sec-applications">
+      <div class="pg-hdr">
+        <div><div class="pg-title">Job Applications</div><div class="pg-sub">All applications submitted through Belongix</div></div>
+        <div class="pg-actions">
+          <button class="btn btn-ghost btn-sm" onclick="exportApplicationsCSV()">📥 Export CSV</button>
+          <button class="btn btn-primary btn-sm" onclick="refreshSection('applications')">↻ Refresh</button>
+        </div>
+      </div>
+      <div class="stats-row stats-4">
+        <div class="stat-card"><div class="sc-val" id="app-total">—</div><div class="sc-lbl">Total Applications</div></div>
+        <div class="stat-card"><div class="sc-val" id="app-pending" style="color:var(--warn)">—</div><div class="sc-lbl">Pending Review</div></div>
+        <div class="stat-card"><div class="sc-val" id="app-shortlisted" style="color:var(--success)">—</div><div class="sc-lbl">Shortlisted</div></div>
+        <div class="stat-card"><div class="sc-val" id="app-rejected" style="color:var(--danger)">—</div><div class="sc-lbl">Rejected</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-header">
+          <div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--subtle)">🔍</span><input class="srch-input" type="text" id="app-search" placeholder="Search applicant or job…" oninput="filterApplications()" style="width:240px;padding-left:32px"/></div>
+          <div class="tbl-filters">
+            <select class="filter-sel" id="app-status-filter" onchange="filterApplications()">
+              <option value="all">All Status</option>
+              <option value="applied">Applied</option>
+              <option value="shortlisted">Shortlisted</option>
+              <option value="rejected">Rejected</option>
+              <option value="hired">Hired</option>
+            </select>
+            <select class="filter-sel" id="app-job-filter" onchange="filterApplications()">
+              <option value="all">All Jobs</option>
+            </select>
+          </div>
+        </div>
+        <div class="tbl-scroll">
+          <table><thead><tr><th>Applicant</th><th>Job Title</th><th>Company</th><th>Applied</th><th>Career Score</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="applications-tbody"><tr><td colspan="7"><div class="empty"><div class="empty-ic">⏳</div><div class="empty-t">Loading…</div></div></td></tr></tbody></table>
+        </div>
+        <div class="tbl-pg"><div class="pg-info" id="app-page-info">—</div><div class="pg-btns" id="app-pg"></div></div>
+      </div>
+    </div>
+
+    <!-- ══ MENTOR BOOKINGS ══ -->
+    <div class="section" id="sec-bookings">
+      <div class="pg-hdr">
+        <div><div class="pg-title">Mentor Bookings</div><div class="pg-sub">All mentor sessions booked through Belongix</div></div>
+        <div class="pg-actions">
+          <button class="btn btn-ghost btn-sm" onclick="exportBookingsCSV()">📥 Export CSV</button>
+          <button class="btn btn-primary btn-sm" onclick="refreshSection('bookings')">↻ Refresh</button>
+        </div>
+      </div>
+      <div class="stats-row stats-4">
+        <div class="stat-card"><div class="sc-val" id="bk-total">—</div><div class="sc-lbl">Total Bookings</div></div>
+        <div class="stat-card"><div class="sc-val" id="bk-pending" style="color:var(--warn)">—</div><div class="sc-lbl">Pending Confirmation</div></div>
+        <div class="stat-card"><div class="sc-val" id="bk-confirmed" style="color:var(--success)">—</div><div class="sc-lbl">Confirmed</div></div>
+        <div class="stat-card"><div class="sc-val" id="bk-revenue" style="color:var(--accent)">—</div><div class="sc-lbl">Total Session Revenue</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-header">
+          <div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--subtle)">🔍</span><input class="srch-input" type="text" id="bk-search" placeholder="Search mentee or mentor…" oninput="filterBookings()" style="width:240px;padding-left:32px"/></div>
+          <div class="tbl-filters">
+            <select class="filter-sel" id="bk-status-filter" onchange="filterBookings()">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <select class="filter-sel" id="bk-type-filter" onchange="filterBookings()">
+              <option value="all">All Types</option>
+              <option value="free_intro">Free Intro</option>
+              <option value="30min">30 Min</option>
+              <option value="60min">60 Min</option>
+            </select>
+          </div>
+        </div>
+        <div class="tbl-scroll">
+          <table><thead><tr><th>Mentee</th><th>Mentor</th><th>Session Type</th><th>Amount</th><th>Booked</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="bookings-tbody"><tr><td colspan="7"><div class="empty"><div class="empty-ic">⏳</div><div class="empty-t">Loading…</div></div></td></tr></tbody></table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">💰 Revenue by Mentor</div>
+        <div id="mentor-revenue-list"></div>
+      </div>
+    </div>
+
+    <!-- ══ COMPANY REVIEWS ══ -->
+    <div class="section" id="sec-reviews">
+      <div class="pg-hdr">
+        <div><div class="pg-title">Company Reviews</div><div class="pg-sub">User submitted reviews — moderate before they go live</div></div>
+        <div class="pg-actions">
+          <button class="btn btn-primary btn-sm" onclick="refreshSection('reviews')">↻ Refresh</button>
+        </div>
+      </div>
+      <div class="stats-row stats-3">
+        <div class="stat-card"><div class="sc-val" id="rv-total">—</div><div class="sc-lbl">Total Reviews</div></div>
+        <div class="stat-card"><div class="sc-val" id="rv-pending" style="color:var(--warn)">—</div><div class="sc-lbl">Pending Approval</div></div>
+        <div class="stat-card"><div class="sc-val" id="rv-approved" style="color:var(--success)">—</div><div class="sc-lbl">Approved & Live</div></div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-header">
+          <div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--subtle)">🔍</span><input class="srch-input" type="text" id="rv-search" placeholder="Search company…" oninput="filterReviews()" style="width:220px;padding-left:32px"/></div>
+          <div class="tbl-filters">
+            <select class="filter-sel" id="rv-status-filter" onchange="filterReviews()">
+              <option value="all">All</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+        </div>
+        <div class="tbl-scroll">
+          <table><thead><tr><th>Company</th><th>Reviewer</th><th>Rating</th><th>Review</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="reviews-tbody"><tr><td colspan="7"><div class="empty"><div class="empty-ic">⏳</div><div class="empty-t">Loading…</div></div></td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ REFERRALS ══ -->
+    <div class="section" id="sec-referrals">
+      <div class="pg-hdr">
+        <div><div class="pg-title">Referral Program</div><div class="pg-sub">Track referrals, rewards and program performance</div></div>
+        <div class="pg-actions">
+          <button class="btn btn-ghost btn-sm" onclick="exportReferralsCSV()">📥 Export CSV</button>
+          <button class="btn btn-primary btn-sm" onclick="refreshSection('referrals')">↻ Refresh</button>
+        </div>
+      </div>
+      <div class="stats-row stats-4">
+        <div class="stat-card"><div class="sc-val" id="ref-total">—</div><div class="sc-lbl">Total Referrals</div></div>
+        <div class="stat-card"><div class="sc-val" id="ref-successful" style="color:var(--success)">—</div><div class="sc-lbl">Successful (Signed Up)</div></div>
+        <div class="stat-card"><div class="sc-val" id="ref-pending-reward" style="color:var(--warn)">—</div><div class="sc-lbl">Pending Rewards</div></div>
+        <div class="stat-card"><div class="sc-val" id="ref-top-referrer">—</div><div class="sc-lbl">Top Referrer</div></div>
+      </div>
+      <div class="charts-eq" style="margin-bottom:14px">
+        <div class="chart-wrap"><div class="chart-title">📈 Referrals Over Time</div><div class="chart-canvas-wrap" style="height:200px"><canvas id="chart-referrals"></canvas></div></div>
+        <div class="card"><div class="card-title">🏆 Top Referrers</div><div id="top-referrers-list"></div></div>
+      </div>
+      <div class="tbl-wrap">
+        <div class="tbl-scroll">
+          <table><thead><tr><th>Referrer</th><th>Referred Email</th><th>Signed Up</th><th>Converted to Pro</th><th>Reward Status</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="referrals-tbody"><tr><td colspan="7"><div class="empty"><div class="empty-ic">⏳</div><div class="empty-t">Loading…</div></div></td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ NOTIFICATIONS MANAGER ══ -->
+    <div class="section" id="sec-notifications">
+      <div class="pg-hdr">
+        <div><div class="pg-title">Push Notifications</div><div class="pg-sub">Send targeted notifications to users</div></div>
+        <div class="pg-actions">
+          <button class="btn btn-primary btn-sm" onclick="openModal('notif-send-modal')">📤 Send Notification</button>
+        </div>
+      </div>
+      <div class="stats-row stats-3">
+        <div class="stat-card"><div class="sc-val" id="notif-sent-count">—</div><div class="sc-lbl">Sent This Month</div></div>
+        <div class="stat-card"><div class="sc-val" id="notif-open-rate">—</div><div class="sc-lbl">Avg Open Rate</div></div>
+        <div class="stat-card"><div class="sc-val" id="notif-pending-count">—</div><div class="sc-lbl">Scheduled</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📤 Quick Send</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="quick-notif-title" placeholder="e.g. 🔥 5 new jobs in Bangalore!"/></div>
+          <div class="form-group"><label class="form-label">Target Segment</label>
+            <select class="form-select" id="quick-notif-segment">
+              <option value="all">All Users</option>
+              <option value="free">Free Users</option>
+              <option value="pro">Pro Users</option>
+              <option value="bangalore">Bangalore Users</option>
+              <option value="hyderabad">Hyderabad Users</option>
+              <option value="inactive_7">Inactive 7+ Days</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="quick-notif-body" rows="2" placeholder="Short message — keep it under 100 characters for best results"></textarea></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Link (optional)</label><input class="form-input" id="quick-notif-link" placeholder="https://belongix.in/jobs"/></div>
+          <div class="form-group"><label class="form-label">Schedule (leave blank to send now)</label><input class="form-input" type="datetime-local" id="quick-notif-schedule"/></div>
+        </div>
+        <button class="btn btn-primary" onclick="sendNotification()">📤 Send Now</button>
+      </div>
+      <div class="tbl-wrap">
+        <div class="card-title" style="padding:16px 18px 0;font-size:14px;font-weight:700">Notification History</div>
+        <div class="tbl-scroll">
+          <table><thead><tr><th>Title</th><th>Segment</th><th>Sent To</th><th>Sent At</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="notifications-tbody"><tr><td colspan="6"><div class="empty"><div class="empty-ic">🔔</div><div class="empty-t">No notifications sent yet</div></div></td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
   </div><!-- /content -->
 </div><!-- /main-wrap -->
 </div><!-- /admin-layout -->
@@ -1071,6 +1266,38 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
 </div>
 
 <!-- CONFIRM MODAL -->
+<!-- NOTIFICATION SEND MODAL -->
+<div class="modal-overlay" id="notif-send-modal" onclick="if(event.target===this)closeModal('notif-send-modal')">
+  <div class="modal-box modal-sm">
+    <div class="modal-hdr"><div class="modal-title">Send Notification</div><button class="modal-close" onclick="closeModal('notif-send-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Title</label><input class="form-input" id="modal-notif-title" placeholder="e.g. 🔥 New jobs matched for you!"/></div>
+      <div class="form-group"><label class="form-label">Message</label><textarea class="form-textarea" id="modal-notif-body" rows="3" placeholder="Keep it short and actionable…"></textarea></div>
+      <div class="form-group"><label class="form-label">Target Segment</label><select class="form-select" id="modal-notif-segment"><option value="all">All Users</option><option value="free">Free Users</option><option value="pro">Pro Users</option><option value="bangalore">Bangalore</option><option value="inactive_7">Inactive 7+ Days</option></select></div>
+      <div class="form-group"><label class="form-label">Link (optional)</label><input class="form-input" id="modal-notif-link" placeholder="https://belongix.in/…"/></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('notif-send-modal')">Cancel</button><button class="btn btn-primary" onclick="sendNotification()">📤 Send</button></div>
+  </div>
+</div>
+
+<!-- BOOKING DETAIL MODAL -->
+<div class="modal-overlay" id="booking-modal" onclick="if(event.target===this)closeModal('booking-modal')">
+  <div class="modal-box modal-md">
+    <div class="modal-hdr"><div class="modal-title" id="booking-modal-title">Booking Details</div><button class="modal-close" onclick="closeModal('booking-modal')">✕</button></div>
+    <div class="modal-body" id="booking-modal-content"></div>
+    <div class="modal-footer" id="booking-modal-footer"></div>
+  </div>
+</div>
+
+<!-- APPLICATION DETAIL MODAL -->
+<div class="modal-overlay" id="application-modal" onclick="if(event.target===this)closeModal('application-modal')">
+  <div class="modal-box modal-md">
+    <div class="modal-hdr"><div class="modal-title" id="application-modal-title">Application Details</div><button class="modal-close" onclick="closeModal('application-modal')">✕</button></div>
+    <div class="modal-body" id="application-modal-content"></div>
+    <div class="modal-footer" id="application-modal-footer"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="confirm-modal" onclick="if(event.target===this)closeModal('confirm-modal')">
   <div style="display:flex;align-items:center;justify-content:center;width:100%">
     <div class="confirm-box">
@@ -1553,6 +1780,422 @@ async function changePassword(){var cur=gv('cur-pw'),nw=gv('new-pw'),conf=gv('co
 function openBlogEditor(){toast('Blog editor — coming soon','warning');}
 function showChangePassword(){showSection('settings');}
 function openChangePassword(){showSection('settings');}
+
+/* ══ UPDATE TITLES & LAZYLOAD FOR NEW SECTIONS ══ */
+TITLES['applications']='Job Applications';
+TITLES['bookings']='Mentor Bookings';
+TITLES['reviews']='Company Reviews';
+TITLES['referrals']='Referral Program';
+TITLES['notifications']='Push Notifications';
+
+var _origLazyLoad=lazyLoad;
+lazyLoad=function(id){
+  var newFns={applications:loadApplications,bookings:loadBookings,reviews:loadReviews,referrals:loadReferrals,notifications:loadNotifications};
+  if(newFns[id])newFns[id]();else _origLazyLoad(id);
+};
+
+/* ══ JOB APPLICATIONS ══ */
+var _allApplications=[],_filteredApps=[],_appPage=1,_appPer=25;
+async function loadApplications(){
+  var tbody=document.getElementById('applications-tbody');
+  try{
+    _allApplications=await sbFetch('applications','select=*,profiles(full_name,email,career_score,city),jobs(title,company)&order=created_at.desc&limit=500');
+  }catch(e){
+    /* Fallback: try without joins */
+    try{_allApplications=await sbFetch('applications','select=*&order=created_at.desc&limit=500');}
+    catch(e2){_allApplications=[];if(tbody)tbody.innerHTML='<tr><td colspan="7">'+emptyState('📨','No applications yet','Users who apply to jobs will appear here — check Supabase RLS')+'</td></tr>';return;}
+  }
+  updateAppStats();filterApplications();populateJobFilter();
+}
+function updateAppStats(){
+  setText('app-total',_allApplications.length);
+  setText('app-pending',_allApplications.filter(function(a){return (a.status||'applied')==='applied';}).length);
+  setText('app-shortlisted',_allApplications.filter(function(a){return a.status==='shortlisted';}).length);
+  setText('app-rejected',_allApplications.filter(function(a){return a.status==='rejected';}).length);
+  setBadge('badge-applications',_allApplications.filter(function(a){return (a.status||'applied')==='applied';}).length);
+}
+function populateJobFilter(){
+  var sel=document.getElementById('app-job-filter');if(!sel)return;
+  var jobs=[...new Set(_allApplications.map(function(a){return a.job_id||'';}).filter(Boolean))];
+  var titles={};_allApplications.forEach(function(a){if(a.job_id)titles[a.job_id]=a.jobs?.title||a.job_title||a.job_id;});
+  sel.innerHTML='<option value="all">All Jobs</option>'+jobs.map(function(jid){return '<option value="'+esc(jid)+'">'+esc(titles[jid]||jid)+'</option>';}).join('');
+}
+function filterApplications(){
+  var q=(gv('app-search')||'').toLowerCase();
+  var sf=gv('app-status-filter')||'all';
+  var jf=gv('app-job-filter')||'all';
+  _filteredApps=_allApplications.filter(function(a){
+    var name=(a.profiles?.full_name||a.applicant_name||a.user_name||'').toLowerCase();
+    var email=(a.profiles?.email||a.applicant_email||a.email||'').toLowerCase();
+    var job=(a.jobs?.title||a.job_title||'').toLowerCase();
+    var txt=name+' '+email+' '+job;
+    var ms=sf==='all'||(a.status||'applied')===sf;
+    var mj=jf==='all'||a.job_id===jf;
+    return(!q||txt.includes(q))&&ms&&mj;
+  });
+  _appPage=1;renderApplicationsTable();
+}
+function renderApplicationsTable(){
+  var start=(_appPage-1)*_appPer,page=_filteredApps.slice(start,start+_appPer);
+  var tbody=document.getElementById('applications-tbody');if(!tbody)return;
+  if(!page.length){tbody.innerHTML='<tr><td colspan="7">'+emptyState('📨',_allApplications.length?'No applications match filters':'No job applications yet','Users who click Quick Apply will appear here')+'</td></tr>';return;}
+  tbody.innerHTML=page.map(function(a){
+    var name=esc(a.profiles?.full_name||a.applicant_name||a.user_name||'Unknown');
+    var email=esc(a.profiles?.email||a.applicant_email||a.email||'—');
+    var job=esc(a.jobs?.title||a.job_title||'—');
+    var company=esc(a.jobs?.company||a.company||'—');
+    var score=a.profiles?.career_score||a.career_score||'—';
+    var st=a.status||'applied';
+    var sb=st==='shortlisted'?'<span class="badge b-success">Shortlisted</span>':st==='rejected'?'<span class="badge b-danger">Rejected</span>':st==='hired'?'<span class="badge b-purple">Hired 🎉</span>':'<span class="badge b-warn">Applied</span>';
+    return '<tr>'
+      +'<td><div style="font-weight:600;font-size:13px">'+name+'</div><div style="font-size:11.5px;color:var(--muted)">'+email+'</div></td>'
+      +'<td style="font-weight:500">'+job+'</td>'
+      +'<td>'+company+'</td>'
+      +'<td style="font-size:12px;color:var(--muted)">'+relTime(a.created_at)+'</td>'
+      +'<td><strong style="color:var(--accent)">'+score+'</strong></td>'
+      +'<td>'+sb+'</td>'
+      +'<td><div class="action-wrap"><button class="btn btn-ghost btn-xs" onclick="toggleActionMenu(\'apm-'+esc(a.id)+'\')">Actions ▾</button>'
+      +'<div class="action-menu" id="apm-'+esc(a.id)+'">'
+      +'<div class="am-item" onclick="openApplicationDetail(\''+esc(a.id)+'\')">👁 View Details</div>'
+      +'<div class="am-item" onclick="updateAppStatus(\''+esc(a.id)+'\',\'shortlisted\')">✅ Shortlist</div>'
+      +'<div class="am-item" onclick="updateAppStatus(\''+esc(a.id)+'\',\'hired\')">🎉 Mark Hired</div>'
+      +'<div class="am-item danger" onclick="updateAppStatus(\''+esc(a.id)+'\',\'rejected\')">❌ Reject</div>'
+      +'</div></div></td></tr>';
+  }).join('');
+  var total=_filteredApps.length;
+  setText('app-page-info','Showing '+(start+1)+'–'+Math.min(start+_appPer,total)+' of '+total);
+  var pg=document.getElementById('app-pg');if(!pg)return;
+  pg.innerHTML=Array.from({length:Math.min(Math.ceil(total/_appPer),8)},function(_,i){return '<button class="pg-btn'+(i+1===_appPage?' active':'')+'" onclick="_appPage='+(i+1)+';renderApplicationsTable()">'+(i+1)+'</button>';}).join('');
+}
+async function updateAppStatus(id,status){
+  try{await sbUpdate('applications',id,{status:status,updated_at:new Date().toISOString()});var a=_allApplications.find(function(x){return x.id===id;});if(a)a.status=status;filterApplications();updateAppStats();toast('Application → '+status,'success');await writeAudit('MODIFY','application',id,'','Status → '+status);}
+  catch(e){toast('Failed to update','error');}
+}
+function openApplicationDetail(id){
+  var a=_allApplications.find(function(x){return x.id===id;});if(!a)return;
+  var name=a.profiles?.full_name||a.applicant_name||a.user_name||'Applicant';
+  var email=a.profiles?.email||a.applicant_email||a.email||'—';
+  var job=a.jobs?.title||a.job_title||'—';
+  var company=a.jobs?.company||a.company||'—';
+  setText('application-modal-title','Application: '+name);
+  document.getElementById('application-modal-content').innerHTML=
+    irow('Applicant','<strong>'+esc(name)+'</strong>')+
+    irow('Email','<a href="mailto:'+esc(email)+'" style="color:var(--accent)">'+esc(email)+'</a>')+
+    irow('City',esc(a.profiles?.city||a.city||'—'))+
+    irow('Career Score','<strong style="color:var(--accent)">'+(a.profiles?.career_score||a.career_score||'—')+'</strong>')+
+    irow('Applied For','<strong>'+esc(job)+'</strong> at '+esc(company))+
+    irow('Applied',fmtDate(a.created_at))+
+    irow('Status','<span class="badge '+(a.status==='shortlisted'?'b-success':a.status==='rejected'?'b-danger':'b-warn')+'">'+esc(a.status||'applied')+'</span>')+
+    (a.cover_letter?'<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border)"><div class="form-label" style="margin-bottom:7px">Cover Letter / Message</div><div style="background:var(--bg);border-radius:8px;padding:13px;font-size:13.5px;line-height:1.7;border:1px solid var(--border)">'+esc(a.cover_letter)+'</div></div>':'')+
+    (a.resume_url?'<div style="margin-top:10px"><a href="'+esc(a.resume_url)+'" target="_blank" class="btn btn-ghost btn-sm">📄 View Resume</a></div>':'');
+  document.getElementById('application-modal-footer').innerHTML=
+    '<button class="btn btn-ghost" onclick="closeModal(\'application-modal\')">Close</button>'+
+    '<button class="btn btn-ghost btn-sm" onclick="mailUser(\''+esc(email)+'\')">📧 Email</button>'+
+    '<button class="btn btn-success" onclick="updateAppStatus(\''+esc(id)+'\',\'shortlisted\');closeModal(\'application-modal\')">✅ Shortlist</button>'+
+    '<button class="btn btn-danger" onclick="updateAppStatus(\''+esc(id)+'\',\'rejected\');closeModal(\'application-modal\')">❌ Reject</button>';
+  openModal('application-modal');
+}
+function exportApplicationsCSV(){
+  var rows=[['Applicant','Email','Job','Company','Applied','Status','Career Score']];
+  _filteredApps.forEach(function(a){rows.push([a.profiles?.full_name||a.applicant_name||'',a.profiles?.email||a.email||'',a.jobs?.title||a.job_title||'',a.jobs?.company||a.company||'',fmtDate(a.created_at),a.status||'applied',a.profiles?.career_score||a.career_score||'']);});
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var el=document.createElement('a');el.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);el.download='applications_'+new Date().toISOString().split('T')[0]+'.csv';el.click();
+  toast('CSV exported','success');
+}
+
+/* ══ MENTOR BOOKINGS ══ */
+var _allBookings=[],_filteredBookings=[];
+async function loadBookings(){
+  var tbody=document.getElementById('bookings-tbody');
+  try{_allBookings=await sbFetch('mentor_bookings','select=*&order=created_at.desc&limit=300');}
+  catch(e){_allBookings=[];if(tbody)tbody.innerHTML='<tr><td colspan="7">'+emptyState('📅','No bookings yet','Mentor session bookings from mentors.html will appear here')+'</td></tr>';return;}
+  updateBookingStats();filterBookings();renderMentorRevenue();
+}
+function updateBookingStats(){
+  var total=_allBookings.length;
+  var pending=_allBookings.filter(function(b){return b.status==='pending';}).length;
+  var confirmed=_allBookings.filter(function(b){return b.status==='confirmed'||b.status==='completed';}).length;
+  var revenue=_allBookings.filter(function(b){return b.amount>0;}).reduce(function(s,b){return s+(b.amount||0);},0);
+  setText('bk-total',total);
+  setText('bk-pending',pending);
+  setText('bk-confirmed',confirmed);
+  setText('bk-revenue',fmtINR(revenue));
+  setBadge('badge-bookings',pending);
+}
+function filterBookings(){
+  var q=(gv('bk-search')||'').toLowerCase();
+  var sf=gv('bk-status-filter')||'all';
+  var tf=gv('bk-type-filter')||'all';
+  _filteredBookings=_allBookings.filter(function(b){
+    var txt=((b.mentee_name||'')+(b.mentee_email||'')+(b.mentor_name||'')).toLowerCase();
+    return(!q||txt.includes(q))&&(sf==='all'||b.status===sf)&&(tf==='all'||b.session_type===tf);
+  });
+  renderBookingsTable();
+}
+function renderBookingsTable(){
+  var tbody=document.getElementById('bookings-tbody');if(!tbody)return;
+  if(!_filteredBookings.length){tbody.innerHTML='<tr><td colspan="7">'+emptyState('📅',_allBookings.length?'No bookings match filters':'No mentor bookings yet')+'</td></tr>';return;}
+  tbody.innerHTML=_filteredBookings.map(function(b){
+    var st=b.status||'pending';
+    var sb=st==='confirmed'?'<span class="badge b-success">Confirmed</span>':st==='completed'?'<span class="badge b-purple">Completed</span>':st==='cancelled'?'<span class="badge b-danger">Cancelled</span>':'<span class="badge b-warn">Pending</span>';
+    var stType=b.session_type||'—';
+    return '<tr>'
+      +'<td><div style="font-weight:600;font-size:13px">'+esc(b.mentee_name||'—')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(b.mentee_email||'—')+'</div></td>'
+      +'<td style="font-weight:500">'+esc(b.mentor_name||'—')+'</td>'
+      +'<td><span class="badge b-gray">'+esc(stType)+'</span></td>'
+      +'<td style="font-weight:700;color:var(--accent)">'+(b.amount>0?fmtINR(b.amount):'Free')+'</td>'
+      +'<td style="font-size:12px;color:var(--muted)">'+relTime(b.created_at)+'</td>'
+      +'<td>'+sb+'</td>'
+      +'<td><div class="action-wrap"><button class="btn btn-ghost btn-xs" onclick="toggleActionMenu(\'bkm-'+esc(b.id)+'\')">Actions ▾</button>'
+      +'<div class="action-menu" id="bkm-'+esc(b.id)+'">'
+      +'<div class="am-item" onclick="openBookingDetail(\''+esc(b.id)+'\')">👁 View Details</div>'
+      +(st==='pending'?'<div class="am-item" onclick="updateBookingStatus(\''+esc(b.id)+'\',\'confirmed\')">✅ Confirm</div>':'')
+      +(st!=='completed'&&st!=='cancelled'?'<div class="am-item" onclick="updateBookingStatus(\''+esc(b.id)+'\',\'completed\')">🏁 Mark Complete</div>':'')
+      +'<div class="am-item" onclick="mailUser(\''+esc(b.mentee_email||'')+'\')">📧 Email Mentee</div>'
+      +'<div class="am-item danger" onclick="updateBookingStatus(\''+esc(b.id)+'\',\'cancelled\')">❌ Cancel</div>'
+      +'</div></div></td></tr>';
+  }).join('');
+}
+async function updateBookingStatus(id,status){
+  try{await sbUpdate('mentor_bookings',id,{status:status,updated_at:new Date().toISOString()});var b=_allBookings.find(function(x){return x.id===id;});if(b)b.status=status;filterBookings();updateBookingStats();toast('Booking → '+status,'success');await writeAudit('MODIFY','mentor_booking',id,'','Status → '+status);}
+  catch(e){toast('Failed','error');}
+}
+function openBookingDetail(id){
+  var b=_allBookings.find(function(x){return x.id===id;});if(!b)return;
+  setText('booking-modal-title','Booking: '+esc(b.mentee_name||'—'));
+  document.getElementById('booking-modal-content').innerHTML=
+    irow('Mentee','<strong>'+esc(b.mentee_name||'—')+'</strong>')+
+    irow('Mentee Email','<a href="mailto:'+esc(b.mentee_email||'')+'" style="color:var(--accent)">'+esc(b.mentee_email||'—')+'</a>')+
+    irow('Mentor',esc(b.mentor_name||'—'))+
+    irow('Session Type',esc(b.session_type||'—'))+
+    irow('Amount',b.amount>0?fmtINR(b.amount):'Free')+
+    irow('Status','<span class="badge '+(b.status==='confirmed'||b.status==='completed'?'b-success':'b-warn')+'">'+esc(b.status||'pending')+'</span>')+
+    irow('Booked',fmtDate(b.created_at))+
+    (b.help_needed?irow('Help Needed',esc(b.help_needed)):'')+
+    (b.payment_id?irow('Payment ID','<code style="font-size:12px">'+esc(b.payment_id)+'</code>'):'')+
+    (b.notes?irow('Notes',esc(b.notes)):'');
+  document.getElementById('booking-modal-footer').innerHTML=
+    '<button class="btn btn-ghost" onclick="closeModal(\'booking-modal\')">Close</button>'+
+    '<button class="btn btn-ghost btn-sm" onclick="mailUser(\''+esc(b.mentee_email||'')+'\')">📧 Email Mentee</button>'+
+    (b.status==='pending'?'<button class="btn btn-success" onclick="updateBookingStatus(\''+esc(id)+'\',\'confirmed\');closeModal(\'booking-modal\')">✅ Confirm</button>':'')+
+    '<button class="btn btn-primary" onclick="updateBookingStatus(\''+esc(id)+'\',\'completed\');closeModal(\'booking-modal\')">🏁 Mark Complete</button>';
+  openModal('booking-modal');
+}
+async function renderMentorRevenue(){
+  var el=document.getElementById('mentor-revenue-list');if(!el)return;
+  var mentorMap={};
+  _allBookings.filter(function(b){return b.amount>0&&b.status!=='cancelled';}).forEach(function(b){
+    var mn=b.mentor_name||b.mentor_id||'Unknown';
+    if(!mentorMap[mn])mentorMap[mn]={name:mn,sessions:0,gross:0};
+    mentorMap[mn].sessions++;mentorMap[mn].gross+=b.amount||0;
+  });
+  var sorted=Object.values(mentorMap).sort(function(a,b){return b.gross-a.gross;}).slice(0,10);
+  if(!sorted.length){el.innerHTML=emptyState('💰','No paid bookings yet','Session revenue breakdown will appear here');return;}
+  el.innerHTML=sorted.map(function(m){
+    var platformCut=Math.round(m.gross*0.2);
+    var mentorEarns=m.gross-platformCut;
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">'
+      +'<div><div style="font-size:13.5px;font-weight:600">'+esc(m.name)+'</div><div style="font-size:12px;color:var(--muted)">'+m.sessions+' session'+(m.sessions!==1?'s':'')+'</div></div>'
+      +'<div style="text-align:right"><div style="font-size:14px;font-weight:800;color:var(--accent)">'+fmtINR(m.gross)+'</div>'
+      +'<div style="font-size:11px;color:var(--muted)">Mentor gets '+fmtINR(mentorEarns)+' · Platform '+fmtINR(platformCut)+'</div></div>'
+      +'</div>';
+  }).join('');
+}
+function exportBookingsCSV(){
+  var rows=[['Mentee','Email','Mentor','Session Type','Amount','Status','Booked']];
+  _allBookings.forEach(function(b){rows.push([b.mentee_name||'',b.mentee_email||'',b.mentor_name||'',b.session_type||'',b.amount||0,b.status||'',fmtDate(b.created_at)]);});
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='bookings_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
+  toast('CSV exported','success');
+}
+
+/* ══ COMPANY REVIEWS ══ */
+var _allReviews=[],_filteredReviews=[];
+async function loadReviews(){
+  var tbody=document.getElementById('reviews-tbody');
+  try{_allReviews=await sbFetch('company_reviews','select=*&order=created_at.desc&limit=300');}
+  catch(e){_allReviews=[];if(tbody)tbody.innerHTML='<tr><td colspan="7">'+emptyState('⭐','No reviews yet','Company reviews submitted by users appear here for moderation')+'</td></tr>';return;}
+  updateReviewStats();filterReviews();
+}
+function updateReviewStats(){
+  setText('rv-total',_allReviews.length);
+  var approved=_allReviews.filter(function(r){return r.status==='approved';}).length;
+  var pending=_allReviews.filter(function(r){return !r.status||r.status==='pending';}).length;
+  setText('rv-pending',pending);setText('rv-approved',approved);
+}
+function filterReviews(){
+  var q=(gv('rv-search')||'').toLowerCase();
+  var sf=gv('rv-status-filter')||'all';
+  _filteredReviews=_allReviews.filter(function(r){
+    var txt=((r.company_name||'')+(r.review_text||'')).toLowerCase();
+    var ms=sf==='all'||(r.status||'pending')===sf;
+    return(!q||txt.includes(q))&&ms;
+  });
+  renderReviewsTable();
+}
+function renderReviewsTable(){
+  var tbody=document.getElementById('reviews-tbody');if(!tbody)return;
+  if(!_filteredReviews.length){tbody.innerHTML='<tr><td colspan="7">'+emptyState('⭐',_allReviews.length?'No reviews match filters':'No company reviews yet')+'</td></tr>';return;}
+  tbody.innerHTML=_filteredReviews.map(function(r){
+    var stars='⭐'.repeat(Math.min(Math.max(Math.round(r.rating||0),0),5));
+    var st=r.status||'pending';
+    var sb=st==='approved'?'<span class="badge b-success">Approved</span>':st==='rejected'?'<span class="badge b-danger">Rejected</span>':'<span class="badge b-warn">Pending</span>';
+    return '<tr>'
+      +'<td><strong>'+esc(r.company_name||'—')+'</strong></td>'
+      +'<td style="font-size:12.5px">'+esc(r.user_name||r.user_id||'Anonymous')+'</td>'
+      +'<td>'+stars+' <span style="font-size:12px;color:var(--muted)">('+Number(r.rating||0).toFixed(1)+')</span></td>'
+      +'<td style="max-width:240px;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc((r.review_text||'').substring(0,80)+(r.review_text&&r.review_text.length>80?'…':''))+'</td>'
+      +'<td style="font-size:12px;color:var(--muted)">'+relTime(r.created_at)+'</td>'
+      +'<td>'+sb+'</td>'
+      +'<td><div style="display:flex;gap:5px">'
+      +(st!=='approved'?'<button class="btn btn-success btn-xs" onclick="approveReview(\''+esc(r.id)+'\')">✅ Approve</button>':'')
+      +(st!=='rejected'?'<button class="btn btn-danger btn-xs" onclick="rejectReview(\''+esc(r.id)+'\')">❌ Reject</button>':'')
+      +'<button class="btn btn-ghost btn-xs" onclick="deleteReview(\''+esc(r.id)+'\')">🗑</button>'
+      +'</div></td></tr>';
+  }).join('');
+}
+async function approveReview(id){try{await sbUpdate('company_reviews',id,{status:'approved',moderated_at:new Date().toISOString(),moderated_by:adminSession.name});var r=_allReviews.find(function(x){return x.id===id;});if(r)r.status='approved';filterReviews();updateReviewStats();toast('Review approved — now live','success');}catch(e){toast('Failed','error');}}
+async function rejectReview(id){try{await sbUpdate('company_reviews',id,{status:'rejected',moderated_at:new Date().toISOString(),moderated_by:adminSession.name});var r=_allReviews.find(function(x){return x.id===id;});if(r)r.status='rejected';filterReviews();updateReviewStats();toast('Review rejected','success');}catch(e){toast('Failed','error');}}
+async function deleteReview(id){openConfirm('🗑 Delete Review','Permanently delete this review?',null,'Delete','danger',async function(){try{await sbDelete('company_reviews',id);_allReviews=_allReviews.filter(function(r){return r.id!==id;});filterReviews();updateReviewStats();toast('Deleted','success');}catch(e){toast('Error','error');}});}
+
+/* ══ REFERRALS ══ */
+var _allReferrals=[];
+async function loadReferrals(){
+  var tbody=document.getElementById('referrals-tbody');
+  try{_allReferrals=await sbFetch('referrals','select=*&order=created_at.desc&limit=500');}
+  catch(e){_allReferrals=[];if(tbody)tbody.innerHTML='<tr><td colspan="7">'+emptyState('🔗','No referrals yet','User referrals will appear here once the referral program is active')+'</td></tr>';return;}
+  updateReferralStats();renderReferralsTable();buildReferralChart();renderTopReferrers();
+}
+function updateReferralStats(){
+  setText('ref-total',_allReferrals.length);
+  var successful=_allReferrals.filter(function(r){return r.referred_signed_up||r.status==='signed_up'||r.status==='converted';}).length;
+  var pendingReward=_allReferrals.filter(function(r){return r.reward_status==='pending';}).length;
+  setText('ref-successful',successful);
+  setText('ref-pending-reward',pendingReward);
+  var topMap={};
+  _allReferrals.forEach(function(r){var n=r.referrer_name||r.referrer_email||r.referrer_id||'Unknown';topMap[n]=(topMap[n]||0)+1;});
+  var top=Object.entries(topMap).sort(function(a,b){return b[1]-a[1];})[0];
+  setText('ref-top-referrer',top?top[0]+' ('+top[1]+')':'—');
+}
+function renderReferralsTable(){
+  var tbody=document.getElementById('referrals-tbody');if(!tbody)return;
+  if(!_allReferrals.length)return;
+  tbody.innerHTML=_allReferrals.map(function(r){
+    var signed=r.referred_signed_up||r.status==='signed_up'||r.status==='converted';
+    var converted=r.status==='converted'||r.referred_converted_pro;
+    var rs=r.reward_status||'pending';
+    return '<tr>'
+      +'<td><div style="font-weight:600;font-size:13px">'+esc(r.referrer_name||r.referrer_email||'—')+'</div></td>'
+      +'<td style="font-size:12.5px">'+esc(r.referred_email||'—')+'</td>'
+      +'<td>'+(signed?'<span class="badge b-success">✅ Yes</span>':'<span class="badge b-gray">No</span>')+'</td>'
+      +'<td>'+(converted?'<span class="badge b-purple">✅ Converted</span>':'<span class="badge b-gray">No</span>')+'</td>'
+      +'<td>'+(rs==='paid'?'<span class="badge b-success">Paid</span>':rs==='pending'&&signed?'<span class="badge b-warn">Pending</span>':'<span class="badge b-gray">—</span>')+'</td>'
+      +'<td style="font-size:12px;color:var(--muted)">'+fmtDate(r.created_at)+'</td>'
+      +'<td><div style="display:flex;gap:5px">'
+      +(rs==='pending'&&signed?'<button class="btn btn-success btn-xs" onclick="markRewardPaid(\''+esc(r.id)+'\')">💰 Mark Paid</button>':'')
+      +'</div></td></tr>';
+  }).join('');
+}
+function buildReferralChart(){
+  var labels=[],counts=[];
+  for(var i=29;i>=0;i--){var d=new Date();d.setDate(d.getDate()-i);labels.push(d.toLocaleDateString('en-IN',{day:'numeric',month:'short'}));var ds=d.toISOString().split('T')[0];counts.push(_allReferrals.filter(function(r){return r.created_at&&r.created_at.startsWith(ds);}).length);}
+  mkChart('chart-referrals','bar',labels,[{label:'Referrals',data:counts,backgroundColor:'rgba(108,71,255,.6)',borderRadius:4,borderSkipped:false}]);
+}
+function renderTopReferrers(){
+  var el=document.getElementById('top-referrers-list');if(!el)return;
+  var map={};_allReferrals.forEach(function(r){var n=r.referrer_name||r.referrer_email||'Unknown';if(!map[n])map[n]={name:n,count:0,converted:0};map[n].count++;if(r.status==='converted')map[n].converted++;});
+  var sorted=Object.values(map).sort(function(a,b){return b.count-a.count;}).slice(0,8);
+  if(!sorted.length){el.innerHTML=emptyState('🏆','No referral data yet','');return;}
+  el.innerHTML=sorted.map(function(r,i){return '<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">'
+    +'<div style="width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+(i+1)+'</div>'
+    +'<div style="flex:1"><div style="font-size:13px;font-weight:600">'+esc(r.name)+'</div></div>'
+    +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--accent)">'+r.count+' refs</div><div style="font-size:11px;color:var(--muted)">'+r.converted+' converted</div></div>'
+    +'</div>';}).join('');
+}
+async function markRewardPaid(id){try{await sbUpdate('referrals',id,{reward_status:'paid',reward_paid_at:new Date().toISOString(),reward_paid_by:adminSession.name});var r=_allReferrals.find(function(x){return x.id===id;});if(r)r.reward_status='paid';renderReferralsTable();updateReferralStats();toast('Reward marked as paid','success');}catch(e){toast('Failed','error');}}
+function exportReferralsCSV(){
+  var rows=[['Referrer','Referred Email','Signed Up','Converted','Reward Status','Date']];
+  _allReferrals.forEach(function(r){rows.push([r.referrer_name||r.referrer_email||'',r.referred_email||'',r.referred_signed_up?'Yes':'No',r.status==='converted'?'Yes':'No',r.reward_status||'pending',fmtDate(r.created_at)]);});
+  var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='referrals_'+new Date().toISOString().split('T')[0]+'.csv';a.click();
+  toast('CSV exported','success');
+}
+
+/* ══ NOTIFICATIONS MANAGER ══ */
+var _allAdminNotifications=[];
+async function loadNotifications(){
+  var tbody=document.getElementById('notifications-tbody');
+  try{_allAdminNotifications=await sbFetch('admin_notifications','select=*&order=created_at.desc&limit=200');}
+  catch(e){
+    /* Table may not exist — show ready state */
+    _allAdminNotifications=[];
+    setText('notif-sent-count','0');setText('notif-open-rate','—');setText('notif-pending-count','0');
+    if(tbody)tbody.innerHTML='<tr><td colspan="6">'+emptyState('🔔','Ready to send notifications','Create your first notification above to reach users')+'</td></tr>';
+    return;
+  }
+  updateNotifStats();renderNotificationsTable();
+}
+function updateNotifStats(){
+  var sent=_allAdminNotifications.filter(function(n){return n.status==='sent';}).length;
+  var scheduled=_allAdminNotifications.filter(function(n){return n.status==='scheduled';}).length;
+  setText('notif-sent-count',sent);setText('notif-open-rate','—');setText('notif-pending-count',scheduled);
+}
+function renderNotificationsTable(){
+  var tbody=document.getElementById('notifications-tbody');if(!tbody)return;
+  if(!_allAdminNotifications.length){tbody.innerHTML='<tr><td colspan="6">'+emptyState('🔔','No notifications sent yet','Send your first notification above')+'</td></tr>';return;}
+  tbody.innerHTML=_allAdminNotifications.map(function(n){
+    var sb=n.status==='sent'?'<span class="badge b-success">Sent</span>':n.status==='scheduled'?'<span class="badge b-info">Scheduled</span>':'<span class="badge b-gray">Draft</span>';
+    return '<tr><td><strong>'+esc(n.title||'—')+'</strong><div style="font-size:11.5px;color:var(--muted)">'+esc((n.body||'').substring(0,60))+'</div></td><td>'+esc(n.segment||'all')+'</td><td style="font-weight:700">'+(n.sent_to||'—')+'</td><td style="font-size:12px;color:var(--muted)">'+fmtDate(n.sent_at||n.created_at)+'</td><td>'+sb+'</td><td><button class="btn btn-danger btn-xs" onclick="deleteNotification(\''+esc(n.id)+'\')">🗑</button></td></tr>';
+  }).join('');
+}
+async function sendNotification(){
+  /* Get values from either quick-send or modal */
+  var title=gv('quick-notif-title')||gv('modal-notif-title');
+  var body=(document.getElementById('quick-notif-body')||document.getElementById('modal-notif-body')||{}).value||'';
+  var segment=gv('quick-notif-segment')||gv('modal-notif-segment')||'all';
+  var link=gv('quick-notif-link')||gv('modal-notif-link')||'';
+  if(!title.trim()){toast('Title is required','warning');return;}
+  if(!body.trim()){toast('Message is required','warning');return;}
+  /* Count recipients */
+  var recipientCount=0;
+  try{
+    var users=await sbFetch('profiles','select=id,plan,city&limit=5000').catch(function(){return[];});
+    if(segment==='all')recipientCount=users.length;
+    else if(segment==='free')recipientCount=users.filter(function(u){return !u.plan||u.plan==='free';}).length;
+    else if(segment==='pro')recipientCount=users.filter(function(u){return u.plan==='pro'||u.plan==='premium';}).length;
+    else if(segment==='bangalore')recipientCount=users.filter(function(u){return (u.city||'').toLowerCase()==='bangalore';}).length;
+    else if(segment==='hyderabad')recipientCount=users.filter(function(u){return (u.city||'').toLowerCase()==='hyderabad';}).length;
+    else recipientCount=users.length;
+  }catch(e){}
+  try{
+    await sbInsert('admin_notifications',[{title:title,body:body,segment:segment,link:link,status:'sent',sent_to:recipientCount,sent_at:new Date().toISOString(),created_by:adminSession.name}]);
+    toast('Notification sent to '+recipientCount+' users!','success');
+    closeModal('notif-send-modal');
+    /* Clear fields */
+    ['quick-notif-title','quick-notif-body','quick-notif-link','modal-notif-title','modal-notif-body','modal-notif-link'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+    await writeAudit('NOTIFY','notification',null,title,'Sent to '+segment+' ('+recipientCount+' users)');
+    _loaded['notifications']=false;loadNotifications();
+  }catch(e){
+    /* Table may not exist - create it first */
+    toast('Notification logged (create admin_notifications table in Supabase to persist history)','warning');
+    closeModal('notif-send-modal');
+  }
+}
+async function deleteNotification(id){try{await sbDelete('admin_notifications',id);_allAdminNotifications=_allAdminNotifications.filter(function(n){return n.id!==id;});renderNotificationsTable();toast('Deleted','success');}catch(e){toast('Error','error');}}
+
+/* UPDATE pollBadges to include new sections */
+var _origPollBadges=pollBadges;
+pollBadges=async function(){
+  await _origPollBadges();
+  try{
+    var[ab,bb]=await Promise.all([
+      sbFetch('applications','status=eq.applied&select=id').then(function(r){return r.length;}).catch(function(){return 0;}),
+      sbFetch('mentor_bookings','status=eq.pending&select=id').then(function(r){return r.length;}).catch(function(){return 0;})
+    ]);
+    setBadge('badge-applications',ab);
+    setBadge('badge-bookings',bb);
+  }catch(e){}
+};
 </script>
 </body>
 </html>
