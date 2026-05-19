@@ -1018,11 +1018,33 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
           <div class="form-group"><label class="form-label">Display Name</label><input class="form-input" id="my-name"/></div>
           <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="my-email"/></div>
           <button class="btn btn-primary btn-sm" onclick="saveAdminProfile()">💾 Save</button>
-          <div style="border-top:1px solid var(--border);margin:18px 0;padding-top:16px"><div style="font-size:14px;font-weight:700;margin-bottom:14px">🔑 Change Password</div>
-            <div class="form-group"><label class="form-label">Current Password</label><input class="form-input" type="password" id="cur-pw"/></div>
-            <div class="form-group"><label class="form-label">New Password</label><input class="form-input" type="password" id="new-pw"/></div>
-            <div class="form-group"><label class="form-label">Confirm New Password</label><input class="form-input" type="password" id="confirm-pw"/></div>
-            <button class="btn btn-danger btn-sm" onclick="changePassword()">Update Password</button>
+          <div style="border-top:1px solid var(--border);margin:18px 0;padding-top:16px">
+            <div style="font-size:14px;font-weight:700;margin-bottom:14px">🔑 Change Password</div>
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <div style="position:relative">
+                <input class="form-input" type="password" id="cur-pw" placeholder="Enter your current password" style="padding-right:42px"/>
+                <button type="button" onclick="togglePwField('cur-pw','cur-pw-eye')" id="cur-pw-eye" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--subtle);padding:2px;line-height:1">👁</button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">New Password <span style="color:var(--muted);font-weight:400;font-size:11px">(min 8 characters)</span></label>
+              <div style="position:relative">
+                <input class="form-input" type="password" id="new-pw" placeholder="Enter new password" style="padding-right:42px" oninput="checkPwStrength(this.value)"/>
+                <button type="button" onclick="togglePwField('new-pw','new-pw-eye')" id="new-pw-eye" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--subtle);padding:2px;line-height:1">👁</button>
+              </div>
+              <div id="pw-strength-bar" style="height:4px;border-radius:20px;background:var(--border);margin-top:7px;overflow:hidden"><div id="pw-strength-fill" style="height:100%;border-radius:20px;width:0%;transition:width .3s,background .3s"></div></div>
+              <div id="pw-strength-label" style="font-size:11.5px;color:var(--muted);margin-top:4px"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <div style="position:relative">
+                <input class="form-input" type="password" id="confirm-pw" placeholder="Re-enter new password" style="padding-right:42px" oninput="var nw=document.getElementById('new-pw').value;var msg=document.getElementById('pw-match-msg');if(!msg)return;if(this.value&&nw){if(this.value===nw){msg.textContent='✅ Passwords match';msg.style.color='var(--success)';}else{msg.textContent='❌ Does not match';msg.style.color='var(--danger)';}};"/>
+                <button type="button" onclick="togglePwField('confirm-pw','conf-pw-eye')" id="conf-pw-eye" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--subtle);padding:2px;line-height:1">👁</button>
+              </div>
+              <div id="pw-match-msg" style="font-size:12px;margin-top:5px"></div>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="changePassword()">🔑 Update Password</button>
           </div>
         </div>
       </div>
@@ -2063,7 +2085,122 @@ function loadTemplate(){var key=gv('template-select');var ed=document.getElement
 async function saveTemplate(){if(!_currentTemplate)return;EMAIL_TEMPLATES[_currentTemplate]={subject:gv('tmpl-subject'),body:(document.getElementById('tmpl-body')||{}).value||''};try{await sbInsert('email_templates',[{key:_currentTemplate,subject:gv('tmpl-subject'),body:EMAIL_TEMPLATES[_currentTemplate].body,updated_by:adminSession.name}]);toast('Template saved','success');}catch(e){toast('Saved locally','warning');}}
 function sendTestTemplate(){if(adminSession&&adminSession.email)window.open('mailto:'+adminSession.email+'?subject='+encodeURIComponent('[TEST] '+(gv('tmpl-subject')||'Template Test'))+'&body='+encodeURIComponent((document.getElementById('tmpl-body')||{}).value||''),'_blank');toast('Test email opened','success');}
 async function saveAdminProfile(){var name=gv('my-name'),email=gv('my-email');if(!name){toast('Name required','warning');return;}try{await sbUpdate('admin_users',adminSession.id,{name:name,email:email});adminSession.name=name;adminSession.email=email;sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));setText('sb-admin-name',name);setText('aab-name',name);var sav=document.getElementById('sb-av');if(sav)sav.textContent=initials(name);var tav=document.getElementById('aab-av');if(tav)tav.textContent=initials(name);toast('Profile updated','success');}catch(e){toast('Error','error');}}
-async function changePassword(){var cur=gv('cur-pw'),nw=gv('new-pw'),conf=gv('confirm-pw');if(!cur||!nw||!conf){toast('Fill all password fields','warning');return;}if(nw!==conf){toast('Passwords do not match','error');return;}if(nw.length<8){toast('Password must be 8+ characters','warning');return;}try{await sbUpdate('admin_users',adminSession.id,{password_hash:nw});['cur-pw','new-pw','confirm-pw'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});toast('Password updated successfully','success');await writeAudit('PASSWORD_CHANGE','admin',adminSession.id,adminSession.name,'Password updated');}catch(e){toast('Error updating password','error');}}
+/* ── PASSWORD FIELD TOGGLE ── */
+function togglePwField(inputId,btnId){
+  var inp=document.getElementById(inputId);
+  var btn=document.getElementById(btnId);
+  if(!inp||!btn)return;
+  inp.type=inp.type==='password'?'text':'password';
+  btn.textContent=inp.type==='password'?'👁':'🙈';
+}
+
+/* ── PASSWORD STRENGTH CHECKER ── */
+function checkPwStrength(pw){
+  var bar=document.getElementById('pw-strength-fill');
+  var lbl=document.getElementById('pw-strength-label');
+  if(!bar||!lbl)return;
+  var score=0;
+  if(pw.length>=8)score++;
+  if(pw.length>=12)score++;
+  if(/[A-Z]/.test(pw))score++;
+  if(/[0-9]/.test(pw))score++;
+  if(/[^A-Za-z0-9]/.test(pw))score++;
+  var configs=[
+    {w:'0%',bg:'var(--border)',txt:''},
+    {w:'20%',bg:'var(--danger)',txt:'Very weak'},
+    {w:'40%',bg:'#F97316',txt:'Weak'},
+    {w:'60%',bg:'var(--warn)',txt:'Fair'},
+    {w:'80%',bg:'#84CC16',txt:'Good'},
+    {w:'100%',bg:'var(--success)',txt:'Strong ✅'}
+  ];
+  var c=configs[Math.min(score,5)];
+  bar.style.width=c.w;bar.style.background=c.bg;
+  lbl.textContent=c.txt;lbl.style.color=c.bg;
+  /* Match check */
+  var conf=document.getElementById('confirm-pw');
+  var msg=document.getElementById('pw-match-msg');
+  if(conf&&msg&&conf.value){
+    if(conf.value===pw){msg.textContent='✅ Passwords match';msg.style.color='var(--success)';}
+    else{msg.textContent='❌ Passwords do not match';msg.style.color='var(--danger)';}
+  }
+}
+
+/* ── CHANGE PASSWORD — with current password verification ── */
+async function changePassword(){
+  var cur=(document.getElementById('cur-pw')||{}).value||'';
+  var nw=(document.getElementById('new-pw')||{}).value||'';
+  var conf=(document.getElementById('confirm-pw')||{}).value||'';
+
+  /* Validation */
+  if(!cur){toast('Enter your current password','warning');document.getElementById('cur-pw').focus();return;}
+  if(!nw){toast('Enter a new password','warning');document.getElementById('new-pw').focus();return;}
+  if(!conf){toast('Confirm your new password','warning');document.getElementById('confirm-pw').focus();return;}
+  if(nw!==conf){toast('New passwords do not match','error');document.getElementById('pw-match-msg').textContent='❌ Passwords do not match';document.getElementById('pw-match-msg').style.color='var(--danger)';return;}
+  if(nw.length<8){toast('New password must be at least 8 characters','warning');return;}
+  if(cur===nw){toast('New password must be different from current password','warning');return;}
+
+  /* Step 1: Verify current password against stored hash */
+  try{
+    var rows=await sbFetch('admin_users','id=eq.'+encodeURIComponent(adminSession.id)+'&select=password_hash,name');
+    var admin=rows&&rows[0];
+    if(!admin){toast('Could not verify account — please sign out and back in','error');return;}
+
+    /* Check plain text match */
+    var valid=(cur===admin.password_hash);
+
+    /* Also check SHA-256 hash match */
+    if(!valid){
+      try{
+        var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(cur))))
+          .map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+        valid=(hash===admin.password_hash);
+      }catch(he){}
+    }
+
+    /* Also allow local admin fallback passwords */
+    if(!valid){
+      var localAdmin=LOCAL_ADMINS.find(function(a){return a.id===adminSession.id;});
+      if(localAdmin&&cur===localAdmin.password_hash)valid=true;
+    }
+
+    if(!valid){
+      toast('Current password is incorrect','error');
+      var inp=document.getElementById('cur-pw');
+      if(inp){inp.style.borderColor='var(--danger)';setTimeout(function(){inp.style.borderColor='';},2000);}
+      return;
+    }
+
+    /* Step 2: Save new password */
+    await sbUpdate('admin_users',adminSession.id,{
+      password_hash:nw,
+      must_change_password:false,
+      password_updated_at:new Date().toISOString()
+    });
+
+    /* Step 3: Update local admin fallback if applicable */
+    var localIdx=LOCAL_ADMINS.findIndex(function(a){return a.id===adminSession.id;});
+    if(localIdx>=0)LOCAL_ADMINS[localIdx].password_hash=nw;
+
+    /* Step 4: Update session so new password works immediately */
+    adminSession.passwordHash=nw;
+    sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
+
+    /* Step 5: Clear fields and show success */
+    ['cur-pw','new-pw','confirm-pw'].forEach(function(id){
+      var el=document.getElementById(id);if(el)el.value='';
+    });
+    var bar=document.getElementById('pw-strength-fill');if(bar)bar.style.width='0%';
+    var lbl=document.getElementById('pw-strength-label');if(lbl)lbl.textContent='';
+    var msg=document.getElementById('pw-match-msg');if(msg)msg.textContent='';
+
+    toast('✅ Password updated! Use your new password next time you log in.','success');
+    await writeAudit('PASSWORD_CHANGE','admin',adminSession.id,adminSession.name,'Password changed successfully');
+
+  }catch(e){
+    console.error('Password change error:',e);
+    toast('Failed to update password — check connection','error');
+  }
+}
 /* MISC */
 function openBlogEditor(){toast('Blog editor — coming soon','warning');}
 function showChangePassword(){showSection('settings');}
