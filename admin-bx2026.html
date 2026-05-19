@@ -1727,7 +1727,7 @@ function startSessionWatch(){['mousemove','keydown','click','scroll'].forEach(fu
 function toggleDark(){var isDark=document.body.classList.toggle('dark');localStorage.setItem('bx_dark',isDark?'1':'0');var btn=document.getElementById('dark-btn');if(btn)btn.textContent=isDark?'☀️':'🌙';}
 
 /* NAVIGATION */
-var TITLES={dashboard:'Dashboard',users:'User Management',jobs:'Jobs & Recruiters',mentors:'Mentor Pipeline',content:'Content & Courses',community:'Community',campaigns:'Email Campaigns',announcements:'Announcements',revenue:'Revenue & Billing',coupons:'Coupons & Offers',partnerships:'Partnerships',tickets:'Support Tickets',refunds:'Refund Requests',bexi:'Bexi AI Monitor',team:'Team Management',staffactivity:'Staff Activity',shiftnotes:'Shift Notes',auditlog:'Audit Log',security:'Security',settings:'Settings'};
+var TITLES={dashboard:'Dashboard',users:'User Management',jobs:'Jobs & Recruiters',mentors:'Mentor Pipeline',content:'Content & Courses',community:'Community',campaigns:'Email Campaigns',announcements:'Announcements',revenue:'Revenue & Billing',coupons:'Coupons & Offers',partnerships:'Partnerships',tickets:'Support Tickets',refunds:'Refund Requests',bexi:'Bexi AI Monitor',applications:'Job Applications',bookings:'Mentor Bookings',reviews:'Company Reviews',referrals:'Referral Program',notifications:'Push Notifications',team:'Team Management',staffactivity:'Staff Activity',shiftnotes:'Shift Notes',auditlog:'Audit Log',security:'Security',settings:'Settings'};
 function showSection(id){
   document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
   document.querySelectorAll('.sb-item').forEach(function(i){i.classList.remove('active');});
@@ -1738,7 +1738,7 @@ function showSection(id){
   try{window.history.replaceState(null,'','#'+id);}catch(e){}
 }
 function refreshSection(id){_loaded[id]=false;lazyLoad(id);}
-function lazyLoad(id){var fn={dashboard:loadDashboard,users:loadUsers,jobs:loadJobs,mentors:loadMentors,content:loadContent,community:loadCommunity,campaigns:loadCampaigns,announcements:loadAnnouncements,revenue:loadRevenue,coupons:loadCoupons,partnerships:loadPartnerships,tickets:loadTickets,refunds:loadRefunds,bexi:loadBexi,team:loadTeam,staffactivity:loadStaffActivity,shiftnotes:loadShiftNotes,auditlog:loadAudit,security:loadSecurity,settings:loadSettings}[id];if(fn)fn();}
+function lazyLoad(id){var fn={dashboard:loadDashboard,users:loadUsers,jobs:loadJobs,mentors:loadMentors,content:loadContent,community:loadCommunity,campaigns:loadCampaigns,announcements:loadAnnouncements,revenue:loadRevenue,coupons:loadCoupons,partnerships:loadPartnerships,tickets:loadTickets,refunds:loadRefunds,bexi:loadBexi,applications:loadApplications,bookings:loadBookings,reviews:loadReviews,referrals:loadReferrals,notifications:loadNotifications,team:loadTeam,staffactivity:loadStaffActivity,shiftnotes:loadShiftNotes,auditlog:loadAudit,security:loadSecurity,settings:loadSettings}[id];if(fn)fn();}
 function toggleMobSidebar(){var sb=document.getElementById('sidebar'),ov=document.getElementById('sb-overlay');if(sb)sb.classList.toggle('mob-open');if(ov)ov.classList.toggle('mob-open');}
 function closeMobSidebar(){var sb=document.getElementById('sidebar'),ov=document.getElementById('sb-overlay');if(sb)sb.classList.remove('mob-open');if(ov)ov.classList.remove('mob-open');}
 function toggleDropdown(id){var el=document.getElementById(id);if(!el)return;var open=el.classList.contains('open');closeDropdowns();if(!open)el.classList.add('open');}
@@ -2136,10 +2136,6 @@ async function confirmTicketAssign(){
 }
 var _origOpenTicket=openTicket;
 openTicket=function(id){_origOpenTicket(id);setTimeout(function(){var footer=document.getElementById('ticket-modal-footer');if(footer&&!footer.querySelector('.assign-btn')){var btn=document.createElement('button');btn.className='btn btn-ghost assign-btn';btn.textContent='👤 Assign';btn.onclick=function(){openTicketAssignModal(id);};footer.insertBefore(btn,footer.firstChild);}},100);};
-TITLES['staffactivity']='Staff Activity';
-TITLES['shiftnotes']='Shift Notes';
-var _origLazyLoad2=lazyLoad;
-lazyLoad=function(id){var extra={staffactivity:loadStaffActivity,shiftnotes:loadShiftNotes};if(extra[id])extra[id]();else _origLazyLoad2(id);};
 async function createTeamMember(){
   var name=gv('tm-name'),email=gv('tm-email'),role=gv('tm-role'),dept=gv('tm-dept'),phone=gv('tm-phone');
   if(!name||!email){toast('Name and email required','warning');return;}
@@ -2346,19 +2342,6 @@ async function changePassword(){
 function openBlogEditor(){toast('Blog editor — coming soon','warning');}
 function showChangePassword(){showSection('settings');}
 function openChangePassword(){showSection('settings');}
-
-/* ══ UPDATE TITLES & LAZYLOAD FOR NEW SECTIONS ══ */
-TITLES['applications']='Job Applications';
-TITLES['bookings']='Mentor Bookings';
-TITLES['reviews']='Company Reviews';
-TITLES['referrals']='Referral Program';
-TITLES['notifications']='Push Notifications';
-
-var _origLazyLoad=lazyLoad;
-lazyLoad=function(id){
-  var newFns={applications:loadApplications,bookings:loadBookings,reviews:loadReviews,referrals:loadReferrals,notifications:loadNotifications};
-  if(newFns[id])newFns[id]();else _origLazyLoad(id);
-};
 
 /* ══ JOB APPLICATIONS ══ */
 var _allApplications=[],_filteredApps=[],_appPage=1,_appPer=25;
