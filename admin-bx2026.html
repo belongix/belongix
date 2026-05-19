@@ -1544,24 +1544,22 @@ async function writeAudit(action,tType,tId,tName,details){if(!adminSession)retur
 /* Emergency fallback — used ONLY when Supabase is completely unreachable.
    Never checked if Supabase responds, even with wrong password.
    Update password in Settings to change the real password in Supabase. */
-/* Password is stored in localStorage so it persists across page reloads */
+/* Admin credentials - password read fresh from localStorage on every login attempt */
+var ADMIN_EMAIL='teambelongix@gmail.com';
 var DEFAULT_PASSWORD='belongix@admin2026';
-var STORED_PASSWORD=localStorage.getItem('bx_admin_pw')||DEFAULT_PASSWORD;
-var LOCAL_ADMINS=[
-  {id:'local-001',email:'teambelongix@gmail.com',password_hash:STORED_PASSWORD,name:'Keerthi',role:'super_admin',department:'Founder',is_active:true}
-];
 async function doLogin(){
   var email=(gv('lf-email')||'').toLowerCase().trim();
   var pass=(document.getElementById('lf-pass')||{}).value||'';
   var btn=document.getElementById('lf-btn');
   if(!email||!pass){showLoginErr('Please enter email and password');return;}
   btn.disabled=true;btn.textContent='Signing in…';clearLoginErr();
-  var local=LOCAL_ADMINS.find(function(a){return a.email===email&&a.is_active;});
-  if(local){
-    if(pass===local.password_hash){
-      adminSession={id:local.id,name:local.name,role:local.role,email:local.email,dept:local.department,loginTime:Date.now(),isLocal:true};
+  /* Read current password fresh from localStorage every time */
+  var currentPassword=localStorage.getItem('bx_admin_pw')||DEFAULT_PASSWORD;
+  if(email===ADMIN_EMAIL){
+    if(pass===currentPassword){
+      adminSession={id:'local-001',name:'Keerthi',role:'super_admin',email:ADMIN_EMAIL,dept:'Founder',loginTime:Date.now(),isLocal:true};
       sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-      sbInsert('audit_log',[{admin_name:local.name,admin_role:local.role,action:'LOGIN',details:'Signed in'}]).catch(function(){});
+      sbInsert('audit_log',[{admin_name:'Keerthi',admin_role:'super_admin',action:'LOGIN',details:'Signed in'}]).catch(function(){});
       launchAdmin();return;
     }
     showLoginErr('Incorrect password');btn.disabled=false;btn.textContent='Sign In →';return;
@@ -2178,17 +2176,12 @@ async function changePassword(){
   var isLocalAdmin=!!(adminSession.isLocal||adminSession.source==='local'||String(adminSession.id||'').startsWith('local'));
 
   if(isLocalAdmin){
-    /* Verify against LOCAL_ADMINS array */
-    var localRec=LOCAL_ADMINS.find(function(a){return a.email===adminSession.email;});
-    if(!localRec){toast('Admin record not found. Sign out and sign in again.','error');resetBtn();return;}
-    if(cur!==localRec.password_hash){markWrongPw();return;}
+    /* Read current password fresh from localStorage */
+    var currentPw=localStorage.getItem('bx_admin_pw')||DEFAULT_PASSWORD;
+    if(cur!==currentPw){markWrongPw();return;}
 
-    /* Update LOCAL_ADMINS password in memory */
-    localRec.password_hash=nw;
-
-    /* Save to localStorage so new password persists across page reloads */
+    /* Save new password to localStorage - persists across ALL reloads */
     localStorage.setItem('bx_admin_pw',nw);
-    STORED_PASSWORD=nw;
 
     /* Save to Supabase in background */
     sbFetch('admin_users','email=eq.'+encodeURIComponent(adminSession.email)+'&select=id').then(function(rows){
