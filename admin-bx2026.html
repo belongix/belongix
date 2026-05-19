@@ -436,7 +436,7 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
         <label class="lf-label">Email Address</label>
         <div class="lf-inp-wrap">
           <span class="lf-ic">✉</span>
-          <input class="lf-input" type="email" id="lf-email" placeholder="admin@belongix.in" autocomplete="email"/>
+          <input class="lf-input" type="email" id="lf-email" placeholder="teambelongix@gmail.com" autocomplete="email"/>
         </div>
       </div>
       <div class="lf-group">
@@ -452,7 +452,17 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
         <label for="lf-remember">Remember this device</label>
       </div>
       <button class="lf-btn" id="lf-btn" onclick="doLogin()">Sign In →</button>
-      <div class="lf-forgot" onclick="alert('Contact your super admin to reset password.')">Forgot password?</div>
+      <div class="lf-forgot" onclick="handleForgotPassword()">Forgot password?</div>
+      <!-- Forgot password panel (hidden by default) -->
+      <div id="forgot-panel" style="display:none;margin-top:16px;background:#F0F9FF;border:1.5px solid #BAE6FD;border-radius:var(--r-lg);padding:16px">
+        <div style="font-size:13.5px;font-weight:700;color:#0369A1;margin-bottom:8px">🔑 Reset Your Password</div>
+        <div style="font-size:12.5px;color:#0284C7;margin-bottom:12px;line-height:1.6">Enter your admin email address. We'll prepare a reset request for the Super Admin to process.</div>
+        <div style="display:flex;gap:8px">
+          <input class="lf-input" type="email" id="forgot-email" placeholder="Your admin email" style="flex:1;padding:10px 14px"/>
+          <button class="lf-btn" onclick="submitForgotPassword()" style="width:auto;padding:10px 16px;margin:0;font-size:13px">Send →</button>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:#6B7280">Or call/WhatsApp Keerthi directly to reset your access.</div>
+      </div>
     </div>
   </div>
 </div>
@@ -1525,8 +1535,7 @@ function runConfirmCallback(){closeModal('confirm-modal');if(_confirmCb)_confirm
 async function writeAudit(action,tType,tId,tName,details){if(!adminSession)return;try{await sbInsert('audit_log',[{admin_id:adminSession.id,admin_name:adminSession.name,admin_role:adminSession.role,action:action,target_type:tType||'',target_id:String(tId||''),target_name:tName||'',details:details||''}]);}catch(e){}}
 /* AUTH */
 var LOCAL_ADMINS=[
-  {id:'local-001',email:'admin@belongix.in',password_hash:'belongix@admin2026',name:'Keerthi',role:'super_admin',department:'Founder',is_active:true},
-  {id:'local-002',email:'keerthireddykv32@gmail.com',password_hash:'belongix@admin2026',name:'Keerthi Reddy',role:'super_admin',department:'Founder',is_active:true}
+  {id:'local-001',email:'teambelongix@gmail.com',password_hash:'belongix@admin2026',name:'Keerthi',role:'super_admin',department:'Founder',is_active:true}
 ];
 async function doLogin(){
   var email=(gv('lf-email')||'').toLowerCase().trim();
@@ -1571,6 +1580,36 @@ async function doLogin(){
 function showLoginErr(msg){var el=document.getElementById('lf-err');if(el){el.textContent=msg;el.classList.add('show');}var box=document.querySelector('.lr-box');if(box){box.classList.remove('shake');void box.offsetWidth;box.classList.add('shake');}}
 function clearLoginErr(){var el=document.getElementById('lf-err');if(el)el.classList.remove('show');}
 function togglePassEye(){var inp=document.getElementById('lf-pass');var eye=document.getElementById('lf-eye');if(!inp||!eye)return;inp.type=inp.type==='password'?'text':'password';eye.textContent=inp.type==='password'?'👁':'🙈';}
+
+/* ── FORGOT PASSWORD ── */
+function handleForgotPassword(){
+  var panel=document.getElementById('forgot-panel');
+  if(!panel)return;
+  var isOpen=panel.style.display==='block';
+  panel.style.display=isOpen?'none':'block';
+  if(!isOpen){
+    /* Pre-fill with whatever email they typed */
+    var emailInp=document.getElementById('forgot-email');
+    var loginEmail=document.getElementById('lf-email');
+    if(emailInp&&loginEmail&&loginEmail.value)emailInp.value=loginEmail.value;
+    setTimeout(function(){if(emailInp)emailInp.focus();},100);
+  }
+}
+function submitForgotPassword(){
+  var email=(document.getElementById('forgot-email')||{}).value||'';
+  if(!email||!email.includes('@')){toast('Enter a valid email address','warning');return;}
+  /* Show a clear message to contact super admin via phone/WhatsApp */
+  var panel=document.getElementById('forgot-panel');
+  if(panel){
+    panel.innerHTML='<div style="font-size:13.5px;font-weight:700;color:#0369A1;margin-bottom:8px">📞 Contact Super Admin</div>'
+      +'<div style="font-size:13px;color:#0284C7;line-height:1.7">'
+      +'Your reset request has been noted for: <strong>'+esc(email)+'</strong><br/><br/>'
+      +'Please <strong>call or WhatsApp</strong> the Belongix founder directly to get your password reset. '
+      +'They will reset it from <strong>Team Management → Reset PW</strong> and send you the new password.'
+      +'</div>';
+  }
+  toast('Contact the Super Admin directly to reset your password','warning');
+}
 function adminSignOut(){sessionStorage.removeItem('bx_admin');adminSession=null;if(_pollTimer)clearInterval(_pollTimer);document.getElementById('admin-layout').classList.remove('show');document.getElementById('login-page').style.display='flex';var lp=document.getElementById('lf-pass');if(lp)lp.value='';}
 function restartSession(){document.getElementById('session-overlay').classList.remove('show');adminSignOut();}
 function launchAdmin(){
@@ -1773,7 +1812,7 @@ function renderCampaignsTable(){var tbody=document.getElementById('campaigns-tbo
 function renderCampaignStep(){var c=document.getElementById('campaign-step-content');if(!c)return;for(var i=1;i<=4;i++){var ci=document.getElementById('camp-step-'+i);if(ci){ci.className='step-circle'+(i<_campStep?' done':i===_campStep?' active':'');ci.textContent=i<_campStep?'✓':i;}var li=document.getElementById('camp-line-'+i);if(li)li.className='step-line'+(i<_campStep?' done':'');}if(_campStep===1){c.innerHTML='<div class="form-group"><label class="form-label">Campaign Name</label><input class="form-input" id="camp-name" value="'+esc(_campDraft.name||'')+'"/></div><div class="form-group"><label class="form-label">Audience Segment</label><select class="form-select" id="camp-segment"><option>All Users</option><option>Free Users Only</option><option>Pro Users</option><option>Premium Users</option><option>Inactive 7+ Days</option><option>Bangalore Users</option></select></div>';}else if(_campStep===2){c.innerHTML='<div class="form-group"><label class="form-label">Subject</label><input class="form-input" id="camp-subject" value="'+esc(_campDraft.subject||'')+'"/></div><div class="form-group"><label class="form-label">Body (use {first_name}, {city}, {plan})</label><textarea id="camp-body" class="form-textarea" rows="8">'+esc(_campDraft.body||'')+'</textarea></div>';}else if(_campStep===3){c.innerHTML='<div class="form-group"><label class="form-label">Send Timing</label><div style="display:flex;flex-direction:column;gap:10px"><label style="display:flex;align-items:center;gap:9px;cursor:pointer"><input type="radio" name="camp-timing" value="now" checked/> Send immediately</label><label style="display:flex;align-items:center;gap:9px;cursor:pointer"><input type="radio" name="camp-timing" value="schedule"/> Schedule</label></div></div>';}else{c.innerHTML='<div style="background:var(--bg);border-radius:var(--r-lg);padding:16px;border:1px solid var(--border)">'+irow('Name',_campDraft.name||'—')+irow('Subject',_campDraft.subject||'—')+irow('Segment',_campDraft.segment||'All')+'</div><div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="sendTestEmail()">📨 Send Test</button></div>';}var foot=document.getElementById('campaign-modal-footer');if(!foot)return;foot.innerHTML=(_campStep>1?'<button class="btn btn-ghost" onclick="_campStep--;saveCampDraft();renderCampaignStep()">← Back</button>':'')+(_campStep<4?'<button class="btn btn-primary" onclick="saveCampDraft();_campStep++;renderCampaignStep()">Next →</button>':'<button class="btn btn-primary" onclick="createCampaign()">🚀 Send</button>');}
 function saveCampDraft(){if(gv('camp-name'))_campDraft.name=gv('camp-name');if(gv('camp-segment'))_campDraft.segment=gv('camp-segment');if(gv('camp-subject'))_campDraft.subject=gv('camp-subject');var tb=document.getElementById('camp-body');if(tb)_campDraft.body=tb.value;}
 async function createCampaign(){saveCampDraft();try{await sbInsert('email_campaigns',[{name:_campDraft.name||'Campaign',subject:_campDraft.subject||'',body:_campDraft.body||'',segment:_campDraft.segment||'All',status:'sent',sent_at:new Date().toISOString(),created_by:adminSession.name}]);toast('Campaign created!','success');}catch(e){toast('Failed','error');}closeModal('campaign-modal');_loaded['campaigns']=false;loadCampaigns();}
-function sendTestEmail(){if(adminSession&&adminSession.email)window.open('mailto:'+adminSession.email,'_blank');toast('Test email opened in mail client','success');}
+function sendTestEmail(){window.open('mailto:teambelongix@gmail.com','_blank');toast('Test email opened in mail client','success');}
 async function deleteCampaignById(id){try{await sbDelete('email_campaigns',id);_allCampaigns=_allCampaigns.filter(function(c){return c.id!==id;});renderCampaignsTable();toast('Deleted','success');}catch(e){toast('Error','error');}}
 
 /* ANNOUNCEMENTS */
@@ -2074,12 +2113,12 @@ async function savePricing(){var keys=['pro_monthly','pro_yearly','premium_month
 
 var _currentTemplate='';
 var EMAIL_TEMPLATES={
-  welcome:{subject:'Welcome to Belongix! 🚀',body:'Hi {first_name},\n\nWelcome to Belongix — India\'s career platform!\n\n1️⃣ Complete your profile\n2️⃣ Browse matched jobs\n3️⃣ Ask Bexi AI your first career question\n\n— Team Belongix\nbelongix.in'},
-  mentor_approved:{subject:'🎉 Welcome to Belongix Mentors!',body:'Hi {name},\n\nYour mentor profile is now live at belongix.in/mentors\n\nMentees can now book sessions with you.\n\n— Team Belongix'},
-  mentor_rejected:{subject:'Belongix Mentor Application Update',body:'Hi {name},\n\nThank you for applying. After review, we\'re unable to approve at this time.\n\nFeedback: {rejection_reason}\n\nYou may reapply in 90 days.\n\n— Team Belongix'},
-  job_approved:{subject:'Your Job Posting is Now Live!',body:'Hi {name},\n\nYour job posting is now live at belongix.in/jobs\n\n— Team Belongix'},
-  refund_approved:{subject:'Your Belongix Refund Has Been Approved',body:'Hi {name},\n\nYour refund of ₹{amount} has been approved. Allow 5-7 business days.\n\n— Team Belongix'},
-  account_suspended:{subject:'Your Belongix Account Has Been Suspended',body:'Hi {name},\n\nYour account has been suspended. Reason: {reason}\n\nReply to this email if you believe this is an error.\n\n— Team Belongix'}
+  welcome:{subject:'Welcome to Belongix! 🚀',body:'Hi {first_name},\n\nWelcome to Belongix — India\'s career platform!\n\n1️⃣ Complete your profile\n2️⃣ Browse matched jobs\n3️⃣ Ask Bexi AI your first career question\n\n— Team Belongix\nteambelongix@gmail.com | belongix.in'},
+  mentor_approved:{subject:'🎉 Welcome to Belongix Mentors!',body:'Hi {name},\n\nYour mentor profile is now live at belongix.in/mentors\n\nMentees can now book sessions with you.\n\n— Team Belongix\nteambelongix@gmail.com'},
+  mentor_rejected:{subject:'Belongix Mentor Application Update',body:'Hi {name},\n\nThank you for applying. After review, we\'re unable to approve at this time.\n\nFeedback: {rejection_reason}\n\nYou may reapply in 90 days.\n\n— Team Belongix\nteambelongix@gmail.com'},
+  job_approved:{subject:'Your Job Posting is Now Live!',body:'Hi {name},\n\nYour job posting is now live at belongix.in/jobs\n\n— Team Belongix\nteambelongix@gmail.com'},
+  refund_approved:{subject:'Your Belongix Refund Has Been Approved',body:'Hi {name},\n\nYour refund of ₹{amount} has been approved. Allow 5-7 business days.\n\n— Team Belongix\nteambelongix@gmail.com'},
+  account_suspended:{subject:'Your Belongix Account Has Been Suspended',body:'Hi {name},\n\nYour account has been suspended. Reason: {reason}\n\nReply to this email if you believe this is an error.\n\n— Team Belongix\nteambelongix@gmail.com'}
 };
 function loadTemplate(){var key=gv('template-select');var ed=document.getElementById('template-editor');if(!key){if(ed)ed.style.display='none';return;}_currentTemplate=key;var tmpl=EMAIL_TEMPLATES[key];if(!tmpl){if(ed)ed.style.display='none';return;}if(ed)ed.style.display='block';var subj=document.getElementById('tmpl-subject');if(subj)subj.value=tmpl.subject||'';var body=document.getElementById('tmpl-body');if(body)body.value=tmpl.body||'';}
 async function saveTemplate(){if(!_currentTemplate)return;EMAIL_TEMPLATES[_currentTemplate]={subject:gv('tmpl-subject'),body:(document.getElementById('tmpl-body')||{}).value||''};try{await sbInsert('email_templates',[{key:_currentTemplate,subject:gv('tmpl-subject'),body:EMAIL_TEMPLATES[_currentTemplate].body,updated_by:adminSession.name}]);toast('Template saved','success');}catch(e){toast('Saved locally','warning');}}
@@ -2131,75 +2170,102 @@ async function changePassword(){
   var nw=(document.getElementById('new-pw')||{}).value||'';
   var conf=(document.getElementById('confirm-pw')||{}).value||'';
 
-  /* Validation */
+  /* ── Validation ── */
   if(!cur){toast('Enter your current password','warning');document.getElementById('cur-pw').focus();return;}
   if(!nw){toast('Enter a new password','warning');document.getElementById('new-pw').focus();return;}
   if(!conf){toast('Confirm your new password','warning');document.getElementById('confirm-pw').focus();return;}
-  if(nw!==conf){toast('New passwords do not match','error');document.getElementById('pw-match-msg').textContent='❌ Passwords do not match';document.getElementById('pw-match-msg').style.color='var(--danger)';return;}
+  if(nw!==conf){
+    var matchMsg=document.getElementById('pw-match-msg');
+    if(matchMsg){matchMsg.textContent='❌ Passwords do not match';matchMsg.style.color='var(--danger)';}
+    toast('New passwords do not match','error');return;
+  }
   if(nw.length<8){toast('New password must be at least 8 characters','warning');return;}
   if(cur===nw){toast('New password must be different from current password','warning');return;}
 
-  /* Step 1: Verify current password against stored hash */
-  try{
-    var rows=await sbFetch('admin_users','id=eq.'+encodeURIComponent(adminSession.id)+'&select=password_hash,name');
-    var admin=rows&&rows[0];
-    if(!admin){toast('Could not verify account — please sign out and back in','error');return;}
+  /* ── Step 1: Verify current password ── */
+  var valid=false;
+  var isLocalAdmin=adminSession.isLocal||adminSession.id.startsWith('local-');
 
-    /* Check plain text match */
-    var valid=(cur===admin.password_hash);
-
-    /* Also check SHA-256 hash match */
-    if(!valid){
-      try{
-        var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(cur))))
-          .map(function(b){return b.toString(16).padStart(2,'0');}).join('');
-        valid=(hash===admin.password_hash);
-      }catch(he){}
+  if(isLocalAdmin){
+    /* Local admin: check against LOCAL_ADMINS array */
+    var localAdmin=LOCAL_ADMINS.find(function(a){return a.id===adminSession.id||a.email===adminSession.email;});
+    if(localAdmin){
+      valid=(cur===localAdmin.password_hash);
     }
-
-    /* Also allow local admin fallback passwords */
     if(!valid){
-      var localAdmin=LOCAL_ADMINS.find(function(a){return a.id===adminSession.id;});
-      if(localAdmin&&cur===localAdmin.password_hash)valid=true;
-    }
-
-    if(!valid){
-      toast('Current password is incorrect','error');
+      /* Highlight wrong password field */
       var inp=document.getElementById('cur-pw');
-      if(inp){inp.style.borderColor='var(--danger)';setTimeout(function(){inp.style.borderColor='';},2000);}
+      if(inp){inp.style.borderColor='var(--danger)';inp.style.boxShadow='0 0 0 3px rgba(239,68,68,.1)';setTimeout(function(){inp.style.borderColor='';inp.style.boxShadow='';},3000);}
+      toast('❌ Current password is incorrect','error');
       return;
     }
-
-    /* Step 2: Save new password */
-    await sbUpdate('admin_users',adminSession.id,{
-      password_hash:nw,
-      must_change_password:false,
-      password_updated_at:new Date().toISOString()
-    });
-
-    /* Step 3: Update local admin fallback if applicable */
-    var localIdx=LOCAL_ADMINS.findIndex(function(a){return a.id===adminSession.id;});
+    /* Update LOCAL_ADMINS in memory */
+    var localIdx=LOCAL_ADMINS.findIndex(function(a){return a.id===adminSession.id||a.email===adminSession.email;});
     if(localIdx>=0)LOCAL_ADMINS[localIdx].password_hash=nw;
 
-    /* Step 4: Update session so new password works immediately */
-    adminSession.passwordHash=nw;
-    sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
+    /* Try to also save to Supabase if admin_users table has this user */
+    try{
+      var sbRows=await sbFetch('admin_users','email=eq.'+encodeURIComponent(adminSession.email)+'&select=id');
+      if(sbRows&&sbRows[0]){
+        await sbUpdate('admin_users',sbRows[0].id,{password_hash:nw,must_change_password:false,password_updated_at:new Date().toISOString()});
+      }
+    }catch(e){/* Supabase save optional for local admins */}
 
-    /* Step 5: Clear fields and show success */
-    ['cur-pw','new-pw','confirm-pw'].forEach(function(id){
-      var el=document.getElementById(id);if(el)el.value='';
-    });
-    var bar=document.getElementById('pw-strength-fill');if(bar)bar.style.width='0%';
-    var lbl=document.getElementById('pw-strength-label');if(lbl)lbl.textContent='';
-    var msg=document.getElementById('pw-match-msg');if(msg)msg.textContent='';
+  } else {
+    /* Supabase admin: fetch and verify from database */
+    try{
+      var rows=await sbFetch('admin_users','email=eq.'+encodeURIComponent(adminSession.email)+'&select=id,password_hash');
+      var admin=rows&&rows[0];
 
-    toast('✅ Password updated! Use your new password next time you log in.','success');
-    await writeAudit('PASSWORD_CHANGE','admin',adminSession.id,adminSession.name,'Password changed successfully');
+      if(!admin){toast('Could not verify — try signing out and back in','error');return;}
 
-  }catch(e){
-    console.error('Password change error:',e);
-    toast('Failed to update password — check connection','error');
+      /* Plain text check */
+      valid=(cur===admin.password_hash);
+
+      /* SHA-256 hash check */
+      if(!valid){
+        try{
+          var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(cur))))
+            .map(function(b){return b.toString(16).padStart(2,'0');}).join('');
+          valid=(hash===admin.password_hash);
+        }catch(he){}
+      }
+
+      if(!valid){
+        var inp2=document.getElementById('cur-pw');
+        if(inp2){inp2.style.borderColor='var(--danger)';inp2.style.boxShadow='0 0 0 3px rgba(239,68,68,.1)';setTimeout(function(){inp2.style.borderColor='';inp2.style.boxShadow='';},3000);}
+        toast('❌ Current password is incorrect','error');
+        return;
+      }
+
+      /* Save new password to Supabase */
+      await sbUpdate('admin_users',admin.id,{
+        password_hash:nw,
+        must_change_password:false,
+        password_updated_at:new Date().toISOString()
+      });
+
+    }catch(e){
+      console.error('Password change error:',e);
+      toast('Connection error — check internet and try again','error');
+      return;
+    }
   }
+
+  /* ── Step 2: Update session immediately (new pw works right away) ── */
+  adminSession.passwordHash=nw;
+  sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
+
+  /* ── Step 3: Clear all fields ── */
+  ['cur-pw','new-pw','confirm-pw'].forEach(function(fid){
+    var el=document.getElementById(fid);if(el)el.value='';
+  });
+  var bar=document.getElementById('pw-strength-fill');if(bar)bar.style.width='0%';
+  var lbl=document.getElementById('pw-strength-label');if(lbl)lbl.textContent='';
+  var msg=document.getElementById('pw-match-msg');if(msg)msg.textContent='';
+
+  toast('✅ Password updated successfully! Use your new password next login.','success');
+  try{await writeAudit('PASSWORD_CHANGE','admin',adminSession.id,adminSession.name,'Password changed');}catch(e){}
 }
 /* MISC */
 function openBlogEditor(){toast('Blog editor — coming soon','warning');}
