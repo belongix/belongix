@@ -2279,7 +2279,14 @@ function showPage(page, btn) {
   if (page === 'network') { setTimeout(loadDashMentors, 100); }
   if (page === 'tracker') { loadTracker(); }
   if (page === 'upskill') { setTimeout(function(){ if(typeof renderFilters==='function'){renderFilters();renderTracks();} }, 50); }
-  if (page === 'salary') { setTimeout(function(){ if(typeof init3D==='function')init3D(); }, 80); }
+  if (page === 'salary') {
+    var salSec = document.getElementById('page-salary');
+    if (salSec) salSec.style.display = 'block';
+    setTimeout(function(){
+      var fn = window.init3D || (typeof init3D==='function' ? init3D : null);
+      if (fn) fn();
+    }, 120);
+  }
   if (page === 'settings' && currentUser) { if(typeof refPopulateSettings==='function') refPopulateSettings(currentUser.id); }
   if (page === 'upgrade') { if(typeof checkMentorSessionLimit==='function') checkMentorSessionLimit(); }
   /* 8. Close mobile sidebar */
@@ -3082,12 +3089,28 @@ async function submitEasyApply() {
       await supaClient.from('applications').insert([{
         user_id: currentUser.id,
         job_id: jobId,
-        job_title: currentApplyJob.title,
-        company: currentApplyJob.company,
+        job_title: currentApplyJob.title || '',
+        company: currentApplyJob.company || '',
+        location: currentApplyJob.location || '',
+        salary_min: currentApplyJob.salary_min || currentApplyJob.salMin || 0,
+        salary_max: currentApplyJob.salary_max || currentApplyJob.salMax || 0,
         applied_at: new Date().toISOString(),
         status: 'applied'
       }]);
     } catch(e) { console.warn('applications table:', e.message); }
+    /* Save rich data to localStorage as backup */
+    try {
+      var localApps2 = JSON.parse(localStorage.getItem('bx_applications_'+currentUser.id)||'[]');
+      localApps2.unshift({
+        job_id: jobId,
+        job_title: currentApplyJob.title||'',
+        company: currentApplyJob.company||'',
+        location: currentApplyJob.location||'',
+        applied_at: new Date().toISOString(),
+        status: 'applied'
+      });
+      localStorage.setItem('bx_applications_'+currentUser.id, JSON.stringify(localApps2.slice(0,100)));
+    } catch(ex) {}
     // Increment career score +15
     var sc = 30;
     try {
@@ -3139,7 +3162,17 @@ async function loadTracker() {
   } catch(e) {
     // Fallback to localStorage applied IDs
     var appliedIds = []; try { appliedIds = JSON.parse(localStorage.getItem('bx_applied_'+currentUser.id))||[]; } catch(ex) {}
-    appliedIds.forEach(function(id){ var j=ALL_JOBS.find(function(j){return String(j.id)===String(id);}); if(j) cols.applied.push({job_title:j.title,company:j.company,applied_at:new Date().toISOString(),status:'applied',job_id:id}); });
+    /* Also check bx_applications for richer locally saved data */
+    var localApps = []; try { localApps = JSON.parse(localStorage.getItem('bx_applications_'+currentUser.id))||[]; } catch(ex) {}
+    if (localApps.length > 0) {
+      localApps.forEach(function(a){ if(cols[a.status||'applied']) cols[a.status||'applied'].push(a); else cols.applied.push(a); });
+    } else {
+      appliedIds.forEach(function(id){
+        var j=ALL_JOBS.find(function(j){return String(j.id)===String(id);});
+        if(j) cols.applied.push({job_title:j.title||'Job',company:j.company||'',location:j.location||'',applied_at:new Date().toISOString(),status:'applied',job_id:id});
+        else cols.applied.push({job_title:'Applied Job',company:'',applied_at:new Date().toISOString(),status:'applied',job_id:id});
+      });
+    }
   }
   var total = Object.values(cols).reduce(function(s,a){return s+a.length;},0);
   function st(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
@@ -3590,6 +3623,7 @@ init();
     renderChart();
     renderCards();
   }
+  window.init3D = init3D; /* expose to window so showPage can call it */
 
   function renderChips(){
     var wrap = document.getElementById('sal3d-chips');
@@ -3601,6 +3635,8 @@ init();
 
   function renderChart(){
     var chart = document.getElementById('sal3d-chart');
+    if (!chart) return;
+    void chart.offsetHeight; /* force reflow */
     if(!chart) return;
     var maxVal = 90;
     var active = SAL_DATA.find(function(d){return d.role===activeRole;}) || SAL_DATA[0];
