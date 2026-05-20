@@ -190,26 +190,97 @@ body { font-family: var(--ffb); background: var(--bg); color: var(--ink); min-he
 /* ── LOAD MORE ── */
 .load-more-btn { width: 100%; padding: 12px; background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: var(--ffb); color: var(--muted); transition: .15s; margin-top: 8px; }
 .load-more-btn:hover { border-color: var(--brand); color: var(--brand); }
+
+/* ── SHARED NAV (matches mentors/index) ── */
+#main-nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;height:62px}
+.nav-in{max-width:1280px;width:100%;margin:0 auto;display:flex;align-items:center;height:100%}
+.nlogo{font-family:var(--ff);font-size:21px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.4px;margin-right:36px;flex-shrink:0}
+.nlogo span{color:#FF5C35}
+.nlinks{display:flex;align-items:center;gap:2px;flex:1;list-style:none;margin:0;padding:0}
+.nav-link{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;text-decoration:none;background:none;border:none;font-family:var(--ff);display:flex;align-items:center;gap:4px;transition:.15s}
+.nav-link:hover{color:var(--brand);background:rgba(45,27,105,.05)}
+.nbtns{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nghost{padding:8px 18px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--ink);font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ff);transition:.15s}
+.nghost:hover{border-color:var(--brand);color:var(--brand)}
+.nfill{padding:8px 18px;border-radius:9px;border:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ff);transition:.15s}
+.nfill:hover{filter:brightness(1.1)}
+.nav-user-wrap{position:relative;margin-left:auto}
+.nav-user-btn{display:inline-flex;align-items:center;gap:10px;padding:5px 16px 5px 5px;border-radius:50px;border:2px solid var(--brand);background:#fff;cursor:pointer;font-family:var(--ff);font-size:14px;font-weight:600;color:var(--ink)}
+.nav-av{width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+.user-dropdown{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:0 8px 32px rgba(0,0,0,.12);min-width:200px;overflow:hidden;z-index:300}
+.ud-header{padding:12px 16px;border-bottom:1px solid var(--border)}
+.ud-name{font-weight:700;font-size:13.5px}
+.ud-email{font-size:12px;color:var(--muted)}
+.ud-item{display:block;padding:10px 16px;font-size:13px;color:var(--ink);text-decoration:none;transition:.15s;font-family:var(--ff)}
+.ud-item:hover{background:rgba(45,27,105,.05);color:var(--brand)}
+.ud-divider{height:1px;background:var(--border);margin:4px 0}
+.dd-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border-radius:14px;border:1px solid var(--border);box-shadow:0 8px 32px rgba(0,0,0,.1);min-width:260px;padding:8px;z-index:300;display:none}
+.dd-panel.open{display:block}
+.dd-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;text-decoration:none;color:var(--ink);transition:.15s}
+.dd-item:hover{background:rgba(45,27,105,.05)}
+.dd-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.dd-text strong{display:block;font-size:13px;font-weight:700;color:var(--ink)}
+.dd-text span{font-size:11.5px;color:var(--muted)}
 </style>
 <meta name="theme-color" content="#2D1B69"/>
 </head>
 <body>
 
 <!-- NAVBAR -->
-<nav class="nav">
-  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
-  <div class="nav-links">
-    <a href="dashboard.html" class="nav-link">Jobs</a>
-    <a href="mentors.html" class="nav-link">Mentors</a>
-    <a href="community.html" class="nav-link active">Community</a>
-  </div>
-  <div class="nav-right" id="nav-guest" style="display:none">
-    <a href="index.html" class="nav-btn ghost">Sign In</a>
-    <a href="index.html" class="nav-btn solid">Join Free →</a>
-  </div>
-  <div class="nav-right" id="nav-user" style="display:none;align-items:center;gap:10px">
-    <a href="dashboard.html" class="nav-btn ghost">Dashboard</a>
-    <div style="width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;cursor:pointer" id="nav-av-comm">?</div>
+<nav id="main-nav">
+  <div class="nav-in">
+    <a href="index.html" class="nlogo">Belong<span>ix</span></a>
+    <ul class="nlinks">
+      <li style="position:relative">
+        <button class="nav-link" onclick="toggleDD('dd-platform',this)">Platform <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="dd-panel" id="dd-platform">
+          <a class="dd-item" href="dashboard.html?page=jobs"><div class="dd-icon" style="background:#EEF0FF">💼</div><div class="dd-text"><strong>Job Board</strong><span>Live listings, apply instantly</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=salary"><div class="dd-icon" style="background:#ECFDF5">💰</div><div class="dd-text"><strong>Salary Intelligence</strong><span>Know your market worth</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF7ED">🤖</div><div class="dd-text"><strong>Bexi AI Guide</strong><span>24/7 career guidance</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF1F2">📊</div><div class="dd-text"><strong>Career Score</strong><span>Track your professional growth</span></div></a>
+        </div>
+      </li>
+      <li style="position:relative">
+        <button class="nav-link" onclick="toggleDD('dd-who',this)">It's For You <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="dd-panel" id="dd-who">
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#ECFDF5">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#FFF7ED">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
+          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#FFF1F2">🔄</div><div class="dd-text"><strong>Career Changers</strong><span>Switch fields with mentor support</span></div></a>
+        </div>
+      </li>
+      <li style="position:relative">
+        <button class="nav-link" onclick="toggleDD('dd-learn',this)">Learn <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+        <div class="dd-panel" id="dd-learn">
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>150+ curated courses</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#F5F3FF">🏆</div><div class="dd-text"><strong>Certifications</strong><span>AWS, Google, Microsoft</span></div></a>
+          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#FFF1F2">🎯</div><div class="dd-text"><strong>DSA &amp; Interview Prep</strong><span>Crack FAANG &amp; top startups</span></div></a>
+        </div>
+      </li>
+      <li><a class="nav-link" href="mentors.html">Mentors</a></li>
+      <li><a class="nav-link" href="community.html" style="display:flex;align-items:center;gap:5px;color:var(--brand);font-weight:700">Community <span style="font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 5px">NEW</span></a></li>
+      <li><a class="nav-link" href="mentors.html#become-mentor" style="display:flex;align-items:center;gap:4px">🌟 Become a Mentor</a></li>
+      <li><a class="nav-link" href="contact.html">Contact</a></li>
+      <li><a class="nav-link" href="about.html">About</a></li>
+    </ul>
+    <div class="nbtns" id="nav-out" style="display:none">
+      <button class="nghost" onclick="openAuthModal('signin')">Sign In</button>
+      <button class="nfill" onclick="openAuthModal('signup')">Join Free →</button>
+    </div>
+    <div class="nav-user-wrap" id="nav-in" style="display:none">
+      <button class="nav-user-btn" id="nav-user-btn" onclick="toggleUserDD()">
+        <div class="nav-av" id="nav-av">?</div>
+        <span class="nav-nm" id="nav-nm">Hi...</span>
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+      </button>
+      <div class="user-dropdown" id="user-dd" style="display:none">
+        <div class="ud-header"><div class="ud-name" id="ud-name">User</div><div class="ud-email" id="ud-email"></div></div>
+        <a class="ud-item" href="dashboard.html">Dashboard</a>
+        <a class="ud-item" href="dashboard.html?page=profile">My Profile</a>
+        <div class="ud-divider"></div>
+        <button class="ud-item" onclick="doSignOut()" style="color:#EF4444;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;width:100%;text-align:left;padding:10px 16px">Sign Out</button>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -458,23 +529,22 @@ async function initAuth(){
     var s = await sb.auth.getSession();
     if (s.data && s.data.session && s.data.session.user) {
       _user = s.data.session.user;
-      /* Show logged-in nav */
-      var ng = document.getElementById('nav-guest'); if(ng) ng.style.display='none';
-      var nu = document.getElementById('nav-user'); if(nu) nu.style.display='flex';
-      /* Set avatar initials */
       var nm = (_user.user_metadata && _user.user_metadata.full_name)
-        ? _user.user_metadata.full_name
-        : _user.email.split('@')[0];
-      var av = document.getElementById('nav-av-comm');
-      if(av) av.textContent = nm.substring(0,2).toUpperCase();
+        ? _user.user_metadata.full_name : _user.email.split('@')[0];
+      /* Show logged-in nav */
+      var navOut = document.getElementById('nav-out'); if(navOut) navOut.style.display='none';
+      var navIn = document.getElementById('nav-in'); if(navIn) navIn.style.display='flex';
+      var av = document.getElementById('nav-av'); if(av) av.textContent=nm.substring(0,2).toUpperCase();
+      var nm2 = document.getElementById('nav-nm'); if(nm2) nm2.textContent='Hi, '+nm.split(' ')[0];
+      var udn = document.getElementById('ud-name'); if(udn) udn.textContent=nm;
+      var ude = document.getElementById('ud-email'); if(ude) ude.textContent=_user.email||'';
     } else {
       /* Show guest nav */
-      var ng2 = document.getElementById('nav-guest'); if(ng2) ng2.style.display='flex';
-      var nu2 = document.getElementById('nav-user'); if(nu2) nu2.style.display='none';
+      var navOut2 = document.getElementById('nav-out'); if(navOut2) navOut2.style.display='flex';
+      var navIn2 = document.getElementById('nav-in'); if(navIn2) navIn2.style.display='none';
     }
   } catch(e){
-    /* Show guest nav on error */
-    var ng3 = document.getElementById('nav-guest'); if(ng3) ng3.style.display='flex';
+    var navOut3 = document.getElementById('nav-out'); if(navOut3) navOut3.style.display='flex';
   }
 }
 
@@ -952,6 +1022,26 @@ async function getBexiAnswer(title, body, tags){
 /* ── INIT ── */
 initAuth().then(loadPosts);
 </script>
-<script src="pwa-install.js"></script>
+<script src="pwa-install.js">
+/* ── NAV FUNCTIONS ── */
+function toggleDD(id, btn) {
+  document.querySelectorAll('.dd-panel').forEach(function(p){ p.classList.remove('open'); });
+  var dd = document.getElementById(id);
+  if (dd) dd.classList.toggle('open');
+}
+function toggleUserDD() {
+  var dd = document.getElementById('user-dd');
+  if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('#main-nav')) {
+    document.querySelectorAll('.dd-panel').forEach(function(p){ p.classList.remove('open'); });
+    var dd = document.getElementById('user-dd');
+    if (dd) dd.style.display = 'none';
+  }
+});
+function openAuthModal(type) { window.location.href = 'index.html'; }
+function doSignOut() { sb.auth.signOut().then(function(){ window.location.reload(); }); }
+</script>
 </body>
 </html>
