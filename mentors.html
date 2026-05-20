@@ -505,7 +505,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
       <button class="nghost" onclick="openModal('signin')">Sign In</button>
       <button class="nfill" onclick="openModal('signup')">Join Free →</button>
     </div>
-    <div class="nav-user-wrap" id="nav-in">
+    <div class="nav-user-wrap" id="nav-in" style="display:none">
       <button class="nav-user-btn" id="nav-user-btn">
         <div class="nav-av" id="nav-av">?</div>
         <span class="nav-nm" id="nav-nm">Hi...</span>
@@ -987,7 +987,7 @@ sb.auth.getSession().then(function(r){
 function showUserNav(u){
   var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];
   var no=document.getElementById('nav-out');if(no)no.style.display='none';
-  var ni=document.getElementById('nav-in');if(ni)ni.style.display='block';
+  var ni=document.getElementById('nav-in');if(ni)ni.style.display='flex';
   var av=document.getElementById('nav-av');if(av)av.textContent=nm.substring(0,2).toUpperCase();
   var nel=document.getElementById('nav-nm');if(nel)nel.textContent='Hi, '+nm.split(' ')[0];
   var udn=document.getElementById('ud-name');if(udn)udn.textContent=nm;
