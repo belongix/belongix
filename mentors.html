@@ -23,7 +23,7 @@
    BxEmail — Belongix Email Notification Engine
    Uses EmailJS (free tier: 200 emails/month per service)
    Service ID  : service_belongix   ← set in EmailJS dashboard
-   Public Key  : YOUR_EMAILJS_PUBLIC_KEY ← replace below
+   Public Key  : IcRELBElDRmomweEj ← replace below
    Template IDs: defined per email type below
    ═══════════════════════════════════════════════════════════
    SETUP STEPS (one-time):
@@ -36,16 +36,16 @@
    ═══════════════════════════════════════════════════════════ */
 (function() {
   /* ── CONFIG — replace with your actual EmailJS keys ── */
-  var EMAILJS_PUBLIC_KEY   = 'YOUR_EMAILJS_PUBLIC_KEY';  /* Account → API Keys */
-  var EMAILJS_SERVICE_ID   = 'service_belongix';         /* Email Services → Service ID */
+  var EMAILJS_PUBLIC_KEY   = 'IcRELBElDRmomweEj';
+  var EMAILJS_SERVICE_ID   = 'service_ni1flvm';
 
   /* ── TEMPLATE IDs — create these in EmailJS dashboard ── */
   var TPL = {
-    MENTOR_APP_ADMIN    : 'tpl_mentor_app_admin',    /* Email 1a: notify admin */
-    MENTOR_APP_CONFIRM  : 'tpl_mentor_app_confirm',  /* Email 1b: confirm applicant */
-    WELCOME             : 'tpl_welcome',              /* Email 2:  new user welcome */
-    JOB_APPLICATION     : 'tpl_job_application',     /* Email 3:  apply confirmation */
-    JOB_ALERT           : 'tpl_job_alert'            /* Email 4:  job alert match */
+    MENTOR_APP_ADMIN    : 'template_69outmk',    /* Email 1a: notify admin */
+    MENTOR_APP_CONFIRM  : 'template_xtel7u6',  /* Email 1b: confirm applicant */
+    WELCOME             : 'template_xtel7u6',              /* Email 2:  new user welcome */
+    JOB_APPLICATION     : 'template_69outmk',     /* Email 3:  apply confirmation */
+    JOB_ALERT           : 'template_xtel7u6'            /* Email 4:  job alert match */
   };
 
   /* ── INIT ── */
@@ -88,31 +88,19 @@
 
   window.BxEmail.mentorApplicationReceived = function(data) {
     var now = new Date();
+    var dt = fmtDate(now);
     /* 1a — admin notification */
     send(TPL.MENTOR_APP_ADMIN, {
       to_email        : 'teambelongix@gmail.com',
       applicant_name  : data.name || '',
       applicant_email : data.email || '',
-      job_role        : data.role || '',
-      company         : data.company || '',
-      city            : data.city || '',
-      experience      : data.exp || '',
-      field           : data.field || '',
-      session_rate    : data.rate ? '₹' + data.rate + '/session' : 'Not specified',
-      specialisations : data.skills || '',
-      linkedin_url    : data.linkedin || 'Not provided',
-      bio_snippet     : (data.bio || '').substring(0, 300),
-      applied_at      : fmtDate(now),
-      admin_url       : 'https://www.belongix.in/admin.html'
+      message_body    : 'New mentor application received!\n\nName: ' + (data.name||'') + '\nRole: ' + (data.role||'') + '\nCompany: ' + (data.company||'') + '\nCity: ' + (data.city||'') + '\nExperience: ' + (data.exp||'') + ' years\nField: ' + (data.field||'') + '\nRate: ₹' + (data.rate||'0') + '/session\nLinkedIn: ' + (data.linkedin||'Not provided') + '\nApplied at: ' + dt + '\n\nReview at: belongix.in/admin-bx2026.html\n\n— Belongix Admin System'
     });
     /* 1b — applicant acknowledgement */
     send(TPL.MENTOR_APP_CONFIRM, {
       to_email       : data.email || '',
       first_name     : firstName(data.name),
-      applicant_name : data.name || '',
-      applied_date   : fmtDate(now),
-      role           : data.role || '',
-      company        : data.company || ''
+      message_body   : 'Hi ' + firstName(data.name) + ',\n\nThank you for applying to become a Belongix mentor!\n\nHere\'s what happens next:\n✅ Your application is under review\n⏳ We\'ll respond within 48 hours\n🌟 If approved, your profile goes live instantly\n\nWe received your application on ' + dt + '.\n\n— Team Belongix\nbelongix.in'
     });
   };
 
@@ -550,7 +538,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
   </div>
   <div class="hero-btns">
     <button class="btn-hero-primary" onclick="openQuiz()">✨ Find My Mentor</button>
-    <button class="btn-hero-ghost" onclick="switchTab('register')">Become a Mentor</button>
+    <button class="btn-hero-ghost" onclick="switchTab('register');setTimeout(function(){var el=document.getElementById('section-register');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100)">Become a Mentor</button>
   </div>
 </div>
 
@@ -1038,7 +1026,7 @@ function switchTab(tab){
   var td=document.getElementById('tab-directory');
   var tr=document.getElementById('tab-register');
   if(tab==='directory'){if(dir)dir.style.display='block';if(reg)reg.style.display='none';if(td)td.classList.add('active');if(tr)tr.classList.remove('active');loadMentors();}
-  else{if(dir)dir.style.display='none';if(reg)reg.style.display='block';if(td)td.classList.remove('active');if(tr)tr.classList.add('active');}
+  else{if(dir)dir.style.display='none';if(reg){reg.style.display='block';setTimeout(function(){reg.scrollIntoView({behavior:'smooth',block:'start'});},80);}if(td)td.classList.remove('active');if(tr)tr.classList.add('active');}
 }
 
 /* ── FORM HELPERS ── */
