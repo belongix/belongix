@@ -501,7 +501,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
       <li><a class="nav-link" href="contact.html">Contact</a></li>
       <li><a class="nav-link" href="about.html">About</a></li>
     </ul>
-    <div class="nbtns" id="nav-out">
+    <div class="nbtns" id="nav-out" style="display:none">
       <button class="nghost" onclick="openModal('signin')">Sign In</button>
       <button class="nfill" onclick="openModal('signup')">Join Free →</button>
     </div>
@@ -783,7 +783,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
           <div class="perk-item"><span class="perk-icon">🌿</span><div>Give back to the Indian professional community.</div></div>
           <div class="perk-item"><span class="perk-icon">📈</span><div>Build your personal brand and network.</div></div>
         </div>
-        <div class="info-card" style="background:linear-gradient(135deg,#2D1B69,#4C2FAA);border-color:transparent">
+        <div class="info-card" id="signin-apply-card" style="background:linear-gradient(135deg,#2D1B69,#4C2FAA);border-color:transparent;display:none">
           <div style="font-family:var(--ff);font-size:15px;font-weight:700;color:#fff;margin-bottom:8px">Already have an account?</div>
           <div style="font-size:13px;color:rgba(255,255,255,.75);margin-bottom:14px;line-height:1.5">Sign in to apply faster with pre-filled profile details.</div>
           <button id="btn-sign-in-apply" onclick="openModal('signin')" style="background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.35);border-radius:9px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb);width:100%">Sign In to Apply</button>
@@ -992,22 +992,21 @@ function showUserNav(u){
   var nel=document.getElementById('nav-nm');if(nel)nel.textContent='Hi, '+nm.split(' ')[0];
   var udn=document.getElementById('ud-name');if(udn)udn.textContent=nm;
   var ude=document.getElementById('ud-email');if(ude)ude.textContent=u.email||'';
-  /* FIX 2: Hide "Sign In to Apply" card when user is already logged in */
-  var signInCard=document.querySelector('.sign-in-card,.signin-card,[data-signin-card]');
-  if(signInCard) signInCard.style.display='none';
-  /* Also hide any inline "Sign In to Apply" button and show nothing (user is logged in) */
-  var signinBtn=document.getElementById('btn-sign-in-apply');
-  if(signinBtn){
-    var cardWrap=signinBtn.closest('div[style]')||signinBtn.parentElement;
-    if(cardWrap) cardWrap.style.display='none';
-  }
+  /* Hide "Already have an account?" card — user is already logged in */
+  var sc=document.getElementById('signin-apply-card'); if(sc) sc.style.display='none';
+  var signinBtn=document.getElementById('btn-sign-in-apply'); if(signinBtn) signinBtn.style.display='none';
   /* Pre-fill booking form name/email if open */
   var bn=document.getElementById('b-name');if(bn&&!bn.value)bn.value=nm;
   var be=document.getElementById('b-email');if(be&&!be.value)be.value=u.email||'';
   window._mentorLoggedIn=true;
   window._mentorUser={name:nm,email:u.email,id:u.id};
 }
-function showGuestNav(){var no=document.getElementById('nav-out');if(no)no.style.display='flex';var ni=document.getElementById('nav-in');if(ni)ni.style.display='none';}
+function showGuestNav(){
+  var no=document.getElementById('nav-out'); if(no) no.style.display='flex';
+  var ni=document.getElementById('nav-in'); if(ni) ni.style.display='none';
+  /* Show "Already have an account?" card only for guests */
+  var sc=document.getElementById('signin-apply-card'); if(sc) sc.style.display='block';
+}
 function doSignOut(){sb.auth.signOut().then(function(){location.reload();});}
 function toggleDD(id,btn){document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});var dd=document.getElementById(id);if(dd){dd.classList.add('open');btn.classList.add('dd-open');}}
 document.addEventListener('click',function(e){if(!e.target.closest('.nav-link')&&!e.target.closest('.dd-panel')){document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});}});
@@ -1034,9 +1033,18 @@ async function modalAuth(type){
   if(type==='signup'){email=(document.getElementById('m-email-auth')||{}).value||'';pass=(document.getElementById('m-pass')||{}).value||'';}
   else{email=(document.getElementById('m-si-email')||{}).value||'';pass=(document.getElementById('m-si-pass')||{}).value||'';}
   if(!email||!pass){alert('Please fill all fields');return;}
-  try{var res=type==='signup'?await sb.auth.signUp({email:email,password:pass}):await sb.auth.signInWithPassword({email:email,password:pass});if(res.error)throw new Error(String(res.error.message||res.error.code||'Auth error'));if(type==='signin'){closeModal();window.location.href='dashboard.html';}else{var ok=document.getElementById('m-ok');if(ok){ok.style.display='block';ok.textContent='Check your email to confirm signup!';}}}catch(e){alert('Error: '+(e.message||'Please try again'));}
+  try{var res=type==='signup'?await sb.auth.signUp({email:email,password:pass}):await sb.auth.signInWithPassword({email:email,password:pass});if(res.error)throw new Error(String(res.error.message||res.error.code||'Auth error'));if(type==='signin'){
+      closeModal();
+      /* Stay on mentors page — reload to refresh auth state */
+      showUserNav(res.data.user);
+      /* Pre-fill booking form if a booking was in progress */
+      var bn=document.getElementById('b-name'); if(bn&&!bn.value) bn.value=res.data.user.user_metadata&&res.data.user.user_metadata.full_name?res.data.user.user_metadata.full_name:res.data.user.email.split('@')[0];
+      var be=document.getElementById('b-email'); if(be&&!be.value) be.value=res.data.user.email||'';
+      window._mentorLoggedIn=true;
+      window._mentorUser={name:bn?bn.value:'',email:res.data.user.email,id:res.data.user.id};
+    }else{var ok=document.getElementById('m-ok');if(ok){ok.style.display='block';ok.textContent='Check your email to confirm signup! Then come back to mentors.';}}}catch(e){alert('Error: '+(e.message||'Please try again'));}
 }
-async function googleAuth(){try{await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});}catch(e){alert('Google auth error: '+e.message);}}
+async function googleAuth(){try{await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});}catch(e){alert('Google auth error: '+e.message);}}
 
 /* ── TOAST ── */
 function showToast(msg){var t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
