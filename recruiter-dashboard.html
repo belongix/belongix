@@ -326,6 +326,17 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
 
 <div id="mob-overlay" onclick="closeMobNav()"></div>
 
+<!-- Access Denied — shown for non-recruiters -->
+<div id="rd-access-denied" style="display:none;position:fixed;inset:0;background:#F8F8FC;z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:16px;text-align:center;padding:24px;font-family:var(--ffb)">
+  <div style="font-size:56px">🔒</div>
+  <div style="font-size:24px;font-weight:800;color:#0D0D1A">Recruiter Access Only</div>
+  <div style="font-size:15px;color:#6B7280;max-width:440px;line-height:1.7">The Recruiter Portal is only available to users who have posted a job on Belongix, or have a recruiter / HR role. Post your first job to get access.</div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+    <a href="post-job.html" style="padding:13px 28px;background:#2D1B69;color:#fff;border-radius:10px;font-weight:700;text-decoration:none;font-size:14px">Post a Job → Get Access</a>
+    <a href="dashboard.html" style="padding:13px 28px;border:1.5px solid #E5E7EB;color:#0D0D1A;border-radius:10px;font-weight:700;text-decoration:none;font-size:14px">← Back to Dashboard</a>
+  </div>
+</div>
+
 <!-- Loading -->
 <div id="rd-loading">
   <div class="rd-loader-logo">Belong<span>ix</span></div>
@@ -373,6 +384,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
   </nav>
 
   <a href="post-job.html" class="sb-post-btn">+ Post New Job</a>
+  <a href="dashboard.html" style="display:block;text-align:center;padding:8px;font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;margin:0 12px 8px;border:1px solid var(--border);border-radius:8px;transition:.15s" onmouseover="this.style.color='var(--brand)';this.style.borderColor='var(--brand)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">← Back to Dashboard</a>
 
   <div class="sb-bottom">
     <div class="sb-co">
@@ -396,7 +408,8 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);display:flex;m
     </div>
     <div class="topbar-right">
       <a href="post-job.html" class="tb-btn primary">+ Post New Job</a>
-      <a href="index.html" class="tb-btn">← Job Seekers View</a>
+      <a href="dashboard.html" class="tb-btn">← Dashboard</a>
+      <a href="index.html" class="tb-btn">Job Seekers View</a>
     </div>
   </div>
 
@@ -691,6 +704,47 @@ window.addEventListener('DOMContentLoaded', async function() {
   }
   var _authUser = _session.data.session.user;
   _recruiterEmail = _authUser.email || localStorage.getItem('bx_recruiter_email') || '';
+
+  /* ACCESS CONTROL — only recruiters/employers can access */
+  try {
+    /* Check 1: Has this user posted any jobs? */
+    var _jobCheck = await sb.from('jobs').select('id').eq('posted_by', _authUser.id).limit(1);
+    var _hasPostedJobs = _jobCheck.data && _jobCheck.data.length > 0;
+
+    /* Check 2: Also check by email (for jobs posted before auth) */
+    if (!_hasPostedJobs && _recruiterEmail) {
+      var _emailCheck = await sb.from('jobs').select('id').eq('contact_email', _recruiterEmail).limit(1);
+      _hasPostedJobs = _emailCheck.data && _emailCheck.data.length > 0;
+    }
+
+    /* Check 3: Check if profile has recruiter/HR role */
+    var _isRecruiterRole = false;
+    if (!_hasPostedJobs) {
+      var _profileCheck = await sb.from('profiles').select('user_type, role').eq('id', _authUser.id).maybeSingle();
+      if (_profileCheck.data) {
+        var _ut = (_profileCheck.data.user_type || '').toLowerCase();
+        var _role = (_profileCheck.data.role || '').toLowerCase();
+        _isRecruiterRole = _ut === 'recruiter' || _ut === 'employer' ||
+          _role.includes('recruit') || _role.includes('hr') ||
+          _role.includes('talent') || _role.includes('hiring');
+      }
+    }
+
+    /* Also allow if localStorage has recruiter flag (posted via post-job.html) */
+    var _localFlag = localStorage.getItem('bx_recruiter_email') || localStorage.getItem('bx_recruiter_company');
+
+    if (!_hasPostedJobs && !_isRecruiterRole && !_localFlag) {
+      /* Access denied — show friendly page */
+      var _ls = document.getElementById('rd-loading');
+      if (_ls) _ls.style.display = 'none';
+      var _ad = document.getElementById('rd-access-denied');
+      if (_ad) _ad.style.display = 'flex';
+      return;
+    }
+  } catch(e) {
+    /* If check fails (e.g. table doesn't exist yet), allow access — fail open */
+    console.warn('Recruiter access check failed:', e.message);
+  }
 
   if (!_recruiterEmail) _recruiterEmail = localStorage.getItem('bx_recruiter_email') || '';
 
