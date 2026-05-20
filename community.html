@@ -190,37 +190,56 @@ body { font-family: var(--ffb); background: var(--bg); color: var(--ink); min-he
 /* ── LOAD MORE ── */
 .load-more-btn { width: 100%; padding: 12px; background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: var(--ffb); color: var(--muted); transition: .15s; margin-top: 8px; }
 .load-more-btn:hover { border-color: var(--brand); color: var(--brand); }
-
-/* ── SHARED NAV (matches mentors/index) ── */
-#main-nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;height:62px}
-.nav-in{max-width:1280px;width:100%;margin:0 auto;display:flex;align-items:center;height:100%}
+.nav-in{max-width:var(--max);width:100%;margin:0 auto;display:flex;align-items:center;gap:0}
 .nlogo{font-family:var(--ff);font-size:21px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.4px;margin-right:36px;flex-shrink:0}
-.nlogo span{color:#FF5C35}
-.nlinks{display:flex;align-items:center;gap:2px;flex:1;list-style:none;margin:0;padding:0}
-.nav-link{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;text-decoration:none;background:none;border:none;font-family:var(--ff);display:flex;align-items:center;gap:4px;transition:.15s}
-.nav-link:hover{color:var(--brand);background:rgba(45,27,105,.05)}
-.nbtns{display:flex;align-items:center;gap:8px;margin-left:auto}
-.nghost{padding:8px 18px;border-radius:9px;border:1.5px solid var(--border);background:transparent;color:var(--ink);font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ff);transition:.15s}
-.nghost:hover{border-color:var(--brand);color:var(--brand)}
-.nfill{padding:8px 18px;border-radius:9px;border:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ff);transition:.15s}
-.nfill:hover{filter:brightness(1.1)}
-.nav-user-wrap{position:relative;margin-left:auto}
-.nav-user-btn{display:inline-flex;align-items:center;gap:10px;padding:5px 16px 5px 5px;border-radius:50px;border:2px solid var(--brand);background:#fff;cursor:pointer;font-family:var(--ff);font-size:14px;font-weight:600;color:var(--ink)}
-.nav-av{width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
-.user-dropdown{position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:0 8px 32px rgba(0,0,0,.12);min-width:200px;overflow:hidden;z-index:300}
-.ud-header{padding:12px 16px;border-bottom:1px solid var(--border)}
-.ud-name{font-weight:700;font-size:13.5px}
-.ud-email{font-size:12px;color:var(--muted)}
-.ud-item{display:block;padding:10px 16px;font-size:13px;color:var(--ink);text-decoration:none;transition:.15s;font-family:var(--ff)}
-.ud-item:hover{background:rgba(45,27,105,.05);color:var(--brand)}
-.ud-divider{height:1px;background:var(--border);margin:4px 0}
-.dd-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border-radius:14px;border:1px solid var(--border);box-shadow:0 8px 32px rgba(0,0,0,.1);min-width:260px;padding:8px;z-index:300;display:none}
-.dd-panel.open{display:block}
-.dd-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;text-decoration:none;color:var(--ink);transition:.15s}
-.dd-item:hover{background:rgba(45,27,105,.05)}
-.dd-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.dd-text strong{display:block;font-size:13px;font-weight:700;color:var(--ink)}
+.nlogo span{color:var(--accent)}
+.nlinks{display:flex;align-items:center;gap:2px;flex:1;list-style:none}
+.nlinks li{position:relative}
+.nav-link{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;text-decoration:none;background:none;border:none;font-family:var(--ffb);display:flex;align-items:center;gap:4px;transition:.15s}
+.nav-link:hover{color:var(--brand);background:var(--off)}
+.nav-link svg{width:11px;height:11px;transition:transform .2s}
+.nav-link.dd-open svg{transform:rotate(180deg)}
+.dd-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);padding:8px;min-width:250px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:200}
+.dd-panel.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.dd-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;text-decoration:none;transition:.15s;color:var(--ink2)}
+.dd-item:hover{background:var(--off)}
+.dd-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.dd-text strong{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:1px}
 .dd-text span{font-size:11.5px;color:var(--muted)}
+.nbtns{display:flex;align-items:center;gap:8px;margin-left:auto}
+.nghost{padding:7px 16px;border-radius:8px;border:1.5px solid var(--border2);background:transparent;color:var(--ink2);font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.nghost:hover{border-color:var(--brand);color:var(--brand)}
+.nfill{padding:8px 20px;border-radius:8px;border:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s}
+.nfill:hover{background:var(--brand2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,27,105,.3)}
+.nav-user-wrap{position:relative;display:none;margin-left:auto}
+.nav-user-btn{display:inline-flex;align-items:center;gap:10px;padding:5px 16px 5px 5px;border-radius:50px;border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--brand),var(--accent)) border-box;cursor:pointer;font-family:var(--ffb);transition:.2s;font-size:14.5px;font-weight:600}
+.nav-user-btn:hover{background:linear-gradient(var(--off),var(--off)) padding-box,linear-gradient(135deg,var(--brand),var(--accent)) border-box;box-shadow:0 4px 16px rgba(45,27,105,.15)}
+.nav-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:-.5px;box-shadow:0 2px 8px rgba(45,27,105,.3)}
+.nav-nm{font-size:14.5px;font-weight:700;background:linear-gradient(135deg,var(--brand),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-user-btn svg{width:11px;height:11px;color:var(--subtle);transition:transform .2s}
+.nav-user-btn.dd-open svg{transform:rotate(180deg)}
+.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
+.user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.ud-header{padding:10px 12px;border-bottom:1px solid var(--off2);margin-bottom:4px}
+.ud-name{font-size:13px;font-weight:700;color:var(--ink)}
+.ud-email{font-size:11px;color:var(--subtle);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--ink2);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left}
+.ud-item:hover{background:var(--off);color:var(--brand)}
+.ud-item svg{width:14px;height:14px;flex-shrink:0;color:var(--subtle)}
+.ud-divider{height:1px;background:var(--off2);margin:4px 0}
+.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border-radius:8px;border:none;background:none;margin-left:auto}
+.nav-hamburger span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;transition:.3s}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-hamburger.open span:nth-child(2){opacity:0}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:#fff;z-index:800;padding:24px 5%;overflow-y:auto}
+.mobile-menu.open{display:block}
+.mm-link{display:block;padding:14px 0;font-size:16px;font-weight:500;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)}
+.mm-link:last-child{border-bottom:none}
+.mm-btns{display:flex;flex-direction:column;gap:10px;margin-top:24px}
+.nlinks{display:none}
+.nbtns{display:none}
+.nav-hamburger{display:flex}
 </style>
 <meta name="theme-color" content="#2D1B69"/>
 </head>
@@ -231,26 +250,34 @@ body { font-family: var(--ffb); background: var(--bg); color: var(--ink); min-he
   <div class="nav-in">
     <a href="index.html" class="nlogo">Belong<span>ix</span></a>
     <ul class="nlinks">
-      <li style="position:relative">
-        <button class="nav-link" onclick="toggleDD('dd-platform',this)">Platform <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+      <li>
+        <button class="nav-link" onclick="toggleDD('dd-platform',this)">
+          Platform <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+        </button>
         <div class="dd-panel" id="dd-platform">
           <a class="dd-item" href="dashboard.html?page=jobs"><div class="dd-icon" style="background:#EEF0FF">💼</div><div class="dd-text"><strong>Job Board</strong><span>Live listings, apply instantly</span></div></a>
           <a class="dd-item" href="dashboard.html?page=salary"><div class="dd-icon" style="background:#ECFDF5">💰</div><div class="dd-text"><strong>Salary Intelligence</strong><span>Know your market worth</span></div></a>
           <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF7ED">🤖</div><div class="dd-text"><strong>Bexi AI Guide</strong><span>24/7 career guidance</span></div></a>
           <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF1F2">📊</div><div class="dd-text"><strong>Career Score</strong><span>Track your professional growth</span></div></a>
+          <a class="dd-item" href="resume-builder.html"><div class="dd-icon" style="background:#F0F0FF">📄</div><div class="dd-text"><strong>Resume Builder</strong><span>ATS-optimised, AI-enhanced</span></div></a>
+          <a class="dd-item" href="post-job.html"><div class="dd-icon" style="background:#FFF0E8">🏢</div><div class="dd-text"><strong>For Recruiters</strong><span>Post jobs, find talent</span></div></a>
         </div>
       </li>
-      <li style="position:relative">
-        <button class="nav-link" onclick="toggleDD('dd-who',this)">It's For You <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+      <li>
+        <button class="nav-link" onclick="toggleDD('dd-who',this)">
+          It's For You <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+        </button>
         <div class="dd-panel" id="dd-who">
-          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
-          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#ECFDF5">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
-          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#FFF7ED">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
-          <a class="dd-item" href="index.html#for-who"><div class="dd-icon" style="background:#FFF1F2">🔄</div><div class="dd-text"><strong>Career Changers</strong><span>Switch fields with mentor support</span></div></a>
+          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
+          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#ECFDF5">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
+          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#FFF7ED">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
+          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#FFF1F2">🔄</div><div class="dd-text"><strong>Career Changers</strong><span>Switch fields with mentor support</span></div></a>
         </div>
       </li>
-      <li style="position:relative">
-        <button class="nav-link" onclick="toggleDD('dd-learn',this)">Learn <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg></button>
+      <li>
+        <button class="nav-link" onclick="toggleDD('dd-learn',this)">
+          Learn <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
+        </button>
         <div class="dd-panel" id="dd-learn">
           <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>150+ curated courses</span></div></a>
           <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#F5F3FF">🏆</div><div class="dd-text"><strong>Certifications</strong><span>AWS, Google, Microsoft</span></div></a>
@@ -258,31 +285,50 @@ body { font-family: var(--ffb); background: var(--bg); color: var(--ink); min-he
         </div>
       </li>
       <li><a class="nav-link" href="mentors.html">Mentors</a></li>
-      <li><a class="nav-link" href="community.html" style="display:flex;align-items:center;gap:5px;color:var(--brand);font-weight:700">Community <span style="font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 5px">NEW</span></a></li>
-      <li><a class="nav-link" href="mentors.html#become-mentor" style="display:flex;align-items:center;gap:4px">🌟 Become a Mentor</a></li>
-      <li><a class="nav-link" href="contact.html">Contact</a></li>
+      <li><a class="nav-link" href="community.html" style="display:flex;align-items:center;gap:5px;color:var(--brand);font-weight:700;background:var(--off)">Community <span style="font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 5px">NEW</span></a></li>
+      <li><a class="nav-link" href="mentors.html#become-mentor" style="display:flex;align-items:center;gap:5px">🌟 Become a Mentor</a></li>
       <li><a class="nav-link" href="about.html">About</a></li>
     </ul>
     <div class="nbtns" id="nav-out" style="display:none">
-      <button class="nghost" onclick="openAuthModal('signin')">Sign In</button>
-      <button class="nfill" onclick="openAuthModal('signup')">Join Free →</button>
+      <button class="nghost" onclick="openModal('signin')">Sign In</button>
+      <button class="nfill" onclick="openModal('signup')">Join Free <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
     </div>
     <div class="nav-user-wrap" id="nav-in" style="display:none">
-      <button class="nav-user-btn" id="nav-user-btn" onclick="toggleUserDD()">
+      <button class="nav-user-btn" id="nav-user-btn">
         <div class="nav-av" id="nav-av">?</div>
         <span class="nav-nm" id="nav-nm">Hi...</span>
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
       </button>
-      <div class="user-dropdown" id="user-dd" style="display:none">
+      <div class="user-dropdown" id="user-dd">
         <div class="ud-header"><div class="ud-name" id="ud-name">User</div><div class="ud-email" id="ud-email"></div></div>
-        <a class="ud-item" href="dashboard.html">Dashboard</a>
-        <a class="ud-item" href="dashboard.html?page=profile">My Profile</a>
+        <a class="ud-item" href="dashboard.html"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+        <a class="ud-item" href="dashboard.html?page=profile"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>My Profile</a>
         <div class="ud-divider"></div>
-        <button class="ud-item" onclick="doSignOut()" style="color:#EF4444;background:none;border:none;cursor:pointer;font-family:inherit;font-size:13px;width:100%;text-align:left;padding:10px 16px">Sign Out</button>
+        <button class="ud-item" onclick="doSignOut()" style="color:#EF4444"><svg fill="none" viewBox="0 0 24 24" stroke="#EF4444" stroke-width="1.8"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>Sign Out</button>
       </div>
     </div>
+    <button class="nav-hamburger" id="hamburger" onclick="toggleMobileMenu()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- Mobile menu -->
+<div class="mobile-menu" id="mobile-menu">
+  <a class="mm-link" href="dashboard.html?page=jobs">Job Board</a>
+  <a class="mm-link" href="dashboard.html?page=salary">Salary Intelligence</a>
+  <a class="mm-link" href="dashboard.html?page=overview">Bexi AI Guide</a>
+  <a class="mm-link" href="dashboard.html?page=upskill">Upskilling Hub</a>
+  <a class="mm-link" href="mentors.html">Mentors</a>
+  <a class="mm-link" href="community.html">Community 🆕</a>
+  <a class="mm-link" href="mentors.html#become-mentor">🌟 Become a Mentor</a>
+  <a class="mm-link" href="about.html">About</a>
+  <div class="mm-btns">
+    <button class="nghost" style="width:100%;text-align:center" onclick="openModal('signin');toggleMobileMenu()">Sign In</button>
+    <button class="nfill" style="width:100%;text-align:center;padding:12px" onclick="openModal('signup');toggleMobileMenu()">Join Free <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
+  </div>
+</div>
+
 
 <!-- PAGE HEADER -->
 <div class="page-header">
@@ -529,23 +575,11 @@ async function initAuth(){
     var s = await sb.auth.getSession();
     if (s.data && s.data.session && s.data.session.user) {
       _user = s.data.session.user;
-      var nm = (_user.user_metadata && _user.user_metadata.full_name)
-        ? _user.user_metadata.full_name : _user.email.split('@')[0];
-      /* Show logged-in nav */
-      var navOut = document.getElementById('nav-out'); if(navOut) navOut.style.display='none';
-      var navIn = document.getElementById('nav-in'); if(navIn) navIn.style.display='flex';
-      var av = document.getElementById('nav-av'); if(av) av.textContent=nm.substring(0,2).toUpperCase();
-      var nm2 = document.getElementById('nav-nm'); if(nm2) nm2.textContent='Hi, '+nm.split(' ')[0];
-      var udn = document.getElementById('ud-name'); if(udn) udn.textContent=nm;
-      var ude = document.getElementById('ud-email'); if(ude) ude.textContent=_user.email||'';
+      showUserNav(_user);
     } else {
-      /* Show guest nav */
-      var navOut2 = document.getElementById('nav-out'); if(navOut2) navOut2.style.display='flex';
-      var navIn2 = document.getElementById('nav-in'); if(navIn2) navIn2.style.display='none';
+      showGuestNav();
     }
-  } catch(e){
-    var navOut3 = document.getElementById('nav-out'); if(navOut3) navOut3.style.display='flex';
-  }
+  } catch(e){ showGuestNav(); }
 }
 
 /* ── LOAD POSTS ── */
@@ -1022,26 +1056,127 @@ async function getBexiAnswer(title, body, tags){
 /* ── INIT ── */
 initAuth().then(loadPosts);
 </script>
-<script src="pwa-install.js">
-/* ── NAV FUNCTIONS ── */
-function toggleDD(id, btn) {
-  document.querySelectorAll('.dd-panel').forEach(function(p){ p.classList.remove('open'); });
-  var dd = document.getElementById(id);
-  if (dd) dd.classList.toggle('open');
+<script src="pwa-install.js"></script>
+<script>
+/* ══ NAV AUTH (from index.html) ══ */
+var SB_URL_NAV='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY_NAV='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+
+/* Auth handled by initAuth() above */
+
+function toggleDD(id,btn){
+  var dd=document.getElementById(id);
+  if(!dd)return;
+  var isOpen=dd.classList.contains('open');
+  document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
+  document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
+  if(!isOpen){dd.classList.add('open');btn.classList.add('dd-open');}
 }
-function toggleUserDD() {
-  var dd = document.getElementById('user-dd');
-  if (dd) dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
+
+function toggleMobileMenu(){
+  var mm=document.getElementById('mobile-menu');
+  var hb=document.getElementById('hamburger');
+  mm.classList.toggle('open');
+  hb.classList.toggle('open');
 }
-document.addEventListener('click', function(e) {
-  if (!e.target.closest('#main-nav')) {
-    document.querySelectorAll('.dd-panel').forEach(function(p){ p.classList.remove('open'); });
-    var dd = document.getElementById('user-dd');
-    if (dd) dd.style.display = 'none';
+
+function openModal(type){
+  document.getElementById('auth-modal').classList.add('open');
+  modalTab(type);
+}
+
+function closeModal(){document.getElementById('auth-modal').classList.remove('open');}
+
+function doSignOut(){sb.auth.signOut().then(function(){location.reload();});}
+
+function scrollToForWho(){
+  /* Close all dropdowns */
+  document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
+  document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
+  /* Smooth scroll to section */
+  var sec=document.getElementById('for-who');
+  if(sec)sec.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function whoCardClick(){
+  /* If logged in → go to dashboard; if not → show signup modal */
+  var navIn=document.getElementById('nav-in');
+  if(navIn&&navIn.style.display!=='none'&&navIn.style.display!==''){
+    window.location.href='dashboard.html';
+  } else {
+    /* Also check Supabase session */
+    if(typeof sb!=='undefined'){
+      sb.auth.getSession().then(function(r){
+        if(r&&r.data&&r.data.session&&r.data.session.user){
+          window.location.href='dashboard.html';
+        } else {
+          openModal('signup');
+        }
+      }).catch(function(){openModal('signup');});
+    } else {
+      openModal('signup');
+    }
   }
-});
-function openAuthModal(type) { window.location.href = 'index.html'; }
-function doSignOut() { sb.auth.signOut().then(function(){ window.location.reload(); }); }
+}
+
+function modalAuth(type){
+  var email='',pass='';
+  if(type==='signup'){email=(document.getElementById('m-email')||{}).value||'';pass=(document.getElementById('m-pass')||{}).value||'';}
+  else{email=(document.getElementById('m-si-email')||{}).value||'';pass=(document.getElementById('m-si-pass')||{}).value||'';}
+  if(!email||!pass){alert('Please fill all fields');return;}
+  try{
+    var res=type==='signup'?await sb.auth.signUp({email,password:pass}):await sb.auth.signInWithPassword({email,password:pass});
+    if(res.error)throw res.error;
+    if(type==='signin'){closeModal();window.location.href='dashboard.html';}
+    else{
+      /* ✅ FIX #41: Process referral on modal signup */
+      await refProcessOnSignup(res.data&&res.data.user?res.data.user.id:null);
+      showStep2();
+    }
+  }catch(e){alert('Error: '+e.message);}
+}
+
+function modalTab(tab){
+  document.getElementById('modal-signup').style.display=tab==='signup'?'block':'none';
+  document.getElementById('modal-signin').style.display=tab==='signin'?'block':'none';
+  document.getElementById('tab-signup').classList[tab==='signup'?'add':'remove']('active');
+  document.getElementById('tab-signin').classList[tab==='signin'?'add':'remove']('active');
+}
+
+function googleAuth(){
+  try{
+    await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});
+  }catch(e){alert('Google auth error: '+e.message);}
+}
+
+function showUserNav(user){
+  var nm=user.user_metadata&&user.user_metadata.full_name?user.user_metadata.full_name:user.email.split('@')[0];
+  document.getElementById('nav-out').style.display='none';
+  document.getElementById('nav-in').style.display='block';
+  document.getElementById('nav-av').textContent=nm.substring(0,2).toUpperCase();
+  document.getElementById('nav-nm').textContent=nm.split(' ')[0];
+  document.getElementById('ud-name').textContent=nm;
+  document.getElementById('ud-email').textContent=user.email||'';
+  var hsc=document.getElementById('hero-signup-card');
+  if(hsc)hsc.style.display='none';
+  var hgc=document.getElementById('hero-guest-cta');
+  if(hgc)hgc.style.display='none';
+  var hgn=document.getElementById('hero-guest-note');
+  if(hgn)hgn.style.display='none';
+  var hsc2=document.getElementById('hero-signed-cta');
+  if(hsc2)hsc2.style.display='flex';
+  var hsn=document.getElementById('hero-signed-note');
+  if(hsn)hsn.style.display='block';
+  var hIn=document.querySelector('.hero-in');
+  if(hIn)hIn.style.gridTemplateColumns='1fr';
+}
+
+function showGuestNav(){
+  document.getElementById('nav-out').style.display='flex';
+  document.getElementById('nav-in').style.display='none';
+}
+
+function doSignOut(){ sb.auth.signOut().then(function(){ location.reload(); }); }
 </script>
 </body>
 </html>
