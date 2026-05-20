@@ -926,19 +926,20 @@ var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI
 ════════════════════════════════════════════════════════ */
 var sb = window._bxSb || (function() {
   try {
+    /* IMPORTANT: persistSession:true so we can read the session
+       saved by dashboard.html / index.html from localStorage.
+       Using same storageKey ensures shared session across all pages. */
     var client = supabase.createClient(SB_URL, SB_KEY, {
       auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false,
-        storageKey: 'bx_mentor_auth'
-      },
-      realtime: { params: { eventsPerSecond: 0 } }
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        storageKey: 'sb-efhcfuaxgbzuqlmhlsxc-auth-token'
+      }
     });
     window._bxSb = client;
     return client;
   } catch(e) {
-    /* Absolute fallback */
     var fc = supabase.createClient(SB_URL, SB_KEY);
     window._bxSb = fc;
     return fc;
