@@ -14,12 +14,12 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
 (function() {
-  var EMAILJS_PUBLIC_KEY = 'YOUR_EMAILJS_PUBLIC_KEY';
-  var EMAILJS_SERVICE_ID = 'service_belongix';
+  var EMAILJS_PUBLIC_KEY = 'IcRELBElDRmomweEj';
+  var EMAILJS_SERVICE_ID = 'service_ni1flvm';
   var TPL = {
-    WELCOME          : 'tpl_welcome',
-    JOB_APPLICATION  : 'tpl_job_application',
-    JOB_ALERT        : 'tpl_job_alert'
+    WELCOME          : 'template_xtel7u6',
+    JOB_APPLICATION  : 'template_69outmk',
+    JOB_ALERT        : 'template_xtel7u6'
   };
   var _ready = false;
   try { emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY }); _ready = true; } catch(e) { console.warn('[BxEmail] init:', String(e.message||e)); }
@@ -33,25 +33,22 @@
   function fmtDate(d){ return (d||new Date()).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}); }
   window.BxEmail = window.BxEmail || {};
   window.BxEmail.welcomeNewUser = function(data) {
+    var fn = firstName(data.name||data.email);
     send(TPL.WELCOME, {
       to_email    : data.email||'',
-      first_name  : firstName(data.name||data.email),
-      profile_url : 'https://www.belongix.in/dashboard.html?page=profile',
-      jobs_url    : 'https://www.belongix.in/dashboard.html?page=jobs',
-      salary_url  : 'https://www.belongix.in/dashboard.html?page=salary',
-      dashboard_url:'https://www.belongix.in/dashboard.html'
+      first_name  : fn,
+      message_body: 'Hi ' + fn + ',\n\nWelcome to Belongix — India\'s career platform!\n\nYour account is ready. Here\'s what to do first:\n\n1. Complete your profile (+30 Career Score pts)\n   belongix.in/dashboard.html?page=profile\n\n2. Check jobs matched for you\n   belongix.in/dashboard.html?page=jobs\n\n3. Ask Bexi AI your first career question\n   belongix.in/dashboard.html\n\n4. Know your salary worth\n   belongix.in/dashboard.html?page=salary\n\nYour Career Score starts at 30/100. Complete your profile to reach 70+ this week!\n\n— Team Belongix\nbelongix.in'
     });
   };
   window.BxEmail.jobApplicationConfirm = function(data) {
+    var fn = firstName(data.name);
+    var dt = fmtDate(new Date());
     send(TPL.JOB_APPLICATION, {
       to_email    : data.email||'',
-      first_name  : firstName(data.name),
+      first_name  : fn,
       job_title   : data.jobTitle||'',
       company     : data.company||'',
-      location    : data.location||'',
-      salary      : data.salary||'',
-      applied_date: fmtDate(new Date()),
-      tracker_url : 'https://www.belongix.in/dashboard.html?page=tracker'
+      message_body: 'Hi ' + fn + ',\n\nYour application has been submitted!\n\nRole: ' + (data.jobTitle||'') + '\nCompany: ' + (data.company||'') + '\nLocation: ' + (data.location||'') + '\nSalary: ' + (data.salary||'') + '\nApplied on: ' + dt + '\n\nTrack your application:\nbelongix.in/dashboard.html?page=tracker\n\nGood luck!\n— Team Belongix'
     });
   };
   window.BxEmail.jobAlertMatch = function(data) {
@@ -2729,7 +2726,7 @@ async function resetPassword() {
   catch(e){showToast('Error: '+e.message);}
 }
 
-var RZP_KEY='rzp_live_SrLFpmo96oxWfI';
+var RZP_KEY='rzp_live_SiouVVDYQu9HTt';
 function startPayment(plan) {
   if(!currentUser){showToast('Please sign in');return;}
   var am={monthly:49900,premium:99900};
