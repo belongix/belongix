@@ -203,9 +203,13 @@ body { font-family: var(--ffb); background: var(--bg); color: var(--ink); min-he
     <a href="mentors.html" class="nav-link">Mentors</a>
     <a href="community.html" class="nav-link active">Community</a>
   </div>
-  <div class="nav-right">
-    <a href="dashboard.html" class="nav-btn ghost">Dashboard</a>
+  <div class="nav-right" id="nav-guest" style="display:none">
+    <a href="index.html" class="nav-btn ghost">Sign In</a>
     <a href="index.html" class="nav-btn solid">Join Free →</a>
+  </div>
+  <div class="nav-right" id="nav-user" style="display:none;align-items:center;gap:10px">
+    <a href="dashboard.html" class="nav-btn ghost">Dashboard</a>
+    <div style="width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;cursor:pointer" id="nav-av-comm">?</div>
   </div>
 </nav>
 
@@ -452,8 +456,26 @@ function showToast(msg, dur){
 async function initAuth(){
   try {
     var s = await sb.auth.getSession();
-    if (s.data && s.data.session) _user = s.data.session.user;
-  } catch(e){}
+    if (s.data && s.data.session && s.data.session.user) {
+      _user = s.data.session.user;
+      /* Show logged-in nav */
+      var ng = document.getElementById('nav-guest'); if(ng) ng.style.display='none';
+      var nu = document.getElementById('nav-user'); if(nu) nu.style.display='flex';
+      /* Set avatar initials */
+      var nm = (_user.user_metadata && _user.user_metadata.full_name)
+        ? _user.user_metadata.full_name
+        : _user.email.split('@')[0];
+      var av = document.getElementById('nav-av-comm');
+      if(av) av.textContent = nm.substring(0,2).toUpperCase();
+    } else {
+      /* Show guest nav */
+      var ng2 = document.getElementById('nav-guest'); if(ng2) ng2.style.display='flex';
+      var nu2 = document.getElementById('nav-user'); if(nu2) nu2.style.display='none';
+    }
+  } catch(e){
+    /* Show guest nav on error */
+    var ng3 = document.getElementById('nav-guest'); if(ng3) ng3.style.display='flex';
+  }
 }
 
 /* ── LOAD POSTS ── */
