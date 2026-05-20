@@ -786,7 +786,7 @@ textarea.finp{resize:vertical;min-height:90px;line-height:1.6}
         <div class="info-card" style="background:linear-gradient(135deg,#2D1B69,#4C2FAA);border-color:transparent">
           <div style="font-family:var(--ff);font-size:15px;font-weight:700;color:#fff;margin-bottom:8px">Already have an account?</div>
           <div style="font-size:13px;color:rgba(255,255,255,.75);margin-bottom:14px;line-height:1.5">Sign in to apply faster with pre-filled profile details.</div>
-          <button onclick="openModal('signin')" style="background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.35);border-radius:9px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb);width:100%">Sign In to Apply</button>
+          <button id="btn-sign-in-apply" onclick="openModal('signin')" style="background:rgba(255,255,255,.2);color:#fff;border:1.5px solid rgba(255,255,255,.35);border-radius:9px;padding:9px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--ffb);width:100%">Sign In to Apply</button>
         </div>
       </div>
     </div>
@@ -984,7 +984,29 @@ sb.auth.getSession().then(function(r){
   if (s && s.user) showUserNav(s.user);
   else showGuestNav();
 }).catch(function() { showGuestNav(); });
-function showUserNav(u){var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];var no=document.getElementById('nav-out');if(no)no.style.display='none';var ni=document.getElementById('nav-in');if(ni)ni.style.display='block';var av=document.getElementById('nav-av');if(av)av.textContent=nm.substring(0,2).toUpperCase();var nel=document.getElementById('nav-nm');if(nel)nel.textContent='Hi, '+nm.split(' ')[0];var udn=document.getElementById('ud-name');if(udn)udn.textContent=nm;var ude=document.getElementById('ud-email');if(ude)ude.textContent=u.email||'';}
+function showUserNav(u){
+  var nm=u.user_metadata&&u.user_metadata.full_name?u.user_metadata.full_name:u.email.split('@')[0];
+  var no=document.getElementById('nav-out');if(no)no.style.display='none';
+  var ni=document.getElementById('nav-in');if(ni)ni.style.display='block';
+  var av=document.getElementById('nav-av');if(av)av.textContent=nm.substring(0,2).toUpperCase();
+  var nel=document.getElementById('nav-nm');if(nel)nel.textContent='Hi, '+nm.split(' ')[0];
+  var udn=document.getElementById('ud-name');if(udn)udn.textContent=nm;
+  var ude=document.getElementById('ud-email');if(ude)ude.textContent=u.email||'';
+  /* FIX 2: Hide "Sign In to Apply" card when user is already logged in */
+  var signInCard=document.querySelector('.sign-in-card,.signin-card,[data-signin-card]');
+  if(signInCard) signInCard.style.display='none';
+  /* Also hide any inline "Sign In to Apply" button and show nothing (user is logged in) */
+  var signinBtn=document.getElementById('btn-sign-in-apply');
+  if(signinBtn){
+    var cardWrap=signinBtn.closest('div[style]')||signinBtn.parentElement;
+    if(cardWrap) cardWrap.style.display='none';
+  }
+  /* Pre-fill booking form name/email if open */
+  var bn=document.getElementById('b-name');if(bn&&!bn.value)bn.value=nm;
+  var be=document.getElementById('b-email');if(be&&!be.value)be.value=u.email||'';
+  window._mentorLoggedIn=true;
+  window._mentorUser={name:nm,email:u.email,id:u.id};
+}
 function showGuestNav(){var no=document.getElementById('nav-out');if(no)no.style.display='flex';var ni=document.getElementById('nav-in');if(ni)ni.style.display='none';}
 function doSignOut(){sb.auth.signOut().then(function(){location.reload();});}
 function toggleDD(id,btn){document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});var dd=document.getElementById(id);if(dd){dd.classList.add('open');btn.classList.add('dd-open');}}
