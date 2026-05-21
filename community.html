@@ -4,1179 +4,1046 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Community — Belongix</title>
-<meta name="description" content="Ask career questions, get answers from real Indian professionals and Bexi AI. India's #1 career Q&A community."/>
-<meta property="og:title" content="Belongix Community — Career Q&A for Indian Professionals"/>
-<meta property="og:description" content="Ask anything about jobs, salary, interviews, and career growth. Get answers from real professionals and Bexi AI."/>
-<meta property="og:image" content="https://www.belongix.in/icons/icon-512.png"/>
+<meta name="description" content="Ask career questions, get answers from real Indian professionals and Bexi AI."/>
 <link rel="icon" href="icons/icon-32.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
-  --brand:  #2D1B69;
-  --brand2: #4C2FAA;
-  --brand3: #7C5CDB;
-  --accent: #06B6D4;
-  --green:  #10B981;
-  --amber:  #F59E0B;
-  --ink:    #0D0D1A;
-  --muted:  #64748B;
-  --subtle: #94A3B8;
-  --border: #E2E8F0;
-  --bg:     #F8F7FF;
-  --white:  #FFFFFF;
-  --off:    #F5F3FF;
-  --ff:     'Sora', sans-serif;
-  --ffb:    'DM Sans', sans-serif;
-  --shadow: 0 2px 16px rgba(45,27,105,.08);
+  --brand:#2D1B69; --brand2:#4C2FAA; --brand3:#7C5CDB;
+  --accent:#06B6D4; --green:#10B981; --amber:#F59E0B;
+  --ink:#0D0D1A; --muted:#64748B; --subtle:#94A3B8;
+  --border:#E2E8F0; --bg:#F5F5F3; --white:#fff; --off:#F5F3FF;
+  --ff:'Sora',sans-serif; --ffb:'DM Sans',sans-serif;
+  --shadow:0 2px 16px rgba(45,27,105,.08);
+  --primary:#534AB7; --primary-lt:#EEEDFE; --primary-text:#3C3489;
+  --teal:#1D9E75; --card-r:12px; --chip-r:8px;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-body { font-family: var(--ffb); background: var(--bg); color: var(--ink); min-height: 100vh; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--ffb);background:var(--bg);color:var(--ink);min-height:100vh;font-size:13px}
 
-/* ── NAVBAR ── */
-.nav { position: sticky; top: 0; z-index: 200; background: rgba(255,255,255,.94); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 58px; }
-.nav-logo { font-family: var(--ff); font-size: 20px; font-weight: 800; color: var(--brand); text-decoration: none; letter-spacing: -.3px; }
-.nav-logo span { color: var(--brand3); }
-.nav-links { display: flex; align-items: center; gap: 4px; }
-.nav-link { padding: 6px 13px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--muted); text-decoration: none; transition: .15s; }
-.nav-link:hover { color: var(--brand); background: var(--off); }
-.nav-link.active { color: var(--brand); background: var(--off); }
-.nav-right { display: flex; align-items: center; gap: 8px; }
-.nav-btn { padding: 7px 16px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: var(--ffb); text-decoration: none; transition: .15s; }
-.nav-btn.ghost { border: 1.5px solid var(--border); background: none; color: var(--ink); }
-.nav-btn.ghost:hover { border-color: var(--brand); color: var(--brand); }
-.nav-btn.solid { background: var(--brand); color: #fff; border: none; }
-.nav-btn.solid:hover { filter: brightness(1.1); }
-
-/* ── PAGE HEADER ── */
-.page-header {
-  background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 60%, #3B4DE8 100%);
-  padding: 44px 24px 40px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-.page-header::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M0 0h40v40H0V0zm40 40h40v40H40V40zm0-40h2l-2 2V0zm0 4l4-4h2l-6 6V4zm0 4l8-8h2L40 10V8zm0 4L52 0h2L40 14v-2zm0 4L56 0h2L40 18v-2zm0 4L60 0h2L40 22v-2zm0 4L64 0h2L40 26v-2zm0 4L68 0h2L40 30v-2zm0 4L72 0h2L40 34v-2zm0 4L76 0h2L40 38v-2zm0 4L80 0v2L42 40h-2zm4 0L80 4v2L46 40h-2zm4 0L80 8v2L50 40h-2zm4 0L80 12v2L54 40h-2zm4 0L80 16v2L58 40h-2zm4 0L80 20v2L62 40h-2zm4 0L80 24v2L66 40h-2zm4 0L80 28v2L70 40h-2zm4 0L80 32v2L74 40h-2zm4 0L80 36v2L78 40h-2zm4 0L80 40v-2h-2l2-2zM0 0h2L0 2V0zm4 0h2L0 6V4zm4 0h2L0 10V8zm4 0h2L0 14v-2zm4 0h2L0 18v-2zm4 0h2L0 22v-2zm4 0h2L0 26v-2zm4 0h2L0 30v-2zm4 0h2L0 34v-2zm4 0h2L0 38v-2zm4 0h2L0 42v-2zm4 0h2L0 46v-2z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
-.page-header-inner { position: relative; z-index: 1; max-width: 620px; margin: 0 auto; }
-.page-header h1 { font-family: var(--ff); font-size: 30px; font-weight: 800; color: #fff; margin-bottom: 10px; letter-spacing: -.5px; }
-.page-header p { font-size: 14.5px; color: rgba(255,255,255,.8); line-height: 1.7; margin-bottom: 22px; }
-.ask-hero-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 26px; background: #fff; color: var(--brand); border: none; border-radius: 12px; font-family: var(--ff); font-size: 14px; font-weight: 700; cursor: pointer; transition: .2s; box-shadow: 0 4px 20px rgba(0,0,0,.15); }
-.ask-hero-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,.2); }
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:58px}
+.nav-logo{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--brand);text-decoration:none}
+.nav-logo span{color:var(--brand3)}
+.nav-links{display:flex;align-items:center;gap:2px}
+.nav-link{padding:6px 12px;border-radius:8px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:.15s;border:none;background:none;cursor:pointer;font-family:var(--ffb)}
+.nav-link:hover,.nav-link.active{color:var(--brand);background:var(--off)}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nbtn{padding:7px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--ffb);text-decoration:none;transition:.15s;display:inline-flex;align-items:center}
+.nbtn.ghost{border:1.5px solid var(--border);background:none;color:var(--ink)}
+.nbtn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.nbtn.solid{background:var(--brand);color:#fff;border:none}
+.nbtn.solid:hover{filter:brightness(1.1)}
+#nav-guest,#nav-user{display:none}
 
 /* ── LAYOUT ── */
-.page-body { max-width: 1080px; margin: 0 auto; padding: 28px 20px 80px; display: grid; grid-template-columns: 1fr 280px; gap: 24px; }
-@media(max-width:760px){ .page-body{grid-template-columns:1fr} .sidebar{display:none} }
+.page-wrap{max-width:1200px;margin:0 auto;padding:20px 16px;display:grid;grid-template-columns:200px 1fr 220px;gap:16px;align-items:start}
+@media(max-width:1024px){.page-wrap{grid-template-columns:180px 1fr}}
+@media(max-width:768px){.page-wrap{grid-template-columns:1fr}.sidebar-right{display:none}.sidebar-left{display:none}}
 
-/* ── TAG FILTER BAR ── */
-.tag-bar { display: flex; gap: 7px; flex-wrap: nowrap; overflow-x: auto; margin-bottom: 18px; padding-bottom: 4px; }
-.tag-bar::-webkit-scrollbar { height: 3px; }
-.tag-bar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-.tag-chip { padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); transition: .15s; white-space: nowrap; flex-shrink: 0; }
-.tag-chip:hover { border-color: var(--brand); color: var(--brand); }
-.tag-chip.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+/* ── CARDS ── */
+.card{background:var(--white);border-radius:var(--card-r);border:0.5px solid rgba(0,0,0,.1);padding:16px}
 
-/* ── SORT BAR ── */
-.sort-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 8px; }
-.sort-label { font-size: 13px; color: var(--muted); font-weight: 500; }
-.sort-btns { display: flex; gap: 6px; }
-.sort-btn { padding: 5px 13px; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); transition: .15s; font-family: var(--ffb); }
-.sort-btn.active { background: var(--off); color: var(--brand); border-color: var(--brand3); }
-.sort-btn:hover { border-color: var(--brand); color: var(--brand); }
+/* ── LEFT SIDEBAR ── */
+.sidebar-left{display:flex;flex-direction:column;gap:12px;position:sticky;top:74px}
+.topic-list{display:flex;flex-direction:column;gap:2px;margin-top:6px}
+.topic-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;cursor:pointer;transition:.15s;font-size:13px;font-weight:500;color:var(--muted);border:none;background:none;width:100%;text-align:left;font-family:var(--ffb)}
+.topic-item:hover{background:var(--off);color:var(--brand)}
+.topic-item.active{background:var(--off);color:var(--brand);font-weight:600}
+.topic-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.anon-toggle{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border);margin-top:8px}
+.anon-label{font-size:12px;font-weight:500;color:var(--ink)}
+.toggle-sw{position:relative;width:36px;height:20px;cursor:pointer}
+.toggle-sw input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:#CBD5E1;border-radius:10px;transition:.2s}
+.toggle-sw input:checked~.toggle-track{background:var(--primary)}
+.toggle-knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle-sw input:checked~.toggle-knob{left:18px}
+/* Career Score Widget */
+.score-widget{margin-top:4px}
+.score-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.score-num{font-family:var(--ff);font-size:24px;font-weight:800;color:var(--primary)}
+.score-level{font-size:11px;font-weight:600;color:var(--primary);background:var(--primary-lt);padding:2px 8px;border-radius:20px}
+.score-bar-bg{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.score-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--brand3));border-radius:3px;transition:width .5s}
+.score-hint{font-size:11px;color:var(--muted);margin-top:5px}
+
+/* ── CENTER ── */
+.center-col{display:flex;flex-direction:column;gap:12px}
+/* Compose */
+.compose-box{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--white);border-radius:var(--card-r);border:0.5px solid rgba(0,0,0,.1);cursor:pointer;transition:.15s}
+.compose-box:hover{border-color:var(--primary)}
+.compose-av{width:34px;height:34px;border-radius:50%;background:var(--primary-lt);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--primary);flex-shrink:0}
+.compose-placeholder{flex:1;color:var(--subtle);font-size:13px}
+.compose-btn{padding:6px 14px;background:var(--primary);color:#fff;border:none;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;font-family:var(--ffb)}
+/* Sort chips */
+.sort-row{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none}
+.sort-row::-webkit-scrollbar{display:none}
+.sort-chip{padding:6px 13px;border-radius:var(--chip-r);font-size:12px;font-weight:500;cursor:pointer;border:1.5px solid var(--border);background:var(--white);color:var(--muted);white-space:nowrap;transition:.15s;font-family:var(--ffb)}
+.sort-chip:hover{border-color:var(--primary);color:var(--primary)}
+.sort-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+/* Post count */
+.feed-meta{font-size:12px;color:var(--muted);padding:2px 0}
 
 /* ── POST CARD ── */
-.post-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px 20px; margin-bottom: 12px; cursor: pointer; transition: .2s; position: relative; }
-.post-card:hover { border-color: var(--brand3); box-shadow: var(--shadow); transform: translateY(-1px); }
-.post-card.expanded { border-color: var(--brand); box-shadow: 0 4px 24px rgba(45,27,105,.12); transform: none; cursor: default; }
-.post-top { display: flex; align-items: flex-start; gap: 12px; }
-.post-vote { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
-.vote-btn { width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--white); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: .15s; color: var(--muted); }
-.vote-btn:hover { border-color: var(--brand); color: var(--brand); background: var(--off); }
-.vote-btn.voted { background: var(--brand); border-color: var(--brand); color: #fff; }
-.vote-count { font-family: var(--ff); font-size: 13px; font-weight: 800; color: var(--ink); }
-.post-body { flex: 1; min-width: 0; }
-.post-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 7px; }
-.post-tag { padding: 2px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-.post-title { font-family: var(--ff); font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 6px; line-height: 1.4; }
-.post-body-text { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 10px; display: none; }
-.post-body-text.show { display: block; }
-.post-meta { display: flex; align-items: center; gap: 12px; font-size: 11.5px; color: var(--subtle); flex-wrap: wrap; }
-.post-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--subtle); flex-shrink: 0; }
-.post-av { width: 20px; height: 20px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; color: #fff; flex-shrink: 0; }
-.post-author { font-weight: 600; color: var(--muted); }
-.answer-count { display: inline-flex; align-items: center; gap: 4px; font-weight: 600; color: var(--green); }
-.unanswered-badge { font-size: 10.5px; font-weight: 700; color: var(--amber); background: #FEF9C3; border-radius: 5px; padding: 2px 7px; }
+.post-card{background:var(--white);border-radius:var(--card-r);border:0.5px solid rgba(0,0,0,.1);padding:16px;transition:.15s;cursor:pointer}
+.post-card:hover{border-color:rgba(83,74,183,.3);box-shadow:0 2px 12px rgba(83,74,183,.08)}
+.post-card.expanded{border-color:rgba(83,74,183,.3)}
+.post-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.post-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+.post-meta{flex:1;min-width:0}
+.post-author{font-size:12px;font-weight:500;color:var(--ink)}
+.post-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.post-time{font-size:11px;color:var(--subtle);flex-shrink:0}
+.tags-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.tag-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:500}
+.hot-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:5px;font-size:11px;font-weight:600;background:#FEF3C7;color:#B45309}
+.post-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:6px;line-height:1.4}
+.post-body{font-size:13px;color:var(--muted);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.post-body.expanded-body{display:block;-webkit-line-clamp:unset}
+/* Bexi reply box */
+.bexi-box{background:var(--primary-lt);border-radius:8px;padding:12px 14px;margin-top:10px;border:0.5px solid rgba(83,74,183,.2)}
+.bexi-label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:600;color:var(--primary-text);margin-bottom:6px}
+.bexi-label span{background:var(--primary);color:#fff;border-radius:4px;padding:1px 6px;font-size:10px}
+.bexi-text{font-size:13px;color:var(--primary-text);line-height:1.6}
+.bexi-pending{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);margin-top:8px;font-style:italic}
+/* Action row */
+.post-actions{display:flex;align-items:center;gap:4px;margin-top:12px;padding-top:10px;border-top:0.5px solid var(--border)}
+.action-btn{display:flex;align-items:center;gap:5px;padding:5px 9px;border-radius:7px;border:none;background:none;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;font-family:var(--ffb);transition:.15s}
+.action-btn:hover{background:var(--off);color:var(--brand)}
+.action-btn.voted{color:var(--primary);background:var(--primary-lt)}
+.action-btn.upvote svg,.action-btn.voted svg{fill:currentColor}
+.action-sep{flex:1}
+.mentor-btn{padding:5px 12px;border-radius:7px;border:1.5px solid var(--primary);background:none;font-size:12px;font-weight:500;color:var(--primary);cursor:pointer;font-family:var(--ffb);transition:.15s}
+.mentor-btn:hover{background:var(--primary);color:#fff}
+/* Replies section */
+.replies-section{margin-top:14px;border-top:0.5px solid var(--border);padding-top:14px}
+.reply-item{padding:10px 12px;background:#F8F7FF;border-radius:8px;margin-bottom:8px}
+.reply-item.bexi-reply{background:var(--primary-lt)}
+.reply-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.reply-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#fff}
+.reply-author{font-size:12px;font-weight:500}
+.reply-time{font-size:11px;color:var(--muted);margin-left:auto}
+.reply-body{font-size:13px;color:var(--ink);line-height:1.6}
+.add-reply-row{display:flex;gap:8px;margin-top:10px;align-items:flex-start}
+.reply-input{flex:1;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:var(--ffb);outline:none;resize:none;min-height:70px;transition:.15s}
+.reply-input:focus{border-color:var(--primary)}
+.reply-submit-btn{padding:8px 16px;background:var(--primary);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--ffb);white-space:nowrap;transition:.15s}
+.reply-submit-btn:hover{filter:brightness(1.1)}
+/* Load more */
+.load-more-btn{width:100%;padding:12px;background:var(--white);border:1.5px solid var(--border);border-radius:var(--card-r);font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;font-family:var(--ffb);transition:.15s}
+.load-more-btn:hover{border-color:var(--primary);color:var(--primary)}
 
-/* ── ANSWERS SECTION (inline expanded) ── */
-.answers-section { margin-top: 16px; border-top: 1px solid var(--border); padding-top: 14px; display: none; }
-.answers-section.show { display: block; }
-.answer-card { padding: 14px; border-radius: 10px; margin-bottom: 10px; border: 1.5px solid var(--border); background: var(--bg); }
-.answer-card.bexi { background: linear-gradient(135deg,rgba(45,27,105,.04),rgba(6,182,212,.04)); border-color: rgba(45,27,105,.15); }
-.answer-top { display: flex; align-items: center; gap: 9px; margin-bottom: 8px; }
-.answer-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; color: #fff; flex-shrink: 0; }
-.answer-author { font-size: 12.5px; font-weight: 700; color: var(--ink); }
-.answer-time { font-size: 11px; color: var(--subtle); margin-left: auto; }
-.bexi-badge { font-size: 10px; font-weight: 800; background: var(--brand); color: #fff; border-radius: 5px; padding: 2px 7px; }
-.answer-text { font-size: 13px; color: var(--ink); line-height: 1.7; }
-.answer-vote-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
-.ans-vote-btn { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border: 1px solid var(--border); border-radius: 6px; font-size: 11.5px; font-weight: 600; cursor: pointer; background: var(--white); color: var(--muted); transition: .15s; font-family: var(--ffb); }
-.ans-vote-btn:hover { border-color: var(--brand); color: var(--brand); }
-.ans-vote-btn.voted { background: var(--off); border-color: var(--brand3); color: var(--brand); }
+/* ── RIGHT SIDEBAR ── */
+.sidebar-right{display:flex;flex-direction:column;gap:12px;position:sticky;top:74px}
+.sidebar-title{font-size:12px;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.trending-item{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border);cursor:pointer}
+.trending-item:last-child{border-bottom:none}
+.trending-tag{font-size:13px;font-weight:500;color:var(--ink)}
+.trending-count{font-size:11px;color:var(--muted);background:var(--bg);padding:2px 7px;border-radius:10px}
+/* Mentor online */
+.mentor-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.mentor-row:last-of-type{border-bottom:none}
+.mentor-av-wrap{position:relative;flex-shrink:0}
+.mentor-av-sm{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff}
+.online-dot{position:absolute;bottom:0;right:0;width:9px;height:9px;border-radius:50%;background:var(--teal);border:2px solid #fff}
+.mentor-info{flex:1;min-width:0}
+.mentor-name{font-size:12px;font-weight:500;color:var(--ink)}
+.mentor-role{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.browse-btn{width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;background:none;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;font-family:var(--ffb);margin-top:8px;transition:.15s}
+.browse-btn:hover{border-color:var(--primary);color:var(--primary)}
+/* Salary pulse */
+.salary-pulse{background:linear-gradient(135deg,var(--primary),var(--brand3));border-radius:var(--card-r);padding:14px;color:#fff}
+.sp-role{font-size:11px;font-weight:500;opacity:.8;margin-bottom:4px}
+.sp-city{font-size:11px;opacity:.7}
+.sp-lpa{font-family:var(--ff);font-size:26px;font-weight:800;line-height:1;margin:6px 0 2px}
+.sp-change{font-size:11px;font-weight:500;color:#86EFAC}
+.sp-link{display:block;margin-top:10px;padding:6px 12px;background:rgba(255,255,255,.15);border-radius:7px;text-align:center;font-size:12px;font-weight:500;color:#fff;text-decoration:none;transition:.15s}
+.sp-link:hover{background:rgba(255,255,255,.25)}
+/* Community stats */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+.stat-box{background:var(--bg);border-radius:8px;padding:10px;text-align:center}
+.stat-val{font-family:var(--ff);font-size:18px;font-weight:800;color:var(--primary)}
+.stat-lbl{font-size:10px;color:var(--muted);margin-top:2px}
 
-/* ── ADD ANSWER ── */
-.add-answer-wrap { margin-top: 12px; }
-.add-answer-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 10px; padding: 11px 13px; font-size: 13px; font-family: var(--ffb); color: var(--ink); resize: vertical; min-height: 80px; outline: none; transition: .15s; }
-.add-answer-textarea:focus { border-color: var(--brand); background: #fff; }
-.add-answer-row { display: flex; align-items: center; justify-content: space-between; margin-top: 8px; flex-wrap: wrap; gap: 8px; }
-.add-answer-hint { font-size: 11.5px; color: var(--subtle); }
-.add-answer-btn { padding: 8px 18px; background: var(--brand); color: #fff; border: none; border-radius: 9px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: var(--ff); transition: .15s; }
-.add-answer-btn:hover { filter: brightness(1.1); }
-.add-answer-btn:disabled { opacity: .6; cursor: not-allowed; }
-.login-prompt { background: var(--off); border-radius: 10px; padding: 13px 16px; font-size: 13px; color: var(--muted); display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
-.login-prompt a { font-weight: 700; color: var(--brand); text-decoration: none; }
-
-/* ── EMPTY / LOADING ── */
-.feed-empty { text-align: center; padding: 60px 20px; color: var(--muted); }
-.feed-empty-icon { font-size: 48px; margin-bottom: 14px; }
-.feed-empty-title { font-family: var(--ff); font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-.feed-loading { display: flex; flex-direction: column; gap: 12px; }
-.skel-card { height: 110px; border-radius: 14px; background: linear-gradient(90deg,#E2E8F0 25%,#EEF0F8 50%,#E2E8F0 75%); background-size: 200% 100%; animation: shimmer 1.4s infinite; }
-@keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
-
-/* ── ASK MODAL ── */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.show { display: flex; }
-.modal-box { background: var(--white); border-radius: 20px; padding: 28px 28px 24px; width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
-.modal-title { font-family: var(--ff); font-size: 18px; font-weight: 800; color: var(--ink); margin-bottom: 18px; }
-.modal-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
-.modal-label { font-size: 11.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
-.modal-inp { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 13px; font-size: 14px; font-family: var(--ffb); color: var(--ink); outline: none; transition: .15s; }
-.modal-inp:focus { border-color: var(--brand); }
-.modal-textarea { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 13px; font-size: 13.5px; font-family: var(--ffb); color: var(--ink); resize: vertical; min-height: 100px; outline: none; transition: .15s; }
-.modal-textarea:focus { border-color: var(--brand); }
-.modal-tags-grid { display: flex; flex-wrap: wrap; gap: 7px; }
-.modal-tag-opt { padding: 6px 14px; border-radius: 20px; font-size: 12.5px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--white); color: var(--muted); transition: .15s; user-select: none; }
-.modal-tag-opt.selected { background: var(--brand); color: #fff; border-color: var(--brand); }
-.modal-btns { display: flex; gap: 10px; margin-top: 18px; }
-.modal-cancel { flex: 1; padding: 11px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: var(--ffb); background: var(--white); color: var(--muted); }
-.modal-submit { flex: 2; padding: 11px; background: var(--brand); color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--ff); transition: .15s; }
-.modal-submit:hover { filter: brightness(1.1); }
-.modal-submit:disabled { opacity: .6; cursor: not-allowed; }
-.char-count { font-size: 11px; color: var(--subtle); text-align: right; margin-top: 3px; }
-
-/* ── SIDEBAR ── */
-.sidebar { display: flex; flex-direction: column; gap: 16px; }
-.side-card { background: var(--white); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px 18px; }
-.side-card-title { font-family: var(--ff); font-size: 13px; font-weight: 800; color: var(--brand); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 12px; }
-.side-stat-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
-.side-stat-row:last-child { border-bottom: none; }
-.side-stat-num { font-family: var(--ff); font-weight: 800; color: var(--brand); }
-.side-rule { font-size: 12.5px; color: var(--muted); line-height: 1.65; display: flex; gap: 8px; margin-bottom: 8px; }
-.side-rule:last-child { margin-bottom: 0; }
-.side-rule-icon { flex-shrink: 0; }
-.trending-item { padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 13px; cursor: pointer; transition: .15s; line-height: 1.4; }
-.trending-item:last-child { border-bottom: none; }
-.trending-item:hover { color: var(--brand); }
-.trending-tag { font-size: 10.5px; font-weight: 700; margin-bottom: 2px; }
+/* ── MODALS ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--white);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;padding:24px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-family:var(--ff);font-size:18px;font-weight:700;color:var(--ink)}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--bg);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:.15s}
+.modal-close:hover{background:var(--border)}
+.modal-label{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:6px;margin-top:16px}
+.modal-label:first-of-type{margin-top:0}
+.modal-input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:var(--ffb);outline:none;transition:.15s;color:var(--ink)}
+.modal-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(83,74,183,.08)}
+.modal-textarea{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:var(--ffb);outline:none;resize:vertical;min-height:120px;transition:.15s;color:var(--ink)}
+.modal-textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(83,74,183,.08)}
+.modal-char{font-size:11px;color:var(--muted);text-align:right;margin-top:3px}
+.modal-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.modal-tag{padding:6px 12px;border-radius:7px;border:1.5px solid var(--border);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--ffb);color:var(--muted);transition:.15s}
+.modal-tag:hover{border-color:var(--primary);color:var(--primary)}
+.modal-tag.sel{background:var(--primary);color:#fff;border-color:var(--primary)}
+.modal-anon-row{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg);border-radius:9px;margin-top:16px}
+.modal-anon-label{font-size:13px;font-weight:500;color:var(--ink)}
+.modal-anon-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.modal-cancel-btn{padding:10px 20px;border:1.5px solid var(--border);border-radius:9px;background:none;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--ffb);color:var(--muted)}
+.modal-cancel-btn:hover{border-color:var(--ink);color:var(--ink)}
+.modal-post-btn{padding:10px 24px;background:var(--primary);color:#fff;border:none;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.15s}
+.modal-post-btn:hover{filter:brightness(1.1)}
+.modal-post-btn:disabled{opacity:.5;cursor:not-allowed}
 
 /* ── TOAST ── */
-.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1A0F40; color: #fff; padding: 11px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; opacity: 0; transition: .3s; z-index: 999; white-space: nowrap; pointer-events: none; }
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:#1a1a2e;color:#fff;padding:12px 24px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;opacity:0;transition:.3s;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 
-/* ── LOAD MORE ── */
-.load-more-btn { width: 100%; padding: 12px; background: var(--white); border: 1.5px solid var(--border); border-radius: 12px; font-size: 13.5px; font-weight: 600; cursor: pointer; font-family: var(--ffb); color: var(--muted); transition: .15s; margin-top: 8px; }
-.load-more-btn:hover { border-color: var(--brand); color: var(--brand); }
-.nav-in{max-width:var(--max);width:100%;margin:0 auto;display:flex;align-items:center;gap:0}
-.nlogo{font-family:var(--ff);font-size:21px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.4px;margin-right:36px;flex-shrink:0}
-.nlogo span{color:var(--accent)}
-.nlinks{display:flex;align-items:center;gap:2px;flex:1;list-style:none}
-.nlinks li{position:relative}
-.nav-link{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);cursor:pointer;text-decoration:none;background:none;border:none;font-family:var(--ffb);display:flex;align-items:center;gap:4px;transition:.15s}
-.nav-link:hover{color:var(--brand);background:var(--off)}
-.nav-link svg{width:11px;height:11px;transition:transform .2s}
-.nav-link.dd-open svg{transform:rotate(180deg)}
-.dd-panel{position:absolute;top:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);padding:8px;min-width:250px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:200}
-.dd-panel.open{opacity:1;pointer-events:all;transform:translateY(0)}
-.dd-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:10px;cursor:pointer;text-decoration:none;transition:.15s;color:var(--ink2)}
-.dd-item:hover{background:var(--off)}
-.dd-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.dd-text strong{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-bottom:1px}
-.dd-text span{font-size:11.5px;color:var(--muted)}
-.nbtns{display:flex;align-items:center;gap:8px;margin-left:auto}
-.nghost{padding:7px 16px;border-radius:8px;border:1.5px solid var(--border2);background:transparent;color:var(--ink2);font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.15s}
-.nghost:hover{border-color:var(--brand);color:var(--brand)}
-.nfill{padding:8px 20px;border-radius:8px;border:none;background:var(--brand);color:#fff;font-size:13.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s}
-.nfill:hover{background:var(--brand2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(45,27,105,.3)}
-.nav-user-wrap{position:relative;display:none;margin-left:auto}
-.nav-user-btn{display:inline-flex;align-items:center;gap:10px;padding:5px 16px 5px 5px;border-radius:50px;border:2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,var(--brand),var(--accent)) border-box;cursor:pointer;font-family:var(--ffb);transition:.2s;font-size:14.5px;font-weight:600}
-.nav-user-btn:hover{background:linear-gradient(var(--off),var(--off)) padding-box,linear-gradient(135deg,var(--brand),var(--accent)) border-box;box-shadow:0 4px 16px rgba(45,27,105,.15)}
-.nav-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:-.5px;box-shadow:0 2px 8px rgba(45,27,105,.3)}
-.nav-nm{font-size:14.5px;font-weight:700;background:linear-gradient(135deg,var(--brand),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.nav-user-btn svg{width:11px;height:11px;color:var(--subtle);transition:transform .2s}
-.nav-user-btn.dd-open svg{transform:rotate(180deg)}
-.user-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-lg);min-width:210px;padding:6px;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity .2s,transform .2s;z-index:500}
-.user-dropdown.open{opacity:1;pointer-events:all;transform:translateY(0)}
-.ud-header{padding:10px 12px;border-bottom:1px solid var(--off2);margin-bottom:4px}
-.ud-name{font-size:13px;font-weight:700;color:var(--ink)}
-.ud-email{font-size:11px;color:var(--subtle);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ud-item{display:flex;align-items:center;gap:9px;padding:9px 12px;border-radius:8px;font-size:13px;color:var(--ink2);cursor:pointer;text-decoration:none;transition:.15s;border:none;background:none;width:100%;font-family:var(--ffb);text-align:left}
-.ud-item:hover{background:var(--off);color:var(--brand)}
-.ud-item svg{width:14px;height:14px;flex-shrink:0;color:var(--subtle)}
-.ud-divider{height:1px;background:var(--off2);margin:4px 0}
-.nav-hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;border-radius:8px;border:none;background:none;margin-left:auto}
-.nav-hamburger span{display:block;width:22px;height:2px;background:var(--ink);border-radius:2px;transition:.3s}
-.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.nav-hamburger.open span:nth-child(2){opacity:0}
-.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-.mobile-menu{display:none;position:fixed;top:64px;left:0;right:0;bottom:0;background:#fff;z-index:800;padding:24px 5%;overflow-y:auto}
-.mobile-menu.open{display:block}
-.mm-link{display:block;padding:14px 0;font-size:16px;font-weight:500;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--border)}
-.mm-link:last-child{border-bottom:none}
-.mm-btns{display:flex;flex-direction:column;gap:10px;margin-top:24px}
-.nlinks{display:none}
-.nbtns{display:none}
-.nav-hamburger{display:flex}
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px}
+
+/* ── SPINNER ── */
+.spinner{width:24px;height:24px;border:2.5px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;margin:40px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── LOGIN REQUIRED BANNER ── */
+.login-banner{background:var(--primary-lt);border:1px solid rgba(83,74,183,.2);border-radius:9px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:var(--primary-text)}
+.login-banner a{color:var(--primary);font-weight:600;text-decoration:none}
 </style>
-<meta name="theme-color" content="#2D1B69"/>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav id="main-nav">
-  <div class="nav-in">
-    <a href="index.html" class="nlogo">Belong<span>ix</span></a>
-    <ul class="nlinks">
-      <li>
-        <button class="nav-link" onclick="toggleDD('dd-platform',this)">
-          Platform <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
-        </button>
-        <div class="dd-panel" id="dd-platform">
-          <a class="dd-item" href="dashboard.html?page=jobs"><div class="dd-icon" style="background:#EEF0FF">💼</div><div class="dd-text"><strong>Job Board</strong><span>Live listings, apply instantly</span></div></a>
-          <a class="dd-item" href="dashboard.html?page=salary"><div class="dd-icon" style="background:#ECFDF5">💰</div><div class="dd-text"><strong>Salary Intelligence</strong><span>Know your market worth</span></div></a>
-          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF7ED">🤖</div><div class="dd-text"><strong>Bexi AI Guide</strong><span>24/7 career guidance</span></div></a>
-          <a class="dd-item" href="dashboard.html?page=overview"><div class="dd-icon" style="background:#FFF1F2">📊</div><div class="dd-text"><strong>Career Score</strong><span>Track your professional growth</span></div></a>
-          <a class="dd-item" href="resume-builder.html"><div class="dd-icon" style="background:#F0F0FF">📄</div><div class="dd-text"><strong>Resume Builder</strong><span>ATS-optimised, AI-enhanced</span></div></a>
-          <a class="dd-item" href="post-job.html"><div class="dd-icon" style="background:#FFF0E8">🏢</div><div class="dd-text"><strong>For Recruiters</strong><span>Post jobs, find talent</span></div></a>
-        </div>
-      </li>
-      <li>
-        <button class="nav-link" onclick="toggleDD('dd-who',this)">
-          It's For You <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
-        </button>
-        <div class="dd-panel" id="dd-who">
-          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>College Students</strong><span>Internships, placements, career score</span></div></a>
-          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#ECFDF5">🌱</div><div class="dd-text"><strong>Fresh Graduates</strong><span>First job, resume, salary benchmarks</span></div></a>
-          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#FFF7ED">💼</div><div class="dd-text"><strong>Working Professionals</strong><span>Upskill, negotiate, grow</span></div></a>
-          <a class="dd-item" href="javascript:void(0)" onclick="scrollToForWho()"><div class="dd-icon" style="background:#FFF1F2">🔄</div><div class="dd-text"><strong>Career Changers</strong><span>Switch fields with mentor support</span></div></a>
-        </div>
-      </li>
-      <li>
-        <button class="nav-link" onclick="toggleDD('dd-learn',this)">
-          Learn <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
-        </button>
-        <div class="dd-panel" id="dd-learn">
-          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#EEF0FF">🎓</div><div class="dd-text"><strong>Upskilling Hub</strong><span>150+ curated courses</span></div></a>
-          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#F5F3FF">🏆</div><div class="dd-text"><strong>Certifications</strong><span>AWS, Google, Microsoft</span></div></a>
-          <a class="dd-item" href="dashboard.html?page=upskill"><div class="dd-icon" style="background:#FFF1F2">🎯</div><div class="dd-text"><strong>DSA &amp; Interview Prep</strong><span>Crack FAANG &amp; top startups</span></div></a>
-        </div>
-      </li>
-      <li><a class="nav-link" href="mentors.html">Mentors</a></li>
-      <li><a class="nav-link" href="community.html" style="display:flex;align-items:center;gap:5px;color:var(--brand);font-weight:700;background:var(--off)">Community <span style="font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 5px">NEW</span></a></li>
-      <li><a class="nav-link" href="mentors.html#become-mentor" style="display:flex;align-items:center;gap:5px">🌟 Become a Mentor</a></li>
-      <li><a class="nav-link" href="about.html">About</a></li>
-    </ul>
-    <div class="nbtns" id="nav-out" style="display:none">
-      <button class="nghost" onclick="openModal('signin')">Sign In</button>
-      <button class="nfill" onclick="openModal('signup')">Join Free <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
+  <div class="nav-links">
+    <a href="dashboard.html?page=jobs" class="nav-link">Jobs</a>
+    <a href="mentors.html" class="nav-link">Mentors</a>
+    <a href="community.html" class="nav-link active">Community</a>
+    <a href="mentors.html#become-mentor" class="nav-link">Become a Mentor</a>
+  </div>
+  <div class="nav-right">
+    <div id="nav-guest" style="display:none;align-items:center;gap:8px">
+      <a href="index.html" class="nbtn ghost">Sign In</a>
+      <a href="index.html" class="nbtn solid">Join Free →</a>
     </div>
-    <div class="nav-user-wrap" id="nav-in" style="display:none">
-      <button class="nav-user-btn" id="nav-user-btn">
-        <div class="nav-av" id="nav-av">?</div>
-        <span class="nav-nm" id="nav-nm">Hi...</span>
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 9l-7 7-7-7"/></svg>
-      </button>
-      <div class="user-dropdown" id="user-dd">
-        <div class="ud-header"><div class="ud-name" id="ud-name">User</div><div class="ud-email" id="ud-email"></div></div>
-        <a class="ud-item" href="dashboard.html"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
-        <a class="ud-item" href="dashboard.html?page=profile"><svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>My Profile</a>
-        <div class="ud-divider"></div>
-        <button class="ud-item" onclick="doSignOut()" style="color:#EF4444"><svg fill="none" viewBox="0 0 24 24" stroke="#EF4444" stroke-width="1.8"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>Sign Out</button>
+    <div id="nav-user" style="display:none;align-items:center;gap:10px">
+      <a href="dashboard.html" class="nbtn ghost">Dashboard</a>
+      <div style="position:relative">
+        <button id="nav-av" onclick="document.getElementById('nav-dd').style.display=document.getElementById('nav-dd').style.display==='block'?'none':'block'" style="width:36px;height:36px;border-radius:50%;background:var(--primary);color:#fff;border:none;cursor:pointer;font-weight:600;font-size:13px;display:flex;align-items:center;justify-content:center">?</button>
+        <div id="nav-dd" style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:#fff;border-radius:12px;border:1px solid var(--border);box-shadow:var(--shadow);min-width:180px;overflow:hidden;z-index:300">
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border)">
+            <div style="font-weight:600;font-size:13px" id="nav-name">User</div>
+            <div style="font-size:11px;color:var(--muted)" id="nav-email"></div>
+          </div>
+          <a href="dashboard.html" style="display:block;padding:10px 16px;font-size:13px;color:var(--ink);text-decoration:none;transition:.15s" onmouseover="this.style.background='var(--off)'" onmouseout="this.style.background=''">Dashboard</a>
+          <a href="dashboard.html?page=profile" style="display:block;padding:10px 16px;font-size:13px;color:var(--ink);text-decoration:none;transition:.15s" onmouseover="this.style.background='var(--off)'" onmouseout="this.style.background=''">My Profile</a>
+          <div style="height:1px;background:var(--border);margin:4px 0"></div>
+          <button onclick="doSignOut()" style="display:block;width:100%;padding:10px 16px;font-size:13px;color:#EF4444;background:none;border:none;cursor:pointer;text-align:left;font-family:var(--ffb)">Sign Out</button>
+        </div>
       </div>
     </div>
-    <button class="nav-hamburger" id="hamburger" onclick="toggleMobileMenu()">
-      <span></span><span></span><span></span>
-    </button>
   </div>
 </nav>
 
-<!-- Mobile menu -->
-<div class="mobile-menu" id="mobile-menu">
-  <a class="mm-link" href="dashboard.html?page=jobs">Job Board</a>
-  <a class="mm-link" href="dashboard.html?page=salary">Salary Intelligence</a>
-  <a class="mm-link" href="dashboard.html?page=overview">Bexi AI Guide</a>
-  <a class="mm-link" href="dashboard.html?page=upskill">Upskilling Hub</a>
-  <a class="mm-link" href="mentors.html">Mentors</a>
-  <a class="mm-link" href="community.html">Community 🆕</a>
-  <a class="mm-link" href="mentors.html#become-mentor">🌟 Become a Mentor</a>
-  <a class="mm-link" href="about.html">About</a>
-  <div class="mm-btns">
-    <button class="nghost" style="width:100%;text-align:center" onclick="openModal('signin');toggleMobileMenu()">Sign In</button>
-    <button class="nfill" style="width:100%;text-align:center;padding:12px" onclick="openModal('signup');toggleMobileMenu()">Join Free <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
-  </div>
+<!-- MAIN LAYOUT -->
+<div class="page-wrap">
+
+  <!-- LEFT SIDEBAR -->
+  <aside class="sidebar-left">
+    <!-- Topics -->
+    <div class="card">
+      <div style="font-size:12px;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:.5px">Topics</div>
+      <div class="topic-list" id="topic-list"></div>
+      <!-- Anon toggle -->
+      <div class="anon-toggle">
+        <div>
+          <div class="anon-label">Post anonymously</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:1px">Hides your name</div>
+        </div>
+        <label class="toggle-sw">
+          <input type="checkbox" id="anon-toggle-inp" onchange="toggleAnon(this.checked)">
+          <div class="toggle-track"></div>
+          <div class="toggle-knob"></div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Career Score -->
+    <div class="card" id="score-widget" style="display:none">
+      <div style="font-size:12px;font-weight:600;color:var(--ink);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Career Score</div>
+      <div class="score-row">
+        <div class="score-num" id="score-val">30</div>
+        <div class="score-level" id="score-level">Level 1</div>
+      </div>
+      <div class="score-bar-bg"><div class="score-bar-fill" id="score-bar" style="width:30%"></div></div>
+      <div class="score-hint" id="score-hint"></div>
+    </div>
+  </aside>
+
+  <!-- CENTER FEED -->
+  <main class="center-col">
+    <!-- Compose -->
+    <div class="compose-box" id="compose-box" onclick="openAskModal()">
+      <div class="compose-av" id="compose-av">?</div>
+      <div class="compose-placeholder">Ask a question or share something with the community...</div>
+      <button class="compose-btn" onclick="event.stopPropagation();openAskModal()">Ask</button>
+    </div>
+
+    <!-- Login banner (guests) -->
+    <div class="login-banner" id="login-banner" style="display:none">
+      <span>Sign in to ask questions, upvote, and reply.</span>
+      <a href="index.html">Sign in free →</a>
+    </div>
+
+    <!-- Sort chips -->
+    <div class="sort-row">
+      <button class="sort-chip active" data-sort="latest" onclick="setSort('latest',this)">🔥 Latest</button>
+      <button class="sort-chip" data-sort="top" onclick="setSort('top',this)">⬆ Top</button>
+      <button class="sort-chip" data-sort="unanswered" onclick="setSort('unanswered',this)">💬 Unanswered</button>
+      <button class="sort-chip" data-sort="mentor" onclick="setSort('mentor',this)">🤝 From Mentors</button>
+      <button class="sort-chip" data-sort="bexi" onclick="setSort('bexi',this)">🤖 Bexi Answered</button>
+    </div>
+
+    <div class="feed-meta" id="feed-meta"></div>
+    <div id="feed-container"><div class="spinner"></div></div>
+    <button class="load-more-btn" id="load-more-btn" style="display:none" onclick="loadMore()">Load more posts</button>
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar-right">
+    <!-- Community Stats -->
+    <div class="card">
+      <div class="sidebar-title">📊 Community Stats</div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-val" id="stat-posts">—</div><div class="stat-lbl">Questions</div></div>
+        <div class="stat-box"><div class="stat-val" id="stat-answers">—</div><div class="stat-lbl">Answers</div></div>
+        <div class="stat-box"><div class="stat-val" id="stat-bexi">6+</div><div class="stat-lbl">Bexi answers</div></div>
+        <div class="stat-box"><div class="stat-val" id="stat-members">2,400+</div><div class="stat-lbl">Members</div></div>
+      </div>
+    </div>
+
+    <!-- Trending Topics -->
+    <div class="card">
+      <div class="sidebar-title">🔥 Trending Topics</div>
+      <div id="trending-list"></div>
+    </div>
+
+    <!-- Mentors Online -->
+    <div class="card">
+      <div class="sidebar-title">🟢 Mentors Online</div>
+      <div id="mentors-online"></div>
+      <button class="browse-btn" onclick="window.location.href='mentors.html'">Browse all mentors →</button>
+    </div>
+
+    <!-- Salary Pulse -->
+    <div class="salary-pulse">
+      <div class="sp-role">SDE-2 · Bangalore</div>
+      <div class="sp-lpa">₹22L</div>
+      <div class="sp-change">▲ 18% YoY</div>
+      <div class="sp-city">Median CTC · 2026</div>
+      <a href="dashboard.html?page=salary" class="sp-link">Full salary data ↗</a>
+    </div>
+  </aside>
 </div>
-
-
-<!-- PAGE HEADER -->
-<div class="page-header">
-  <div class="page-header-inner">
-    <h1>👥 Belongix Community</h1>
-    <p>Ask career questions. Get answers from real Indian professionals and Bexi AI. No judgment, just honest guidance.</p>
-    <button class="ask-hero-btn" onclick="openAskModal()">✍️ Ask a Question</button>
-  </div>
-</div>
-
-<!-- MAIN BODY -->
-<div class="page-body">
-
-  <!-- FEED COLUMN -->
-  <div class="feed-col">
-
-    <!-- Tag filter bar -->
-    <div class="tag-bar" id="tag-bar">
-      <div class="tag-chip active" data-tag="all" onclick="filterByTag('all',this)">🔥 All</div>
-      <div class="tag-chip" data-tag="Jobs" onclick="filterByTag('Jobs',this)">💼 Jobs</div>
-      <div class="tag-chip" data-tag="Salary" onclick="filterByTag('Salary',this)">💰 Salary</div>
-      <div class="tag-chip" data-tag="Resume" onclick="filterByTag('Resume',this)">📄 Resume</div>
-      <div class="tag-chip" data-tag="Interviews" onclick="filterByTag('Interviews',this)">🧠 Interviews</div>
-      <div class="tag-chip" data-tag="Skills" onclick="filterByTag('Skills',this)">⚡ Skills</div>
-      <div class="tag-chip" data-tag="Career Switch" onclick="filterByTag('Career Switch',this)">🔄 Career Switch</div>
-      <div class="tag-chip" data-tag="Mentorship" onclick="filterByTag('Mentorship',this)">🤝 Mentorship</div>
-      <div class="tag-chip" data-tag="Startups" onclick="filterByTag('Startups',this)">🚀 Startups</div>
-    </div>
-
-    <!-- Sort bar -->
-    <div class="sort-bar">
-      <div class="sort-label" id="feed-count">Loading questions...</div>
-      <div class="sort-btns">
-        <button class="sort-btn active" id="sort-latest" onclick="setSort('latest',this)">Latest</button>
-        <button class="sort-btn" id="sort-top" onclick="setSort('top',this)">Most Upvoted</button>
-        <button class="sort-btn" id="sort-unanswered" onclick="setSort('unanswered',this)">Unanswered</button>
-      </div>
-    </div>
-
-    <!-- Feed -->
-    <div id="feed">
-      <div class="feed-loading">
-        <div class="skel-card"></div>
-        <div class="skel-card"></div>
-        <div class="skel-card"></div>
-      </div>
-    </div>
-
-    <!-- Load more -->
-    <button class="load-more-btn" id="load-more-btn" style="display:none" onclick="loadMore()">Load more questions ↓</button>
-
-  </div><!-- /feed-col -->
-
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <!-- Stats -->
-    <div class="side-card">
-      <div class="side-card-title">📊 Community Stats</div>
-      <div class="side-stat-row"><span>Questions asked</span><span class="side-stat-num" id="stat-posts">—</span></div>
-      <div class="side-stat-row"><span>Answers given</span><span class="side-stat-num" id="stat-answers">—</span></div>
-      <div class="side-stat-row"><span>Bexi AI answers</span><span class="side-stat-num" id="stat-bexi">—</span></div>
-      <div class="side-stat-row"><span>Active members</span><span class="side-stat-num">2,400+</span></div>
-    </div>
-
-    <!-- Trending -->
-    <div class="side-card">
-      <div class="side-card-title">🔥 Trending Topics</div>
-      <div id="trending-list">
-        <div class="trending-item" onclick="filterByTag('Salary',document.querySelector('[data-tag=Salary]'))">
-          <div class="trending-tag" style="color:#15803D">💰 Salary</div>How to negotiate a 40%+ hike at Razorpay?
-        </div>
-        <div class="trending-item" onclick="filterByTag('Interviews',document.querySelector('[data-tag=Interviews]'))">
-          <div class="trending-tag" style="color:#7C3AED">🧠 Interviews</div>FAANG DSA prep in 3 months — realistic?
-        </div>
-        <div class="trending-item" onclick="filterByTag('Career Switch',document.querySelector('[data-tag=Career Switch]'))">
-          <div class="trending-tag" style="color:#D97706">🔄 Career Switch</div>Dev to PM transition without an MBA
-        </div>
-        <div class="trending-item" onclick="filterByTag('Resume',document.querySelector('[data-tag=Resume]'))">
-          <div class="trending-tag" style="color:#0369A1">📄 Resume</div>ATS-friendly resume format for service to product
-        </div>
-      </div>
-    </div>
-
-    <!-- Community rules -->
-    <div class="side-card">
-      <div class="side-card-title">📋 Community Rules</div>
-      <div class="side-rule"><span class="side-rule-icon">✅</span>Share real experiences — India-specific context is gold</div>
-      <div class="side-rule"><span class="side-rule-icon">🤝</span>Be kind — everyone is at a different career stage</div>
-      <div class="side-rule"><span class="side-rule-icon">🚫</span>No spam, self-promotion, or job postings here</div>
-      <div class="side-rule"><span class="side-rule-icon">🤖</span>Bexi AI auto-answers unanswered questions after 24 hrs</div>
-    </div>
-
-    <!-- Ask CTA -->
-    <div style="background:linear-gradient(135deg,var(--brand),var(--brand2));border-radius:14px;padding:18px;text-align:center">
-      <div style="font-family:var(--ff);font-size:15px;font-weight:700;color:#fff;margin-bottom:6px">Have a question?</div>
-      <div style="font-size:12.5px;color:rgba(255,255,255,.75);margin-bottom:14px;line-height:1.5">2,400+ professionals are here to help.</div>
-      <button onclick="openAskModal()" style="width:100%;padding:10px;background:#fff;color:var(--brand);border:none;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;font-family:var(--ff)">✍️ Ask Now</button>
-    </div>
-  </div>
-
-</div><!-- /page-body -->
 
 <!-- ASK MODAL -->
-<div class="modal-overlay" id="ask-modal" onclick="handleModalClick(event)">
+<div class="modal-bg" id="ask-modal">
   <div class="modal-box">
-    <div class="modal-title">✍️ Ask the Community</div>
-
-    <div class="modal-field">
-      <div class="modal-label">Your Question *</div>
-      <input class="modal-inp" id="ask-title" type="text" placeholder="e.g. How do I negotiate salary at a startup?" maxlength="200"/>
-      <div class="char-count" id="title-char">0 / 200</div>
+    <div class="modal-head">
+      <div class="modal-title">Ask the community</div>
+      <button class="modal-close" onclick="closeAskModal()">✕</button>
     </div>
-
-    <div class="modal-field">
-      <div class="modal-label">More details (optional)</div>
-      <textarea class="modal-textarea" id="ask-body" placeholder="Add context — your background, what you've tried, specific situation..." maxlength="1000"></textarea>
-      <div class="char-count" id="body-char">0 / 1000</div>
-    </div>
-
-    <div class="modal-field">
-      <div class="modal-label">Tags (pick 1–3)</div>
-      <div class="modal-tags-grid" id="modal-tags-grid">
-        <div class="modal-tag-opt" data-tag="Jobs" onclick="toggleModalTag(this)">💼 Jobs</div>
-        <div class="modal-tag-opt" data-tag="Salary" onclick="toggleModalTag(this)">💰 Salary</div>
-        <div class="modal-tag-opt" data-tag="Resume" onclick="toggleModalTag(this)">📄 Resume</div>
-        <div class="modal-tag-opt" data-tag="Interviews" onclick="toggleModalTag(this)">🧠 Interviews</div>
-        <div class="modal-tag-opt" data-tag="Skills" onclick="toggleModalTag(this)">⚡ Skills</div>
-        <div class="modal-tag-opt" data-tag="Career Switch" onclick="toggleModalTag(this)">🔄 Career Switch</div>
-        <div class="modal-tag-opt" data-tag="Mentorship" onclick="toggleModalTag(this)">🤝 Mentorship</div>
-        <div class="modal-tag-opt" data-tag="Startups" onclick="toggleModalTag(this)">🚀 Startups</div>
+    <div class="modal-label">Your question <span style="color:#EF4444">*</span></div>
+    <input class="modal-input" id="ask-title" type="text" placeholder="e.g. Is ₹18 LPA good for 3 years experience in Pune?" maxlength="120" oninput="document.getElementById('title-count').textContent=this.value.length+'/120'">
+    <div class="modal-char" id="title-count">0/120</div>
+    <div class="modal-label">Details (optional)</div>
+    <textarea class="modal-textarea" id="ask-body" placeholder="Share more context to get better answers..." maxlength="1000" oninput="document.getElementById('body-count').textContent=this.value.length+'/1000'"></textarea>
+    <div class="modal-char" id="body-count">0/1000</div>
+    <div class="modal-label">Topic <span style="color:#EF4444">*</span></div>
+    <div class="modal-tags" id="modal-tags"></div>
+    <div class="modal-anon-row">
+      <div>
+        <div class="modal-anon-label">Post anonymously</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Your name is hidden, but role & city still show</div>
       </div>
+      <label class="toggle-sw">
+        <input type="checkbox" id="modal-anon-inp">
+        <div class="toggle-track"></div>
+        <div class="toggle-knob"></div>
+      </label>
     </div>
-
-    <div class="modal-btns">
-      <button class="modal-cancel" onclick="closeAskModal()">Cancel</button>
-      <button class="modal-submit" id="ask-submit-btn" onclick="submitQuestion()">Post Question →</button>
+    <div class="modal-footer">
+      <button class="modal-cancel-btn" onclick="closeAskModal()">Cancel</button>
+      <button class="modal-post-btn" id="ask-submit-btn" onclick="submitPost()">Post Question →</button>
     </div>
   </div>
 </div>
 
 <!-- TOAST -->
-<div class="toast" id="toast"></div>
+<div id="toast"></div>
 
+<script src="pwa-install.js"></script>
 <script>
-/* ── SUPABASE ── */
+/* ════════════════════════════════════════════════
+   BELONGIX COMMUNITY v2.0
+   Full-featured Q&A: auth, posts, replies,
+   Bexi AI, upvotes, anonymous mode, career score
+════════════════════════════════════════════════ */
+
 var SB_URL = 'https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var BEXI_EDGE = SB_URL + '/functions/v1/bexi-chat';
 var sb = supabase.createClient(SB_URL, SB_KEY);
 
-/* ═══════════════════════════════════════════════
-   FIX #40 — COMMUNITY Q&A PAGE
-   ✅ Seed posts + Supabase community_posts table
-   ✅ Tag filter bar (9 tags)
-   ✅ Sort: Latest / Most Upvoted / Unanswered
-   ✅ Upvote posts and answers
-   ✅ Inline expand — click card to see answers
-   ✅ Add answer form (login required)
-   ✅ Bexi AI auto-answer for unanswered posts
-   ✅ Ask modal with tag picker + char count
-   ✅ Sidebar: stats, trending, rules
-   ✅ Load more pagination
-═══════════════════════════════════════════════ */
+/* ── STATE ── */
+var _user        = null;
+var _profile     = null;
+var _allPosts    = [];
+var _activeTag   = 'all';
+var _activeSort  = 'latest';
+var _page        = 0;
+var _perPage     = 10;
+var _expanded    = null;
+var _isAnon      = localStorage.getItem('bx_comm_anon') === 'true';
+var _votedPosts  = JSON.parse(localStorage.getItem('bx_voted_posts') || '{}');
+var _selectedTag = '';
 
-var _user      = null;
-var _allPosts  = [];
-var _activeTag = 'all';
-var _activeSort= 'latest';
-var _page      = 0;
-var _perPage   = 8;
-var _expanded  = null; /* currently expanded post id */
+/* ── TOPICS ── */
+var TOPICS = [
+  {key:'all',     label:'All posts',     emoji:'🔥', color:'#EF4444'},
+  {key:'Jobs',    label:'Jobs & offers', emoji:'💼', color:'#2563EB'},
+  {key:'Salary',  label:'Salary talks',  emoji:'💰', color:'#15803D'},
+  {key:'Interviews', label:'Interviews', emoji:'🧠', color:'#7C3AED'},
+  {key:'Skills',  label:'Upskilling',    emoji:'⚡', color:'#D97706'},
+  {key:'Career Switch', label:'Career switch', emoji:'🔄', color:'#0369A1'},
+  {key:'Rant',    label:'Rant / vent',   emoji:'😤', color:'#BE185D'},
+  {key:'Startups',label:'Startups',      emoji:'🚀', color:'#059669'},
+  {key:'WFH',     label:'WFH / remote',  emoji:'🏠', color:'#7C3AED'},
+  {key:'Mentorship', label:'Mentorship', emoji:'🤝', color:'#DB2777'},
+];
+
+var TAG_COLORS = {
+  'Jobs':{'bg':'#EFF6FF','color':'#1D4ED8'},
+  'Salary':{'bg':'#ECFDF5','color':'#15803D'},
+  'Resume':{'bg':'#F0F9FF','color':'#0369A1'},
+  'Interviews':{'bg':'#F5F3FF','color':'#7C3AED'},
+  'Skills':{'bg':'#FFF7ED','color':'#C2410C'},
+  'Career Switch':{'bg':'#FEF9C3','color':'#A16207'},
+  'Mentorship':{'bg':'#FDF2F8','color':'#BE185D'},
+  'Startups':{'bg':'#F0FDF4','color':'#15803D'},
+  'Rant':{'bg':'#FFF1F2','color':'#BE123C'},
+  'WFH':{'bg':'#F5F3FF','color':'#6D28D9'}
+};
 
 var AVATAR_COLORS = ['#2D1B69','#0369A1','#065F46','#BE185D','#D97706','#7C3AED','#0D9488','#DC2626'];
-var TAG_COLORS = {
-  'Jobs':          { bg:'#EFF6FF', color:'#1D4ED8' },
-  'Salary':        { bg:'#ECFDF5', color:'#15803D' },
-  'Resume':        { bg:'#F0F9FF', color:'#0369A1' },
-  'Interviews':    { bg:'#F5F3FF', color:'#7C3AED' },
-  'Skills':        { bg:'#FFF7ED', color:'#C2410C' },
-  'Career Switch': { bg:'#FEF9C3', color:'#A16207' },
-  'Mentorship':    { bg:'#FDF2F8', color:'#BE185D' },
-  'Startups':      { bg:'#F0FDF4', color:'#15803D' }
-};
 
 /* ── SEED DATA ── */
 var SEED_POSTS = [
-  {id:'p1',title:'How do I negotiate salary for my first job?',body:'I have an offer of ₹6 LPA from a mid-size company. How do I negotiate without losing the offer?',tags:['Salary','Jobs'],author:'Fresher_Priya',author_id:'u1',upvotes:34,created_at:new Date(Date.now()-3600000*4).toISOString(),answers:[
-    {id:'a1',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'Great question for a first-time negotiator! The key rule: never be the first to give a number, and never accept verbally on the spot. Your script: "Thank you so much for the offer. I am very excited about this role. I was expecting something closer to ₹7–7.5 LPA based on my research and the market rate for this profile. Is there any flexibility?" Then stay silent. Companies expect negotiation. The worst they can say is no — you will never lose an offer by politely negotiating. Most first offers have 10–20% room.',upvotes:22,created_at:new Date(Date.now()-3600000*2).toISOString()}
-  ]},
-  {id:'p2',title:'Is ₹14 LPA good for 3 years experience in Bangalore?',body:'Working at a service company for 3 years. Got an offer at ₹14 LPA from a product startup. Is this market rate?',tags:['Salary','Jobs'],author:'SDE_Arjun',author_id:'u2',upvotes:67,created_at:new Date(Date.now()-3600000*20).toISOString(),answers:[
-    {id:'a2',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'For 3 years of experience switching from a service company to a product startup in Bangalore, ₹14 LPA is on the lower end in 2026. Market rate for 3 YOE at a product startup is typically ₹16–22 LPA depending on your tech stack. If you are in a hot stack (Python, React, Go, or anything ML-adjacent), you could push for ₹17–18 LPA. Counter confidently — service-to-product switches typically warrant 40–80% hikes. A ₹14 LPA offer if your current CTC is ₹8–9 LPA is a reasonable hike but you can negotiate.',upvotes:41,created_at:new Date(Date.now()-3600000*18).toISOString()}
-  ]},
-  {id:'p3',title:'How to switch from service company to product company?',body:'Currently at TCS for 2 years. Want to move to a startup or product company. What\'s the roadmap?',tags:['Career Switch','Jobs'],author:'Rahul_TCS',author_id:'u3',upvotes:89,created_at:new Date(Date.now()-3600000*48).toISOString(),answers:[
-    {id:'a3',author:'Meera S.',author_id:'u10',is_bexi:false,text:'I made this switch 2 years ago from Infosys. The honest roadmap: (1) Build 2–3 portfolio projects with real GitHub commits — no tutorial projects. (2) Get comfortable with DSA — LeetCode 75 is enough for most startups. (3) Upskill in one hot area: cloud certs, React, or data engineering. (4) Target Series A/B startups — they value hustle over pedigree. (5) LinkedIn cold outreach works better than job portals. Budget 3–6 months.',upvotes:52,created_at:new Date(Date.now()-3600000*44).toISOString()}
-  ]},
-  {id:'p4',title:'Best way to prepare for FAANG interviews in 6 months?',body:'I have 4 years of experience. Want to target Google or Amazon. Where do I start — DSA, system design or both?',tags:['Interviews','Skills'],author:'Aspirant_Kavya',author_id:'u4',upvotes:112,created_at:new Date(Date.now()-3600000*72).toISOString(),answers:[
-    {id:'a4',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'For 6 months and 4 YOE targeting FAANG: do both, but in sequence. Month 1–2: NeetCode 150 DSA in order (not random). Month 3: System Design — ByteByteGo, Gaurav Sen YouTube, and Grokking System Design. Month 4: Mock interviews on Pramp and interviewing.io. Month 5: Company-specific prep — Google values algorithms and scale; Amazon weights behavioural (STAR + Leadership Principles) heavily. Month 6: Apply and iterate. Most important: do 3 timed practice problems per day, not 10 random ones.',upvotes:78,created_at:new Date(Date.now()-3600000*68).toISOString()}
-  ]},
-  {id:'p5',title:'Should I take a startup offer at ₹22 LPA vs MNC at ₹18 LPA?',body:'Startup has ESOPs, MNC has stability. 3 years experience. Which makes more sense long term?',tags:['Salary','Startups'],author:'Confused_Vikram',author_id:'u5',upvotes:78,created_at:new Date(Date.now()-3600000*96).toISOString(),answers:[]},
-  {id:'p6',title:'How long does it realistically take to switch to data science?',body:'Currently a software engineer with 2 years Python experience. Want to move to DS. Is 6 months enough?',tags:['Career Switch','Skills'],author:'SDE_to_DS',author_id:'u6',upvotes:56,created_at:new Date(Date.now()-3600000*120).toISOString(),answers:[
-    {id:'a5',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'With 2 years of Python experience, 6 months is realistic if you are disciplined. The honest curriculum: Month 1: Statistics + Pandas + NumPy (Kaggle courses are free and great). Month 2: Machine Learning (Andrew Ng Coursera — free audit). Month 3: SQL for analytics + building your first end-to-end project. Month 4–5: One Kaggle competition + build a portfolio project with a real dataset. Month 6: Apply, apply, apply. Target analyst-to-DS roles or data engineering first — it is easier than direct DS. Do not wait to be "ready".',upvotes:38,created_at:new Date(Date.now()-3600000*115).toISOString()}
-  ]},
-  {id:'p7',title:'What skills should I learn in 2026 to reach ₹20 LPA?',body:'Currently at ₹11 LPA as a backend engineer with 2 years experience. What should I focus on next?',tags:['Skills','Salary'],author:'Backend_Dev',author_id:'u7',upvotes:145,created_at:new Date(Date.now()-3600000*144).toISOString(),answers:[
-    {id:'a6',author:'Rohan G.',author_id:'u11',is_bexi:false,text:'From ₹11 LPA to ₹20 LPA with 2 YOE backend — the fastest paths in 2026: (1) Add an AWS cert (Solutions Architect Associate) — adds ₹3–5 LPA premium. (2) Learn system design fundamentals — mandatory for any ₹20L+ backend role. (3) Upskill to a hot language/framework: Go, Rust, or Kafka/Kubernetes if you are currently on basic Java/Python. The shortcut: target fintech startups — they pay ₹18–25 LPA for 2–3 YOE backend engineers who know distributed systems basics.',upvotes:89,created_at:new Date(Date.now()-3600000*140).toISOString()}
-  ]},
-  {id:'p8',title:'Is it worth doing MBA after 3 years of software engineering?',body:'Getting pulls toward management. But already at ₹16 LPA. Is MBA worth the 2 year break and fees?',tags:['Career Switch','Skills'],author:'SDE_MBA_Dilemma',author_id:'u8',upvotes:43,created_at:new Date(Date.now()-3600000*168).toISOString(),answers:[]},
-  {id:'p9',title:'How to get a referral at Google India?',body:'No direct contacts at Google. How do most people manage to get referrals? LinkedIn cold outreach works?',tags:['Jobs','Skills'],author:'FAANG_Hopeful',author_id:'u9',upvotes:92,created_at:new Date(Date.now()-3600000*192).toISOString(),answers:[
-    {id:'a7',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'Cold referral outreach works — the script matters. Find a Googler with a similar background on LinkedIn. Message: "Hi [Name], I noticed you are an SDE at Google and your background in [X] is similar to mine. I am applying for [role] and would love to learn about the team culture. Would you be open to a 15-min call? Happy to pay it forward." After a good call: "I just submitted my application for [role ID]. If you feel comfortable, a referral would mean the world to me." Never ask in the first message. Response rate jumps from 2% to 35%+ with this approach.',upvotes:64,created_at:new Date(Date.now()-3600000*188).toISOString()}
-  ]},
-  {id:'p10',title:'Fresher with 8.5 CGPA — which companies should I target?',body:'Passing out this June from NIT. 8.5 CGPA, know Python and React. Campus placements were disappointing.',tags:['Jobs','Skills'],author:'NIT_Fresher',author_id:'u12',upvotes:61,created_at:new Date(Date.now()-3600000*216).toISOString(),answers:[
-    {id:'a8',author:'Ananya T.',author_id:'u13',is_bexi:false,text:'NIT grad with 8.5 CGPA and Python + React — you are in a good spot. Target list: (1) Off-campus drives at Atlassian, Adobe, Juspay, Groww, Razorpay — all hire freshers at ₹12–20 LPA. (2) Service companies (TCS, Wipro, Infosys) for backup, but negotiate the digital/specialist tracks, not the bulk track. (3) FAANG university hiring — check Google, Microsoft, and Amazon career pages directly. (4) YC-backed Indian startups on Wellfound. The campus disappointment means nothing — half my batch\'s best offers came off-campus.',upvotes:39,created_at:new Date(Date.now()-3600000*210).toISOString()}
-  ]},
-  {id:'p11',title:'How to explain a 1 year gap in interviews?',body:'Took a break for personal reasons. Back in job market. How do I address this without it hurting my chances?',tags:['Jobs','Skills'],author:'Career_Gap',author_id:'u14',upvotes:87,created_at:new Date(Date.now()-3600000*240).toISOString(),answers:[
-    {id:'a9',author:'Bexi AI',author_id:'bexi',is_bexi:true,text:'Career gaps in India are more accepted now than ever — especially post-2021. The key is to own it confidently, not apologetically. Script: "I took time off to [handle a personal situation / upskill / recover my health]. During that time I also [mention anything: freelanced, did a certification, built a project]. I am now fully refreshed and excited to bring my skills to this role." If you can add even one productive thing from the gap period (an online course, a GitHub project, freelance work), mention it. Most hiring managers care more about your skills than the gap.',upvotes:58,created_at:new Date(Date.now()-3600000*235).toISOString()}
-  ]},
-  {id:'p12',title:'Remote jobs in India — which companies actually offer it?',body:'Want to work remotely but stay in India. Which companies genuinely offer remote for Indian engineers?',tags:['Jobs','Salary'],author:'Remote_Seeker',author_id:'u15',upvotes:134,created_at:new Date(Date.now()-3600000*264).toISOString(),answers:[
-    {id:'a10',author:'Kiran M.',author_id:'u16',is_bexi:false,text:'Companies that genuinely offer full remote for Indian engineers in 2026: (1) GitLab (fully distributed, great pay). (2) Automattic (WordPress parent). (3) Deel, Remote.com — they hire to hire remotely for global clients. (4) Most US-based startups hiring on Wellfound — filter by "Remote" and sort by "Indian time zone friendly". (5) Toptal and Upwork for freelance. Domestic Indian companies promising "remote" often flip back to hybrid. The safest bet for genuine full-remote: target companies that were remote-first before 2020.',upvotes:87,created_at:new Date(Date.now()-3600000*260).toISOString()}
-  ]}
+  {id:'p1',title:'How do I negotiate salary for my first job?',body:'I have an offer of Rs.6 LPA from a mid-size company. How do I negotiate without losing the offer? HR said this is their final offer but I feel it is low.',tags:['Salary','Jobs'],author:'Fresher_Priya',author_id:'u1',is_anonymous:false,role_title:'Fresher',city:'Mumbai',upvotes:34,reply_count:1,has_bexi_reply:true,bexi_reply:'The key rule: never accept verbally on the spot. Your script: "Thank you for the offer. I was expecting closer to Rs.7-7.5 LPA based on market research for this profile. Is there flexibility?" Then stay silent. Most first offers have 10-20% room. Companies expect negotiation — you will never lose an offer by asking politely. Actionable tip: research Glassdoor + Levels.fyi for this exact role before your call.',created_at:new Date(Date.now()-3600000*4).toISOString()},
+  {id:'p2',title:'Is Rs.14 LPA good for 3 years in Bangalore?',body:'Working at TCS for 3 years. Got an offer at Rs.14 LPA from a product startup. Is this market rate or should I negotiate?',tags:['Salary','Jobs'],author:'SDE_Arjun',author_id:'u2',is_anonymous:false,role_title:'SDE-1',city:'Bangalore',upvotes:67,reply_count:1,has_bexi_reply:true,bexi_reply:'For 3 YOE switching from service to product startup in Bangalore, Rs.14 LPA is below market in 2026. Product startup market rate for 3 YOE is Rs.16-22 LPA depending on your stack. If you know Python, React, Go, or anything ML-adjacent, push for Rs.17-18 LPA. Service-to-product switches typically get 40-80% hikes. Actionable tip: counter at Rs.17 LPA and see their response before deciding.',created_at:new Date(Date.now()-3600000*20).toISOString()},
+  {id:'p3',title:'How to switch from service company to product?',body:'Currently at Infosys for 2 years. Want to move to a product company like Swiggy or Razorpay. What skills should I build and how long will it take?',tags:['Career Switch','Skills'],author:'Meera_S',author_id:'u3',is_anonymous:false,role_title:'SDE-1',city:'Hyderabad',upvotes:89,reply_count:1,has_bexi_reply:true,bexi_reply:'Typical timeline for a service-to-product switch is 4-6 months if you are focused. Key gaps to close: DSA (75-100 LeetCode), system design basics (ByteByteGo), and 1-2 deployed side projects on GitHub. Swiggy and Razorpay both value strong DSA + real project experience. Actionable tip: start with 2 LeetCode problems per day and build one Node.js or Django REST API project this month.',created_at:new Date(Date.now()-3600000*24).toISOString()},
+  {id:'p4',title:'FAANG DSA prep in 3 months — realistic?',body:'I have 2 years of experience and want to crack Google or Amazon. Is 3 months enough for DSA prep if I am working full time? I can give 2-3 hours per day.',tags:['Interviews','Skills'],author:'Anon',author_id:'u4',is_anonymous:true,role_title:'SDE-1',city:'Pune',upvotes:45,reply_count:0,has_bexi_reply:false,bexi_reply:'',created_at:new Date(Date.now()-3600000*10).toISOString()},
+  {id:'p5',title:'Honest review of working at a YC startup in India',body:'Joined a YC-backed startup 6 months ago. Sharing my experience: crazy growth but also chaos. ESOPs look great on paper but the cliff is 1 year. Team is amazing though.',tags:['Startups'],author:'Karan_PM',author_id:'u5',is_anonymous:false,role_title:'PM',city:'Bangalore',upvotes:112,reply_count:2,has_bexi_reply:false,bexi_reply:'',created_at:new Date(Date.now()-3600000*36).toISOString()},
+  {id:'p6',title:'Should I quit without a job offer? I am burnt out.',body:'3.5 years at the same company, no hike this year, toxic manager, and I feel completely burnt out. My savings can last 6 months. Should I just quit and take a break?',tags:['Rant','Career Switch'],author:'Anon',author_id:'u6',is_anonymous:true,role_title:'SDE-2',city:'Bangalore',upvotes:78,reply_count:1,has_bexi_reply:true,bexi_reply:'Quitting without an offer is risky but sometimes necessary for mental health. If your savings cover 6 months, you have a real runway — but job markets can slow down. A safer middle path: take 2 weeks of earned leave first to decompress, then decide. Many people find that a short break resets perspective without the financial stress. Actionable tip: before quitting, update your LinkedIn to "Open to Work" and send 5 applications this week to test the market response.',created_at:new Date(Date.now()-3600000*48).toISOString()},
+  {id:'p7',title:'AWS vs GCP vs Azure — which to learn in 2026 for India?',body:'I want to add cloud to my resume. Most of my network works on AWS but I see GCP jobs growing. Which one should I pick?',tags:['Skills','Jobs'],author:'DevOps_Ritu',author_id:'u7',is_anonymous:false,role_title:'SDE-2',city:'Chennai',upvotes:56,reply_count:1,has_bexi_reply:true,bexi_reply:'For India job market in 2026, AWS is still the clear winner — it appears in roughly 65% of cloud job descriptions. GCP is growing (driven by AI/ML demand) but AWS gives you the broadest choice. Learn AWS Solutions Architect Associate first (exam cost ~Rs.12,000). Once you have one cert, picking up GCP or Azure later is fast. Actionable tip: create an AWS free tier account today and deploy one real project — hands-on experience matters more than the cert alone.',created_at:new Date(Date.now()-3600000*8).toISOString()},
+  {id:'p8',title:'Remote work in India — which companies actually allow it?',body:'I have a toddler at home and WFH has been a lifesaver. Which companies in India are truly remote-friendly and not just remote-first on paper?',tags:['WFH','Jobs'],author:'Preethi_K',author_id:'u8',is_anonymous:false,role_title:'SDE-2',city:'Coimbatore',upvotes:93,reply_count:0,has_bexi_reply:false,bexi_reply:'',created_at:new Date(Date.now()-3600000*15).toISOString()},
 ];
 
-/* ── UTILS ── */
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function relTime(iso){
-  var d=Math.floor((Date.now()-new Date(iso).getTime())/1000);
-  if(d<60)return 'just now';
-  if(d<3600)return Math.floor(d/60)+'m ago';
-  if(d<86400)return Math.floor(d/3600)+'h ago';
-  return Math.floor(d/86400)+'d ago';
-}
-function avColor(id){ return AVATAR_COLORS[String(id||'').length % AVATAR_COLORS.length]; }
-function avInitial(name){ return (name||'A')[0].toUpperCase(); }
-function tagHtml(tag){
-  var t = TAG_COLORS[tag] || { bg:'var(--off)', color:'var(--brand)' };
-  return '<span class="post-tag" style="background:'+t.bg+';color:'+t.color+'">' + esc(tag) + '</span>';
-}
-function showToast(msg, dur){
-  var t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, dur||2800);
-}
+var MENTORS_ONLINE = [
+  {name:'Rohit S.',role:'SDE-3 @ Google',color:'#2D1B69'},
+  {name:'Anika M.',role:'PM @ Razorpay',color:'#065F46'},
+  {name:'Vikram P.',role:'Lead @ Swiggy',color:'#7C3AED'},
+];
 
-/* ── AUTH CHECK ── */
-async function initAuth(){
+/* ── INIT ── */
+window.addEventListener('load', async function() {
+  buildTopicList();
+  buildModalTags();
+  buildMentorsOnline();
+  buildTrending();
+  restoreAnonToggle();
+
+  document.addEventListener('click', function(e) {
+    if (!e.target.closest('#nav-av') && !e.target.closest('#nav-dd')) {
+      var dd = document.getElementById('nav-dd');
+      if (dd) dd.style.display = 'none';
+    }
+  });
+
   try {
-    var s = await sb.auth.getSession();
-    if (s.data && s.data.session && s.data.session.user) {
-      _user = s.data.session.user;
-      showUserNav(_user);
+    var sess = await sb.auth.getSession();
+    if (sess.data && sess.data.session && sess.data.session.user) {
+      _user = sess.data.session.user;
+      await loadUserProfile();
+      showUserNav();
     } else {
       showGuestNav();
     }
-  } catch(e){ showGuestNav(); }
+  } catch(e) { showGuestNav(); }
+
+  await loadPosts();
+});
+
+/* ── AUTH UI ── */
+function showUserNav() {
+  document.getElementById('nav-guest').style.display = 'none';
+  document.getElementById('nav-user').style.display = 'flex';
+  var nm = (_profile && _profile.full_name) || (_user.user_metadata && _user.user_metadata.full_name) || _user.email.split('@')[0];
+  document.getElementById('nav-av').textContent = nm.substring(0,2).toUpperCase();
+  document.getElementById('nav-name').textContent = nm;
+  document.getElementById('nav-email').textContent = _user.email || '';
+  document.getElementById('compose-av').textContent = nm.substring(0,2).toUpperCase();
+  document.getElementById('login-banner').style.display = 'none';
+  document.getElementById('compose-box').style.display = 'flex';
+  showScoreWidget();
+}
+
+function showGuestNav() {
+  document.getElementById('nav-guest').style.display = 'flex';
+  document.getElementById('nav-user').style.display = 'none';
+  document.getElementById('login-banner').style.display = 'flex';
+  document.getElementById('compose-box').style.display = 'none';
+}
+
+function doSignOut() {
+  sb.auth.signOut().then(function() { location.reload(); });
+}
+
+async function loadUserProfile() {
+  if (!_user) return;
+  try {
+    var r = await sb.from('profiles').select('full_name, career_score, role, city, user_type').eq('id', _user.id).maybeSingle();
+    if (r.data) _profile = r.data;
+  } catch(e) {}
+}
+
+/* ── CAREER SCORE ── */
+function showScoreWidget() {
+  var score = (_profile && _profile.career_score) || 30;
+  var levels = [
+    {min:0,  max:20, label:'Level 1', next:'Complete profile (+30 pts)'},
+    {min:20, max:40, label:'Level 2', next:'Apply to a job (+15 pts)'},
+    {min:40, max:60, label:'Level 3', next:'Answer 2 posts (+4 pts)'},
+    {min:60, max:80, label:'Level 4', next:'Book a mentor (+20 pts)'},
+    {min:80, max:100,label:'Level 5', next:'You are at the top!'},
+  ];
+  var lv = levels.find(function(l){ return score >= l.min && score < l.max; }) || levels[4];
+  document.getElementById('score-val').textContent = score;
+  document.getElementById('score-level').textContent = lv.label;
+  document.getElementById('score-bar').style.width = score + '%';
+  document.getElementById('score-hint').textContent = lv.next;
+  document.getElementById('score-widget').style.display = 'block';
+}
+
+/* ── TOPIC LIST ── */
+function buildTopicList() {
+  var el = document.getElementById('topic-list');
+  el.innerHTML = TOPICS.map(function(t) {
+    return '<button class="topic-item' + (t.key === 'all' ? ' active' : '') + '" onclick="setTag(\'' + t.key + '\',this)">' +
+      '<span class="topic-dot" style="background:' + t.color + '"></span>' + t.emoji + ' ' + t.label +
+      '</button>';
+  }).join('');
+}
+
+function setTag(key, btn) {
+  _activeTag = key;
+  _page = 0;
+  document.querySelectorAll('.topic-item').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderFeed();
+}
+
+/* ── MODAL TAGS ── */
+function buildModalTags() {
+  var tags = ['Jobs','Salary','Interviews','Skills','Career Switch','Rant','Startups','WFH','Mentorship','Resume'];
+  document.getElementById('modal-tags').innerHTML = tags.map(function(t) {
+    return '<div class="modal-tag" data-tag="' + t + '" onclick="selectModalTag(this)">' + t + '</div>';
+  }).join('');
+}
+
+function selectModalTag(el) {
+  document.querySelectorAll('.modal-tag').forEach(function(t){ t.classList.remove('sel'); });
+  el.classList.add('sel');
+  _selectedTag = el.getAttribute('data-tag');
+}
+
+/* ── ANON TOGGLE ── */
+function toggleAnon(val) {
+  _isAnon = val;
+  localStorage.setItem('bx_comm_anon', val ? 'true' : 'false');
+  document.getElementById('modal-anon-inp').checked = val;
+}
+
+function restoreAnonToggle() {
+  document.getElementById('anon-toggle-inp').checked = _isAnon;
+  document.getElementById('modal-anon-inp').checked = _isAnon;
+}
+
+/* ── SORT ── */
+function setSort(key, btn) {
+  _activeSort = key;
+  _page = 0;
+  document.querySelectorAll('.sort-chip').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderFeed();
 }
 
 /* ── LOAD POSTS ── */
-async function loadPosts(){
+async function loadPosts() {
+  document.getElementById('feed-container').innerHTML = '<div class="spinner"></div>';
   var posts = [];
+
   try {
     var res = await sb.from('community_posts')
       .select('*, community_answers(*)')
       .order('created_at', { ascending: false })
-      .limit(50);
+      .limit(100);
+
     if (res.data && res.data.length) {
-      posts = res.data.map(function(p){
+      posts = res.data.map(function(p) {
         return Object.assign({}, p, { answers: p.community_answers || [] });
       });
     }
-  } catch(e){}
+  } catch(e) {}
 
-  /* If Supabase table is empty, seed and retry */
   if (!posts.length) {
+    /* seed Supabase */
     try {
-      var seedRows = SEED_POSTS.map(function(p){
-        return {
-          title: p.title,
-          body: p.body,
-          tags: p.tags,
-          upvotes: p.upvotes || 0,
-          user_id: 'seed'
-        };
+      var seedRows = SEED_POSTS.map(function(p) {
+        return { title:p.title, body:p.body, tags:p.tags, author:p.author,
+          author_id:p.author_id, is_anonymous:p.is_anonymous,
+          role_title:p.role_title, city:p.city, upvotes:p.upvotes,
+          reply_count:p.reply_count, has_bexi_reply:p.has_bexi_reply,
+          bexi_reply:p.bexi_reply, created_at:p.created_at };
       });
       await sb.from('community_posts').insert(seedRows);
-      var res2 = await sb.from('community_posts')
-        .select('*, community_answers(*)')
-        .order('created_at', { ascending: false })
-        .limit(50);
+      var res2 = await sb.from('community_posts').select('*, community_answers(*)').order('created_at',{ascending:false}).limit(100);
       if (res2.data && res2.data.length) {
-        posts = res2.data.map(function(p){
-          return Object.assign({}, p, { answers: p.community_answers || [] });
-        });
-      }
-    } catch(se){
-      console.warn('[Belongix] Community seed failed:', se.message);
-    }
+        posts = res2.data.map(function(p){ return Object.assign({},p,{answers:p.community_answers||[]}); });
+      } else { posts = SEED_POSTS; }
+    } catch(e) { posts = SEED_POSTS; }
   }
-
-  /* Always fall back to rich seed data (with answers) if still empty */
-  if (!posts.length) posts = SEED_POSTS;
 
   _allPosts = posts;
   updateStats();
   renderFeed();
 }
 
-/* ── STATS ── */
-function updateStats(){
-  var totalAnswers = _allPosts.reduce(function(s,p){ return s+(p.answers||[]).length; }, 0);
-  var bexiAnswers  = _allPosts.reduce(function(s,p){ return s+(p.answers||[]).filter(function(a){return a.is_bexi;}).length; }, 0);
-  var uniqueAuthors = {};
-  _allPosts.forEach(function(p){
-    if(p.author_id) uniqueAuthors[p.author_id] = true;
-    (p.answers||[]).forEach(function(a){ if(a.author_id) uniqueAuthors[a.author_id] = true; });
-  });
-  var activeMembers = Object.keys(uniqueAuthors).length;
-  var el = function(id, v){ var e=document.getElementById(id); if(e) e.textContent=v; };
-  el('stat-posts',   _allPosts.length + '+');
-  el('stat-answers', totalAnswers + '+');
-  el('stat-members', activeMembers + '+');
-  el('stat-bexi',    bexiAnswers  + '+');
-}
-
-/* ── FILTER + SORT ── */
-function getFilteredPosts(){
+/* ── RENDER FEED ── */
+function getFilteredPosts() {
   var posts = _allPosts.slice();
-  /* Tag filter */
   if (_activeTag !== 'all') {
-    posts = posts.filter(function(p){ return (p.tags||[]).indexOf(_activeTag) !== -1; });
+    posts = posts.filter(function(p) {
+      var tags = p.tags || [];
+      return tags.indexOf(_activeTag) !== -1;
+    });
   }
-  /* Sort */
   if (_activeSort === 'top') {
     posts.sort(function(a,b){ return (b.upvotes||0)-(a.upvotes||0); });
+  } else if (_activeSort === 'latest') {
+    posts.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
   } else if (_activeSort === 'unanswered') {
-    posts = posts.filter(function(p){ return !(p.answers||[]).length; });
-    posts.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
-  } else {
-    posts.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
+    posts = posts.filter(function(p){ return !(p.reply_count > 0) && !p.has_bexi_reply; });
+  } else if (_activeSort === 'mentor') {
+    posts = posts.filter(function(p){ return p.is_mentor; });
+  } else if (_activeSort === 'bexi') {
+    posts = posts.filter(function(p){ return p.has_bexi_reply; });
   }
   return posts;
 }
 
-function filterByTag(tag, el){
-  _activeTag = tag; _page = 0;
-  document.querySelectorAll('.tag-chip').forEach(function(c){ c.classList.remove('active'); });
-  if (el) el.classList.add('active');
-  renderFeed();
-}
+function renderFeed() {
+  var posts = getFilteredPosts();
+  var pagePosts = posts.slice(0, (_page + 1) * _perPage);
+  var container = document.getElementById('feed-container');
 
-function setSort(sort, btn){
-  _activeSort = sort; _page = 0;
-  document.querySelectorAll('.sort-btn').forEach(function(b){ b.classList.remove('active'); });
-  if (btn) btn.classList.add('active');
-  renderFeed();
-}
-
-/* ── RENDER FEED ── */
-function renderFeed(){
-  var posts   = getFilteredPosts();
-  var total   = posts.length;
-  var visible = posts.slice(0, (_page+1)*_perPage);
-  var fc      = document.getElementById('feed-count');
-  var lm      = document.getElementById('load-more-btn');
-  var feed    = document.getElementById('feed');
-
-  if (fc) fc.textContent = total + ' question' + (total===1?'':'s') + (_activeTag!=='all'?' in '+_activeTag:'');
-  if (lm) lm.style.display = total > (_page+1)*_perPage ? 'block' : 'none';
-
-  if (!total) {
-    feed.innerHTML = '<div class="feed-empty"><div class="feed-empty-icon">💬</div><div class="feed-empty-title">No questions yet</div><p style="color:var(--muted);font-size:13px;margin-top:6px">Be the first to ask something in this topic!</p></div>';
+  if (!pagePosts.length) {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">No posts found</div><div>Be the first to ask in this topic!</div></div>';
+    document.getElementById('load-more-btn').style.display = 'none';
+    document.getElementById('feed-meta').textContent = '';
     return;
   }
 
-  feed.innerHTML = visible.map(function(p){ return buildPostCard(p); }).join('');
-
-  /* Re-wire expanded if still in view */
-  if (_expanded) {
-    var cardEl = document.getElementById('card-'+_expanded);
-    if (cardEl) {
-      cardEl.classList.add('expanded');
-      var ans = cardEl.querySelector('.answers-section');
-      var body = cardEl.querySelector('.post-body-text');
-      if (ans) ans.classList.add('show');
-      if (body) body.classList.add('show');
-    }
-  }
+  document.getElementById('feed-meta').textContent = posts.length + ' question' + (posts.length !== 1 ? 's' : '');
+  container.innerHTML = pagePosts.map(function(p){ return renderPostCard(p); }).join('');
+  document.getElementById('load-more-btn').style.display = pagePosts.length < posts.length ? 'block' : 'none';
 }
 
-function loadMore(){
+function loadMore() {
   _page++;
   renderFeed();
 }
 
-/* ── BUILD POST CARD ── */
-function buildPostCard(p){
-  var tags = (p.tags||[]).map(tagHtml).join('');
-  var ansCount = (p.answers||[]).length;
-  var unanswered = !ansCount;
-  var votes = p.upvotes || 0;
-  var voted = isVoted('post', p.id);
+function renderPostCard(p) {
+  var isExpanded = _expanded === p.id;
+  var tags = (p.tags || []).map(function(t) {
+    var tc = TAG_COLORS[t] || {bg:'#F3F4F6',color:'#374151'};
+    return '<span class="tag-pill" style="background:' + tc.bg + ';color:' + tc.color + '">' + t + '</span>';
+  }).join('');
 
-  var answersHtml = buildAnswers(p);
+  var isHot = (p.upvotes||0) > 50;
+  var hotBadge = isHot ? '<span class="hot-badge">🔥 Hot</span>' : '';
+  var authorName = p.is_anonymous ? 'Anon' : (p.author || 'User');
+  var authorSub = [(p.role_title||''),(p.city||'')].filter(Boolean).join(' · ');
+  var avatarColor = AVATAR_COLORS[(authorName.charCodeAt(0)||0) % AVATAR_COLORS.length];
+  var avatarText = p.is_anonymous ? '?' : authorName.substring(0,2).toUpperCase();
+  var timeAgo = getTimeAgo(p.created_at);
+  var hasVoted = _votedPosts[p.id];
 
-  /* Add answer form / login prompt */
-  var addAnswerHtml = '';
-  if (_user) {
-    addAnswerHtml = '<div class="add-answer-wrap">'
-      +'<textarea class="add-answer-textarea" id="ans-inp-'+p.id+'" placeholder="Share your experience or advice..."></textarea>'
-      +'<div class="add-answer-row">'
-        +'<div class="add-answer-hint">Be specific — answers with real examples get 5× more upvotes</div>'
-        +'<button class="add-answer-btn" onclick="submitAnswer(\''+p.id+'\')">Post Answer →</button>'
-      +'</div>'
-    +'</div>';
-  } else {
-    addAnswerHtml = '<div class="login-prompt">Have an answer? <a href="index.html">Sign in</a> to share your experience.</div>';
+  var bexiBox = '';
+  if (p.has_bexi_reply && p.bexi_reply) {
+    bexiBox = '<div class="bexi-box"><div class="bexi-label"><span>Bexi AI</span> India market data</div><div class="bexi-text">' + esc(p.bexi_reply) + '</div></div>';
+  } else if (!(p.reply_count > 0) && !p.has_bexi_reply) {
+    bexiBox = '<div class="bexi-pending">⏳ Bexi AI will answer this in 24h if no replies</div>';
   }
 
-  return '<div class="post-card" id="card-'+p.id+'" onclick="togglePost(\''+p.id+'\')">'
-    +'<div class="post-top">'
-      +'<div class="post-vote" onclick="event.stopPropagation()">'
-        +'<button class="vote-btn'+(voted?' voted':'')+'" onclick="votePost(\''+p.id+'\',this)" title="Upvote">▲</button>'
-        +'<div class="vote-count" id="votes-'+p.id+'">'+votes+'</div>'
-      +'</div>'
-      +'<div class="post-body">'
-        +(tags?'<div class="post-tags">'+tags+'</div>':'')
-        +'<div class="post-title">'+esc(p.title)+'</div>'
-        +(p.body?'<div class="post-body-text" id="body-'+p.id+'">'+esc(p.body)+'</div>':'')
-        +'<div class="post-meta">'
-          +'<span class="post-av" style="background:'+avColor(p.author_id)+'">'+avInitial(p.author||'A')+'</span>'
-          +'<span class="post-author">'+esc(p.author||'Anonymous')+'</span>'
-          +'<span class="post-meta-dot"></span>'
-          +'<span>'+relTime(p.created_at)+'</span>'
-          +'<span class="post-meta-dot"></span>'
-          +(unanswered
-            ? '<span class="unanswered-badge">Unanswered</span>'
-            : '<span class="answer-count">💬 '+ansCount+' answer'+(ansCount===1?'':'s')+'</span>')
-        +'</div>'
-      +'</div>'
-    +'</div>'
-    /* Answers section — hidden until card click */
-    +'<div class="answers-section" id="ans-sec-'+p.id+'" onclick="event.stopPropagation()">'
-      +answersHtml
-      +addAnswerHtml
-    +'</div>'
-  +'</div>';
+  var repliesHtml = '';
+  if (isExpanded) {
+    var answers = p.answers || [];
+    repliesHtml = '<div class="replies-section">';
+    if (answers.length) {
+      repliesHtml += answers.map(function(a) {
+        var isBexi = a.is_bexi || a.author_id === 'bexi';
+        var aColor = isBexi ? '#534AB7' : AVATAR_COLORS[(a.author||'U').charCodeAt(0) % AVATAR_COLORS.length];
+        var aText = isBexi ? 'AI' : (a.author||'U').substring(0,2).toUpperCase();
+        return '<div class="reply-item' + (isBexi ? ' bexi-reply' : '') + '">' +
+          '<div class="reply-header">' +
+          '<div class="reply-av" style="background:' + aColor + '">' + aText + '</div>' +
+          '<div class="reply-author">' + esc(isBexi ? 'Bexi AI' : (a.author || 'User')) + '</div>' +
+          '<div class="reply-time">' + getTimeAgo(a.created_at) + '</div>' +
+          '</div>' +
+          '<div class="reply-body">' + esc(a.text || a.body || '') + '</div>' +
+          '</div>';
+      }).join('');
+    } else {
+      repliesHtml += '<div style="font-size:13px;color:var(--muted);padding:8px 0">No replies yet. Be the first!</div>';
+    }
+
+    if (_user) {
+      repliesHtml += '<div class="add-reply-row">' +
+        '<textarea class="reply-input" id="reply-' + p.id + '" placeholder="Write a helpful reply..." rows="2"></textarea>' +
+        '<button class="reply-submit-btn" onclick="submitReply(\'' + p.id + '\')">Reply →</button>' +
+        '</div>';
+    } else {
+      repliesHtml += '<div style="font-size:13px;color:var(--muted);padding:8px 0;font-style:italic"><a href="index.html" style="color:var(--primary);font-weight:500">Sign in</a> to reply</div>';
+    }
+    repliesHtml += '</div>';
+  }
+
+  return '<div class="post-card' + (isExpanded ? ' expanded' : '') + '" id="pc-' + p.id + '" onclick="togglePost(\'' + p.id + '\')">' +
+    '<div class="post-header">' +
+    '<div class="post-av" style="background:' + avatarColor + '">' + avatarText + '</div>' +
+    '<div class="post-meta">' +
+    '<div class="post-author">' + esc(authorName) + '</div>' +
+    (authorSub ? '<div class="post-sub">' + esc(authorSub) + '</div>' : '') +
+    '</div>' +
+    '<div class="post-time">' + timeAgo + '</div>' +
+    '</div>' +
+    '<div class="tags-row">' + tags + hotBadge + '</div>' +
+    '<div class="post-title">' + esc(p.title) + '</div>' +
+    '<div class="post-body' + (isExpanded ? ' expanded-body' : '') + '">' + esc(p.body || '') + '</div>' +
+    bexiBox +
+    repliesHtml +
+    '<div class="post-actions" onclick="event.stopPropagation()">' +
+    '<button class="action-btn upvote' + (hasVoted ? ' voted' : '') + '" onclick="upvotePost(\'' + p.id + '\')">' +
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>' +
+    (p.upvotes || 0) +
+    '</button>' +
+    '<button class="action-btn" onclick="togglePost(\'' + p.id + '\')">' +
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
+    (p.reply_count || 0) + ' replies' +
+    '</button>' +
+    '<button class="action-btn" onclick="savePost(\'' + p.id + '\')">' +
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>' +
+    'Save' +
+    '</button>' +
+    '<button class="action-btn" onclick="sharePost(\'' + p.id + '\',\'' + esc(p.title) + '\')">' +
+    '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>' +
+    'Share' +
+    '</button>' +
+    '<div class="action-sep"></div>' +
+    '<button class="mentor-btn" onclick="askMentor(\'' + esc(p.title) + '\')">Ask a mentor</button>' +
+    '</div>' +
+    '</div>';
 }
 
-function buildAnswers(p){
-  if (!(p.answers||[]).length) return '<div style="font-size:13px;color:var(--muted);padding:8px 0 10px;font-style:italic">No answers yet — be the first!</div>';
-  return (p.answers||[]).map(function(a){
-    var aVotes  = a.upvotes || 0;
-    var aVoted  = isVoted('answer', a.id);
-    return '<div class="answer-card'+(a.is_bexi?' bexi':'')+'">'
-      +'<div class="answer-top">'
-        +'<div class="answer-av" style="background:'+(a.is_bexi?'#2D1B69':avColor(a.author_id))+'">'+avInitial(a.author||'B')+'</div>'
-        +'<div class="answer-author">'+esc(a.author||'Community Member'+(a.is_bexi?'':' '))+' '+(a.is_bexi?'<span class="bexi-badge">🤖 Bexi AI</span>':'')+'</div>'
-        +'<div class="answer-time">'+relTime(a.created_at)+'</div>'
-      +'</div>'
-      +'<div class="answer-text">'+esc(a.text||a.content||'')+'</div>'
-      +'<div class="answer-vote-row">'
-        +'<button class="ans-vote-btn'+(aVoted?' voted':'')+'" onclick="voteAnswer(\''+a.id+'\',\''+p.id+'\',this)">'
-          +'▲ Helpful <span id="avotes-'+a.id+'">'+aVotes+'</span>'
-        +'</button>'
-      +'</div>'
-    +'</div>';
+/* ── POST INTERACTIONS ── */
+function togglePost(id) {
+  _expanded = _expanded === id ? null : id;
+  renderFeed();
+  if (_expanded) {
+    setTimeout(function() {
+      var el = document.getElementById('pc-' + id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }
+}
+
+async function upvotePost(postId) {
+  if (!_user) { showToast('Sign in to upvote'); return; }
+  if (_votedPosts[postId]) { showToast('Already upvoted'); return; }
+
+  _votedPosts[postId] = true;
+  localStorage.setItem('bx_voted_posts', JSON.stringify(_votedPosts));
+
+  var post = _allPosts.find(function(p){ return p.id === postId; });
+  if (post) post.upvotes = (post.upvotes || 0) + 1;
+  renderFeed();
+
+  try {
+    await sb.from('community_posts').update({ upvotes: post.upvotes }).eq('id', postId);
+  } catch(e) {}
+}
+
+async function submitReply(postId) {
+  if (!_user) { showToast('Sign in to reply'); return; }
+  var inp = document.getElementById('reply-' + postId);
+  var text = inp ? inp.value.trim() : '';
+  if (!text) { showToast('Please write something'); return; }
+
+  var post = _allPosts.find(function(p){ return p.id === postId; });
+  if (!post) return;
+
+  var nm = (_profile && _profile.full_name) || (_user.user_metadata && _user.user_metadata.full_name) || _user.email.split('@')[0];
+  var newReply = { id: 'r' + Date.now(), author: _isAnon ? 'Anon' : nm, author_id: _user.id, is_bexi: false, text: text, body: text, created_at: new Date().toISOString() };
+  if (!post.answers) post.answers = [];
+  post.answers.push(newReply);
+  post.reply_count = (post.reply_count || 0) + 1;
+  renderFeed();
+  showToast('Reply posted!');
+
+  try {
+    await sb.from('community_answers').insert({ post_id: postId, author_id: _user.id, author: nm, body: text, is_bexi: false, is_anonymous: _isAnon });
+    await sb.from('community_posts').update({ reply_count: post.reply_count }).eq('id', postId);
+    /* Update career score */
+    if (_profile) {
+      var newScore = Math.min(100, (_profile.career_score || 30) + 2);
+      await sb.from('profiles').update({ career_score: newScore }).eq('id', _user.id);
+      _profile.career_score = newScore;
+      showScoreWidget();
+    }
+  } catch(e) {}
+}
+
+function savePost(id) {
+  var saved = JSON.parse(localStorage.getItem('bx_saved_posts') || '[]');
+  if (saved.indexOf(id) === -1) { saved.push(id); showToast('Post saved!'); }
+  else { saved.splice(saved.indexOf(id), 1); showToast('Post unsaved'); }
+  localStorage.setItem('bx_saved_posts', JSON.stringify(saved));
+}
+
+function sharePost(id, title) {
+  var url = window.location.origin + '/community.html?post=' + id;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(function(){ showToast('Link copied!'); });
+  } else { showToast('Copy: ' + url); }
+}
+
+function askMentor(title) {
+  window.location.href = 'mentors.html?context=' + encodeURIComponent(title);
+}
+
+/* ── COMPOSE MODAL ── */
+function openAskModal() {
+  if (!_user) { window.location.href = 'index.html'; return; }
+  document.getElementById('ask-modal').classList.add('open');
+  document.getElementById('ask-title').focus();
+  document.getElementById('modal-anon-inp').checked = _isAnon;
+}
+
+function closeAskModal() {
+  document.getElementById('ask-modal').classList.remove('open');
+  document.getElementById('ask-title').value = '';
+  document.getElementById('ask-body').value = '';
+  document.getElementById('title-count').textContent = '0/120';
+  document.getElementById('body-count').textContent = '0/1000';
+  document.querySelectorAll('.modal-tag').forEach(function(t){ t.classList.remove('sel'); });
+  _selectedTag = '';
+}
+
+async function submitPost() {
+  if (!_user) { showToast('Sign in first'); return; }
+  var title = document.getElementById('ask-title').value.trim();
+  var body = document.getElementById('ask-body').value.trim();
+  var isAnon = document.getElementById('modal-anon-inp').checked;
+
+  if (!title) { showToast('Please enter a question'); return; }
+  if (!_selectedTag) { showToast('Please select a topic'); return; }
+
+  var btn = document.getElementById('ask-submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Posting...';
+
+  var nm = (_profile && _profile.full_name) || (_user.user_metadata && _user.user_metadata.full_name) || _user.email.split('@')[0];
+  var newPost = {
+    title: title, body: body,
+    tags: [_selectedTag],
+    author: isAnon ? 'Anon' : nm,
+    author_id: _user.id,
+    is_anonymous: isAnon,
+    role_title: (_profile && _profile.role) || '',
+    city: (_profile && _profile.city) || '',
+    upvotes: 0, reply_count: 0, has_bexi_reply: false, bexi_reply: '',
+    created_at: new Date().toISOString(),
+    answers: []
+  };
+
+  try {
+    var r = await sb.from('community_posts').insert([{
+      title: newPost.title, body: newPost.body, tags: newPost.tags,
+      author: newPost.author, author_id: newPost.author_id,
+      is_anonymous: newPost.is_anonymous, role_title: newPost.role_title,
+      city: newPost.city, upvotes: 0, reply_count: 0,
+      has_bexi_reply: false, bexi_reply: '', created_at: newPost.created_at
+    }]).select().single();
+    if (r.data) { newPost.id = r.data.id; newPost.answers = []; }
+    /* Update career score */
+    if (_profile) {
+      var ns = Math.min(100, (_profile.career_score || 30) + 5);
+      await sb.from('profiles').update({ career_score: ns }).eq('id', _user.id);
+      _profile.career_score = ns; showScoreWidget();
+    }
+    showToast('Question posted! +5 career score');
+  } catch(e) {
+    newPost.id = 'local_' + Date.now();
+    showToast('Question posted!');
+  }
+
+  _allPosts.unshift(newPost);
+  updateStats();
+  closeAskModal();
+  renderFeed();
+
+  /* Trigger Bexi AI reply in background */
+  triggerBexiReply(newPost);
+
+  btn.disabled = false;
+  btn.textContent = 'Post Question →';
+}
+
+/* ── BEXI AI AUTO REPLY ── */
+async function triggerBexiReply(post) {
+  /* Wait 2s then call Edge Function */
+  await new Promise(function(r){ setTimeout(r, 2000); });
+
+  try {
+    var token = '';
+    try {
+      var sess = await sb.auth.getSession();
+      token = (sess.data && sess.data.session && sess.data.session.access_token) || '';
+    } catch(e) {}
+
+    var res = await fetch(BEXI_EDGE + '/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (token || SB_KEY) },
+      body: JSON.stringify({
+        question: post.title + (post.body ? '\n\nDetails: ' + post.body : ''),
+        profileContext: 'India job market question from community'
+      })
+    });
+
+    if (!res.ok) return;
+    var data = await res.json();
+    var reply = data.response || '';
+    if (!reply) return;
+
+    post.has_bexi_reply = true;
+    post.bexi_reply = reply;
+    var bexiAnswer = { id: 'bexi_' + Date.now(), author: 'Bexi AI', author_id: 'bexi', is_bexi: true, text: reply, body: reply, created_at: new Date().toISOString() };
+    if (!post.answers) post.answers = [];
+    post.answers.push(bexiAnswer);
+    post.reply_count = (post.reply_count || 0) + 1;
+
+    /* Save to Supabase */
+    try {
+      await sb.from('community_posts').update({ has_bexi_reply: true, bexi_reply: reply, reply_count: post.reply_count }).eq('id', post.id);
+      await sb.from('community_answers').insert({ post_id: post.id, author: 'Bexi AI', author_id: 'bexi', body: reply, is_bexi: true });
+    } catch(e) {}
+
+    renderFeed();
+    showToast('Bexi AI just answered your question!');
+  } catch(e) {}
+}
+
+/* ── RIGHT SIDEBAR ── */
+function buildMentorsOnline() {
+  document.getElementById('mentors-online').innerHTML = MENTORS_ONLINE.map(function(m) {
+    return '<div class="mentor-row">' +
+      '<div class="mentor-av-wrap"><div class="mentor-av-sm" style="background:' + m.color + '">' + m.name.substring(0,2) + '</div><div class="online-dot"></div></div>' +
+      '<div class="mentor-info"><div class="mentor-name">' + m.name + '</div><div class="mentor-role">' + m.role + '</div></div>' +
+      '</div>';
   }).join('');
 }
 
-/* ── TOGGLE EXPAND ── */
-function togglePost(id){
-  var card    = document.getElementById('card-'+id);
-  var ansSec  = document.getElementById('ans-sec-'+id);
-  var bodyTxt = document.getElementById('body-'+id);
-  if (!card || !ansSec) return;
-
-  var isOpen = ansSec.classList.contains('show');
-
-  /* Close previously expanded */
-  if (_expanded && _expanded !== id) {
-    var prev = document.getElementById('card-'+_expanded);
-    if (prev) {
-      prev.classList.remove('expanded');
-      var pa = document.getElementById('ans-sec-'+_expanded);
-      var pb = document.getElementById('body-'+_expanded);
-      if (pa) pa.classList.remove('show');
-      if (pb) pb.classList.remove('show');
-    }
-  }
-
-  if (isOpen) {
-    card.classList.remove('expanded');
-    ansSec.classList.remove('show');
-    if (bodyTxt) bodyTxt.classList.remove('show');
-    _expanded = null;
-  } else {
-    card.classList.add('expanded');
-    ansSec.classList.add('show');
-    if (bodyTxt) bodyTxt.classList.add('show');
-    _expanded = id;
-    /* Scroll into view smoothly */
-    setTimeout(function(){ card.scrollIntoView({ behavior:'smooth', block:'nearest' }); }, 80);
-  }
+function buildTrending() {
+  var trending = [
+    {tag:'Salary talks', count:'34 posts'},
+    {tag:'Career switch', count:'28 posts'},
+    {tag:'Interviews', count:'22 posts'},
+    {tag:'Jobs & offers', count:'19 posts'},
+    {tag:'WFH / remote', count:'15 posts'},
+  ];
+  document.getElementById('trending-list').innerHTML = trending.map(function(t) {
+    return '<div class="trending-item" onclick="setTagByLabel(\'' + t.tag + '\')">' +
+      '<span class="trending-tag">' + t.tag + '</span>' +
+      '<span class="trending-count">' + t.count + '</span>' +
+      '</div>';
+  }).join('');
 }
 
-/* ── VOTING ── */
-var _votedKey = 'bx_community_votes';
-function getVotes(){ try{return JSON.parse(localStorage.getItem(_votedKey)||'{}');}catch(e){return {};} }
-function isVoted(type, id){ return !!(getVotes()[type+'_'+id]); }
-function setVoted(type, id){ var v=getVotes(); v[type+'_'+id]=true; localStorage.setItem(_votedKey,JSON.stringify(v)); }
-
-function votePost(id, btn){
-  if (isVoted('post',id)){ showToast('Already upvoted!'); return; }
-  if (!_user){ showToast('Sign in to upvote'); return; }
-  setVoted('post',id);
-  btn.classList.add('voted');
-  var vc = document.getElementById('votes-'+id);
-  if (vc) vc.textContent = parseInt(vc.textContent||0)+1;
-  /* Update in seed */
-  var p = _allPosts.find(function(x){return x.id===id;});
-  if (p) p.upvotes = (p.upvotes||0)+1;
-  /* Supabase */
-  try { sb.from('community_posts').update({upvotes: (p?p.upvotes:1)}).eq('id',id).then(function(){}); } catch(e){}
-}
-
-function voteAnswer(aid, pid, btn){
-  if (isVoted('answer',aid)){ showToast('Already upvoted!'); return; }
-  if (!_user){ showToast('Sign in to upvote'); return; }
-  setVoted('answer',aid);
-  btn.classList.add('voted');
-  var vc = document.getElementById('avotes-'+aid);
-  if (vc) vc.textContent = parseInt(vc.textContent||0)+1;
-  /* Supabase */
-  try {
-    sb.from('community_answers').select('upvotes').eq('id',aid).maybeSingle().then(function(r){
-      if (r.data) sb.from('community_answers').update({upvotes:(r.data.upvotes||0)+1}).eq('id',aid).then(function(){});
-    });
-  } catch(e){}
-}
-
-/* ── SUBMIT ANSWER ── */
-async function submitAnswer(postId){
-  if (!_user){ showToast('Please sign in to answer'); return; }
-  var inp = document.getElementById('ans-inp-'+postId);
-  if (!inp || !inp.value.trim()){ showToast('Please write your answer first'); return; }
-  var text = inp.value.trim();
-
-  var post = _allPosts.find(function(p){ return p.id===postId; });
-  var newAnswer = {
-    id:         'local_'+Date.now(),
-    post_id:    postId,
-    author:     _user.email ? _user.email.split('@')[0] : 'Community Member',
-    author_id:  _user.id,
-    is_bexi:    false,
-    text:       text,
-    upvotes:    0,
-    created_at: new Date().toISOString()
-  };
-
-  /* Add locally */
-  if (post) post.answers = (post.answers||[]).concat(newAnswer);
-
-  /* Supabase insert */
-  try {
-    await sb.from('community_answers').insert({
-      post_id:    postId,
-      user_id:    _user.id,
-      content:    text,
-      is_bexi:    false,
-      upvotes:    0
-    });
-  } catch(e){}
-
-  inp.value = '';
-  renderFeed();
-  showToast('✅ Answer posted! Thank you for contributing.');
-}
-
-/* ── ASK MODAL ── */
-var _selectedTags = [];
-
-function openAskModal(){
-  if (!_user){ showToast('Please sign in to ask a question'); window.location.href='index.html'; return; }
-  document.getElementById('ask-modal').classList.add('show');
-  document.getElementById('ask-title').focus();
-}
-function closeAskModal(){
-  document.getElementById('ask-modal').classList.remove('show');
-}
-function handleModalClick(e){
-  if (e.target === document.getElementById('ask-modal')) closeAskModal();
-}
-function toggleModalTag(el){
-  var tag = el.dataset.tag;
-  if (el.classList.contains('selected')){
-    el.classList.remove('selected');
-    _selectedTags = _selectedTags.filter(function(t){return t!==tag;});
-  } else {
-    if (_selectedTags.length >= 3){ showToast('Max 3 tags'); return; }
-    el.classList.add('selected');
-    _selectedTags.push(tag);
-  }
-}
-
-/* Char counters */
-document.addEventListener('DOMContentLoaded', function(){
-  var titleInp = document.getElementById('ask-title');
-  var bodyInp  = document.getElementById('ask-body');
-  if (titleInp) titleInp.addEventListener('input', function(){
-    document.getElementById('title-char').textContent = this.value.length + ' / 200';
+function setTagByLabel(label) {
+  var map = {'Salary talks':'Salary','Career switch':'Career Switch','Interviews':'Interviews','Jobs & offers':'Jobs','WFH / remote':'WFH'};
+  var key = map[label] || 'all';
+  var btns = document.querySelectorAll('.topic-item');
+  btns.forEach(function(b) {
+    var isMatch = b.textContent.trim().includes(label.split(' ')[0]) || (key !== 'all' && b.textContent.includes(label.split(' ')[0]));
+    if (isMatch) { setTag(key, b); }
   });
-  if (bodyInp) bodyInp.addEventListener('input', function(){
-    document.getElementById('body-char').textContent = this.value.length + ' / 1000';
-  });
-  /* Escape to close modal */
-  document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeAskModal(); });
+}
+
+/* ── STATS ── */
+function updateStats() {
+  var totalAnswers = _allPosts.reduce(function(s,p){ return s + (p.reply_count || 0); }, 0);
+  document.getElementById('stat-posts').textContent = _allPosts.length + '+';
+  document.getElementById('stat-answers').textContent = totalAnswers + '+';
+}
+
+/* ── HELPERS ── */
+function getTimeAgo(dateStr) {
+  if (!dateStr) return '';
+  var diff = Date.now() - new Date(dateStr).getTime();
+  var m = Math.floor(diff / 60000);
+  if (m < 1) return 'just now';
+  if (m < 60) return m + 'm ago';
+  var h = Math.floor(m / 60);
+  if (h < 24) return h + 'h ago';
+  var d = Math.floor(h / 24);
+  return d + 'd ago';
+}
+
+function esc(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+}
+
+/* Close modal on bg click */
+document.addEventListener('click', function(e) {
+  if (e.target.id === 'ask-modal') closeAskModal();
 });
-
-async function submitQuestion(){
-  var title = (document.getElementById('ask-title').value||'').trim();
-  var body  = (document.getElementById('ask-body').value||'').trim();
-  if (!title){ showToast('Please enter your question'); return; }
-  if (!_user){ showToast('Please sign in first'); return; }
-
-  var btn = document.getElementById('ask-submit-btn');
-  btn.disabled = true; btn.textContent = 'Posting...';
-
-  var newPost = {
-    id:         'local_'+Date.now(),
-    title:      title,
-    body:       body,
-    tags:       _selectedTags.slice(),
-    author:     _user.email ? _user.email.split('@')[0] : 'Community Member',
-    author_id:  _user.id,
-    upvotes:    0,
-    answers:    [],
-    created_at: new Date().toISOString()
-  };
-
-  /* Insert to Supabase */
-  try {
-    var res = await sb.from('community_posts').insert({
-      user_id:  _user.id,
-      title:    title,
-      body:     body,
-      tags:     _selectedTags,
-      upvotes:  0
-    }).select().maybeSingle();
-    if (res.data) newPost.id = res.data.id;
-  } catch(e){}
-
-  /* Add locally */
-  _allPosts.unshift(newPost);
-  _activeTag  = 'all';
-  _activeSort = 'latest';
-  _page = 0;
-
-  /* Reset modal */
-  document.getElementById('ask-title').value = '';
-  document.getElementById('ask-body').value  = '';
-  document.getElementById('title-char').textContent = '0 / 200';
-  document.getElementById('body-char').textContent  = '0 / 1000';
-  document.querySelectorAll('.modal-tag-opt').forEach(function(t){ t.classList.remove('selected'); });
-  _selectedTags = [];
-  closeAskModal();
-  btn.disabled = false; btn.textContent = 'Post Question →';
-
-  /* Reset tag chips */
-  document.querySelectorAll('.tag-chip').forEach(function(c){ c.classList.remove('active'); });
-  var allChip = document.querySelector('[data-tag="all"]');
-  if (allChip) allChip.classList.add('active');
-
-  updateStats();
-  renderFeed();
-  showToast('🎉 Question posted! The community will answer soon.');
-
-  /* Check if question needs Bexi auto-answer after 24h
-     In production this is handled by a Supabase Edge Function cron
-     Here we simulate for demo purposes */
-  schedulesBexiAnswer(newPost.id);
-}
-
-/* Bexi auto-answer simulation (in prod: Edge Function cron) */
-function schedulesBexiAnswer(postId){
-  /* For demo: answer after 8 seconds if post still has 0 answers */
-  setTimeout(async function(){
-    var post = _allPosts.find(function(p){ return p.id===postId; });
-    if (!post || (post.answers||[]).length) return;
-    var bexiAnswer = await getBexiAnswer(post.title, post.body, post.tags);
-    if (!bexiAnswer) return;
-    var newAnswer = {
-      id: 'bexi_'+Date.now(), post_id:postId,
-      author:'Bexi AI', author_id:'bexi', is_bexi:true,
-      text: bexiAnswer, upvotes:0, created_at:new Date().toISOString()
-    };
-    post.answers = (post.answers||[]).concat(newAnswer);
-    /* Save to Supabase */
-    try {
-      await sb.from('community_answers').insert({ post_id:postId, content:bexiAnswer, is_bexi:true, upvotes:0 });
-    } catch(e){}
-    renderFeed();
-    showToast('🤖 Bexi AI answered your question!', 4000);
-  }, 8000);
-}
-
-/* Call Claude API for Bexi answer */
-async function getBexiAnswer(title, body, tags){
-  try {
-    var res = await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:600,
-        system:'You are Bexi, an expert career advisor for Indian professionals. Answer career questions with specific, actionable advice tailored to the Indian job market (include rupee figures, company names, realistic timelines). Be warm, direct, and practical. 3–4 paragraphs max.',
-        messages:[{ role:'user', content:'Question: '+title+'\n\nDetails: '+(body||'No additional details')+'\n\nTags: '+(tags||[]).join(', ') }]
-      })
-    });
-    if(!res.ok) return null;
-    var d=await res.json();
-    return (d.content||[]).map(function(b){return b.text||'';}).join('').trim()||null;
-  }catch(e){ return null; }
-}
-
-/* ── INIT ── */
-initAuth().then(loadPosts);
-</script>
-<script src="pwa-install.js"></script>
-<script>
-/* ══ NAV AUTH (from index.html) ══ */
-var SB_URL_NAV='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
-var SB_KEY_NAV='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
-
-/* Auth handled by initAuth() above */
-
-function toggleDD(id,btn){
-  var dd=document.getElementById(id);
-  if(!dd)return;
-  var isOpen=dd.classList.contains('open');
-  document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
-  document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
-  if(!isOpen){dd.classList.add('open');btn.classList.add('dd-open');}
-}
-
-function toggleMobileMenu(){
-  var mm=document.getElementById('mobile-menu');
-  var hb=document.getElementById('hamburger');
-  mm.classList.toggle('open');
-  hb.classList.toggle('open');
-}
-
-function openModal(type){
-  document.getElementById('auth-modal').classList.add('open');
-  modalTab(type);
-}
-
-function closeModal(){document.getElementById('auth-modal').classList.remove('open');}
-
-function doSignOut(){sb.auth.signOut().then(function(){location.reload();});}
-
-function scrollToForWho(){
-  /* Close all dropdowns */
-  document.querySelectorAll('.dd-panel').forEach(function(p){p.classList.remove('open');});
-  document.querySelectorAll('.nav-link').forEach(function(b){b.classList.remove('dd-open');});
-  /* Smooth scroll to section */
-  var sec=document.getElementById('for-who');
-  if(sec)sec.scrollIntoView({behavior:'smooth',block:'start'});
-}
-
-function whoCardClick(){
-  /* If logged in → go to dashboard; if not → show signup modal */
-  var navIn=document.getElementById('nav-in');
-  if(navIn&&navIn.style.display!=='none'&&navIn.style.display!==''){
-    window.location.href='dashboard.html';
-  } else {
-    /* Also check Supabase session */
-    if(typeof sb!=='undefined'){
-      sb.auth.getSession().then(function(r){
-        if(r&&r.data&&r.data.session&&r.data.session.user){
-          window.location.href='dashboard.html';
-        } else {
-          openModal('signup');
-        }
-      }).catch(function(){openModal('signup');});
-    } else {
-      openModal('signup');
-    }
-  }
-}
-
-function modalAuth(type){
-  var email='',pass='';
-  if(type==='signup'){email=(document.getElementById('m-email')||{}).value||'';pass=(document.getElementById('m-pass')||{}).value||'';}
-  else{email=(document.getElementById('m-si-email')||{}).value||'';pass=(document.getElementById('m-si-pass')||{}).value||'';}
-  if(!email||!pass){alert('Please fill all fields');return;}
-  try{
-    var res=type==='signup'?await sb.auth.signUp({email,password:pass}):await sb.auth.signInWithPassword({email,password:pass});
-    if(res.error)throw res.error;
-    if(type==='signin'){closeModal();window.location.href='dashboard.html';}
-    else{
-      /* ✅ FIX #41: Process referral on modal signup */
-      await refProcessOnSignup(res.data&&res.data.user?res.data.user.id:null);
-      showStep2();
-    }
-  }catch(e){alert('Error: '+e.message);}
-}
-
-function modalTab(tab){
-  document.getElementById('modal-signup').style.display=tab==='signup'?'block':'none';
-  document.getElementById('modal-signin').style.display=tab==='signin'?'block':'none';
-  document.getElementById('tab-signup').classList[tab==='signup'?'add':'remove']('active');
-  document.getElementById('tab-signin').classList[tab==='signin'?'add':'remove']('active');
-}
-
-function googleAuth(){
-  try{
-    await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});
-  }catch(e){alert('Google auth error: '+e.message);}
-}
-
-function showUserNav(user){
-  var nm=user.user_metadata&&user.user_metadata.full_name?user.user_metadata.full_name:user.email.split('@')[0];
-  document.getElementById('nav-out').style.display='none';
-  document.getElementById('nav-in').style.display='block';
-  document.getElementById('nav-av').textContent=nm.substring(0,2).toUpperCase();
-  document.getElementById('nav-nm').textContent=nm.split(' ')[0];
-  document.getElementById('ud-name').textContent=nm;
-  document.getElementById('ud-email').textContent=user.email||'';
-  var hsc=document.getElementById('hero-signup-card');
-  if(hsc)hsc.style.display='none';
-  var hgc=document.getElementById('hero-guest-cta');
-  if(hgc)hgc.style.display='none';
-  var hgn=document.getElementById('hero-guest-note');
-  if(hgn)hgn.style.display='none';
-  var hsc2=document.getElementById('hero-signed-cta');
-  if(hsc2)hsc2.style.display='flex';
-  var hsn=document.getElementById('hero-signed-note');
-  if(hsn)hsn.style.display='block';
-  var hIn=document.querySelector('.hero-in');
-  if(hIn)hIn.style.gridTemplateColumns='1fr';
-}
-
-function showGuestNav(){
-  document.getElementById('nav-out').style.display='flex';
-  document.getElementById('nav-in').style.display='none';
-}
-
-function doSignOut(){ sb.auth.signOut().then(function(){ location.reload(); }); }
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeAskModal();
+});
 </script>
 </body>
 </html>
