@@ -4334,6 +4334,27 @@ var UPG_CONFIG = {
   }
 };
 
+async function loadPricingFromAdmin() {
+  /* Read pricing from Supabase settings table saved by admin */
+  try {
+    var res = await supaClient.from('settings')
+      .select('key,value')
+      .in('key', ['pro_monthly','pro_yearly','premium_monthly','premium_yearly']);
+    if (res.data && res.data.length) {
+      res.data.forEach(function(row) {
+        if (row.key === 'pro_monthly')      UPG_CONFIG.pro.monthly      = parseInt(row.value) || 499;
+        if (row.key === 'pro_yearly')       UPG_CONFIG.pro.yearly       = parseInt(row.value) || 4999;
+        if (row.key === 'premium_monthly')  UPG_CONFIG.premium.monthly  = parseInt(row.value) || 999;
+        if (row.key === 'premium_yearly')   UPG_CONFIG.premium.yearly   = parseInt(row.value) || 9999;
+      });
+      console.log('[Belongix] Pricing loaded from admin settings');
+    }
+  } catch(e) { console.warn('[Belongix] Could not load pricing:', e.message); }
+}
+
+/* Load pricing on page start */
+loadPricingFromAdmin();
+
 function openUpgradeModal(plan) {
   _upgPlan = plan || 'pro';
   _upgBilling = 'monthly';
