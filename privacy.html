@@ -4,265 +4,156 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Privacy Policy — Belongix</title>
-<meta name="description" content="Belongix Privacy Policy — how we collect, use and protect your personal data."/>
-<meta name="robots" content="index, follow"/>
-<link rel="canonical" href="https://www.belongix.in/privacy.html"/>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="manifest" href="manifest.json"/>
+<meta name="description" content="Belongix Privacy Policy — how we collect, use and protect your data."/>
 <link rel="icon" href="icons/icon-32.png"/>
-<link rel="apple-touch-icon" href="icons/icon-192.png"/>
-<meta name="theme-color" content="#2D1B69"/>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-:root{--brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;--ink:#0D0D1A;--muted:#5A5A7A;--subtle:#8B8BA8;--border:#E4E4F0;--off:#F7F7FC;--off2:#EFEFF8;--ff:'Sora',sans-serif;--ffb:'DM Sans',sans-serif;--max:800px}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-body{font-family:var(--ffb);color:var(--ink);background:#FAFAFE;background-image:linear-gradient(rgba(45,27,105,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(45,27,105,.04) 1px,transparent 1px);background-size:52px 52px;background-attachment:fixed}
-nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;align-items:center;padding:0 5%;background:rgba(255,255,255,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-in{max-width:1200px;width:100%;margin:0 auto;display:flex;align-items:center;justify-content:space-between}
-.nlogo{font-family:var(--ff);font-size:21px;font-weight:800;color:var(--brand);text-decoration:none;letter-spacing:-.4px}
-.nlogo span{color:var(--accent)}
-.nav-back{display:flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);text-decoration:none;font-weight:500;transition:.15s}
-.nav-back:hover{color:var(--brand)}
-.page-wrap{padding-top:64px}
-.legal-hero{background:linear-gradient(135deg,#2D1B69 0%,#4C2FAA 100%);padding:56px 5% 48px;text-align:center}
-.legal-hero h1{font-family:var(--ff);font-size:clamp(28px,4vw,42px);font-weight:800;color:#fff;letter-spacing:-1px;margin-bottom:10px}
-.legal-hero p{font-size:15px;color:rgba(255,255,255,.7);max-width:520px;margin:0 auto}
-.legal-meta{display:flex;gap:16px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-.legal-badge{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);border-radius:100px;padding:5px 16px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85)}
-.legal-wrap{max-width:var(--max);margin:0 auto;padding:48px 5% 80px}
-/* TOC */
-.toc{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:40px}
-.toc-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:7px}
-.toc-list{display:flex;flex-direction:column;gap:6px}
-.toc-link{font-size:13.5px;color:var(--brand);text-decoration:none;font-weight:500;padding:4px 0;display:flex;align-items:center;gap:8px;transition:.15s}
-.toc-link:hover{color:var(--brand2)}
-.toc-link::before{content:'';width:4px;height:4px;border-radius:50%;background:var(--brand);flex-shrink:0}
-/* Content */
-.legal-section{margin-bottom:40px;scroll-margin-top:84px}
-.legal-section h2{font-family:var(--ff);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--off2);display:flex;align-items:center;gap:10px}
-.legal-section h2 .sec-num{width:28px;height:28px;border-radius:50%;background:var(--brand);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--ff)}
-.legal-section p{font-size:14.5px;line-height:1.85;color:var(--muted);margin-bottom:12px}
-.legal-section ul{padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;margin-bottom:14px}
-.legal-section li{font-size:14px;line-height:1.75;color:var(--muted);padding-left:20px;position:relative}
-.legal-section li::before{content:'•';position:absolute;left:0;color:var(--brand);font-weight:700}
-.legal-section strong{color:var(--ink);font-weight:600}
-.highlight-box{background:linear-gradient(135deg,rgba(45,27,105,.05),rgba(107,72,204,.05));border:1px solid rgba(45,27,105,.12);border-radius:12px;padding:16px 20px;margin:16px 0}
-.highlight-box p{margin-bottom:0;font-size:14px;color:var(--ink2)}
-.data-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px}
-.data-table th{background:var(--off2);padding:10px 14px;text-align:left;font-weight:700;color:var(--ink);border:1px solid var(--border);font-family:var(--ff);font-size:12px;text-transform:uppercase;letter-spacing:.4px}
-.data-table td{padding:10px 14px;border:1px solid var(--border);color:var(--muted);vertical-align:top;line-height:1.6}
-.data-table tr:nth-child(even) td{background:var(--off)}
-.contact-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:24px;margin-top:24px;display:flex;gap:16px;align-items:flex-start}
-.contact-icon{width:44px;height:44px;border-radius:12px;background:var(--off2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.contact-info h4{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px}
-.contact-info p{font-size:13.5px;color:var(--muted);margin:0;line-height:1.6}
-.contact-info a{color:var(--brand);text-decoration:none;font-weight:600}
-footer{background:#0D0D1A;padding:32px 5%;text-align:center}
-footer p{font-size:13px;color:rgba(255,255,255,.35)}
-footer a{color:rgba(255,255,255,.5);text-decoration:none;margin:0 10px}
-footer a:hover{color:#fff}
+body{font-family:'DM Sans',sans-serif;background:#F7F7FC;color:#0D0D1A;line-height:1.7}
+.nav{background:#fff;border-bottom:1px solid #E4E4F0;padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:#2D1B69;text-decoration:none}
+.nav-logo span{color:#FF5C35}
+.nav-back{font-size:13px;color:#5A5A7A;text-decoration:none;display:flex;align-items:center;gap:5px;padding:7px 14px;border:1px solid #E4E4F0;border-radius:8px;transition:.15s}
+.nav-back:hover{border-color:#2D1B69;color:#2D1B69}
+.wrap{max-width:760px;margin:0 auto;padding:48px 24px 80px}
+.hero{text-align:center;margin-bottom:48px}
+.hero h1{font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:#2D1B69;margin-bottom:10px}
+.hero p{font-size:14px;color:#5A5A7A}
+.last-updated{display:inline-block;background:#EFEFF8;color:#2D1B69;font-size:12px;font-weight:600;border-radius:20px;padding:4px 14px;margin-top:10px}
+.card{background:#fff;border:1px solid #E4E4F0;border-radius:16px;padding:28px 32px;margin-bottom:16px}
+.card h2{font-family:'Sora',sans-serif;font-size:16px;font-weight:700;color:#0D0D1A;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h2 span{width:28px;height:28px;background:#EFEFF8;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.card p{font-size:14px;color:#3A3A5A;margin-bottom:10px}
+.card p:last-child{margin-bottom:0}
+.card ul{font-size:14px;color:#3A3A5A;padding-left:20px;margin-bottom:10px}
+.card ul li{margin-bottom:6px}
+.highlight{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:10px;padding:14px 16px;font-size:13.5px;color:#15803D;margin-top:12px}
+.contact-card{background:linear-gradient(135deg,#2D1B69,#4C2FAA);border-radius:16px;padding:28px 32px;text-align:center;color:#fff;margin-top:24px}
+.contact-card h3{font-family:'Sora',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px}
+.contact-card p{font-size:14px;opacity:.8;margin-bottom:16px}
+.contact-card a{display:inline-block;background:#fff;color:#2D1B69;padding:10px 24px;border-radius:10px;font-size:13px;font-weight:700;text-decoration:none;transition:.15s}
+.contact-card a:hover{background:#F0EEFF}
+footer{text-align:center;padding:24px;font-size:13px;color:#8B8BA8}
 </style>
 </head>
 <body>
-<nav>
-  <div class="nav-in">
-    <a href="index.html" class="nlogo">Belong<span>ix</span></a>
-    <a href="index.html" class="nav-back">
-      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 12H5m0 0l7 7m-7-7l7-7"/></svg>
-      Back to Home
-    </a>
-  </div>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
+  <a href="index.html" class="nav-back">← Back to Home</a>
 </nav>
 
-<div class="page-wrap">
-  <div class="legal-hero">
+<div class="wrap">
+  <div class="hero">
     <h1>Privacy Policy</h1>
-    <p>How Belongix collects, uses, and protects your personal information</p>
-    <div class="legal-meta">
-      <span class="legal-badge">📅 Effective: 1 May 2026</span>
-      <span class="legal-badge">🔄 Last Updated: 1 May 2026</span>
-      <span class="legal-badge">🇮🇳 Governed by Indian Law</span>
-    </div>
+    <p>How Belongix collects, uses, and protects your personal data.</p>
+    <span class="last-updated">Last updated: May 21, 2026</span>
   </div>
 
-  <div class="legal-wrap">
-    <div class="toc">
-      <div class="toc-title">📋 Table of Contents</div>
-      <div class="toc-list">
-        <a href="#s1" class="toc-link">1. Information We Collect</a>
-        <a href="#s2" class="toc-link">2. How We Use Your Information</a>
-        <a href="#s3" class="toc-link">3. Information Sharing</a>
-        <a href="#s4" class="toc-link">4. Data Security</a>
-        <a href="#s5" class="toc-link">5. Cookies & Tracking</a>
-        <a href="#s6" class="toc-link">6. Your Rights</a>
-        <a href="#s7" class="toc-link">7. Data Retention</a>
-        <a href="#s8" class="toc-link">8. Third-Party Services</a>
-        <a href="#s9" class="toc-link">9. Children's Privacy</a>
-        <a href="#s10" class="toc-link">10. Changes to This Policy</a>
-        <a href="#s11" class="toc-link">11. Contact Us</a>
-      </div>
-    </div>
+  <div class="card">
+    <h2><span>👋</span> Who We Are</h2>
+    <p>Belongix ("we", "us", "our") is an Indian career platform operated by Team Belongix, helping job seekers find opportunities, upskill, and get AI-powered career guidance.</p>
+    <p><strong>Contact:</strong> teambelongix@gmail.com | belongix.in</p>
+    <p><strong>Jurisdiction:</strong> India. This policy complies with the Information Technology Act, 2000 and the Digital Personal Data Protection Act, 2023 (DPDPA).</p>
+  </div>
 
-    <div class="highlight-box">
-      <p><strong>Plain language summary:</strong> Belongix collects only the data you give us and data needed to run the platform. We do not sell your personal data to advertisers. We do not share your data with employers without your consent. You can delete your account and all associated data at any time.</p>
-    </div>
+  <div class="card">
+    <h2><span>📋</span> What Data We Collect</h2>
+    <p><strong>Account data:</strong> Name, email address, password (encrypted), phone number (optional).</p>
+    <p><strong>Profile data:</strong> Work experience, skills, education, resume, city, job preferences — only what you choose to add.</p>
+    <p><strong>Usage data:</strong> Pages visited, jobs applied to, courses started, Bexi AI conversations — used to improve your experience.</p>
+    <p><strong>Payment data:</strong> We use Razorpay for payments. We do not store your card details — Razorpay handles all payment data securely.</p>
+    <p><strong>Device data:</strong> Browser type, IP address, device type — collected automatically for security and analytics.</p>
+  </div>
 
-    <div class="legal-section" id="s1">
-      <h2><span class="sec-num">1</span> Information We Collect</h2>
-      <p>We collect information you provide directly to us, and information generated by your use of the platform.</p>
-      <table class="data-table">
-        <tr><th>Category</th><th>Examples</th><th>Why We Collect It</th></tr>
-        <tr><td><strong>Account data</strong></td><td>Name, email address, password (hashed)</td><td>To create and manage your account</td></tr>
-        <tr><td><strong>Profile data</strong></td><td>Role, company, city, skills, experience, LinkedIn URL</td><td>To personalise job recommendations and salary insights</td></tr>
-        <tr><td><strong>Usage data</strong></td><td>Pages visited, features used, search queries, session duration</td><td>To improve our platform and show relevant content</td></tr>
-        <tr><td><strong>Device data</strong></td><td>IP address, browser type, OS, device type</td><td>For security and analytics</td></tr>
-        <tr><td><strong>Payment data</strong></td><td>Processed by Razorpay — we store only transaction ID and amount</td><td>To verify Pro plan subscriptions and mentor bookings</td></tr>
-        <tr><td><strong>Mentor session data</strong></td><td>Booking details, session notes (if shared), ratings</td><td>To facilitate and improve the mentor network</td></tr>
-      </table>
-    </div>
+  <div class="card">
+    <h2><span>🎯</span> Why We Collect Your Data</h2>
+    <ul>
+      <li>To create and manage your Belongix account</li>
+      <li>To match you with relevant job openings</li>
+      <li>To power Bexi AI career guidance</li>
+      <li>To track your career score and learning progress</li>
+      <li>To send job alerts and platform updates (you can opt out)</li>
+      <li>To process payments for Pro/Premium plans</li>
+      <li>To prevent fraud and ensure platform security</li>
+    </ul>
+    <div class="highlight">✅ We never sell your personal data to third parties. Ever.</div>
+  </div>
 
-    <div class="legal-section" id="s2">
-      <h2><span class="sec-num">2</span> How We Use Your Information</h2>
-      <p>We use the information we collect to operate, improve, and personalise Belongix.</p>
-      <ul>
-        <li>Provide and maintain the platform, including job board, salary insights, Bexi AI, courses, and mentor network</li>
-        <li>Personalise your dashboard, job recommendations, and career guidance based on your profile</li>
-        <li>Process mentor session bookings and Pro plan subscriptions</li>
-        <li>Send transactional emails (account confirmation, booking confirmations, password reset)</li>
-        <li>Send platform notifications and career tips (you can unsubscribe at any time)</li>
-        <li>Detect and prevent fraud, abuse, and security incidents</li>
-        <li>Analyse platform usage to improve features and fix bugs</li>
-        <li>Comply with applicable Indian laws and regulations</li>
-      </ul>
-      <p>We do <strong>not</strong> use your data to serve third-party advertisements. We do <strong>not</strong> sell your personal data.</p>
-    </div>
+  <div class="card">
+    <h2><span>🔗</span> Who We Share Data With</h2>
+    <p><strong>Supabase:</strong> Our database and authentication provider (servers in EU/US).</p>
+    <p><strong>Razorpay:</strong> Payment processing (RBI-regulated, India).</p>
+    <p><strong>Anthropic:</strong> Powers Bexi AI. Your career questions are sent to Claude API — no personally identifying data is shared.</p>
+    <p><strong>EmailJS:</strong> Sends transactional emails (job alerts, welcome emails).</p>
+    <p><strong>Vercel:</strong> Our hosting provider.</p>
+    <p>All third-party providers are contractually bound to protect your data and cannot use it for their own purposes.</p>
+  </div>
 
-    <div class="legal-section" id="s3">
-      <h2><span class="sec-num">3</span> Information Sharing</h2>
-      <p>We do not sell, rent, or trade your personal information. We share data only in the following limited circumstances:</p>
-      <ul>
-        <li><strong>With your consent:</strong> When you choose to share your profile with a mentor or employer through the platform</li>
-        <li><strong>Service providers:</strong> Supabase (database &amp; auth), Razorpay (payments), Vercel (hosting) — each bound by data processing agreements</li>
-        <li><strong>Legal compliance:</strong> If required by Indian law, court order, or government authority</li>
-        <li><strong>Business transfers:</strong> In the event of a merger or acquisition, with advance notice to users</li>
-        <li><strong>Aggregated data:</strong> We may share anonymised, aggregated statistics (e.g., "salary trends in Bangalore") that cannot identify individuals</li>
-      </ul>
-      <div class="highlight-box">
-        <p>🔒 <strong>Mentor network:</strong> When you book a mentor session, your name and contact details are shared with that mentor only — not with other platform users or employers.</p>
-      </div>
-    </div>
+  <div class="card">
+    <h2><span>🍪</span> Cookies</h2>
+    <p>We use minimal cookies and localStorage for:</p>
+    <ul>
+      <li>Keeping you logged in (authentication token)</li>
+      <li>Remembering your preferences (anonymous mode, job filters)</li>
+      <li>Career score and course progress tracking</li>
+    </ul>
+    <p>We do not use advertising cookies or third-party tracking cookies.</p>
+  </div>
 
-    <div class="legal-section" id="s4">
-      <h2><span class="sec-num">4</span> Data Security</h2>
-      <p>We implement industry-standard security measures to protect your personal information:</p>
-      <ul>
-        <li>All data is stored on Supabase with enterprise-grade encryption at rest (AES-256) and in transit (TLS 1.3)</li>
-        <li>Passwords are never stored in plain text — we use bcrypt hashing via Supabase Auth</li>
-        <li>Access to production databases is restricted to authorised personnel only</li>
-        <li>We conduct regular security reviews and promptly address vulnerabilities</li>
-        <li>Payment data is handled entirely by Razorpay — Belongix never stores card numbers or CVVs</li>
-      </ul>
-      <p>While we take all reasonable precautions, no system is 100% secure. In the event of a breach affecting your data, we will notify you within 72 hours as required by applicable regulations.</p>
-    </div>
+  <div class="card">
+    <h2><span>🔒</span> How We Protect Your Data</h2>
+    <ul>
+      <li>All data transmitted over HTTPS (TLS encryption)</li>
+      <li>Passwords hashed and never stored in plain text</li>
+      <li>Database access controlled by Row Level Security (RLS)</li>
+      <li>API keys stored as encrypted secrets, never in frontend code</li>
+      <li>Regular security reviews of our codebase</li>
+    </ul>
+  </div>
 
-    <div class="legal-section" id="s5">
-      <h2><span class="sec-num">5</span> Cookies & Tracking</h2>
-      <p>Belongix uses minimal, purpose-specific cookies and browser storage:</p>
-      <table class="data-table">
-        <tr><th>Type</th><th>Purpose</th><th>Duration</th></tr>
-        <tr><td>Session cookie (Supabase)</td><td>Keeps you logged in</td><td>7 days</td></tr>
-        <tr><td>Preference storage (localStorage)</td><td>Job alerts, notification preferences, UI settings</td><td>Until cleared</td></tr>
-        <tr><td>Analytics (privacy-first)</td><td>Page view counts and feature usage — no cross-site tracking</td><td>Session</td></tr>
-      </table>
-      <p>We do <strong>not</strong> use Google Analytics, Facebook Pixel, or any third-party advertising trackers. You can clear all local storage and cookies via your browser settings at any time.</p>
-    </div>
+  <div class="card">
+    <h2><span>⏳</span> How Long We Keep Your Data</h2>
+    <p><strong>Account data:</strong> Until you delete your account.</p>
+    <p><strong>Application history:</strong> 2 years, then anonymised.</p>
+    <p><strong>Bexi AI conversations:</strong> Not stored permanently — session only.</p>
+    <p><strong>Payment records:</strong> 7 years (required by Indian tax law).</p>
+  </div>
 
-    <div class="legal-section" id="s6">
-      <h2><span class="sec-num">6</span> Your Rights</h2>
-      <p>As a Belongix user, you have the following rights regarding your personal data:</p>
-      <ul>
-        <li><strong>Access:</strong> Request a copy of all personal data we hold about you</li>
-        <li><strong>Correction:</strong> Update inaccurate or incomplete profile data at any time from your dashboard</li>
-        <li><strong>Deletion:</strong> Request deletion of your account and all associated data — processed within 30 days</li>
-        <li><strong>Portability:</strong> Download your profile data in JSON format from Settings → Export Data</li>
-        <li><strong>Opt-out:</strong> Unsubscribe from all marketing emails via the link in any email or from Settings</li>
-        <li><strong>Withdrawal of consent:</strong> Withdraw consent for data processing at any time (this may affect platform functionality)</li>
-      </ul>
-      <p>To exercise any of these rights, contact us at <strong>privacy@belongix.in</strong> with your registered email address. We will respond within 30 days.</p>
-    </div>
+  <div class="card">
+    <h2><span>✊</span> Your Rights (DPDPA 2023)</h2>
+    <ul>
+      <li><strong>Access:</strong> Request a copy of all data we hold about you</li>
+      <li><strong>Correction:</strong> Update incorrect or incomplete data</li>
+      <li><strong>Erasure:</strong> Delete your account and all associated data</li>
+      <li><strong>Portability:</strong> Export your data in a readable format</li>
+      <li><strong>Opt-out:</strong> Unsubscribe from emails at any time</li>
+      <li><strong>Withdraw consent:</strong> Stop processing at any time (may affect service)</li>
+    </ul>
+    <p>To exercise any right, email us at <strong>teambelongix@gmail.com</strong>. We respond within 72 hours.</p>
+  </div>
 
-    <div class="legal-section" id="s7">
-      <h2><span class="sec-num">7</span> Data Retention</h2>
-      <p>We retain your data only for as long as necessary to provide the service or comply with legal obligations:</p>
-      <ul>
-        <li><strong>Active accounts:</strong> Data retained for the lifetime of your account</li>
-        <li><strong>Deleted accounts:</strong> Profile data deleted within 30 days; anonymised usage data may be retained for analytics</li>
-        <li><strong>Payment records:</strong> Retained for 7 years as required by Indian financial regulations</li>
-        <li><strong>Support communications:</strong> Retained for 2 years from the date of the last interaction</li>
-        <li><strong>Mentor session records:</strong> Retained for 1 year after the session date</li>
-      </ul>
-    </div>
+  <div class="card">
+    <h2><span>👶</span> Children's Privacy</h2>
+    <p>Belongix is not intended for users under 18 years of age. We do not knowingly collect data from minors. If you believe a minor has registered, contact us immediately and we will delete the account.</p>
+  </div>
 
-    <div class="legal-section" id="s8">
-      <h2><span class="sec-num">8</span> Third-Party Services</h2>
-      <p>Belongix integrates with the following third-party services. Each has its own privacy policy:</p>
-      <ul>
-        <li><strong>Supabase</strong> — Database, authentication, and file storage. <a href="https://supabase.com/privacy" target="_blank" style="color:var(--brand)">Privacy Policy →</a></li>
-        <li><strong>Razorpay</strong> — Payment processing for Pro plans and mentor sessions. <a href="https://razorpay.com/privacy/" target="_blank" style="color:var(--brand)">Privacy Policy →</a></li>
-        <li><strong>Google OAuth</strong> — Optional sign-in via Google. <a href="https://policies.google.com/privacy" target="_blank" style="color:var(--brand)">Privacy Policy →</a></li>
-        <li><strong>Google Fonts</strong> — Typography (Sora, DM Sans). No personal data transmitted.</li>
-        <li><strong>Remotive / Arbeitnow APIs</strong> — Supplementary job listings. No user data is shared with these services.</li>
-      </ul>
-    </div>
+  <div class="card">
+    <h2><span>🌍</span> Data Transfers</h2>
+    <p>Your data may be processed on servers outside India (EU, US) by our service providers (Supabase, Vercel). These transfers are governed by standard contractual clauses ensuring your data is protected to Indian standards.</p>
+  </div>
 
-    <div class="legal-section" id="s9">
-      <h2><span class="sec-num">9</span> Children's Privacy</h2>
-      <p>Belongix is designed for professionals and students aged 16 and above. We do not knowingly collect personal data from children under 16. If you believe a child under 16 has created an account, please contact us immediately at <strong>privacy@belongix.in</strong> and we will delete the account and all associated data.</p>
-    </div>
+  <div class="card">
+    <h2><span>📝</span> Changes to This Policy</h2>
+    <p>We may update this policy as our platform grows. We will notify you by email and show a banner on the platform if there are significant changes. Continued use of Belongix after changes means you accept the updated policy.</p>
+  </div>
 
-    <div class="legal-section" id="s10">
-      <h2><span class="sec-num">10</span> Changes to This Policy</h2>
-      <p>We may update this Privacy Policy from time to time. When we make material changes, we will:</p>
-      <ul>
-        <li>Update the "Last Updated" date at the top of this page</li>
-        <li>Send an email notification to all registered users at least 14 days before the change takes effect</li>
-        <li>Show an in-app notification on your dashboard</li>
-      </ul>
-      <p>Your continued use of Belongix after the effective date constitutes acceptance of the updated policy. If you do not agree, you may delete your account before the effective date.</p>
-    </div>
-
-    <div class="legal-section" id="s11">
-      <h2><span class="sec-num">11</span> Contact Us</h2>
-      <p>For any privacy-related questions, requests, or complaints:</p>
-      <div class="contact-card">
-        <div class="contact-icon">✉️</div>
-        <div class="contact-info">
-          <h4>Privacy Officer — Belongix</h4>
-          <p>Email: <a href="mailto:privacy@belongix.in">privacy@belongix.in</a><br/>
-          Response time: Within 30 days<br/>
-          For urgent security issues: <a href="mailto:security@belongix.in">security@belongix.in</a></p>
-        </div>
-      </div>
-      <div class="contact-card">
-        <div class="contact-icon">🏢</div>
-        <div class="contact-info">
-          <h4>Registered Address</h4>
-          <p>Belongix Technologies Pvt. Ltd.<br/>
-          Bangalore, Karnataka, India<br/>
-          <a href="contact.html">Contact form →</a></p>
-        </div>
-      </div>
-    </div>
+  <div class="contact-card">
+    <h3>Questions about your privacy?</h3>
+    <p>We're a small team and we take this seriously. Reach out and we'll respond personally.</p>
+    <a href="mailto:teambelongix@gmail.com">Email us → teambelongix@gmail.com</a>
   </div>
 </div>
 
-<footer>
-  <p style="margin-bottom:12px"><a href="index.html">Home</a><a href="terms.html">Terms of Service</a><a href="privacy.html">Privacy Policy</a><a href="contact.html">Contact</a></p>
-  <p>© 2026 Belongix. All rights reserved. Built with ❤️ in India.</p>
-</footer>
-<script src="bexi.js"></script>
-<script src="pwa-install.js"></script>
+<footer>© 2026 Belongix · <a href="terms.html" style="color:#2D1B69">Terms of Service</a> · <a href="privacy.html" style="color:#2D1B69">Privacy Policy</a> · Made with ❤️ in India</footer>
 </body>
 </html>
