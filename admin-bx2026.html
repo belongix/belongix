@@ -1509,7 +1509,7 @@ var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
 
 function sbFetch(t,p){return fetch(SB_URL+'/rest/v1/'+t+'?'+(p||'select=*'),{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});}
-function sbInsert(t,rows){return fetch(SB_URL+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(rows)}).then(function(r){return r.json().catch(function(){return[];});});}
+function sbInsert(t,rows){return fetch(SB_URL+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(rows)}).then(function(r){return r.json().then(function(j){if(!r.ok){throw new Error((j&&j.message)||'HTTP '+r.status+' on '+t);}return j;}).catch(function(e){if(e&&e.message)throw e;return[];});});}
 function sbUpdate(t,id,data){return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(r){return r.json().catch(function(){return{};});});}
 function sbDelete(t,id){return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(function(r){return r.ok;});}
 
@@ -1539,22 +1539,23 @@ async function writeAudit(action,tType,tId,tName,details){
   if(!adminSession)return;
   try{
     var entry={
-      admin_name:adminSession.name,
-      admin_role:adminSession.role,
-      action:action,
-      target_type:tType||'',
-      target_id:String(tId||''),
-      target_name:tName||'',
-      details:details||'',
+      admin_name:String(adminSession.name||''),
+      admin_role:String(adminSession.role||''),
+      action:String(action||''),
+      target_type:String(tType||''),
+      target_name:String(tName||''),
+      details:String(details||''),
       created_at:new Date().toISOString()
     };
-    /* Only add admin_id if it's a real UUID (not local-001 or emergency) */
-    var id=adminSession.id||'';
-    if(id&&!id.startsWith('local')&&id!=='emergency'&&id.length===36){
-      entry.admin_id=id;
+    if(tId){entry.target_id=String(tId);}
+    var sid=String(adminSession.id||'');
+    if(sid&&sid.length===36&&!sid.startsWith('local')&&sid!=='emergency'){
+      entry.admin_id=sid;
     }
     await sbInsert('audit_log',[entry]);
-  }catch(e){}
+  }catch(e){
+    console.warn('[Audit] writeAudit error:',String(e&&e.message||e));
+  }
 }
 /* ══════════════════════════════════════════════
    AUTH — Supabase is source of truth
@@ -1579,7 +1580,7 @@ async function doLogin(){
     if(pass===currentPassword){
       adminSession={id:'local-001',name:'Keerthi',role:'super_admin',email:ADMIN_EMAIL,dept:'Founder',loginTime:Date.now(),isLocal:true};
       sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-      sbInsert('audit_log',[{admin_name:'Keerthi',admin_role:'super_admin',action:'LOGIN',details:'Signed in via local auth',created_at:new Date().toISOString()}]).catch(function(){});
+      writeAudit('LOGIN',null,null,'Keerthi','Signed in via local auth');
       launchAdmin();return;
     }
     showLoginErr('Incorrect password');btn.disabled=false;btn.textContent='Sign In →';return;
@@ -1796,26 +1797,7 @@ async function rejectMentor(id){openConfirm('❌ Reject','Rejection reason:','e.
 async function loadMentorPerf(){try{var mentors=await sbFetch('mentors','select=*&limit=50');var tbody=document.getElementById('mentor-perf-tbody');if(!mentors.length){tbody.innerHTML='<tr><td colspan="7">'+emptyState('🎓','No approved mentors yet')+'</td></tr>';return;}tbody.innerHTML=mentors.map(function(m){var s=m.sessions_count||0;var r=parseFloat(m.rating||0).toFixed(1);var low=parseFloat(r)<3.5&&s>=5;return '<tr><td><div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--primary));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">'+initials(m.name||'M')+'</div><strong>'+esc(m.name||'—')+'</strong></div></td><td>'+s+'</td><td><span style="font-weight:700;color:#F59E0B">'+r+'★</span></td><td style="font-weight:700;color:var(--accent)">₹'+Math.round(s*(m.session_rate||0)*0.8)+'</td><td>'+(m.response_rate||0)+'%</td><td>'+(low?'<span class="badge b-danger">Auto-Suspended</span>':'<span class="badge b-success">Active</span>')+'</td><td><button class="btn btn-danger btn-xs" onclick="suspendMentor(\''+esc(m.id)+'\')">🚫</button></td></tr>';}).join('');}catch(e){document.getElementById('mentor-perf-tbody').innerHTML='<tr><td colspan="7">'+emptyState('⚠️','Could not load mentors')+'</td></tr>';}}
 async function suspendMentor(id){openConfirm('🚫 Suspend Mentor','Suspend from Belongix?','Reason','Suspend','danger',async function(r){try{await sbUpdate('mentors',id,{suspended:true});toast('Mentor suspended','success');}catch(e){toast('Error','error');}});}
 /* CONTENT */
-async function loadContent(){
-  try{_allCourses=await sbFetch('courses','select=*&order=popularity.desc,created_at.desc').catch(function(){return[];});}
-  catch(e){_allCourses=[];}
-  renderCoursesTable();
-  /* Show seed button if empty */
-  var tbody=document.getElementById('courses-tbody');
-  if(!_allCourses.length&&tbody){
-    tbody.innerHTML='<tr><td colspan="7"><div style="text-align:center;padding:48px 24px"><div style="font-size:48px;margin-bottom:12px">📚</div><div style="font-size:16px;font-weight:700;margin-bottom:6px">No courses yet</div><p style="color:var(--muted);margin-bottom:20px">Run the SQL seed to populate 101 courses from Belongix</p><button class="btn btn-primary" onclick="showSeedInstructions()">📋 How to Seed Courses</button></div></td></tr>';
-  }
-}
-function showSeedInstructions(){
-  var msg='To populate courses:
-
-1. Go to Supabase → SQL Editor
-2. Download the seed SQL from the admin page
-3. Paste and Run
-
-Or add courses manually using the + Add Course button.';
-  alert(msg);
-}
+async function loadContent(){try{_allCourses=await sbFetch('courses','select=*&order=created_at.desc').catch(function(){return[];});}catch(e){_allCourses=[];}renderCoursesTable();}
 function renderCoursesTable(){var tbody=document.getElementById('courses-tbody');if(!tbody)return;if(!_allCourses.length){tbody.innerHTML='<tr><td colspan="7">'+emptyState('📚','No courses yet','Add courses to the Upskilling Hub')+'</td></tr>';return;}tbody.innerHTML=_allCourses.map(function(c){return '<tr><td><strong>'+esc(c.title||'—')+'</strong></td><td>'+esc(c.provider||'—')+'</td><td>'+esc(c.duration||'—')+'</td><td><span class="badge b-gray">'+esc(c.level||'—')+'</span></td><td style="font-weight:700;color:var(--accent)">'+(c.popularity||0)+'</td><td><span class="badge b-success">Active</span></td><td><button class="btn btn-danger btn-xs" onclick="deleteCourse(\''+esc(c.id)+'\')">🗑</button></td></tr>';}).join('');}
 async function saveCourse(){var data={title:gv('course-title'),provider:gv('course-provider'),level:gv('course-level'),duration:gv('course-duration'),tags:gv('course-tags'),url:gv('course-url'),description:gv('course-desc')};if(!data.title){toast('Title required','warning');return;}try{await sbInsert('courses',[data]);closeModal('course-modal');_loaded['content']=false;loadContent();toast('Course saved','success');}catch(e){toast('Save failed','error');}}
 async function deleteCourse(id){openConfirm('🗑 Delete','Delete this course?',null,'Delete','danger',async function(){try{await sbDelete('courses',id);_allCourses=_allCourses.filter(function(c){return c.id!==id;});renderCoursesTable();toast('Deleted','success');}catch(e){toast('Error','error');}});}
@@ -2085,7 +2067,7 @@ async function deactivateTeamMember(id){openConfirm('🔴 Deactivate','Remove ad
 /* AUDIT LOG */
 async function loadAudit(){
   try{_allAudit=await sbFetch('audit_log','select=*&order=created_at.desc&limit=500');}
-  catch(e){_allAudit=[];}
+  catch(e){console.warn('[Audit] loadAudit fetch error:',String(e&&e.message||e));_allAudit=[];}
   filterAuditTable();
 }
 function filterAuditTable(){var q=(gv('audit-search')||'').toLowerCase();var af=gv('audit-action')||'all';var filtered=_allAudit.filter(function(a){var txt=((a.admin_name||'')+(a.action||'')+(a.details||'')+(a.target_name||'')).toLowerCase();return(!q||txt.includes(q))&&(af==='all'||a.action===af);});renderAuditTable(filtered);}
@@ -2117,50 +2099,14 @@ async function loadSettings(){
   try{
     var rows=await sbFetch('settings','select=*');
     var map={};rows.forEach(function(r){map[r.key]=r.value;});
-    /* Toggles */
     var toggles={job_board_public:'tog-jobs',mentor_booking_enabled:'tog-booking',signups_enabled:'tog-signups',community_posting_enabled:'tog-community',bexi_ai_enabled:'tog-bexi',referral_program_active:'tog-referral'};
     Object.keys(toggles).forEach(function(k){var el=document.getElementById(toggles[k]);if(el&&map[k]!==undefined)el.checked=map[k]==='true';});
-    /* Platform fee */
     var pf=document.getElementById('platform-fee');if(pf&&map.platform_fee_percent)pf.value=map.platform_fee_percent;
-    /* Pricing fields */
-    var pricingMap={'pro_monthly':'price-pro-monthly','pro_yearly':'price-pro-yearly','premium_monthly':'price-premium-monthly','premium_yearly':'price-premium-yearly'};
-    Object.keys(pricingMap).forEach(function(k){
-      var el=document.getElementById(pricingMap[k]);
-      if(el&&map[k]!==undefined){el.value=map[k];}
-    });
-    console.log('[Admin] Settings loaded from Supabase',map);
-  }catch(e){console.warn('[Admin] loadSettings failed:',e.message);}
+  }catch(e){}
 }
-async function saveSetting(key,value){
-  try{
-    /* Check if setting exists */
-    var rows=await sbFetch('settings','key=eq.'+encodeURIComponent(key)+'&select=id,key');
-    if(rows&&rows.length){
-      /* Update by key column (not id) */
-      await fetch(SB_URL+'/rest/v1/settings?key=eq.'+encodeURIComponent(key),{
-        method:'PATCH',
-        headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
-        body:JSON.stringify({value:String(value),updated_by:adminSession.name,updated_at:new Date().toISOString()})
-      });
-    }else{
-      await sbInsert('settings',[{key:key,value:String(value),updated_by:adminSession.name,created_at:new Date().toISOString()}]);
-    }
-    await writeAudit('MODIFY','settings',null,key,'→ '+String(value));
-  }catch(e){console.warn('saveSetting failed:',e.message);throw e;}
-}
+async function saveSetting(key,value){try{var rows=await sbFetch('settings','key=eq.'+encodeURIComponent(key));if(rows&&rows.length){await sbUpdate('settings',key,{value:String(value),updated_by:adminSession.name});}else{await sbInsert('settings',[{key:key,value:String(value),updated_by:adminSession.name}]);}toast(key+' saved','success');await writeAudit('MODIFY','settings',null,key,'→ '+String(value));}catch(e){toast('Failed','error');}}
 async function savePlatformFee(){await saveSetting('platform_fee_percent',parseInt(gv('platform-fee'))||20);toast('Platform fee updated','success');}
-async function savePricing(){
-  var keys=['pro_monthly','pro_yearly','premium_monthly','premium_yearly'];
-  var ids=['price-pro-monthly','price-pro-yearly','price-premium-monthly','price-premium-yearly'];
-  try{
-    for(var i=0;i<keys.length;i++){
-      var val=gv(ids[i]);
-      if(!val||isNaN(parseInt(val))){toast('Invalid value for '+keys[i],'error');return;}
-      await saveSetting(keys[i],parseInt(val));
-    }
-    toast('✅ Pricing saved! New subscribers will see updated prices.','success');
-  }catch(e){toast('Failed to save pricing: '+e.message,'error');}
-}
+async function savePricing(){var keys=['pro_monthly','pro_yearly','premium_monthly','premium_yearly'],ids=['price-pro-monthly','price-pro-yearly','price-premium-monthly','price-premium-yearly'];for(var i=0;i<keys.length;i++)await saveSetting(keys[i],gv(ids[i]));toast('Pricing saved','success');}
 
 var _currentTemplate='';
 var EMAIL_TEMPLATES={
