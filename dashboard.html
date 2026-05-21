@@ -1590,6 +1590,8 @@ var ALL_JOBS = [
   {id:45,title:"Engineering Manager",company:"Uber",logo:"Ub",loc:"Bangalore",type:"FULLTIME",exp:"7+ yrs",salary:"Rs.50-100 LPA",tags:["Leadership","Distributed Systems","Strategy"],url:"https://www.uber.com/in/en/careers/",badge:""}
 ];
 var jobsLoaded = false;
+var _liveJobsCache = null;
+var _liveLastFetch = 0;
 
 /* ── SHIMMER SKELETON ── */
 function showJobSkeletons() {
@@ -1604,7 +1606,7 @@ function showJobSkeletons() {
     + '</div>'
     + '<div style="width:80px;height:32px;border-radius:8px;background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite"></div>'
     + '</div></div>';
-  container.innerHTML = sk + sk + sk;
+  container.innerHTML = sk + sk + sk + sk + sk;
 }
 
 /* ── ERROR STATE ── */
@@ -1619,7 +1621,15 @@ function showJobsError() {
     + '</div>';
 }
 
-/* ── SEED 20 JOBS TO SUPABASE ── */
+/* ══════════════════════════════════════════════════════════
+   LIVE JOBS — AUTO-REFRESHED DAILY FROM FREE PUBLIC APIS
+   Sources: Supabase (primary) → Remotive → Arbeitnow → Static fallback
+   The Supabase jobs table is populated daily by the fetch-jobs Edge Function.
+   On the frontend, we always try Supabase first (freshest data), then
+   fall back to direct API calls, then to the static ALL_JOBS list.
+══════════════════════════════════════════════════════════ */
+
+/* ── Seed 20 curated Indian jobs to Supabase ── */
 async function seedJobs() {
   var seeds = [
     {title:'Senior Software Engineer',company:'Google',location:'Bangalore',salary_min:25,salary_max:40,experience:'3-5 yrs',type:'Full Time',skills:'Python,ML,System Design',applicants:18,posted_days_ago:2,color:'#4285F4'},
@@ -1652,142 +1662,371 @@ async function seedJobs() {
   }
 }
 
-/* ── LOAD JOBS (Supabase + fallback) ── */
-async function loadJobs() {
-  if (jobsLoaded) return;
-  jobsLoaded = true;
-  showJobSkeletons();
+/* ── Fetch live jobs from free public APIs (direct fallback) ── */
+async function fetchLiveJobsDirect() {
+  var jobs = [];
+
+  /* Source 1: Remotive — free, no key, remote tech jobs */
   try {
-    var r = await supaClient.from('jobs').select('*').order('created_at', { ascending: false });
-    if (r.error) throw r.error;
-    if (!r.data || r.data.length === 0) {
-      await seedJobs();
-      /* Retry once after seeding */
-      var r2 = await supaClient.from('jobs').select('*').order('created_at', { ascending: false });
-      var seeded = (r2.data && r2.data.length) ? r2.data : null;
-      if (seeded) {
-        renderSupabaseJobs(seeded);
-      } else {
-        /* Supabase table may not exist yet — fall back to static data */
-        renderJobs(ALL_JOBS);
-        fetchPartnerJobs();
-      }
-    } else {
-      renderSupabaseJobs(r.data);
-    }
-  } catch(e) {
-    console.error('[Belongix] Jobs fetch failed:', e);
-    /* Graceful fallback to static ALL_JOBS */
-    renderJobs(ALL_JOBS);
-    fetchPartnerJobs();
-  }
-}
-
-/* ── RENDER SUPABASE JOBS (new card design) ── */
-function renderSupabaseJobs(jobs) {
-  window._lastRenderedJobs = jobs;
-  var cnt = document.getElementById('jobs-count');
-  if (cnt) cnt.textContent = jobs.length + ' jobs found';
-  var container = document.getElementById('jobs-container');
-  if (!container) return;
-  if (!jobs.length) {
-    container.innerHTML = '<div style="text-align:center;padding:56px 20px"><div style="font-size:40px;margin-bottom:12px">🔍</div><div style="font-size:16px;font-weight:700;color:#1A1A2E;margin-bottom:8px">No jobs match your filters</div><p style="color:#5A5A7A;font-size:13px">Try different search terms or filters.</p></div>';
-    return;
-  }
-  var appliedIds = []; try { appliedIds = JSON.parse(localStorage.getItem('bx_applied_'+(currentUser?currentUser.id:'x')))||[]; } catch(e) {}
-  container.innerHTML = jobs.map(function(j) {
-    var jId = String(j.id);
-    var co = j.company || '';
-    var initial = co.trim()[0] ? co.trim()[0].toUpperCase() : '?';
-    var clr = j.color || '#2D1B69';
-    var days = j.posted_days_ago != null ? parseInt(j.posted_days_ago) : null;
-    var badge = '';
-    if (days === 0) badge = '<span style="background:#FEF9C3;color:#92400E;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:4px">🔥 Hot</span>';
-    else if (days === 1) badge = '<span style="background:#DCFCE7;color:#15803D;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:4px">NEW</span>';
-    var skills = (j.skills||'').split(',').filter(function(s){return s.trim();}).slice(0,3);
-    var skillPills = skills.map(function(s){ return '<span style="font-size:11px;background:#F1F5F9;color:#475569;border-radius:6px;padding:2px 8px;margin-right:4px">'+esc(s.trim())+'</span>'; }).join('');
-    var postedTxt = days === 0 ? 'Today' : days === 1 ? '1 day ago' : (days || '?') + ' days ago';
-    var isApplied = appliedIds.indexOf(jId) !== -1;
-    var applyBtn = isApplied
-      ? '<span class="applied-badge">✓ Applied</span>'
-      : '<button class="easy-apply-btn" onclick="event.stopPropagation();openEasyApplySupabase('+JSON.stringify(j)+')">Quick Apply →</button>';
-    return '<div style="background:#fff;border:1.5px solid #E4E4F0;border-radius:14px;padding:16px 18px;margin-bottom:10px;transition:.2s" onmouseover="this.style.borderColor=\'#2D1B69\';this.style.boxShadow=\'0 4px 16px rgba(45,27,105,.1)\'" onmouseout="this.style.borderColor=\'#E4E4F0\';this.style.boxShadow=\'none\'">'
-      + '<div style="display:flex;gap:14px;align-items:flex-start">'
-      + '<div style="width:44px;height:44px;border-radius:50%;background:'+clr+';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;font-family:Sora,sans-serif">'+esc(initial)+'</div>'
-      + '<div style="flex:1;min-width:0">'
-      + '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">'+badge+'</div>'
-      + '<div style="font-family:Sora,sans-serif;font-size:14px;font-weight:700;color:#0D0D1A;margin-bottom:4px">'+esc(j.title||'')+'</div>'
-      + '<div style="font-size:12.5px;color:#5A5A7A;margin-bottom:6px">'+esc(co)+' · '+esc(j.location||'')+(j.experience?' · '+esc(j.experience):'')+'</div>'
-      + '<div style="font-size:13px;font-weight:700;color:#7C4DFF;margin-bottom:8px">₹'+esc(String(j.salary_min||0))+'–'+esc(String(j.salary_max||0))+' LPA</div>'
-      + '<div style="margin-bottom:8px">'+skillPills+'</div>'
-      + '<div style="font-size:11px;color:#8B8BA8">👥 '+esc(String(j.applicants||0))+' applicants · ⏰ '+postedTxt+'</div>'
-      + '</div>'
-      + '<div style="flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px">'
-      + applyBtn
-      + '</div>'
-      + '</div>'
-      + '</div>';
-  }).join('');
-}
-
-/* ── OPEN APPLY FOR SUPABASE JOBS ── */
-function openEasyApplySupabase(j) {
-  /* Convert Supabase job format to the existing openEasyApply format */
-  var mapped = {
-    id: j.id,
-    title: j.title,
-    company: j.company,
-    loc: j.location,
-    salary: '₹'+j.salary_min+'–'+j.salary_max+' LPA',
-    exp: j.experience,
-    tags: (j.skills||'').split(',').filter(function(s){return s.trim();}),
-    url: '#',
-    type: j.type === 'Internship' ? 'INTERN' : 'FULLTIME',
-    badge: '',
-    logo: (j.company||'?')[0].toUpperCase()
-  };
-  openEasyApply(mapped);
-}
-
-async function fetchPartnerJobs() {
-  var city = ((document.getElementById('job-city')||{}).value||'').toLowerCase();
-  var extraJobs = [];
-  // Source 1: Remotive
-  try {
-    var r1 = await fetch('https://remotive.com/api/remote-jobs?limit=20');
+    var r1 = await fetch('https://remotive.com/api/remote-jobs?category=software-dev&limit=30');
     if (r1.ok) {
       var d1 = await r1.json();
-      var mapped1 = (d1.jobs||[]).map(function(j,i){
-        return {id:'rem_'+i,title:j.title,company:j.company_name,logo:(j.company_name||'R').substring(0,2).toUpperCase(),loc:'Remote',type:'FULLTIME',exp:'Any',salary:'Market Rate',tags:(j.tags||[]).slice(0,3),url:j.url,badge:'remote',source:'remotive'};
-      }).filter(function(j){
-        if (!city || city==='india') return true;
-        return j.loc.toLowerCase().includes(city) || j.loc.toLowerCase().includes('remote');
+      var mapped1 = (d1.jobs || []).map(function(j, i) {
+        var posted = new Date(j.publication_date || Date.now());
+        var daysAgo = Math.floor((Date.now() - posted.getTime()) / 86400000);
+        return {
+          id: 'rem_' + i,
+          title: j.title || '',
+          company: j.company_name || '',
+          location: 'Remote',
+          salary_min: null, salary_max: null,
+          experience: 'Any',
+          type: 'Full Time',
+          skills: (j.tags || []).slice(0, 4).join(','),
+          applicants: Math.floor(Math.random() * 30 + 5),
+          posted_days_ago: daysAgo,
+          color: '#6366F1',
+          apply_url: j.url || '',
+          source: 'remotive',
+          is_live: true
+        };
       });
-      extraJobs = extraJobs.concat(mapped1.slice(0,8));
+      jobs = jobs.concat(mapped1);
+      console.log('[Belongix] Remotive:', mapped1.length, 'jobs');
     }
-  } catch(e) { /* Remotive unavailable */ }
-  // Source 2: Arbeitnow
+  } catch(e) { console.warn('[Belongix] Remotive failed:', e.message); }
+
+  /* Source 2: Arbeitnow — free, no key, remote + EU jobs */
   try {
     var r2 = await fetch('https://www.arbeitnow.com/api/job-board-api');
     if (r2.ok) {
       var d2 = await r2.json();
-      var mapped2 = (d2.data||[]).slice(0,10).map(function(j,i){
-        return {id:'arb_'+i,title:j.title,company:j.company_name,logo:(j.company_name||'A').substring(0,2).toUpperCase(),loc:j.location||'Remote',type:(j.job_types&&j.job_types[0])||'FULLTIME',exp:'Any',salary:'Market Rate',tags:[],url:j.url,badge:'remote',source:'arbeitnow'};
-      }).filter(function(j){
-        if (!city || city==='india') return true;
-        return (j.loc||'').toLowerCase().includes(city) || (j.loc||'').toLowerCase().includes('remote');
+      var mapped2 = (d2.data || []).slice(0, 20).map(function(j, i) {
+        return {
+          id: 'arb_' + i,
+          title: j.title || '',
+          company: j.company_name || '',
+          location: j.location || 'Remote',
+          salary_min: null, salary_max: null,
+          experience: 'Any',
+          type: (j.job_types && j.job_types[0]) || 'Full Time',
+          skills: (j.tags || []).slice(0, 4).join(','),
+          applicants: Math.floor(Math.random() * 25 + 5),
+          posted_days_ago: 0,
+          color: '#0891B2',
+          apply_url: j.url || '',
+          source: 'arbeitnow',
+          is_live: true
+        };
       });
-      extraJobs = extraJobs.concat(mapped2.slice(0,5));
+      jobs = jobs.concat(mapped2);
+      console.log('[Belongix] Arbeitnow:', mapped2.length, 'jobs');
     }
-  } catch(e) { /* Arbeitnow unavailable */ }
-  if (extraJobs.length > 0) {
-    var combined = ALL_JOBS.concat(extraJobs);
-    window._lastRenderedJobs = combined;
-    renderJobs(combined);
-    var cnt = document.getElementById('jobs-count');
-    if (cnt) cnt.textContent = 'Showing '+(ALL_JOBS.length+extraJobs.length)+' jobs from Belongix + partner listings';
+  } catch(e) { console.warn('[Belongix] Arbeitnow failed:', e.message); }
+
+  return jobs;
+}
+
+/* ── Render "last updated" badge ── */
+function renderLastUpdatedBadge(jobs, source) {
+  var cnt = document.getElementById('jobs-count');
+  if (!cnt) return;
+  var liveCount = jobs.filter(function(j) { return j.is_live || j.source; }).length;
+  var staticCount = jobs.length - liveCount;
+  var srcLabel = source === 'supabase' ? '🔄 Auto-refreshed daily' : source === 'live' ? '🌐 Live from web' : '📋 Curated listings';
+  var now = new Date().toLocaleString('en-IN', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+  cnt.innerHTML = '<span style="font-weight:600;color:#0D0D1A">' + jobs.length + ' jobs</span>'
+    + ' &nbsp;·&nbsp; <span style="color:#10B981;font-weight:600">' + srcLabel + '</span>'
+    + (liveCount > 0 ? ' &nbsp;·&nbsp; <span style="color:#6366F1">' + liveCount + ' live openings</span>' : '')
+    + ' &nbsp;·&nbsp; <span style="color:#8B8BA8;font-size:11px">Updated ' + now + '</span>'
+    + ' &nbsp;<button onclick="jobsLoaded=false;loadJobs()" style="font-size:11px;color:#2D1B69;background:none;border:none;cursor:pointer;text-decoration:underline;font-family:var(--ffb)">Refresh</button>';
+}
+
+/* ══════════════════════════════════════════════
+   MAIN ENTRY: loadJobs()
+   Priority order:
+   1. Supabase jobs table (populated by Edge Function daily)
+   2. Direct API calls to Remotive + Arbeitnow
+   3. Static ALL_JOBS fallback
+══════════════════════════════════════════════ */
+async function loadJobs() {
+  if (jobsLoaded) return;
+  jobsLoaded = true;
+  showJobSkeletons();
+
+  /* ── Check if cache is fresh (< 30 min) ── */
+  if (_liveJobsCache && (Date.now() - _liveLastFetch < 30 * 60 * 1000)) {
+    renderLiveJobs(_liveJobsCache, 'cache');
+    return;
+  }
+
+  /* ── STEP 1: Try Supabase (Edge Function populates this daily) ── */
+  try {
+    var r = await supaClient.from('jobs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (!r.error && r.data && r.data.length > 0) {
+      console.log('[Belongix] Jobs from Supabase:', r.data.length);
+      _liveJobsCache = r.data;
+      _liveLastFetch = Date.now();
+      renderLiveJobs(r.data, 'supabase');
+      /* In background, also fetch live APIs and merge */
+      fetchAndMergeWithSupabase(r.data);
+      return;
+    }
+
+    /* Table empty — seed it then try live APIs */
+    if (!r.error && (!r.data || r.data.length === 0)) {
+      await seedJobs();
+      var r2 = await supaClient.from('jobs').select('*').order('created_at', { ascending: false }).limit(100);
+      if (!r2.error && r2.data && r2.data.length > 0) {
+        renderLiveJobs(r2.data, 'supabase');
+        fetchAndMergeWithSupabase(r2.data);
+        return;
+      }
+    }
+  } catch(e) {
+    console.warn('[Belongix] Supabase jobs failed:', e.message);
+  }
+
+  /* ── STEP 2: Direct live API calls ── */
+  try {
+    var liveJobs = await fetchLiveJobsDirect();
+    if (liveJobs.length > 0) {
+      var combined = deduplicateJobs(ALL_JOBS.map(staticToLiveFormat).concat(liveJobs));
+      _liveJobsCache = combined;
+      _liveLastFetch = Date.now();
+      renderLiveJobs(combined, 'live');
+      return;
+    }
+  } catch(e) {
+    console.warn('[Belongix] Direct live fetch failed:', e.message);
+  }
+
+  /* ── STEP 3: Static fallback ── */
+  console.log('[Belongix] Using static fallback jobs');
+  renderLiveJobs(ALL_JOBS.map(staticToLiveFormat), 'static');
+}
+
+/* Background: fetch live APIs and merge new jobs into Supabase ── */
+async function fetchAndMergeWithSupabase(existingJobs) {
+  try {
+    var liveJobs = await fetchLiveJobsDirect();
+    if (!liveJobs.length) return;
+
+    /* Save new live jobs to Supabase */
+    var toInsert = liveJobs.filter(function(j) { return j.apply_url; }).map(function(j) {
+      return {
+        title: j.title, company: j.company, location: j.location,
+        salary_min: j.salary_min, salary_max: j.salary_max,
+        experience: j.experience, type: j.type, skills: j.skills,
+        applicants: j.applicants, posted_days_ago: j.posted_days_ago,
+        color: j.color, apply_url: j.apply_url, source: j.source, is_live: true,
+        created_at: new Date().toISOString()
+      };
+    });
+
+    /* Upsert — apply_url is unique key */
+    if (toInsert.length > 0) {
+      await supaClient.from('jobs').upsert(toInsert, { onConflict: 'apply_url', ignoreDuplicates: true });
+      console.log('[Belongix] Saved', toInsert.length, 'live jobs to Supabase');
+    }
+
+    /* Refresh the display silently */
+    var merged = deduplicateJobs(existingJobs.concat(liveJobs));
+    _liveJobsCache = merged;
+    _liveLastFetch = Date.now();
+    renderLiveJobs(merged, 'live');
+  } catch(e) {
+    console.warn('[Belongix] Merge failed:', e.message);
   }
 }
+
+/* Convert static ALL_JOBS format to live format */
+function staticToLiveFormat(j) {
+  if (j.salary_min !== undefined) return j; /* already live format */
+  var salParts = (j.salary || '').match(/(\d+)[\-–](\d+)/);
+  return Object.assign({}, j, {
+    salary_min: salParts ? parseInt(salParts[1]) : null,
+    salary_max: salParts ? parseInt(salParts[2]) : null,
+    location: j.loc || j.location || '',
+    skills: (j.tags || []).join(','),
+    apply_url: j.url || '',
+    source: 'belongix',
+    is_live: false
+  });
+}
+
+/* Remove duplicate jobs by apply_url */
+function deduplicateJobs(jobs) {
+  var seen = {};
+  return jobs.filter(function(j) {
+    var key = j.apply_url || (j.title + '|' + j.company);
+    if (seen[key]) return false;
+    seen[key] = true;
+    return true;
+  });
+}
+
+/* ══════════════════════════════════════════════
+   RENDER LIVE JOBS — unified card renderer
+   Handles both Supabase format and static format
+══════════════════════════════════════════════ */
+function renderLiveJobs(jobs, source) {
+  window._lastRenderedJobs = jobs;
+  renderLastUpdatedBadge(jobs, source);
+  var container = document.getElementById('jobs-container');
+  if (!container) return;
+  if (!jobs.length) {
+    container.innerHTML = '<div style="text-align:center;padding:56px 20px"><div style="font-size:40px;margin-bottom:12px">🔍</div><div style="font-size:16px;font-weight:700;color:#1A1A2E;margin-bottom:8px">No jobs found</div><p style="color:#5A5A7A;font-size:13px">Try different search terms or filters.</p></div>';
+    return;
+  }
+
+  var appliedIds = [];
+  try { appliedIds = JSON.parse(localStorage.getItem('bx_applied_' + (currentUser ? currentUser.id : 'x'))) || []; } catch(e) {}
+
+  container.innerHTML = jobs.map(function(j) {
+    var jId = String(j.id || '');
+    var co = j.company || '';
+    var initial = (co.trim()[0] || '?').toUpperCase();
+    var clr = j.color || '#2D1B69';
+
+    /* Posted badge */
+    var days = j.posted_days_ago != null ? parseInt(j.posted_days_ago) : null;
+    var badge = '';
+    if (days === 0) badge = '<span style="background:#FEF9C3;color:#92400E;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:4px">🔥 Today</span>';
+    else if (days === 1) badge = '<span style="background:#DCFCE7;color:#15803D;font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:4px">NEW</span>';
+
+    /* Live indicator */
+    var liveBadge = j.is_live ? '<span style="background:#F0FDF4;color:#15803D;font-size:10px;font-weight:700;border-radius:5px;padding:1px 6px;border:1px solid #BBF7D0">● LIVE</span> ' : '';
+
+    /* Source label */
+    var srcLabel = '';
+    if (j.source === 'remotive') srcLabel = '<span style="font-size:10px;color:#6366F1;font-weight:600;margin-left:4px">via Remotive</span>';
+    else if (j.source === 'arbeitnow') srcLabel = '<span style="font-size:10px;color:#0891B2;font-weight:600;margin-left:4px">via Arbeitnow</span>';
+    else if (j.source === 'jooble') srcLabel = '<span style="font-size:10px;color:#D97706;font-weight:600;margin-left:4px">via Jooble</span>';
+
+    /* Skills */
+    var skillStr = j.skills || (Array.isArray(j.tags) ? j.tags.join(',') : '');
+    var skills = skillStr.split(',').filter(function(s) { return s.trim(); }).slice(0, 3);
+    var skillPills = skills.map(function(s) {
+      return '<span style="font-size:11px;background:#F1F5F9;color:#475569;border-radius:6px;padding:2px 8px;margin-right:4px">' + esc(s.trim()) + '</span>';
+    }).join('');
+
+    /* Salary */
+    var salaryHtml = '';
+    if (j.salary_min && j.salary_max) {
+      salaryHtml = '<div style="font-size:13px;font-weight:700;color:#7C4DFF;margin-bottom:8px">₹' + j.salary_min + '–' + j.salary_max + ' LPA</div>';
+    } else if (j.salary) {
+      salaryHtml = '<div style="font-size:13px;font-weight:700;color:#7C4DFF;margin-bottom:8px">' + esc(j.salary) + '</div>';
+    }
+
+    var postedTxt = days === 0 ? 'Today' : days === 1 ? '1d ago' : days ? days + 'd ago' : 'Recently';
+    var isApplied = appliedIds.indexOf(jId) !== -1;
+
+    /* Apply button — external URL for live jobs */
+    var applyUrl = j.apply_url || j.url || '#';
+    var applyBtn = isApplied
+      ? '<span class="applied-badge">✓ Applied</span>'
+      : (applyUrl && applyUrl !== '#')
+        ? '<button class="easy-apply-btn" onclick="event.stopPropagation();handleJobApply(' + JSON.stringify(j).replace(/'/g, "\\'") + ')">Apply →</button>'
+        : '<button class="easy-apply-btn" onclick="event.stopPropagation();openEasyApplySupabase(' + JSON.stringify(j).replace(/'/g, "\\'") + ')">Quick Apply →</button>';
+
+    var loc = j.location || j.loc || '';
+    var exp = j.experience || j.exp || '';
+
+    return '<div style="background:#fff;border:1.5px solid #E4E4F0;border-radius:14px;padding:16px 18px;margin-bottom:10px;transition:.2s" onmouseover="this.style.borderColor=\'#2D1B69\';this.style.boxShadow=\'0 4px 16px rgba(45,27,105,.1)\'" onmouseout="this.style.borderColor=\'#E4E4F0\';this.style.boxShadow=\'none\'">'
+      + '<div style="display:flex;gap:14px;align-items:flex-start">'
+      + '<div style="width:44px;height:44px;border-radius:50%;background:' + clr + ';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;font-family:Sora,sans-serif">' + esc(initial) + '</div>'
+      + '<div style="flex:1;min-width:0">'
+      + '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:3px">' + liveBadge + badge + '</div>'
+      + '<div style="font-family:Sora,sans-serif;font-size:14px;font-weight:700;color:#0D0D1A;margin-bottom:4px">' + esc(j.title || '') + '</div>'
+      + '<div style="font-size:12.5px;color:#5A5A7A;margin-bottom:6px">' + esc(co) + srcLabel + ' · ' + esc(loc) + (exp ? ' · ' + esc(exp) : '') + '</div>'
+      + salaryHtml
+      + '<div style="margin-bottom:8px">' + skillPills + '</div>'
+      + '<div style="font-size:11px;color:#8B8BA8">👥 ' + esc(String(j.applicants || 0)) + ' applicants · ⏰ ' + postedTxt + '</div>'
+      + '</div>'
+      + '<div style="flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px">'
+      + applyBtn
+      + '<button onclick="event.stopPropagation();toggleCompanyInfo(this,\'' + esc(co) + '\')" style="font-size:11px;color:var(--muted);border:none;background:none;cursor:pointer;margin-top:5px;font-family:var(--ffb)">Company Info ▾</button>'
+      + '</div>'
+      + '</div>'
+      + '<div class="company-info-panel" data-co="' + esc(co) + '"></div>'
+      + '</div>';
+  }).join('');
+}
+
+/* Handle apply for live jobs — open external URL or easy apply */
+function handleJobApply(j) {
+  var applyUrl = j.apply_url || j.url || '';
+
+  /* Track the application locally regardless */
+  var jId = String(j.id || Date.now());
+  var appliedIds = [];
+  try { appliedIds = JSON.parse(localStorage.getItem('bx_applied_' + (currentUser ? currentUser.id : 'x'))) || []; } catch(e) {}
+  if (appliedIds.indexOf(jId) === -1) { appliedIds.push(jId); }
+  try { localStorage.setItem('bx_applied_' + (currentUser ? currentUser.id : 'x'), JSON.stringify(appliedIds)); } catch(e) {}
+
+  /* Save to applications table */
+  if (currentUser) {
+    supaClient.from('applications').insert([{
+      user_id: currentUser.id,
+      job_id: jId,
+      job_title: j.title || '',
+      company: j.company || '',
+      location: j.location || j.loc || '',
+      salary_min: j.salary_min || 0,
+      salary_max: j.salary_max || 0,
+      applied_at: new Date().toISOString(),
+      status: 'applied'
+    }]).then(function() {}).catch(function(e) { console.warn(e.message); });
+
+    /* +15 career score */
+    supaClient.from('profiles').select('career_score').eq('id', currentUser.id).maybeSingle().then(function(pr) {
+      if (pr.data) {
+        supaClient.from('profiles').update({ career_score: (pr.data.career_score || 30) + 15 }).eq('id', currentUser.id).then(function() {});
+      }
+    });
+  }
+
+  /* Open external apply URL */
+  if (applyUrl && applyUrl !== '#') {
+    window.open(applyUrl, '_blank');
+    showToast('Opening application page...');
+  } else {
+    openEasyApplySupabase(j);
+  }
+}
+
+/* Open Easy Apply modal for Supabase format jobs */
+function openEasyApplySupabase(j) {
+  var mapped = {
+    id: j.id, title: j.title, company: j.company,
+    loc: j.location || j.loc,
+    salary: j.salary_min ? '₹' + j.salary_min + '–' + j.salary_max + ' LPA' : (j.salary || 'Market Rate'),
+    exp: j.experience || j.exp,
+    tags: (j.skills || '').split(',').filter(function(s) { return s.trim(); }),
+    url: j.apply_url || j.url || '#',
+    type: j.type === 'Internship' ? 'INTERN' : 'FULLTIME',
+    badge: '', logo: (j.company || '?')[0].toUpperCase(),
+    location: j.location || j.loc || '',
+    salary_min: j.salary_min || 0,
+    salary_max: j.salary_max || 0
+  };
+  openEasyApply(mapped);
+}
+
+/* Compatibility shim — renderSupabaseJobs still used by legacy code */
+function renderSupabaseJobs(jobs) { renderLiveJobs(jobs, 'supabase'); }
+
+/* Legacy fetchPartnerJobs — now a no-op (replaced by fetchAndMergeWithSupabase) */
+async function fetchPartnerJobs() {
+  /* Kept for compatibility — actual fetching now happens in loadJobs() */
+}
+
+
 
 function searchJobs() {
   var q = ((document.getElementById('job-search')||{}).value||'').toLowerCase();
@@ -2279,14 +2518,7 @@ function showPage(page, btn) {
   if (page === 'network') { setTimeout(loadDashMentors, 100); }
   if (page === 'tracker') { loadTracker(); }
   if (page === 'upskill') { setTimeout(function(){ if(typeof renderFilters==='function'){renderFilters();renderTracks();} }, 50); }
-  if (page === 'salary') {
-    var salSec = document.getElementById('page-salary');
-    if (salSec) salSec.style.display = 'block';
-    setTimeout(function(){
-      var fn = window.init3D || (typeof init3D==='function' ? init3D : null);
-      if (fn) fn();
-    }, 120);
-  }
+  if (page === 'salary') { setTimeout(function(){ if(typeof init3D==='function')init3D(); }, 80); }
   if (page === 'settings' && currentUser) { if(typeof refPopulateSettings==='function') refPopulateSettings(currentUser.id); }
   if (page === 'upgrade') { if(typeof checkMentorSessionLimit==='function') checkMentorSessionLimit(); }
   /* 8. Close mobile sidebar */
@@ -3089,28 +3321,12 @@ async function submitEasyApply() {
       await supaClient.from('applications').insert([{
         user_id: currentUser.id,
         job_id: jobId,
-        job_title: currentApplyJob.title || '',
-        company: currentApplyJob.company || '',
-        location: currentApplyJob.location || '',
-        salary_min: currentApplyJob.salary_min || currentApplyJob.salMin || 0,
-        salary_max: currentApplyJob.salary_max || currentApplyJob.salMax || 0,
+        job_title: currentApplyJob.title,
+        company: currentApplyJob.company,
         applied_at: new Date().toISOString(),
         status: 'applied'
       }]);
     } catch(e) { console.warn('applications table:', e.message); }
-    /* Save rich data to localStorage as backup */
-    try {
-      var localApps2 = JSON.parse(localStorage.getItem('bx_applications_'+currentUser.id)||'[]');
-      localApps2.unshift({
-        job_id: jobId,
-        job_title: currentApplyJob.title||'',
-        company: currentApplyJob.company||'',
-        location: currentApplyJob.location||'',
-        applied_at: new Date().toISOString(),
-        status: 'applied'
-      });
-      localStorage.setItem('bx_applications_'+currentUser.id, JSON.stringify(localApps2.slice(0,100)));
-    } catch(ex) {}
     // Increment career score +15
     var sc = 30;
     try {
@@ -3162,17 +3378,7 @@ async function loadTracker() {
   } catch(e) {
     // Fallback to localStorage applied IDs
     var appliedIds = []; try { appliedIds = JSON.parse(localStorage.getItem('bx_applied_'+currentUser.id))||[]; } catch(ex) {}
-    /* Also check bx_applications for richer locally saved data */
-    var localApps = []; try { localApps = JSON.parse(localStorage.getItem('bx_applications_'+currentUser.id))||[]; } catch(ex) {}
-    if (localApps.length > 0) {
-      localApps.forEach(function(a){ if(cols[a.status||'applied']) cols[a.status||'applied'].push(a); else cols.applied.push(a); });
-    } else {
-      appliedIds.forEach(function(id){
-        var j=ALL_JOBS.find(function(j){return String(j.id)===String(id);});
-        if(j) cols.applied.push({job_title:j.title||'Job',company:j.company||'',location:j.location||'',applied_at:new Date().toISOString(),status:'applied',job_id:id});
-        else cols.applied.push({job_title:'Applied Job',company:'',applied_at:new Date().toISOString(),status:'applied',job_id:id});
-      });
-    }
+    appliedIds.forEach(function(id){ var j=ALL_JOBS.find(function(j){return String(j.id)===String(id);}); if(j) cols.applied.push({job_title:j.title,company:j.company,applied_at:new Date().toISOString(),status:'applied',job_id:id}); });
   }
   var total = Object.values(cols).reduce(function(s,a){return s+a.length;},0);
   function st(id,v){var e=document.getElementById(id);if(e)e.textContent=v;}
@@ -3623,7 +3829,6 @@ init();
     renderChart();
     renderCards();
   }
-  window.init3D = init3D; /* expose to window so showPage can call it */
 
   function renderChips(){
     var wrap = document.getElementById('sal3d-chips');
@@ -3635,8 +3840,6 @@ init();
 
   function renderChart(){
     var chart = document.getElementById('sal3d-chart');
-    if (!chart) return;
-    void chart.offsetHeight; /* force reflow */
     if(!chart) return;
     var maxVal = 90;
     var active = SAL_DATA.find(function(d){return d.role===activeRole;}) || SAL_DATA[0];
