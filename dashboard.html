@@ -1926,13 +1926,15 @@ function renderLiveJobs(jobs, source) {
     var postedTxt = days === 0 ? 'Today' : days === 1 ? '1d ago' : days ? days + 'd ago' : 'Recently';
     var isApplied = appliedIds.indexOf(jId) !== -1;
 
-    /* Apply button — external URL for live jobs */
+    /* Apply button — use job index to avoid JSON quoting issues in onclick */
     var applyUrl = j.apply_url || j.url || '#';
+    /* Store job in global map so onclick can retrieve it safely */
+    if (!window._jobMap) window._jobMap = {};
+    var safeId = 'job_' + (jId || String(Math.random()).slice(2));
+    window._jobMap[safeId] = j;
     var applyBtn = isApplied
       ? '<span class="applied-badge">✓ Applied</span>'
-      : (applyUrl && applyUrl !== '#')
-        ? '<button class="easy-apply-btn" onclick="event.stopPropagation();handleJobApply(' + JSON.stringify(j).replace(/'/g, "\\'") + ')">Apply →</button>'
-        : '<button class="easy-apply-btn" onclick="event.stopPropagation();openEasyApplySupabase(' + JSON.stringify(j).replace(/'/g, "\\'") + ')">Quick Apply →</button>';
+      : '<button class="easy-apply-btn" onclick="event.stopPropagation();applyToJob(\"' + safeId + '\")">Apply \u2192</button>';
 
     var loc = j.location || j.loc || '';
     var exp = j.experience || j.exp || '';
@@ -1959,6 +1961,13 @@ function renderLiveJobs(jobs, source) {
 }
 
 /* Handle apply for live jobs — open external URL or easy apply */
+/* Safe apply handler — looks up job from global map */
+function applyToJob(safeId) {
+  var j = window._jobMap && window._jobMap[safeId];
+  if (!j) { showToast('Job not found, please refresh'); return; }
+  handleJobApply(j);
+}
+
 function handleJobApply(j) {
   var applyUrl = j.apply_url || j.url || '';
 
