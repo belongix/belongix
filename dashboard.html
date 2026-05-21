@@ -1926,15 +1926,14 @@ function renderLiveJobs(jobs, source) {
     var postedTxt = days === 0 ? 'Today' : days === 1 ? '1d ago' : days ? days + 'd ago' : 'Recently';
     var isApplied = appliedIds.indexOf(jId) !== -1;
 
-    /* Apply button — use job index to avoid JSON quoting issues in onclick */
-    var applyUrl = j.apply_url || j.url || '#';
-    /* Store job in global map so onclick can retrieve it safely */
+    /* Apply button — store in global map, use data-id attribute */
+    var applyUrl = j.apply_url || j.url || '';
     if (!window._jobMap) window._jobMap = {};
-    var safeId = 'job_' + (jId || String(Math.random()).slice(2));
+    var safeId = 'job_' + String(Date.now()) + '_' + String(Math.floor(Math.random()*9999));
     window._jobMap[safeId] = j;
     var applyBtn = isApplied
-      ? '<span class="applied-badge">✓ Applied</span>'
-      : '<button class="easy-apply-btn" onclick="event.stopPropagation();applyToJob(\"' + safeId + '\")">Apply \u2192</button>';
+      ? '<span class="applied-badge">&#10003; Applied</span>'
+      : '<button class="easy-apply-btn" data-jobid="' + safeId + '" onclick="event.stopPropagation();bxApply(this)">Apply &#8594;</button>';
 
     var loc = j.location || j.loc || '';
     var exp = j.experience || j.exp || '';
@@ -1962,6 +1961,44 @@ function renderLiveJobs(jobs, source) {
 
 /* Handle apply for live jobs — open external URL or easy apply */
 /* Safe apply handler — looks up job from global map */
+/* Global apply handler — called from button onclick via data-jobid attribute */
+function bxApply(btn) {
+  var id = btn.getAttribute('data-jobid');
+  var j = window._jobMap && window._jobMap[id];
+  if (!j) { showToast('Refresh the page and try again'); return; }
+  var url = j.apply_url || j.url || '';
+  if (url && url !== '#') {
+    window.open(url, '_blank');
+    showToast('Opening job application...');
+    /* Track application */
+    if (currentUser) {
+      var jId = String(j.id || id);
+      var appliedIds = [];
+      try { appliedIds = JSON.parse(localStorage.getItem('bx_applied_' + currentUser.id)) || []; } catch(e) {}
+      if (appliedIds.indexOf(jId) === -1) {
+        appliedIds.push(jId);
+        localStorage.setItem('bx_applied_' + currentUser.id, JSON.stringify(appliedIds));
+        btn.outerHTML = '<span class="applied-badge">&#10003; Applied</span>';
+        /* Save to Supabase */
+        supaClient.from('applications').insert([{
+          user_id: currentUser.id, job_id: jId,
+          job_title: j.title || '', company: j.company || '',
+          location: j.location || j.loc || '',
+          applied_at: new Date().toISOString(), status: 'applied'
+        }]).then(function(){}).catch(function(){});
+        /* +15 score */
+        supaClient.from('profiles').select('career_score').eq('id', currentUser.id).maybeSingle().then(function(r){
+          if (r.data) supaClient.from('profiles').update({ career_score: (r.data.career_score||30)+15 }).eq('id', currentUser.id).then(function(){});
+        });
+      }
+    } else {
+      showToast('Sign in to track your application');
+    }
+  } else {
+    showToast('No direct apply link — search for this job on Google');
+  }
+}
+
 function applyToJob(safeId) {
   var j = window._jobMap && window._jobMap[safeId];
   if (!j) { showToast('Job not found, please refresh'); return; }
