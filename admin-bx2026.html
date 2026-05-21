@@ -2102,11 +2102,35 @@ async function loadSettings(){
     var toggles={job_board_public:'tog-jobs',mentor_booking_enabled:'tog-booking',signups_enabled:'tog-signups',community_posting_enabled:'tog-community',bexi_ai_enabled:'tog-bexi',referral_program_active:'tog-referral'};
     Object.keys(toggles).forEach(function(k){var el=document.getElementById(toggles[k]);if(el&&map[k]!==undefined)el.checked=map[k]==='true';});
     var pf=document.getElementById('platform-fee');if(pf&&map.platform_fee_percent)pf.value=map.platform_fee_percent;
+    /* Load pricing into input fields so they persist after refresh */
+    var pm={'pro_monthly':'price-pro-monthly','pro_yearly':'price-pro-yearly','premium_monthly':'price-premium-monthly','premium_yearly':'price-premium-yearly'};
+    Object.keys(pm).forEach(function(k){var el=document.getElementById(pm[k]);if(el&&map[k])el.value=map[k];});
   }catch(e){}
 }
-async function saveSetting(key,value){try{var rows=await sbFetch('settings','key=eq.'+encodeURIComponent(key));if(rows&&rows.length){await sbUpdate('settings',key,{value:String(value),updated_by:adminSession.name});}else{await sbInsert('settings',[{key:key,value:String(value),updated_by:adminSession.name}]);}toast(key+' saved','success');await writeAudit('MODIFY','settings',null,key,'→ '+String(value));}catch(e){toast('Failed','error');}}
+async function saveSetting(key,value){
+  try{
+    var rows=await sbFetch('settings','key=eq.'+encodeURIComponent(key)+'&select=id,key');
+    if(rows&&rows.length){
+      await fetch(SB_URL+'/rest/v1/settings?key=eq.'+encodeURIComponent(key),{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify({value:String(value),updated_by:adminSession.name,updated_at:new Date().toISOString()})});
+    }else{
+      await sbInsert('settings',[{key:key,value:String(value),updated_by:adminSession.name,created_at:new Date().toISOString()}]);
+    }
+    await writeAudit('MODIFY','settings',null,key,'→ '+String(value));
+  }catch(e){console.warn('saveSetting failed:',e.message);throw e;}
+}
 async function savePlatformFee(){await saveSetting('platform_fee_percent',parseInt(gv('platform-fee'))||20);toast('Platform fee updated','success');}
-async function savePricing(){var keys=['pro_monthly','pro_yearly','premium_monthly','premium_yearly'],ids=['price-pro-monthly','price-pro-yearly','price-premium-monthly','price-premium-yearly'];for(var i=0;i<keys.length;i++)await saveSetting(keys[i],gv(ids[i]));toast('Pricing saved','success');}
+async function savePricing(){
+  var keys=['pro_monthly','pro_yearly','premium_monthly','premium_yearly'];
+  var ids=['price-pro-monthly','price-pro-yearly','price-premium-monthly','price-premium-yearly'];
+  try{
+    for(var i=0;i<keys.length;i++){
+      var val=gv(ids[i]);
+      if(!val||isNaN(parseInt(val))){toast('Invalid value for '+keys[i],'error');return;}
+      await saveSetting(keys[i],parseInt(val));
+    }
+    toast('✅ Pricing saved! New subscribers will see updated prices.','success');
+  }catch(e){toast('Failed to save: '+e.message,'error');}
+}
 
 var _currentTemplate='';
 var EMAIL_TEMPLATES={
