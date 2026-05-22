@@ -158,6 +158,32 @@ var _quizState = { current: 0, answers: {}, answered: false, score: 0, total: 0,
 var _enrollment = null;
 var _certificate = null;
 
+/* ── Plain fetch helpers (avoids supabase-js DataCloneError) ── */
+var _SBH = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY,
+             'Content-Type': 'application/json', 'Accept': 'application/json',
+             'Prefer': 'return=minimal' };
+var _SBR = SB_URL + '/rest/v1/';
+
+async function dbGet(table, qs) {
+  try {
+    var r = await fetch(_SBR + table + '?' + qs, { headers: Object.assign({}, _SBH, {'Prefer':''}) });
+    var d = await r.json();
+    return Array.isArray(d) ? d : [];
+  } catch(e) { console.warn('dbGet error', table, e.message); return []; }
+}
+async function dbPost(table, body, prefer) {
+  try {
+    var h = Object.assign({}, _SBH);
+    if (prefer) h['Prefer'] = prefer;
+    await fetch(_SBR + table, { method: 'POST', headers: h, body: JSON.stringify(body) });
+  } catch(e) { console.warn('dbPost error', table, e.message); }
+}
+async function dbPatch(table, qs, body) {
+  try {
+    await fetch(_SBR + table + '?' + qs, { method: 'PATCH', headers: _SBH, body: JSON.stringify(body) });
+  } catch(e) { console.warn('dbPatch error', table, e.message); }
+}
+
 var STATIC_COURSES = {
   'salary-negotiation': {
     id:'c1', slug:'salary-negotiation',
@@ -234,37 +260,50 @@ window.addEventListener('load', async function() {
 });
 
 async function loadCourse(slug) {
-  /* Try Supabase first */
-  try {
-    var cr = await sb.from('belongix_courses').select('*').eq('slug', slug).single();
-    if (cr.data) _course = cr.data;
+  /* Use plain XHR-style fetch — supabase-js causes DataCloneError in this env */
+  var H = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Accept': 'application/json' };
+  var base = SB_URL + '/rest/v1/';
 
-    /* Only fetch modules/questions if we have a valid course */
-    if (_course && _course.id) {
-      var mr = await sb.from('course_modules').select('*').eq('course_id', _course.id).order('order_index');
-      if (mr.data && mr.data.length) _modules = mr.data;
+  async function dbGet(table, query) {
+    try {
+      var r = await fetch(base + table + '?' + query, { method: 'GET', headers: H });
+      if (!r.ok) { console.warn('DB ' + table + ' HTTP ' + r.status); return []; }
+      var d = await r.json();
+      return Array.isArray(d) ? d : [];
+    } catch(e) { console.warn('DB fetch error (' + table + '):', e.message); return []; }
+  }
 
-      var qr = await sb.from('course_quiz_questions').select('*').eq('course_id', _course.id).order('order_index');
-      if (qr.data && qr.data.length) _questions = qr.data;
-    }
+  /* --- 1. Load course --- */
+  var courses = await dbGet('belongix_courses', 'slug=eq.' + encodeURIComponent(slug) + '&select=*&limit=1');
+  if (courses.length) _course = courses[0];
 
-    if (_user) {
-      var er = await sb.from('course_enrollments').select('*').eq('user_id', _user.id).eq('course_id', _course.id).maybeSingle();
-      _enrollment = er.data;
+  /* --- 2. Fallback to static if not in DB --- */
+  if (!_course && STATIC_COURSES[slug]) {
+    _course    = STATIC_COURSES[slug];
+    _modules   = STATIC_MODULES[slug]   || [];
+    _questions = STATIC_QUESTIONS[slug] || [];
+    return;
+  }
 
-      var pr = await sb.from('course_progress').select('module_id').eq('user_id', _user.id).eq('course_id', _course.id);
-      (pr.data || []).forEach(function(p){ _completedModules.add(p.module_id); });
+  /* --- 3. Load modules + quiz --- */
+  if (_course && _course.id) {
+    var mods = await dbGet('course_modules', 'course_id=eq.' + _course.id + '&select=*&order=order_index');
+    if (mods.length) _modules = mods;
 
-      var certR = await sb.from('certificates').select('*').eq('user_id', _user.id).eq('course_id', _course.id).maybeSingle();
-      _certificate = certR.data;
-    }
-  } catch(e) {
-    /* Fallback to static data only if slug exactly matches */
-    if (STATIC_COURSES[slug]) {
-      _course = STATIC_COURSES[slug];
-      _modules = STATIC_MODULES[slug] || [];
-      _questions = STATIC_QUESTIONS[slug] || [];
-    }
+    var quiz = await dbGet('course_quiz_questions', 'course_id=eq.' + _course.id + '&select=*&order=order_index');
+    if (quiz.length) _questions = quiz;
+  }
+
+  /* --- 4. Load user data (enrollments, progress, cert) --- */
+  if (_user && _course && _course.id) {
+    var enr = await dbGet('course_enrollments', 'user_id=eq.' + _user.id + '&course_id=eq.' + _course.id + '&select=*&limit=1');
+    _enrollment = enr[0] || null;
+
+    var prog = await dbGet('course_progress', 'user_id=eq.' + _user.id + '&course_id=eq.' + _course.id + '&select=module_id');
+    prog.forEach(function(p){ _completedModules.add(p.module_id); });
+
+    var certs = await dbGet('certificates', 'user_id=eq.' + _user.id + '&course_id=eq.' + _course.id + '&select=*&limit=1');
+    _certificate = certs[0] || null;
   }
 
   /* If course loaded from DB but has no modules yet, add a placeholder */
@@ -292,7 +331,7 @@ async function loadCourse(slug) {
   /* Auto-enroll if logged in and not enrolled */
   if (_user && !_enrollment && _course.id) {
     try {
-      await sb.from('course_enrollments').upsert([{ user_id: _user.id, course_id: _course.id, status: 'in_progress' }], { onConflict: 'user_id,course_id' });
+      await dbPost('course_enrollments', { user_id: _user.id, course_id: _course.id, status: 'in_progress' }, 'resolution=merge-duplicates');
     } catch(e) {}
   }
 
@@ -460,10 +499,10 @@ async function completeModule() {
   if (mod && _user && _course.id && !_completedModules.has(mod.id)) {
     _completedModules.add(mod.id);
     try {
-      await sb.from('course_progress').upsert([{ user_id: _user.id, course_id: _course.id, module_id: mod.id }], { onConflict: 'user_id,module_id' });
+      await dbPost('course_progress', { user_id: _user.id, course_id: _course.id, module_id: mod.id }, 'resolution=merge-duplicates');
       /* Update enrollment status */
       var isDone = _completedModules.size >= _modules.length;
-      await sb.from('course_enrollments').update({ status: isDone ? 'completed' : 'in_progress' }).eq('user_id', _user.id).eq('course_id', _course.id);
+      await dbPatch('course_enrollments', 'user_id=eq.'+_user.id+'&course_id=eq.'+_course.id, { status: isDone ? 'completed' : 'in_progress' });
     } catch(e) {}
   } else if (!_user) {
     /* Allow progress in localStorage for guests */
@@ -512,11 +551,11 @@ async function nextQuestion() {
 
     /* Save attempt */
     try {
-      await sb.from('course_quiz_attempts').insert([{
+      await dbPost('course_quiz_attempts', {
         user_id: _user.id, course_id: _course.id,
         score: _quizState.score, total: _quizState.total,
         passed: _quizState.passed, answers: _quizState.answers
-      }]);
+      });
     } catch(e) {}
 
     /* Generate certificate if passed */
@@ -549,7 +588,7 @@ async function generateCertificate(score) {
     is_valid: true
   };
   try {
-    await sb.from('certificates').upsert([certData], { onConflict: 'user_id,course_id' });
+    await dbPost('certificates', certData, 'resolution=merge-duplicates');
     _certificate = certData;
     showToast('🏆 Certificate generated! Certificate ID: ' + certId);
   } catch(e) {
