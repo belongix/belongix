@@ -708,10 +708,49 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
 
     <!-- ══ CONTENT ══ -->
     <div class="section" id="sec-content">
-      <div class="pg-hdr"><div><div class="pg-title">Content & Courses</div></div><div class="pg-actions"><button class="btn btn-primary btn-sm" onclick="openModal('course-modal')">+ Add Course</button></div></div>
+      <div class="pg-hdr">
+        <div><div class="pg-title">Courses</div><div class="pg-sub">Manage belongix_courses — content, publishing, enrollments</div></div>
+        <div class="pg-actions">
+          <a href="courses.html" target="_blank" class="btn btn-ghost btn-sm">🔗 View Live</a>
+          <button class="btn btn-primary btn-sm" onclick="openAddCourse()">+ Add Course</button>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="kpi-row" id="course-kpis" style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+        <div class="kpi-card"><div class="kpi-val" id="ck-total">—</div><div class="kpi-lbl">Total Courses</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="ck-published">—</div><div class="kpi-lbl">Published</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="ck-enrolled">—</div><div class="kpi-lbl">Total Enrollments</div></div>
+        <div class="kpi-card"><div class="kpi-val" id="ck-certs">—</div><div class="kpi-lbl">Certificates Issued</div></div>
+      </div>
+
+      <!-- Filters -->
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <select class="form-select" id="cf-domain" onchange="renderCoursesTable()" style="width:auto;padding:6px 10px;font-size:13px">
+          <option value="">All Domains</option>
+          <option value="Development">Development</option>
+          <option value="Coding">Coding</option>
+          <option value="AI">AI</option>
+        </select>
+        <select class="form-select" id="cf-status" onchange="renderCoursesTable()" style="width:auto;padding:6px 10px;font-size:13px">
+          <option value="">All Status</option>
+          <option value="published">Published</option>
+          <option value="draft">Draft</option>
+        </select>
+        <input class="form-input" id="cf-search" placeholder="Search courses..." oninput="renderCoursesTable()" style="width:200px;padding:6px 10px;font-size:13px"/>
+      </div>
+
       <div class="tbl-wrap"><div class="tbl-scroll">
-        <table><thead><tr><th>Title</th><th>Provider</th><th>Duration</th><th>Level</th><th>Popularity</th><th>Status</th><th>Actions</th></tr></thead>
-        <tbody id="courses-tbody"><tr><td colspan="7"><div class="empty"><div class="empty-ic">📚</div><div class="empty-t">No courses yet</div><div class="empty-s">Add courses to the Upskilling Hub</div></div></td></tr></tbody></table>
+        <table>
+          <thead><tr>
+            <th>Course</th><th>Domain</th><th>Difficulty</th>
+            <th>Modules</th><th>Enrollments</th><th>Rating</th>
+            <th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="courses-tbody">
+            <tr><td colspan="8"><div class="empty"><div class="empty-ic">📚</div><div class="empty-t">Loading courses...</div></div></td></tr>
+          </tbody>
+        </table>
       </div></div>
     </div>
 
@@ -1361,16 +1400,35 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
 
 <!-- COURSE MODAL -->
 <div class="modal-overlay" id="course-modal" onclick="if(event.target===this)closeModal('course-modal')">
-  <div class="modal-box modal-sm">
-    <div class="modal-hdr"><div class="modal-title">Add Course</div><button class="modal-close" onclick="closeModal('course-modal')">✕</button></div>
+  <div class="modal-box" style="max-width:580px">
+    <div class="modal-hdr"><div class="modal-title" id="course-modal-title">Add Course</div><button class="modal-close" onclick="closeModal('course-modal')">✕</button></div>
     <div class="modal-body">
-      <div class="form-group"><label class="form-label">Title *</label><input class="form-input" id="course-title"/></div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Provider</label><input class="form-input" id="course-provider"/></div><div class="form-group"><label class="form-label">Level</label><select class="form-select" id="course-level"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div></div>
-      <div class="form-row"><div class="form-group"><label class="form-label">Duration</label><input class="form-input" id="course-duration" placeholder="e.g. 6 hours"/></div><div class="form-group"><label class="form-label">Tags</label><input class="form-input" id="course-tags" placeholder="comma separated"/></div></div>
-      <div class="form-group"><label class="form-label">URL</label><input class="form-input" type="url" id="course-url"/></div>
-      <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="course-desc" rows="3"></textarea></div>
+      <input type="hidden" id="course-edit-id"/>
+      <div class="form-row">
+        <div class="form-group" style="flex:2"><label class="form-label">Title *</label><input class="form-input" id="course-title" placeholder="e.g. React Development"/></div>
+        <div class="form-group"><label class="form-label">Slug *</label><input class="form-input" id="course-slug" placeholder="react-development"/></div>
+      </div>
+      <div class="form-group"><label class="form-label">Subtitle</label><input class="form-input" id="course-subtitle" placeholder="Short tagline shown on course card"/></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Domain</label><select class="form-select" id="course-domain"><option value="Development">Development</option><option value="Coding">Coding</option><option value="AI">AI</option></select></div>
+        <div class="form-group"><label class="form-label">Difficulty</label><select class="form-select" id="course-difficulty"><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+        <div class="form-group"><label class="form-label">Duration (mins)</label><input class="form-input" type="number" id="course-duration" placeholder="60"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Pass Score %</label><input class="form-input" type="number" id="course-pass-score" placeholder="70" min="50" max="100"/></div>
+        <div class="form-group"><label class="form-label">Certificate Title</label><input class="form-input" id="course-cert-title" placeholder="Certified React Developer"/></div>
+      </div>
+      <div class="form-group"><label class="form-label">Skills (comma separated)</label><input class="form-input" id="course-skills" placeholder="React, JavaScript, Hooks, Redux"/></div>
+      <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" id="course-desc" rows="2" placeholder="What will students learn?"></textarea></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="course-published"><option value="true">Published</option><option value="false">Draft</option></select></div>
+        <div class="form-group"><label class="form-label">Free?</label><select class="form-select" id="course-free"><option value="true">Free</option><option value="false">Paid</option></select></div>
+      </div>
     </div>
-    <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('course-modal')">Cancel</button><button class="btn btn-primary" onclick="saveCourse()">💾 Save</button></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('course-modal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCourse()">💾 Save Course</button>
+    </div>
   </div>
 </div>
 
@@ -1797,10 +1855,197 @@ async function rejectMentor(id){openConfirm('❌ Reject','Rejection reason:','e.
 async function loadMentorPerf(){try{var mentors=await sbFetch('mentors','select=*&limit=50');var tbody=document.getElementById('mentor-perf-tbody');if(!mentors.length){tbody.innerHTML='<tr><td colspan="7">'+emptyState('🎓','No approved mentors yet')+'</td></tr>';return;}tbody.innerHTML=mentors.map(function(m){var s=m.sessions_count||0;var r=parseFloat(m.rating||0).toFixed(1);var low=parseFloat(r)<3.5&&s>=5;return '<tr><td><div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--primary));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center">'+initials(m.name||'M')+'</div><strong>'+esc(m.name||'—')+'</strong></div></td><td>'+s+'</td><td><span style="font-weight:700;color:#F59E0B">'+r+'★</span></td><td style="font-weight:700;color:var(--accent)">₹'+Math.round(s*(m.session_rate||0)*0.8)+'</td><td>'+(m.response_rate||0)+'%</td><td>'+(low?'<span class="badge b-danger">Auto-Suspended</span>':'<span class="badge b-success">Active</span>')+'</td><td><button class="btn btn-danger btn-xs" onclick="suspendMentor(\''+esc(m.id)+'\')">🚫</button></td></tr>';}).join('');}catch(e){document.getElementById('mentor-perf-tbody').innerHTML='<tr><td colspan="7">'+emptyState('⚠️','Could not load mentors')+'</td></tr>';}}
 async function suspendMentor(id){openConfirm('🚫 Suspend Mentor','Suspend from Belongix?','Reason','Suspend','danger',async function(r){try{await sbUpdate('mentors',id,{suspended:true});toast('Mentor suspended','success');}catch(e){toast('Error','error');}});}
 /* CONTENT */
-async function loadContent(){try{_allCourses=await sbFetch('courses','select=*&order=created_at.desc').catch(function(){return[];});}catch(e){_allCourses=[];}renderCoursesTable();}
-function renderCoursesTable(){var tbody=document.getElementById('courses-tbody');if(!tbody)return;if(!_allCourses.length){tbody.innerHTML='<tr><td colspan="7">'+emptyState('📚','No courses yet','Add courses to the Upskilling Hub')+'</td></tr>';return;}tbody.innerHTML=_allCourses.map(function(c){return '<tr><td><strong>'+esc(c.title||'—')+'</strong></td><td>'+esc(c.provider||'—')+'</td><td>'+esc(c.duration||'—')+'</td><td><span class="badge b-gray">'+esc(c.level||'—')+'</span></td><td style="font-weight:700;color:var(--accent)">'+(c.popularity||0)+'</td><td><span class="badge b-success">Active</span></td><td><button class="btn btn-danger btn-xs" onclick="deleteCourse(\''+esc(c.id)+'\')">🗑</button></td></tr>';}).join('');}
-async function saveCourse(){var data={title:gv('course-title'),provider:gv('course-provider'),level:gv('course-level'),duration:gv('course-duration'),tags:gv('course-tags'),url:gv('course-url'),description:gv('course-desc')};if(!data.title){toast('Title required','warning');return;}try{await sbInsert('courses',[data]);closeModal('course-modal');_loaded['content']=false;loadContent();toast('Course saved','success');}catch(e){toast('Save failed','error');}}
-async function deleteCourse(id){openConfirm('🗑 Delete','Delete this course?',null,'Delete','danger',async function(){try{await sbDelete('courses',id);_allCourses=_allCourses.filter(function(c){return c.id!==id;});renderCoursesTable();toast('Deleted','success');}catch(e){toast('Error','error');}});}
+async function loadContent() {
+  try {
+    // Load courses from belongix_courses
+    var cr = await sbFetch('belongix_courses', 'select=*&order=domain,order_index');
+    _allCourses = cr || [];
+
+    // Load enrollment counts
+    var er = await sbFetch('course_enrollments', 'select=course_id');
+    var enrollMap = {};
+    (er || []).forEach(function(e) {
+      enrollMap[e.course_id] = (enrollMap[e.course_id] || 0) + 1;
+    });
+    _allCourses.forEach(function(c) { c._enrollments = enrollMap[c.id] || 0; });
+
+    // Load cert counts
+    var certR = await sbFetch('certificates', 'select=course_id');
+    var certMap = {};
+    (certR || []).forEach(function(c) {
+      certMap[c.course_id] = (certMap[c.course_id] || 0) + 1;
+    });
+    _allCourses.forEach(function(c) { c._certs = certMap[c.id] || 0; });
+
+    // Update KPIs
+    var totalEnroll = Object.values(enrollMap).reduce(function(a,b){return a+b;}, 0);
+    var totalCerts  = Object.values(certMap).reduce(function(a,b){return a+b;}, 0);
+    var published   = _allCourses.filter(function(c){return c.is_published;}).length;
+    setText('ck-total',    _allCourses.length);
+    setText('ck-published', published);
+    setText('ck-enrolled',  totalEnroll);
+    setText('ck-certs',     totalCerts);
+  } catch(e) {
+    _allCourses = [];
+  }
+  renderCoursesTable();
+}
+
+function setText(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function renderCoursesTable() {
+  var tbody = document.getElementById('courses-tbody');
+  if (!tbody) return;
+
+  var domain  = (document.getElementById('cf-domain')  || {}).value || '';
+  var status  = (document.getElementById('cf-status')  || {}).value || '';
+  var search  = ((document.getElementById('cf-search') || {}).value || '').toLowerCase();
+
+  var filtered = _allCourses.filter(function(c) {
+    if (domain && c.domain !== domain) return false;
+    if (status === 'published' && !c.is_published) return false;
+    if (status === 'draft'     &&  c.is_published) return false;
+    if (search && !(c.title||'').toLowerCase().includes(search) && !(c.slug||'').toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    tbody.innerHTML = '<tr><td colspan="8">' + emptyState('📚', 'No courses found', 'Try adjusting your filters') + '</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(function(c) {
+    var domainBadge = c.domain === 'AI' ? 'b-purple' : c.domain === 'Coding' ? 'b-blue' : 'b-green';
+    var diffBadge   = c.difficulty === 'Advanced' ? 'b-danger' : c.difficulty === 'Intermediate' ? 'b-warning' : 'b-success';
+    var statusBadge = c.is_published ? '<span class="badge b-success">Published</span>' : '<span class="badge b-gray">Draft</span>';
+    var modules     = c.module_count || 0;
+    var modulesBadge = modules > 0
+      ? '<span style="font-weight:700;color:var(--brand)">' + modules + '</span>'
+      : '<span style="color:var(--danger);font-size:11px">⚠ No modules</span>';
+
+    return '<tr>'
+      + '<td><div style="font-weight:600;font-size:13px">' + esc(c.title||'—') + '</div>'
+      +     '<div style="font-size:11px;color:var(--muted)">' + esc(c.slug||'') + '</div></td>'
+      + '<td><span class="badge ' + domainBadge + '">' + esc(c.domain||'—') + '</span></td>'
+      + '<td><span class="badge ' + diffBadge + '">' + esc(c.difficulty||'—') + '</span></td>'
+      + '<td style="text-align:center">' + modulesBadge + '</td>'
+      + '<td style="text-align:center;font-weight:600">' + (c._enrollments||0) + '</td>'
+      + '<td style="text-align:center">' + (c.rating ? '⭐ ' + (c.rating||0) : '—') + '</td>'
+      + '<td>' + statusBadge + '</td>'
+      + '<td>'
+      +   '<div style="display:flex;gap:4px">'
+      +   '<button class="btn btn-ghost btn-xs" onclick="editCourse(this)" data-id="' + esc(c.id) + '" title="Edit">✏️</button>'
+      +   '<button class="btn btn-ghost btn-xs" onclick="togglePublish(this)" data-id="' + esc(c.id) + '" data-pub="' + (c.is_published?'1':'0') + '" title="' + (c.is_published?'Unpublish':'Publish') + '">'
+      +     (c.is_published ? '🙈' : '👁') + '</button>'
+      +   '<a class="btn btn-ghost btn-xs" href="course.html?slug=' + esc(c.slug) + '" target="_blank" title="Preview">🔗</a>'
+      +   '<button class="btn btn-danger btn-xs" onclick="deleteCourse(this)" data-id="' + esc(c.id) + '" title="Delete">🗑</button>'
+      +   '</div>'
+      + '</td>'
+      + '</tr>';
+  }).join('');
+}
+
+function openAddCourse() {
+  document.getElementById('course-modal-title').textContent = 'Add Course';
+  document.getElementById('course-edit-id').value = '';
+  ['course-title','course-slug','course-subtitle','course-skills','course-desc','course-cert-title'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  var dur = document.getElementById('course-duration'); if (dur) dur.value = '60';
+  var ps  = document.getElementById('course-pass-score'); if (ps) ps.value = '70';
+  var dom = document.getElementById('course-domain'); if (dom) dom.value = 'Development';
+  var dif = document.getElementById('course-difficulty'); if (dif) dif.value = 'Beginner';
+  var pub = document.getElementById('course-published'); if (pub) pub.value = 'true';
+  var fr  = document.getElementById('course-free'); if (fr) fr.value = 'true';
+  openModal('course-modal');
+}
+
+function editCourse(btn) {
+  var id = btn.dataset ? btn.dataset.id : btn;
+  var c = _allCourses.find(function(x){return x.id===id;});
+  if (!c) return;
+  document.getElementById('course-modal-title').textContent = 'Edit Course';
+  document.getElementById('course-edit-id').value = c.id;
+  document.getElementById('course-title').value = c.title || '';
+  document.getElementById('course-slug').value = c.slug || '';
+  document.getElementById('course-subtitle').value = c.subtitle || '';
+  document.getElementById('course-domain').value = c.domain || 'Development';
+  document.getElementById('course-difficulty').value = c.difficulty || 'Beginner';
+  document.getElementById('course-duration').value = c.duration_mins || 60;
+  document.getElementById('course-pass-score').value = c.pass_score || 70;
+  document.getElementById('course-cert-title').value = c.certificate_title || '';
+  document.getElementById('course-skills').value = c.skills || '';
+  document.getElementById('course-desc').value = c.description || '';
+  document.getElementById('course-published').value = c.is_published ? 'true' : 'false';
+  document.getElementById('course-free').value = c.is_free ? 'true' : 'false';
+  openModal('course-modal');
+}
+
+async function saveCourse() {
+  var editId = (document.getElementById('course-edit-id')||{}).value || '';
+  var data = {
+    title:             gv('course-title'),
+    slug:              gv('course-slug'),
+    subtitle:          gv('course-subtitle'),
+    domain:            gv('course-domain'),
+    difficulty:        gv('course-difficulty'),
+    duration_mins:     parseInt(gv('course-duration')) || 60,
+    pass_score:        parseInt(gv('course-pass-score')) || 70,
+    certificate_title: gv('course-cert-title'),
+    skills:            gv('course-skills'),
+    description:       gv('course-desc'),
+    is_published:      gv('course-published') === 'true',
+    is_free:           gv('course-free') === 'true'
+  };
+  if (!data.title) { toast('Title is required', 'warning'); return; }
+  if (!data.slug)  { toast('Slug is required', 'warning');  return; }
+
+  try {
+    if (editId) {
+      await sbUpdate('belongix_courses', editId, data);
+      toast('Course updated', 'success');
+    } else {
+      data.module_count  = 0;
+      data.students_count = 0;
+      data.rating        = 4.5;
+      data.order_index   = _allCourses.length + 1;
+      await sbInsert('belongix_courses', [data]);
+      toast('Course created', 'success');
+    }
+    closeModal('course-modal');
+    _loaded['content'] = false;
+    loadContent();
+  } catch(e) {
+    toast('Save failed: ' + (e.message||e), 'error');
+  }
+}
+
+async function togglePublish(btn) {
+  var id = btn.dataset ? btn.dataset.id : btn;
+  var newVal = btn.dataset && btn.dataset.pub === '1' ? false : true;
+  try {
+    await sbUpdate('belongix_courses', id, { is_published: newVal });
+    var c = _allCourses.find(function(x){return x.id===id;});
+    if (c) c.is_published = newVal;
+    renderCoursesTable();
+    toast(newVal ? 'Course published' : 'Course unpublished', 'success');
+  } catch(e) { toast('Update failed', 'error'); }
+}
+
+async function deleteCourse(btn) {
+  var id = btn.dataset ? btn.dataset.id : btn;
+  openConfirm('🗑 Delete Course', 'This will permanently delete the course and all its modules. Cannot be undone.', null, 'Delete', 'danger', async function() {
+    try {
+      await sbDelete('belongix_courses', id);
+      _allCourses = _allCourses.filter(function(c){return c.id!==id;});
+      renderCoursesTable();
+      toast('Course deleted', 'success');
+    } catch(e) { toast('Delete failed', 'error'); }
+  });
+}
 
 /* COMMUNITY */
 async function loadCommunity(){try{var posts=await sbFetch('community_posts','select=*&order=created_at.desc&limit=100');renderCommunityTable(posts);setText('comm-questions',posts.length);try{var ans=await sbFetch('community_answers','select=id');setText('comm-answers',ans.length);}catch(e){setText('comm-answers','—');}setText('comm-flagged','0');setText('comm-banned','0');}catch(e){renderCommunityTable([]);setText('comm-questions','0');setText('comm-answers','—');}}
