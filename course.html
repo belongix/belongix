@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Course — Belongix</title>
+<link rel="icon" href="icons/icon-32.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;--green:#10B981;--ink:#0D0D1A;--muted:#5A5A7A;--subtle:#8B8BA8;--border:#E4E4F0;--bg:#F7F7FC;--white:#fff;--ff:'Sora',sans-serif;--ffb:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--ffb);background:var(--bg);color:var(--ink)}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-logo{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--brand);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;padding:6px 12px;border:1px solid var(--border);border-radius:8px;transition:.15s}
+.nav-back:hover{border-color:var(--brand);color:var(--brand)}
+
+/* LAYOUT */
+.page-wrap{max-width:1100px;margin:0 auto;padding:32px 24px;display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+@media(max-width:900px){.page-wrap{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* COURSE HEADER */
+.course-header{background:linear-gradient(135deg,#1A0B4B,#2D1B69);border-radius:20px;padding:32px;margin-bottom:24px;color:#fff}
+.course-breadcrumb{font-size:12px;color:rgba(255,255,255,.6);margin-bottom:12px}
+.course-breadcrumb a{color:rgba(255,255,255,.6);text-decoration:none}
+.course-breadcrumb a:hover{color:#fff}
+.course-h-title{font-family:var(--ff);font-size:26px;font-weight:800;line-height:1.2;margin-bottom:10px}
+.course-h-sub{font-size:15px;color:rgba(255,255,255,.75);margin-bottom:20px}
+.course-h-meta{display:flex;gap:16px;flex-wrap:wrap}
+.course-h-badge{display:flex;align-items:center;gap:5px;font-size:12px;color:rgba(255,255,255,.8);background:rgba(255,255,255,.1);padding:4px 10px;border-radius:20px}
+
+/* MODULES */
+.card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.card-title{font-family:var(--ff);font-size:15px;font-weight:700;color:var(--ink);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.module-item{display:flex;align-items:center;gap:12px;padding:12px;border-radius:10px;cursor:pointer;transition:.15s;border:1.5px solid transparent}
+.module-item:hover{background:#F0EEFF;border-color:var(--brand)}
+.module-item.active{background:#F0EEFF;border-color:var(--brand)}
+.module-item.completed{background:#F0FDF4;border-color:var(--green)}
+.module-num{width:32px;height:32px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--muted);flex-shrink:0}
+.module-item.active .module-num{background:var(--brand);color:#fff}
+.module-item.completed .module-num{background:var(--green);color:#fff}
+.module-info{flex:1;min-width:0}
+.module-title{font-size:13px;font-weight:600;color:var(--ink)}
+.module-dur{font-size:11px;color:var(--muted);margin-top:2px}
+.module-check{font-size:16px;flex-shrink:0}
+
+/* CONTENT AREA */
+.content-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:28px;margin-bottom:16px}
+.content-card h2{font-family:var(--ff);font-size:20px;font-weight:700;color:var(--ink);margin-bottom:16px}
+.content-card h3{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--ink);margin:20px 0 10px}
+.content-card p{font-size:14px;color:#3A3A5A;line-height:1.8;margin-bottom:14px}
+.content-card ul,.content-card ol{padding-left:20px;margin-bottom:14px}
+.content-card li{font-size:14px;color:#3A3A5A;line-height:1.8;margin-bottom:6px}
+.content-card blockquote{background:#F0EEFF;border-left:4px solid var(--brand);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--ink);font-style:italic;line-height:1.7}
+.content-card strong{color:var(--ink);font-weight:700}
+.module-nav{display:flex;gap:10px;margin-top:20px}
+.nav-btn{flex:1;padding:12px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--ff);border:none;transition:.15s}
+.nav-btn.prev{background:#F0EEFF;color:var(--brand)}
+.nav-btn.prev:hover{background:var(--brand);color:#fff}
+.nav-btn.next{background:var(--brand);color:#fff}
+.nav-btn.next:hover{background:var(--brand2)}
+.nav-btn.complete{background:var(--green);color:#fff}
+.nav-btn.complete:hover{filter:brightness(1.1)}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* QUIZ */
+.quiz-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:28px}
+.quiz-header{text-align:center;margin-bottom:28px}
+.quiz-icon{font-size:48px;margin-bottom:12px}
+.quiz-title{font-family:var(--ff);font-size:22px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.quiz-sub{font-size:14px;color:var(--muted)}
+.quiz-progress{height:6px;background:var(--border);border-radius:3px;margin-bottom:28px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--brand),#06B6D4);border-radius:3px;transition:width .4s}
+.quiz-q-num{font-size:12px;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.quiz-q-text{font-size:16px;font-weight:600;color:var(--ink);line-height:1.5;margin-bottom:20px}
+.quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.quiz-option{display:flex;align-items:center;gap:12px;padding:14px 16px;border:2px solid var(--border);border-radius:12px;cursor:pointer;transition:.15s;font-size:14px;color:var(--ink)}
+.quiz-option:hover:not(.selected):not(.correct):not(.wrong){border-color:var(--brand);background:#F0EEFF}
+.quiz-option.selected{border-color:var(--brand);background:#F0EEFF}
+.quiz-option.correct{border-color:var(--green);background:#F0FDF4;color:#15803D;font-weight:600}
+.quiz-option.wrong{border-color:#EF4444;background:#FEF2F2;color:#B91C1C}
+.quiz-opt-letter{width:28px;height:28px;border-radius:50%;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;transition:.15s}
+.quiz-option.selected .quiz-opt-letter{background:var(--brand);color:#fff}
+.quiz-option.correct .quiz-opt-letter{background:var(--green);color:#fff}
+.quiz-option.wrong .quiz-opt-letter{background:#EF4444;color:#fff}
+.quiz-explanation{background:#FEF9C3;border:1px solid #FDE68A;border-radius:10px;padding:12px 16px;font-size:13px;color:#92400E;margin-bottom:16px;display:none}
+.quiz-explanation.show{display:block}
+.quiz-next-btn{width:100%;padding:13px;background:var(--brand);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ff);transition:.15s}
+.quiz-next-btn:hover{background:var(--brand2)}
+.quiz-next-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* QUIZ RESULT */
+.quiz-result{text-align:center;padding:20px 0}
+.result-icon{font-size:64px;margin-bottom:16px}
+.result-title{font-family:var(--ff);font-size:24px;font-weight:800;margin-bottom:8px}
+.result-score{font-family:var(--ff);font-size:48px;font-weight:800;color:var(--brand);margin-bottom:4px}
+.result-sub{font-size:14px;color:var(--muted);margin-bottom:24px}
+.result-btn{padding:13px 28px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ff);border:none;transition:.15s}
+.result-btn.primary{background:var(--brand);color:#fff;margin-right:10px}
+.result-btn.primary:hover{background:var(--brand2)}
+.result-btn.secondary{background:#F0EEFF;color:var(--brand)}
+.result-btn.secondary:hover{background:var(--brand);color:#fff}
+
+/* SIDEBAR */
+.sidebar{position:sticky;top:74px}
+.progress-card{background:var(--brand);border-radius:16px;padding:20px;color:#fff;margin-bottom:16px}
+.progress-title{font-size:13px;font-weight:600;opacity:.8;margin-bottom:8px}
+.progress-pct{font-family:var(--ff);font-size:36px;font-weight:800;margin-bottom:8px}
+.progress-bar{height:8px;background:rgba(255,255,255,.2);border-radius:4px;overflow:hidden;margin-bottom:12px}
+.progress-fill{height:100%;background:#FCD34D;border-radius:4px;transition:width .5s}
+.progress-detail{font-size:12px;opacity:.75}
+.cert-locked-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:20px;text-align:center}
+.cert-locked-icon{font-size:40px;margin-bottom:10px}
+.cert-locked-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:6px}
+.cert-locked-sub{font-size:12px;color:var(--muted);line-height:1.5}
+.cert-available-card{background:linear-gradient(135deg,#065F46,#059669);border-radius:16px;padding:20px;text-align:center;cursor:pointer}
+.cert-available-card:hover{filter:brightness(1.05)}
+.cert-available-title{font-family:var(--ff);font-size:14px;font-weight:700;color:#fff;margin-bottom:6px}
+.cert-available-btn{background:#FCD34D;color:#065F46;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:var(--ff);margin-top:10px;width:100%}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#0D0D1A;color:#fff;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:.3s;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
+  <a href="courses.html" class="nav-back">← All Courses</a>
+</nav>
+
+<div id="page-content">
+  <div style="text-align:center;padding:80px 24px;color:var(--muted)">
+    <div style="width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px"></div>
+    Loading course...
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+var SB_URL = 'https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb = supabase.createClient(SB_URL, SB_KEY);
+
+var _user = null;
+var _course = null;
+var _modules = [];
+var _questions = [];
+var _completedModules = new Set();
+var _currentModule = 0;
+var _mode = 'content'; /* content | quiz */
+var _quizState = { current: 0, answers: {}, answered: false, score: 0, total: 0, passed: false };
+var _enrollment = null;
+var _certificate = null;
+
+var STATIC_COURSES = {
+  'salary-negotiation': {
+    id:'c1', slug:'salary-negotiation',
+    title:'Salary Negotiation for Indian Professionals',
+    subtitle:'Get the salary you deserve — with real India market data',
+    category:'Career Skills', difficulty:'Beginner', duration_mins:75, module_count:4,
+    certificate_title:'Certified Salary Negotiator — India Market', pass_score:70
+  },
+  'it-to-product-switch': {
+    id:'c2', slug:'it-to-product-switch',
+    title:'IT Services to Product Company Switch',
+    subtitle:'How to escape TCS/Infosys and land a product job',
+    category:'Career Switch', difficulty:'Beginner', duration_mins:90, module_count:5,
+    certificate_title:'Certified Career Switcher — IT to Product', pass_score:70
+  },
+  'ai-tools-professionals': {
+    id:'c3', slug:'ai-tools-professionals',
+    title:'AI Tools for Indian Professionals 2026',
+    subtitle:'Work 10x faster with ChatGPT, Claude, Gemini and more',
+    category:'Upskilling', difficulty:'Beginner', duration_mins:60, module_count:6,
+    certificate_title:'Certified AI-Powered Professional', pass_score:70
+  },
+  'resume-linkedin-india': {
+    id:'c4', slug:'resume-linkedin-india',
+    title:'Resume & LinkedIn for Indian Job Market',
+    subtitle:'Get recruiter callbacks in 48 hours',
+    category:'Career Skills', difficulty:'Beginner', duration_mins:55, module_count:4,
+    certificate_title:'Certified Resume & LinkedIn Specialist', pass_score:70
+  },
+  'dsa-interview-india': {
+    id:'c5', slug:'dsa-interview-india',
+    title:'DSA Interview Prep — India Edition',
+    subtitle:'Crack Google, Amazon, Flipkart interviews in 90 days',
+    category:'Interview Prep', difficulty:'Intermediate', duration_mins:120, module_count:8,
+    certificate_title:'Certified DSA Interview Ready — India', pass_score:75
+  }
+};
+
+var STATIC_MODULES = {
+  'salary-negotiation': [
+    {id:'m1', title:'Know Your Market Value', duration_mins:15, order_index:1, content:'<h2>Step 1: Research Before You Negotiate</h2><p>The biggest mistake Indian professionals make is negotiating without data. Here\'s exactly how to find your market rate.</p><h3>Best sources for India salary data:</h3><ul><li><strong>Glassdoor India</strong> — filter by company + city + years of experience</li><li><strong>Levels.fyi</strong> — best for product companies and FAANG</li><li><strong>LinkedIn Salary</strong> — good for non-tech roles</li><li><strong>Belongix Salary Intelligence</strong> — real data from 2,400+ Indian professionals</li></ul><h3>What to look for:</h3><p>Find the P50 (median) for your exact profile: role + years of experience + city. This is your baseline.</p><h3>Example:</h3><p>SDE-1, 2 years experience, Bangalore, product company → P50 is ₹18-22 LPA in 2026.</p><p>If you\'re earning ₹14 LPA, you are underpaid by ₹4-8 LPA. That\'s your negotiation ammunition.</p><blockquote>Before moving to the next module, look up your current role on Glassdoor and write down: your current salary, market P50, and the gap.</blockquote>'},
+    {id:'m2', title:'The Negotiation Framework', duration_mins:20, order_index:2, content:'<h2>The 3-Step Indian Salary Negotiation Framework</h2><p>Most negotiation advice is American and doesn\'t work in India. This framework is built for Indian companies and culture.</p><h3>Step 1: Anchor High</h3><p>Always give a number first if they ask. Give a range where your <em>minimum</em> is what you actually want.</p><p><strong>Example:</strong> You want ₹18 LPA. Say "I\'m looking at ₹18-22 LPA based on my research."</p><h3>Step 2: Justify with Data</h3><p>Never say "I need more money." Always say "Based on Glassdoor/Levels.fyi data for this role in Bangalore, the median is ₹X."</p><h3>Step 3: Stay Silent</h3><p>After you give your number — <strong>stop talking</strong>. The first person to speak loses.</p><blockquote>"Thank you for the offer. I\'m very excited about this role. Based on my research on Glassdoor for [Role] in [City], and given my [X] years of experience, I was expecting something closer to ₹[your number]. Is there flexibility?"<br/><br/>Then. Stop. Talking.</blockquote>'},
+    {id:'m3', title:'Handling Objections', duration_mins:20, order_index:3, content:'<h2>They Said No — Now What?</h2><p>Common objections and exactly how to handle each one.</p><h3>Objection 1: "This is our final offer"</h3><p><strong>Response:</strong> "I understand. Could we revisit after my first 3 months once I\'ve demonstrated my value? I\'d also love to understand if there\'s flexibility on joining bonus or variable."</p><h3>Objection 2: "We have a salary band"</h3><p><strong>Response:</strong> "I understand bands exist. Is there flexibility on the variable component or a signing bonus to bridge the gap?"</p><h3>Objection 3: "Your current salary is too low"</h3><p><strong>Response:</strong> "I\'d prefer to focus on the market rate for this role rather than my current salary. Based on Glassdoor, ₹[X] is the market median."</p><h3>Key Rule:</h3><p>You will <strong>never</strong> lose a job offer by politely negotiating. Companies expect it. Anyone who withdraws an offer because you negotiated was not worth working for.</p>'},
+    {id:'m4', title:'Annual Appraisals & Switching Strategy', duration_mins:20, order_index:4, content:'<h2>Making the Most of Your Annual Review + When to Switch</h2><h3>Annual Appraisal Strategy</h3><p>The appraisal conversation starts <strong>6 months before</strong> your review date — not on the day.</p><ul><li>Document every achievement with numbers throughout the year</li><li>Find out your company\'s average hike % (ask seniors)</li><li>Research market rate 2 months before review</li><li>Have a competing offer ready if possible</li></ul><h3>The Switching Premium</h3><p>In India, switching companies gives you <strong>30-50% higher hike</strong> vs staying. This is the most reliable way to grow your salary.</p><h3>When to switch:</h3><ul><li>You haven\'t gotten 20%+ hike in 2 years</li><li>Market rate is 30%+ above your current salary</li><li>No growth opportunity visible in 12 months</li></ul><blockquote>If you receive a competing offer and want to stay: "I received an offer for ₹X. I prefer to stay here — is there any way to match it?" Give them 1 week. If they can\'t match within 80%, take the offer.</blockquote>'}
+  ]
+};
+
+var STATIC_QUESTIONS = {
+  'salary-negotiation': [
+    {id:'q1',question:'What is the best source for India salary data for product companies?',option_a:'Ask colleagues',option_b:'Use Glassdoor India and Levels.fyi filtered by role, city, experience',option_c:'Check company website',option_d:'Ask your recruiter',correct:'b',explanation:'Glassdoor India and Levels.fyi have the most accurate India-specific salary data for product companies.',order_index:1},
+    {id:'q2',question:'You want ₹18 LPA. What range should you give when asked?',option_a:'₹16-18 LPA to seem reasonable',option_b:'₹18 LPA exactly',option_c:'₹18-22 LPA so your minimum is what you want',option_d:'Do not give a number first',correct:'c',explanation:'Always anchor where your minimum is what you actually want. Giving ₹18-22 LPA means even if they negotiate down, you land at ₹18 LPA.',order_index:2},
+    {id:'q3',question:'After giving your salary expectation, what should you do?',option_a:'Immediately explain why you deserve it',option_b:'Offer to go lower if they hesitate',option_c:'Stop talking and wait for their response',option_d:'Ask if the offer is negotiable',correct:'c',explanation:'Silence is power in negotiation. After stating your number, stop talking. The first person to speak after the silence tends to give ground.',order_index:3},
+    {id:'q4',question:'HR says "This is our final offer." Best response?',option_a:'Accept immediately',option_b:'Reject and move on',option_c:'Ask about flexibility on joining bonus or variable while expressing interest',option_d:'Threaten to join a competitor',correct:'c',explanation:'When base salary is fixed, pivot to other components like joining bonus, variable, stock options, or remote days.',order_index:4},
+    {id:'q5',question:'In India, what gives you the highest salary hike?',option_a:'Asking for raise at current company',option_b:'Switching companies',option_c:'Getting a promotion',option_d:'Adding a certification',correct:'b',explanation:'Job switching in India gives 30-50% hike on average, compared to 8-15% typical annual increment.',order_index:5},
+    {id:'q6',question:'HR asks your current CTC of ₹12 LPA, market is ₹18 LPA. What do you say?',option_a:'Tell them ₹12 LPA honestly only',option_b:'Refuse to share',option_c:'Say ₹15 LPA',option_d:'Share ₹12 LPA but immediately mention the market rate of ₹18 LPA',correct:'d',explanation:'Share honestly but immediately pivot to market data to reframe the conversation.',order_index:6},
+    {id:'q7',question:'When should you start preparing for your annual appraisal?',option_a:'On the day of your review',option_b:'1 week before',option_c:'6 months before',option_d:'After you receive your hike letter',correct:'c',explanation:'The appraisal conversation starts 6 months early — documenting achievements, researching market rates, and ideally having a competing offer ready.',order_index:7},
+    {id:'q8',question:'A company withdraws your offer because you negotiated. What does this mean?',option_a:'You were too aggressive',option_b:'The company was not worth working for — ethical companies never withdraw for polite negotiation',option_c:'You should have accepted first',option_d:'Your market research was wrong',correct:'b',explanation:'No legitimate company withdraws an offer because a candidate politely asked for more. This is a major red flag about their culture.',order_index:8}
+  ]
+};
+
+/* ── INIT ── */
+window.addEventListener('load', async function() {
+  var params = new URLSearchParams(window.location.search);
+  var slug = params.get('slug') || 'salary-negotiation';
+
+  try {
+    var sess = await sb.auth.getSession();
+    if (sess.data && sess.data.session && sess.data.session.user) {
+      _user = sess.data.session.user;
+    }
+  } catch(e) {}
+
+  await loadCourse(slug);
+});
+
+async function loadCourse(slug) {
+  /* Try Supabase first */
+  try {
+    var cr = await sb.from('belongix_courses').select('*').eq('slug', slug).single();
+    if (cr.data) _course = cr.data;
+
+    var mr = await sb.from('course_modules').select('*').eq('course_id', _course.id).order('order_index');
+    if (mr.data && mr.data.length) _modules = mr.data;
+
+    var qr = await sb.from('course_quiz_questions').select('*').eq('course_id', _course.id).order('order_index');
+    if (qr.data && qr.data.length) _questions = qr.data;
+
+    if (_user) {
+      var er = await sb.from('course_enrollments').select('*').eq('user_id', _user.id).eq('course_id', _course.id).maybeSingle();
+      _enrollment = er.data;
+
+      var pr = await sb.from('course_progress').select('module_id').eq('user_id', _user.id).eq('course_id', _course.id);
+      (pr.data || []).forEach(function(p){ _completedModules.add(p.module_id); });
+
+      var certR = await sb.from('certificates').select('*').eq('user_id', _user.id).eq('course_id', _course.id).maybeSingle();
+      _certificate = certR.data;
+    }
+  } catch(e) {
+    /* Fallback to static data */
+    _course = STATIC_COURSES[slug] || STATIC_COURSES['salary-negotiation'];
+    _modules = STATIC_MODULES[slug] || STATIC_MODULES['salary-negotiation'] || [];
+    _questions = STATIC_QUESTIONS[slug] || STATIC_QUESTIONS['salary-negotiation'] || [];
+  }
+
+  if (!_course) {
+    document.getElementById('page-content').innerHTML = '<div style="text-align:center;padding:80px;color:var(--muted)">Course not found. <a href="courses.html">Browse all courses →</a></div>';
+    return;
+  }
+
+  /* Auto-enroll if logged in and not enrolled */
+  if (_user && !_enrollment && _course.id) {
+    try {
+      await sb.from('course_enrollments').upsert([{ user_id: _user.id, course_id: _course.id, status: 'in_progress' }], { onConflict: 'user_id,course_id' });
+    } catch(e) {}
+  }
+
+  renderPage();
+}
+
+function renderPage() {
+  var completedCount = _completedModules.size;
+  var totalModules = _modules.length;
+  var pct = totalModules > 0 ? Math.round((completedCount / totalModules) * 100) : 0;
+  var allModulesDone = completedCount >= totalModules && totalModules > 0;
+  var hasCert = !!_certificate;
+
+  var sidebarHtml = '<div class="sidebar">'
+    + '<div class="progress-card">'
+    + '<div class="progress-title">Your Progress</div>'
+    + '<div class="progress-pct">' + pct + '%</div>'
+    + '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>'
+    + '<div class="progress-detail">' + completedCount + ' of ' + totalModules + ' modules completed</div>'
+    + '</div>'
+    + (hasCert
+      ? '<div class="cert-available-card" onclick="downloadCertificate()">'
+        + '<div style="font-size:32px;margin-bottom:8px">🏆</div>'
+        + '<div class="cert-available-title">Certificate Earned!</div>'
+        + '<div style="font-size:12px;color:rgba(255,255,255,.8);margin-bottom:4px">' + esc(_certificate.cert_id) + '</div>'
+        + '<button class="cert-available-btn" onclick="event.stopPropagation();downloadCertificate()">Download Certificate →</button>'
+        + '<button style="width:100%;margin-top:8px;padding:7px;background:rgba(255,255,255,.2);border:none;border-radius:8px;color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--ffb)" onclick="event.stopPropagation();shareOnLinkedIn()">Share on LinkedIn</button>'
+        + '</div>'
+      : allModulesDone
+        ? '<div class="cert-available-card" onclick="startQuiz()">'
+          + '<div style="font-size:32px;margin-bottom:8px">🎯</div>'
+          + '<div class="cert-available-title">Ready for the Quiz!</div>'
+          + '<div style="font-size:12px;color:rgba(255,255,255,.8);margin-bottom:10px">Pass with ' + (_course.pass_score||70) + '%+ to earn your certificate</div>'
+          + '<button class="cert-available-btn">Take the Quiz →</button>'
+          + '</div>'
+        : '<div class="cert-locked-card">'
+          + '<div class="cert-locked-icon">🔒</div>'
+          + '<div class="cert-locked-title">Certificate Locked</div>'
+          + '<div class="cert-locked-sub">Complete all ' + totalModules + ' modules and pass the quiz to earn your Belongix Certificate.</div>'
+          + '</div>')
+    + '</div>';
+
+  var modulesListHtml = _modules.map(function(m, i) {
+    var isDone = _completedModules.has(m.id) || (typeof m.id === 'string' && m.id.startsWith('m') && i < completedCount);
+    var isActive = i === _currentModule;
+    var cls = 'module-item' + (isActive ? ' active' : '') + (isDone ? ' completed' : '');
+    return '<div class="' + cls + '" onclick="goToModule(' + i + ')">'
+      + '<div class="module-num">' + (isDone ? '✓' : (i+1)) + '</div>'
+      + '<div class="module-info"><div class="module-title">' + esc(m.title) + '</div><div class="module-dur">' + (m.duration_mins||10) + ' min</div></div>'
+      + '</div>';
+  }).join('');
+
+  var currentMod = _modules[_currentModule] || {};
+  var isLastModule = _currentModule === _modules.length - 1;
+  var isModuleDone = _completedModules.has(currentMod.id) || (typeof currentMod.id === 'string' && _currentModule < completedCount);
+
+  var contentHtml = _mode === 'quiz' ? renderQuizHtml() :
+    '<div class="content-card">'
+    + '<div style="font-size:12px;font-weight:600;color:var(--brand);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Module ' + (_currentModule+1) + ' of ' + _modules.length + '</div>'
+    + '<h2>' + esc(currentMod.title || '') + '</h2>'
+    + (currentMod.content || '<p style="color:var(--muted)">Content loading...</p>')
+    + '<div class="module-nav">'
+    + '<button class="nav-btn prev" onclick="prevModule()" ' + (_currentModule === 0 ? 'disabled' : '') + '>← Previous</button>'
+    + (isLastModule
+        ? '<button class="nav-btn complete" onclick="completeModule()">Complete & Take Quiz 🎯</button>'
+        : isModuleDone
+          ? '<button class="nav-btn next" onclick="nextModule()">Next Module →</button>'
+          : '<button class="nav-btn next" onclick="completeModule()">Mark Complete & Next →</button>')
+    + '</div></div>';
+
+  document.getElementById('page-content').innerHTML =
+    '<div class="course-header">'
+    + '<div class="course-breadcrumb"><a href="courses.html">Courses</a> / ' + esc(_course.category||'') + '</div>'
+    + '<div class="course-h-title">' + esc(_course.title||'') + '</div>'
+    + '<div class="course-h-sub">' + esc(_course.subtitle||'') + '</div>'
+    + '<div class="course-h-meta">'
+    + '<div class="course-h-badge">📚 ' + _modules.length + ' modules</div>'
+    + '<div class="course-h-badge">⏱ ' + (_course.duration_mins||0) + ' min</div>'
+    + '<div class="course-h-badge">📊 ' + (_course.difficulty||'Beginner') + '</div>'
+    + '<div class="course-h-badge">🏆 Free Certificate</div>'
+    + '</div></div>'
+    + '<div class="page-wrap">'
+    + '<div>'
+    + '<div class="card"><div class="card-title">📚 Course Modules</div>' + modulesListHtml + '</div>'
+    + contentHtml
+    + '</div>'
+    + sidebarHtml
+    + '</div>';
+}
+
+function renderQuizHtml() {
+  if (_quizState.showResult) return renderResultHtml();
+  var q = _questions[_quizState.current];
+  if (!q) return '<div class="quiz-card"><p>No quiz questions available.</p></div>';
+  var pct = Math.round((_quizState.current / _questions.length) * 100);
+  var opts = [
+    {key:'a', label: q.option_a},
+    {key:'b', label: q.option_b},
+    {key:'c', label: q.option_c},
+    {key:'d', label: q.option_d}
+  ];
+  var answered = _quizState.answered;
+  var chosen = _quizState.answers[_quizState.current];
+
+  return '<div class="quiz-card">'
+    + '<div class="quiz-header">'
+    + '<div class="quiz-icon">🎯</div>'
+    + '<div class="quiz-title">Final Quiz</div>'
+    + '<div class="quiz-sub">Score ' + (_course.pass_score||70) + '%+ to earn your certificate</div>'
+    + '</div>'
+    + '<div class="quiz-progress"><div class="quiz-progress-fill" style="width:' + pct + '%"></div></div>'
+    + '<div class="quiz-q-num">Question ' + (_quizState.current+1) + ' of ' + _questions.length + '</div>'
+    + '<div class="quiz-q-text">' + esc(q.question) + '</div>'
+    + '<div class="quiz-options">'
+    + opts.map(function(o) {
+        var cls = 'quiz-option';
+        if (answered) {
+          if (o.key === q.correct) cls += ' correct';
+          else if (o.key === chosen && o.key !== q.correct) cls += ' wrong';
+        } else if (o.key === chosen) cls += ' selected';
+        return '<div class="' + cls + '" onclick="selectAnswer(\'' + o.key + '\')">'
+          + '<div class="quiz-opt-letter">' + o.key.toUpperCase() + '</div>'
+          + '<div>' + esc(o.label) + '</div></div>';
+      }).join('')
+    + '</div>'
+    + '<div class="quiz-explanation ' + (answered ? 'show' : '') + '">'
+    + '💡 ' + esc(q.explanation || '') + '</div>'
+    + '<button class="quiz-next-btn" onclick="nextQuestion()" '
+    + (!answered ? 'disabled' : '') + '>'
+    + (_quizState.current === _questions.length - 1 ? 'Submit Quiz →' : 'Next Question →')
+    + '</button></div>';
+}
+
+function renderResultHtml() {
+  var pct = Math.round((_quizState.score / _quizState.total) * 100);
+  var passed = _quizState.passed;
+  return '<div class="quiz-card"><div class="quiz-result">'
+    + '<div class="result-icon">' + (passed ? '🏆' : '📚') + '</div>'
+    + '<div class="result-title" style="color:' + (passed ? 'var(--green)' : '#EF4444') + '">' + (passed ? 'Congratulations! You Passed!' : 'Not Quite There Yet') + '</div>'
+    + '<div class="result-score" style="color:' + (passed ? 'var(--green)' : '#EF4444') + '">' + pct + '%</div>'
+    + '<div class="result-sub">You got ' + _quizState.score + ' out of ' + _quizState.total + ' questions correct.<br/>'
+    + (passed ? 'Your certificate is being generated...' : 'You need ' + (_course.pass_score||70) + '% to pass. Review the modules and try again.') + '</div>'
+    + (passed
+      ? '<button class="result-btn primary" onclick="downloadCertificate()">🏆 Download Certificate</button>'
+        + '<button class="result-btn secondary" onclick="shareOnLinkedIn()">Share on LinkedIn</button>'
+      : '<button class="result-btn primary" onclick="retakeQuiz()">Retake Quiz</button>'
+        + '<button class="result-btn secondary" onclick="backToModules()">Review Modules</button>')
+    + '</div></div>';
+}
+
+/* ── NAVIGATION ── */
+function goToModule(idx) {
+  _currentModule = idx;
+  _mode = 'content';
+  renderPage();
+  window.scrollTo(0, 0);
+}
+
+function prevModule() {
+  if (_currentModule > 0) { _currentModule--; renderPage(); window.scrollTo(0,0); }
+}
+
+async function completeModule() {
+  var mod = _modules[_currentModule];
+  if (mod && _user && _course.id && !_completedModules.has(mod.id)) {
+    _completedModules.add(mod.id);
+    try {
+      await sb.from('course_progress').upsert([{ user_id: _user.id, course_id: _course.id, module_id: mod.id }], { onConflict: 'user_id,module_id' });
+      /* Update enrollment status */
+      var isDone = _completedModules.size >= _modules.length;
+      await sb.from('course_enrollments').update({ status: isDone ? 'completed' : 'in_progress' }).eq('user_id', _user.id).eq('course_id', _course.id);
+    } catch(e) {}
+  } else if (!_user) {
+    /* Allow progress in localStorage for guests */
+    if (mod) _completedModules.add(mod.id);
+  }
+
+  var isLast = _currentModule === _modules.length - 1;
+  if (isLast) {
+    showToast('All modules complete! 🎉 Take the quiz to earn your certificate.');
+    renderPage();
+  } else {
+    _currentModule++;
+    renderPage();
+    window.scrollTo(0, 0);
+  }
+}
+
+function nextModule() {
+  if (_currentModule < _modules.length - 1) { _currentModule++; renderPage(); window.scrollTo(0,0); }
+}
+
+function startQuiz() {
+  if (!_user) { showToast('Sign in to take the quiz and earn a certificate'); window.location.href='index.html'; return; }
+  _mode = 'quiz';
+  _quizState = { current: 0, answers: {}, answered: false, score: 0, total: _questions.length, passed: false, showResult: false };
+  renderPage();
+  window.scrollTo(0, 0);
+}
+
+function selectAnswer(key) {
+  if (_quizState.answered) return;
+  _quizState.answers[_quizState.current] = key;
+  _quizState.answered = true;
+  var q = _questions[_quizState.current];
+  if (key === q.correct) _quizState.score++;
+  renderPage();
+}
+
+async function nextQuestion() {
+  if (!_quizState.answered) return;
+  if (_quizState.current === _questions.length - 1) {
+    /* Submit quiz */
+    var pct = Math.round((_quizState.score / _quizState.total) * 100);
+    _quizState.passed = pct >= (_course.pass_score || 70);
+    _quizState.showResult = true;
+
+    /* Save attempt */
+    try {
+      await sb.from('course_quiz_attempts').insert([{
+        user_id: _user.id, course_id: _course.id,
+        score: _quizState.score, total: _quizState.total,
+        passed: _quizState.passed, answers: _quizState.answers
+      }]);
+    } catch(e) {}
+
+    /* Generate certificate if passed */
+    if (_quizState.passed) {
+      await generateCertificate(pct);
+    }
+    renderPage();
+  } else {
+    _quizState.current++;
+    _quizState.answered = false;
+    renderPage();
+    window.scrollTo(0, 0);
+  }
+}
+
+async function generateCertificate(score) {
+  if (!_user) return;
+  var certId = 'BX-' + new Date().getFullYear() + '-' + Math.random().toString(36).substr(2,6).toUpperCase();
+  var nm = (_user.user_metadata && _user.user_metadata.full_name) || _user.email.split('@')[0];
+  var certData = {
+    cert_id: certId,
+    user_id: _user.id,
+    user_name: nm,
+    user_email: _user.email,
+    course_id: _course.id,
+    course_title: _course.title,
+    cert_title: _course.certificate_title || ('Certified: ' + _course.title),
+    score: score,
+    issued_at: new Date().toISOString(),
+    is_valid: true
+  };
+  try {
+    await sb.from('certificates').upsert([certData], { onConflict: 'user_id,course_id' });
+    _certificate = certData;
+    showToast('🏆 Certificate generated! Certificate ID: ' + certId);
+  } catch(e) {
+    /* Store in localStorage as fallback */
+    _certificate = certData;
+    try { localStorage.setItem('bx_cert_' + _course.id + '_' + (_user ? _user.id : 'x'), JSON.stringify(certData)); } catch(ex) {}
+    showToast('🏆 Certificate earned! ' + certId);
+  }
+}
+
+function downloadCertificate() {
+  if (!_certificate) { showToast('No certificate found'); return; }
+  /* Open certificate page */
+  window.open('verify.html?id=' + _certificate.cert_id + '&download=1', '_blank');
+}
+
+function shareOnLinkedIn() {
+  if (!_certificate) { showToast('Complete the course first'); return; }
+  var url = encodeURIComponent('https://www.belongix.in/verify.html?id=' + _certificate.cert_id);
+  var title = encodeURIComponent('I just earned the "' + _certificate.cert_title + '" certificate from Belongix! Built for Indian professionals. Check it out:');
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + url + '&summary=' + title, '_blank');
+}
+
+function retakeQuiz() {
+  _quizState = { current: 0, answers: {}, answered: false, score: 0, total: _questions.length, passed: false, showResult: false };
+  renderPage();
+}
+
+function backToModules() {
+  _mode = 'content';
+  _currentModule = 0;
+  renderPage();
+}
+
+function showToast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 4000);
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>

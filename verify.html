@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Certificate Verification — Belongix</title>
+<meta name="description" content="Verify a Belongix certificate of completion"/>
+<link rel="icon" href="icons/icon-32.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;--green:#10B981;--ink:#0D0D1A;--muted:#5A5A7A;--border:#E4E4F0;--bg:#F7F7FC;--white:#fff;--ff:'Sora',sans-serif;--ffb:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--ffb);background:var(--bg);color:var(--ink);min-height:100vh}
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between}
+.nav-logo{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--brand);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;padding:6px 12px;border:1px solid var(--border);border-radius:8px}
+.nav-back:hover{border-color:var(--brand);color:var(--brand)}
+
+/* VERIFY PAGE */
+.verify-wrap{max-width:700px;margin:40px auto;padding:0 24px}
+.verify-badge{display:flex;align-items:center;gap:10px;background:#F0FDF4;border:1.5px solid #6EE7B7;border-radius:12px;padding:14px 18px;margin-bottom:32px;font-size:14px;font-weight:600;color:#15803D}
+.verify-badge-icon{font-size:24px}
+.invalid-badge{background:#FEF2F2;border-color:#FCA5A5;color:#B91C1C}
+
+/* CERTIFICATE */
+.cert-wrap{margin-bottom:32px}
+.cert-paper{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 8px 48px rgba(45,27,105,.15)}
+
+/* Print certificate styles */
+.cert-top-border{height:12px;background:linear-gradient(90deg,#2D1B69,#4C2FAA,#FF5C35,#4C2FAA,#2D1B69)}
+.cert-body{padding:48px 56px;text-align:center}
+.cert-logo-row{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:32px}
+.cert-logo-icon{width:48px;height:48px;background:#2D1B69;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:var(--ff);font-size:22px;font-weight:800;color:#fff}
+.cert-logo-text{font-family:var(--ff);font-size:26px;font-weight:800;color:#2D1B69}
+.cert-logo-text span{color:#FF5C35}
+.cert-presents{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.cert-cert-of{font-family:var(--ff);font-size:15px;color:var(--muted);margin-bottom:20px;text-transform:uppercase;letter-spacing:1px}
+.cert-name{font-family:var(--ff);font-size:40px;font-weight:800;color:#1A0B4B;margin-bottom:16px;letter-spacing:-.5px;border-bottom:3px solid #E4E4F0;padding-bottom:16px}
+.cert-has-completed{font-size:15px;color:var(--muted);margin-bottom:10px}
+.cert-course-title{font-family:var(--ff);font-size:22px;font-weight:700;color:#2D1B69;margin-bottom:8px;line-height:1.3}
+.cert-course-sub{font-size:14px;color:var(--muted);margin-bottom:32px}
+.cert-seal-row{display:flex;justify-content:center;margin-bottom:32px}
+.cert-seal{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#2D1B69,#4C2FAA);display:flex;flex-direction:column;align-items:center;justify-content:center;border:4px solid #1A0B4B}
+.cert-seal-inner{font-size:28px}
+.cert-seal-txt{font-family:var(--ff);font-size:7px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.5px;text-align:center;line-height:1.3;margin-top:2px}
+.cert-meta-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;border-top:1px solid #E4E4F0;padding-top:24px}
+.cert-meta-col{text-align:center;padding:0 16px}
+.cert-meta-col:not(:last-child){border-right:1px solid #E4E4F0}
+.cert-meta-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.cert-meta-val{font-size:13px;font-weight:600;color:var(--ink)}
+.cert-meta-id{font-size:11px;font-weight:700;color:#2D1B69;font-family:'Courier New',monospace}
+.cert-bottom-border{height:8px;background:linear-gradient(90deg,#FF5C35,#2D1B69,#FF5C35)}
+
+/* ACTIONS */
+.cert-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}
+.action-btn{flex:1;min-width:140px;padding:13px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ff);border:none;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.action-btn.primary{background:var(--brand);color:#fff}
+.action-btn.primary:hover{background:var(--brand2)}
+.action-btn.linkedin{background:#0077B5;color:#fff}
+.action-btn.linkedin:hover{background:#005f94}
+.action-btn.ghost{background:#fff;color:var(--brand);border:1.5px solid var(--brand)}
+.action-btn.ghost:hover{background:var(--brand);color:#fff}
+
+/* VERIFY BOX */
+.verify-box{background:#fff;border:1.5px solid var(--border);border-radius:16px;padding:28px;text-align:center}
+.verify-box h2{font-family:var(--ff);font-size:18px;font-weight:700;margin-bottom:8px}
+.verify-box p{font-size:14px;color:var(--muted);margin-bottom:16px}
+.verify-input-row{display:flex;gap:10px}
+.verify-input{flex:1;padding:11px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;font-family:var(--ffb);outline:none;transition:.15s}
+.verify-input:focus{border-color:var(--brand)}
+.verify-btn{padding:11px 20px;background:var(--brand);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;font-family:var(--ff);white-space:nowrap}
+.verify-btn:hover{background:var(--brand2)}
+
+@media print{
+  .nav,.cert-actions,.verify-box,.verify-badge{display:none!important}
+  body{background:#fff}
+  .verify-wrap{max-width:100%;margin:0;padding:0}
+  .cert-paper{box-shadow:none;border-radius:0}
+  .cert-body{padding:40px 48px}
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
+  <a href="courses.html" class="nav-back">← All Courses</a>
+</nav>
+
+<div class="verify-wrap">
+  <div id="page-content">
+    <div style="text-align:center;padding:80px 24px;color:var(--muted)">
+      <div style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 16px"></div>
+      Verifying certificate...
+    </div>
+  </div>
+</div>
+
+<script>
+var SB_URL = 'https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb = supabase.createClient(SB_URL, SB_KEY);
+
+window.addEventListener('load', async function() {
+  var params = new URLSearchParams(window.location.search);
+  var certId = params.get('id');
+  var autoDownload = params.get('download') === '1';
+
+  if (!certId) {
+    showVerifyForm();
+    return;
+  }
+
+  await verifyCert(certId, autoDownload);
+});
+
+async function verifyCert(certId, autoDownload) {
+  var content = document.getElementById('page-content');
+
+  try {
+    /* Try Supabase */
+    var r = await sb.from('certificates').select('*').eq('cert_id', certId).maybeSingle();
+    if (r.data) {
+      renderCertificate(r.data, true);
+      if (autoDownload) setTimeout(function(){ window.print(); }, 1000);
+      return;
+    }
+  } catch(e) {}
+
+  /* Try localStorage fallback */
+  try {
+    var keys = Object.keys(localStorage).filter(function(k){ return k.startsWith('bx_cert_'); });
+    for (var i = 0; i < keys.length; i++) {
+      var data = JSON.parse(localStorage.getItem(keys[i]));
+      if (data && data.cert_id === certId) {
+        renderCertificate(data, true);
+        if (autoDownload) setTimeout(function(){ window.print(); }, 1000);
+        return;
+      }
+    }
+  } catch(e) {}
+
+  /* Not found */
+  content.innerHTML =
+    '<div class="verify-badge invalid-badge"><div class="verify-badge-icon">❌</div><div><div style="font-weight:700">Certificate Not Found</div><div style="font-weight:400;font-size:13px;margin-top:2px">No certificate found with ID: ' + esc(certId) + '</div></div></div>'
+    + renderVerifyFormHtml();
+}
+
+function renderCertificate(cert, valid) {
+  var content = document.getElementById('page-content');
+  var issued = new Date(cert.issued_at);
+  var dateStr = issued.toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
+  var score = cert.score ? cert.score + '%' : 'Passed';
+
+  var certHtml =
+    '<div class="cert-wrap">'
+    + '<div class="cert-paper">'
+    + '<div class="cert-top-border"></div>'
+    + '<div class="cert-body">'
+    + '<div class="cert-logo-row"><div class="cert-logo-icon">B</div><div class="cert-logo-text">Belong<span>ix</span></div></div>'
+    + '<div class="cert-presents">This certifies that</div>'
+    + '<div class="cert-name">' + esc(cert.user_name || 'Professional') + '</div>'
+    + '<div class="cert-has-completed">has successfully completed</div>'
+    + '<div class="cert-cert-of">Certificate of Completion</div>'
+    + '<div class="cert-course-title">' + esc(cert.cert_title || cert.course_title) + '</div>'
+    + '<div class="cert-course-sub">' + esc(cert.course_title) + ' · Belongix Career Platform</div>'
+    + '<div class="cert-seal-row"><div class="cert-seal"><div class="cert-seal-inner">🏆</div><div class="cert-seal-txt">BELONGIX<br/>CERTIFIED</div></div></div>'
+    + '<div class="cert-meta-row">'
+    + '<div class="cert-meta-col"><div class="cert-meta-label">Certificate ID</div><div class="cert-meta-id">' + esc(cert.cert_id) + '</div></div>'
+    + '<div class="cert-meta-col"><div class="cert-meta-label">Issued On</div><div class="cert-meta-val">' + dateStr + '</div></div>'
+    + '<div class="cert-meta-col"><div class="cert-meta-label">Score</div><div class="cert-meta-val">' + score + '</div></div>'
+    + '</div>'
+    + '</div>'
+    + '<div class="cert-bottom-border"></div>'
+    + '</div></div>';
+
+  var actionsHtml =
+    '<div class="cert-actions">'
+    + '<button class="action-btn primary" onclick="window.print()">⬇ Download PDF</button>'
+    + '<button class="action-btn linkedin" onclick="shareLinkedIn()">💼 Share on LinkedIn</button>'
+    + '<button class="action-btn ghost" onclick="copyLink()">🔗 Copy Link</button>'
+    + '</div>';
+
+  var validBadge = valid
+    ? '<div class="verify-badge"><div class="verify-badge-icon">✅</div><div><div>Certificate Verified</div><div style="font-weight:400;font-size:13px;margin-top:2px">This is an authentic Belongix certificate · ID: ' + esc(cert.cert_id) + '</div></div></div>'
+    : '<div class="verify-badge invalid-badge"><div class="verify-badge-icon">⚠️</div><div>Certificate status unknown</div></div>';
+
+  content.innerHTML = validBadge + certHtml + actionsHtml + renderVerifyFormHtml(true);
+
+  /* Store cert globally for share functions */
+  window._currentCert = cert;
+}
+
+function renderVerifyFormHtml(compact) {
+  return '<div class="verify-box">'
+    + '<h2>' + (compact ? '🔍 Verify Another Certificate' : '🔍 Verify a Certificate') + '</h2>'
+    + (compact ? '' : '<p>Enter a Belongix Certificate ID (e.g. BX-2026-ABC123) to verify its authenticity</p>')
+    + '<div class="verify-input-row">'
+    + '<input class="verify-input" id="cert-id-inp" placeholder="BX-2026-XXXXXX" style="text-transform:uppercase"/>'
+    + '<button class="verify-btn" onclick="verifyManual()">Verify →</button>'
+    + '</div></div>';
+}
+
+function showVerifyForm() {
+  document.getElementById('page-content').innerHTML =
+    '<div style="text-align:center;padding:40px 0 24px"><div style="font-size:48px;margin-bottom:12px">🔍</div><div style="font-family:var(--ff);font-size:24px;font-weight:700;color:var(--ink);margin-bottom:8px">Certificate Verification</div><div style="font-size:15px;color:var(--muted);margin-bottom:32px">Verify the authenticity of any Belongix certificate</div></div>'
+    + renderVerifyFormHtml(false);
+}
+
+function verifyManual() {
+  var id = ((document.getElementById('cert-id-inp')||{}).value||'').trim().toUpperCase();
+  if (!id) return;
+  window.location.href = 'verify.html?id=' + encodeURIComponent(id);
+}
+
+function shareLinkedIn() {
+  if (!window._currentCert) return;
+  var url = encodeURIComponent('https://www.belongix.in/verify.html?id=' + window._currentCert.cert_id);
+  var summary = encodeURIComponent('I just earned the "' + window._currentCert.cert_title + '" certificate from @Belongix! India\'s career platform built for professionals like us.');
+  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + url + '&summary=' + summary, '_blank');
+}
+
+function copyLink() {
+  if (!window._currentCert) return;
+  var url = 'https://www.belongix.in/verify.html?id=' + window._currentCert.cert_id;
+  navigator.clipboard.writeText(url).then(function(){ alert('Link copied: ' + url); }).catch(function(){ alert('Copy this link: ' + url); });
+}
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
