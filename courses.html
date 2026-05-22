@@ -226,6 +226,15 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
 var sb=supabase.createClient(SB_URL,SB_KEY);
+async function dbGet(table,qs){
+  try{
+    var r=await fetch(SB_URL+'/rest/v1/'+table+'?'+qs,{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Accept':'application/json'}
+    });
+    var d=await r.json();
+    return Array.isArray(d)?d:[];
+  }catch(e){console.warn('dbGet',table,e.message);return[];}
+}
 
 var _user=null,_courses=[],_enroll={},_certs=[],_progress={};
 var _domain='all',_diff='all',_search='';
@@ -314,30 +323,32 @@ window.addEventListener('load',async function(){
 });
 
 async function loadCoursesFromDB(){
-  try{
-    var r=await sb.from('belongix_courses').select('slug,students_count,rating').eq('is_published',true);
-    if(r.data&&r.data.length){
-      var map={};r.data.forEach(function(c){map[c.slug]=c;});
-      _courses=COURSES.map(function(c){
-        var db=map[c.slug]||{};
-        return Object.assign({},c,{students_count:db.students_count||0,rating:db.rating||4.7});
+  var rows = await dbGet('belongix_courses','is_published=eq.true&select=slug,students_count,rating,module_count');
+  if(rows.length){
+    var map={};rows.forEach(function(c){map[c.slug]=c;});
+    _courses=COURSES.map(function(c){
+      var db=map[c.slug]||{};
+      return Object.assign({},c,{
+        students_count:db.students_count||0,
+        rating:db.rating||4.7,
+        module_count:db.module_count||c.modules||0
       });
-    }else _courses=COURSES;
-  }catch(e){_courses=COURSES;}
+    });
+  } else {
+    _courses=COURSES;
+  }
 }
 
 async function loadEnrollments(){
   if(!_user)return;
   try{
-    var r=await sb.from('course_enrollments').select('*').eq('user_id',_user.id);
-    (r.data||[]).forEach(function(e){_enroll[e.course_id]=e;});
-    /* Also load by course slug mapping */
-    var r2=await sb.from('belongix_courses').select('id,slug').in('slug',COURSES.map(function(c){return c.slug;}));
+    var enrRows = await dbGet('course_enrollments','user_id=eq.'+_user.id+'&select=*');
+    enrRows.forEach(function(e){_enroll[e.course_id]=e;});
+    var slugs = COURSES.map(function(c){return c.slug;}).join(',');
+    var cRows = await dbGet('belongix_courses','slug=in.('+slugs+')&select=id,slug');
     var slugToId={};
-    (r2.data||[]).forEach(function(c){slugToId[c.slug]=c.id;});
-    /* Map slug → enrollment status */
-    (r.data||[]).forEach(function(e){
-      /* Find course by id */
+    cRows.forEach(function(c){slugToId[c.slug]=c.id;});
+    enrRows.forEach(function(e){
       var course=COURSES.find(function(c){return slugToId[c.slug]===e.course_id;});
       if(course)_enroll[course.slug]=e;
     });
@@ -347,8 +358,8 @@ async function loadEnrollments(){
 async function loadCerts(){
   if(!_user)return;
   try{
-    var r=await sb.from('certificates').select('*').eq('user_id',_user.id).order('issued_at',{ascending:false});
-    _certs=r.data||[];
+    var certRows=await dbGet('certificates','user_id=eq.'+_user.id+'&select=*&order=issued_at.desc');
+    _certs=certRows;
     renderCerts();
   }catch(e){}
 }
