@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Belongix Courses — Learn, Get Certified, Get Hired</title>
+<meta name="description" content="50+ free courses across Development, Coding and AI. Earn verified Belongix certificates. Built for Indian professionals."/>
+<link rel="icon" href="icons/icon-32.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;
+  --green:#10B981;--amber:#F59E0B;--blue:#3B82F6;
+  --ink:#0D0D1A;--muted:#5A5A7A;--subtle:#94A3B8;
+  --border:#E4E4F0;--bg:#F7F7FC;--card:#fff;
+  --ff:'Sora',sans-serif;--fb:'DM Sans',sans-serif;
+  --sh:0 2px 16px rgba(45,27,105,.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100vh}
+
+/* NAV */
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:16px}
+.nav-logo{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--brand);text-decoration:none;flex-shrink:0}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:2px}
+.nl{padding:6px 11px;border-radius:7px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:.15s;white-space:nowrap}
+.nl:hover,.nl.on{color:var(--brand);background:#F0EEFF}
+.nav-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nbtn{padding:7px 15px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--fb);text-decoration:none;display:inline-flex;align-items:center;border:none;transition:.15s}
+.nbtn.ghost{border:1.5px solid var(--border);background:none;color:var(--ink)}
+.nbtn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.nbtn.fill{background:var(--brand);color:#fff}
+.nbtn.fill:hover{background:var(--brand2)}
+#nav-guest,#nav-user{display:none;align-items:center;gap:8px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#0F0527 0%,#2D1B69 45%,#1A3A5C 100%);padding:56px 24px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 100%,rgba(255,92,53,.15),transparent)}
+.hero-inner{position:relative;z-index:1;max-width:760px;margin:0 auto}
+.hero-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:22px;letter-spacing:.2px}
+.hero h1{font-family:var(--ff);font-size:44px;font-weight:800;color:#fff;line-height:1.12;margin-bottom:14px;letter-spacing:-.5px}
+.hero h1 em{color:#FCD34D;font-style:normal}
+.hero-sub{font-size:16px;color:rgba(255,255,255,.72);line-height:1.65;margin-bottom:36px;max-width:520px;margin-left:auto;margin-right:auto}
+.hero-stats{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;margin-bottom:36px}
+.hstat{text-align:center}
+.hstat-v{font-family:var(--ff);font-size:30px;font-weight:800;color:#FCD34D}
+.hstat-l{font-size:12px;color:rgba(255,255,255,.55);margin-top:3px}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:14px 30px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;font-family:var(--ff);transition:.2s;box-shadow:0 6px 24px rgba(255,92,53,.4)}
+.hero-cta:hover{background:#e04d2a;transform:translateY(-2px)}
+
+/* DOMAIN TABS */
+.domain-bar{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:58px;z-index:90}
+.domain-inner{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;gap:2px}
+.dtab{padding:14px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:3px solid transparent;transition:.15s;font-family:var(--fb);display:flex;align-items:center;gap:7px;white-space:nowrap}
+.dtab:hover{color:var(--brand)}
+.dtab.on{color:var(--brand);border-bottom-color:var(--brand)}
+.dtab-count{background:var(--border);color:var(--muted);border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;transition:.15s}
+.dtab.on .dtab-count{background:#EDE9FE;color:var(--brand)}
+
+/* FILTER BAR */
+.filter-bar{background:var(--bg);border-bottom:1px solid var(--border);padding:12px 24px}
+.filter-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fchip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--muted);transition:.15s;font-family:var(--fb);white-space:nowrap}
+.fchip:hover{border-color:var(--brand);color:var(--brand)}
+.fchip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.filter-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.search-box{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:7px 12px;transition:.15s}
+.search-box:focus-within{border-color:var(--brand)}
+.search-box input{border:none;outline:none;font-size:13px;font-family:var(--fb);width:180px;background:none;color:var(--ink)}
+.result-count{font-size:13px;color:var(--muted);white-space:nowrap}
+
+/* MAIN */
+.main{max-width:1280px;margin:0 auto;padding:28px 24px 60px}
+
+/* MY CERTS BANNER */
+.my-certs{background:linear-gradient(135deg,#1A0B4B,#2D1B69);border-radius:16px;padding:20px 24px;margin-bottom:28px;display:none;align-items:center;gap:16px;flex-wrap:wrap}
+.my-certs.show{display:flex}
+.my-certs-icon{font-size:32px;flex-shrink:0}
+.my-certs-text h3{font-family:var(--ff);font-size:15px;font-weight:700;color:#fff;margin-bottom:2px}
+.my-certs-text p{font-size:13px;color:rgba(255,255,255,.65)}
+.my-certs-list{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.cert-chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 12px;cursor:pointer;transition:.15s}
+.cert-chip:hover{background:rgba(255,255,255,.2)}
+.cert-chip-name{font-size:12px;font-weight:600;color:#fff;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cert-chip-id{font-size:10px;color:rgba(255,255,255,.6)}
+
+/* SECTION HEADER */
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-family:var(--ff);font-size:18px;font-weight:700;color:var(--ink)}
+.section-sub{font-size:13px;color:var(--muted)}
+
+/* COURSE GRID */
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px;margin-bottom:40px}
+.course-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;overflow:hidden;transition:.2s;cursor:pointer;display:flex;flex-direction:column;position:relative}
+.course-card:hover{border-color:var(--brand);box-shadow:0 8px 28px rgba(45,27,105,.14);transform:translateY(-3px)}
+
+.cc-thumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;flex-shrink:0}
+.cc-badges{position:absolute;top:10px;left:10px;display:flex;gap:5px;flex-wrap:wrap}
+.cc-badge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.2px}
+.b-free{background:#DCFCE7;color:#15803D}
+.b-cert{background:#FEF9C3;color:#92400E}
+.b-hot{background:#FEE2E2;color:#B91C1C}
+.b-new{background:#EDE9FE;color:#5B21B6}
+.b-done{background:#2D1B69;color:#fff}
+.b-prog{background:rgba(45,27,105,.8);color:#fff}
+.cc-domain{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.35);color:#fff;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.2px}
+
+.cc-body{padding:16px;flex:1;display:flex;flex-direction:column}
+.cc-category{font-size:10px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.cc-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px;line-height:1.35}
+.cc-sub{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px;flex:1}
+.cc-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--subtle);margin-bottom:12px}
+.cc-meta span{display:flex;align-items:center;gap:2px}
+.cc-prog-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:5px}
+.cc-prog-fill{height:100%;background:linear-gradient(90deg,var(--brand),#06B6D4);border-radius:2px;transition:width .5s}
+.cc-prog-txt{font-size:11px;color:var(--muted);margin-bottom:10px}
+.cc-btn{width:100%;padding:9px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--ff);border:none;transition:.15s;text-align:center}
+.cc-btn.prim{background:var(--brand);color:#fff}
+.cc-btn.prim:hover{background:var(--brand2)}
+.cc-btn.sec{background:#F0EEFF;color:var(--brand)}
+.cc-btn.sec:hover{background:var(--brand);color:#fff}
+.cc-btn.done{background:#DCFCE7;color:#15803D;cursor:default}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:64px 24px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#0D0D1A;color:#fff;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:768px){
+  .hero h1{font-size:28px}
+  .courses-grid{grid-template-columns:1fr}
+  .nav-links,.filter-right{display:none}
+  .domain-inner{overflow-x:auto;scrollbar-width:none;padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Belong<span>ix</span><span style="font-size:9px;background:var(--accent);color:#fff;border-radius:10px;padding:2px 7px;margin-left:6px;vertical-align:middle;letter-spacing:.3px">BETA</span></a>
+  <div class="nav-links">
+    <a href="dashboard.html?page=jobs" class="nl">Jobs</a>
+    <a href="courses.html" class="nl on">Courses</a>
+    <a href="mentors.html" class="nl">Mentors</a>
+    <a href="community.html" class="nl">Community</a>
+  </div>
+  <div class="nav-r">
+    <div id="nav-guest"><a href="index.html" class="nbtn ghost">Sign In</a><a href="index.html" class="nbtn fill">Join Free →</a></div>
+    <div id="nav-user"><a href="dashboard.html" class="nbtn ghost">Dashboard</a><button id="nav-av" onclick="toggleDD()" style="width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;border:none;cursor:pointer;font-weight:700;font-size:12px;font-family:var(--ff)">?</button></div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-pill">🏆 Free · Verified Certificates · India-Specific</div>
+    <h1>Learn Anything.<br/><em>Get Certified by Belongix.</em></h1>
+    <p class="hero-sub">50 courses across Development, Coding and AI — built specifically for Indian professionals. Complete a course, pass the quiz, earn a verified certificate you can share on LinkedIn.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-v" id="h-courses">50</div><div class="hstat-l">Courses</div></div>
+      <div class="hstat"><div class="hstat-v">Free</div><div class="hstat-l">Always</div></div>
+      <div class="hstat"><div class="hstat-v">3</div><div class="hstat-l">Domains</div></div>
+      <div class="hstat"><div class="hstat-v">Verified</div><div class="hstat-l">Certificates</div></div>
+    </div>
+    <a href="#courses" class="hero-cta">Browse All Courses →</a>
+  </div>
+</div>
+
+<!-- DOMAIN TABS -->
+<div class="domain-bar">
+  <div class="domain-inner">
+    <button class="dtab on" data-domain="all" onclick="setDomain('all',this)">🌐 All <span class="dtab-count" id="cnt-all">50</span></button>
+    <button class="dtab" data-domain="Development" onclick="setDomain('Development',this)">💻 Development <span class="dtab-count" id="cnt-dev">0</span></button>
+    <button class="dtab" data-domain="Coding" onclick="setDomain('Coding',this)">👨‍💻 Coding <span class="dtab-count" id="cnt-cod">0</span></button>
+    <button class="dtab" data-domain="AI" onclick="setDomain('AI',this)">🤖 AI <span class="dtab-count" id="cnt-ai">0</span></button>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar" id="courses">
+  <div class="filter-inner">
+    <button class="fchip on" data-diff="all" onclick="setDiff('all',this)">All Levels</button>
+    <button class="fchip" data-diff="Beginner" onclick="setDiff('Beginner',this)">🟢 Beginner</button>
+    <button class="fchip" data-diff="Intermediate" onclick="setDiff('Intermediate',this)">🟡 Intermediate</button>
+    <button class="fchip" data-diff="Advanced" onclick="setDiff('Advanced',this)">🔴 Advanced</button>
+    <div class="filter-right">
+      <div class="search-box">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input id="search-inp" placeholder="Search courses..." oninput="render()"/>
+      </div>
+      <span class="result-count" id="result-count">50 courses</span>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- MY CERTIFICATES -->
+  <div class="my-certs" id="my-certs">
+    <div class="my-certs-icon">🏆</div>
+    <div class="my-certs-text"><h3>Your Certificates</h3><p>Click to download or share on LinkedIn</p></div>
+    <div class="my-certs-list" id="my-certs-list"></div>
+  </div>
+
+  <!-- GRID -->
+  <div class="section-hdr">
+    <div><div class="section-title" id="grid-title">All Courses</div><div class="section-sub" id="grid-sub">Earn a verified Belongix certificate on completion</div></div>
+  </div>
+  <div class="courses-grid" id="grid">
+    <div style="grid-column:1/-1;text-align:center;padding:60px">
+      <div style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px"></div>
+      <div style="font-size:14px;color:var(--muted)">Loading courses...</div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb=supabase.createClient(SB_URL,SB_KEY);
+
+var _user=null,_courses=[],_enroll={},_certs=[],_progress={};
+var _domain='all',_diff='all',_search='';
+
+/* ── STATIC COURSE DATA (50 courses) — shows instantly without DB ── */
+var COURSES=[
+  /* DEVELOPMENT */
+  {slug:'web-development-fundamentals',title:'Web Development Fundamentals',subtitle:'Build websites from scratch — HTML, CSS, JavaScript',category:'Web Development',domain:'Development',difficulty:'Beginner',duration_mins:90,module_count:6,skills:'HTML5,CSS3,JavaScript,Responsive Design',certificate_title:'Certified Web Developer — Fundamentals',emoji:'🌐',bg:'linear-gradient(135deg,#0F4C81,#1E6FAD)',hot:true},
+  {slug:'full-stack-development',title:'Full Stack Development',subtitle:'Master frontend + backend — build complete web apps',category:'Full Stack',domain:'Development',difficulty:'Intermediate',duration_mins:180,module_count:8,skills:'React,Node.js,MongoDB,REST APIs',certificate_title:'Certified Full Stack Developer',emoji:'⚡',bg:'linear-gradient(135deg,#134E4A,#0D9488)'},
+  {slug:'frontend-development',title:'Frontend Development with React',subtitle:'Build modern UIs with React, Tailwind and TypeScript',category:'Frontend',domain:'Development',difficulty:'Intermediate',duration_mins:120,module_count:7,skills:'React,TypeScript,Tailwind CSS,Redux',certificate_title:'Certified Frontend Developer',emoji:'🎨',bg:'linear-gradient(135deg,#1D4ED8,#3B82F6)'},
+  {slug:'backend-development',title:'Backend Development with Node.js',subtitle:'Build scalable APIs and server-side applications',category:'Backend',domain:'Development',difficulty:'Intermediate',duration_mins:150,module_count:7,skills:'Node.js,Express,PostgreSQL,Redis',certificate_title:'Certified Backend Developer',emoji:'⚙️',bg:'linear-gradient(135deg,#374151,#6B7280)'},
+  {slug:'dsa-fundamentals',title:'Data Structures & Algorithms',subtitle:'Crack any coding interview — arrays to dynamic programming',category:'DSA',domain:'Development',difficulty:'Intermediate',duration_mins:200,module_count:10,skills:'Arrays,Trees,Graphs,Dynamic Programming',certificate_title:'Certified DSA Engineer',emoji:'🧠',bg:'linear-gradient(135deg,#92400E,#D97706)',hot:true},
+  {slug:'cloud-computing-aws',title:'Cloud Computing with AWS',subtitle:'Get AWS certified — EC2, S3, Lambda, and beyond',category:'Cloud Computing',domain:'Development',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'AWS,EC2,S3,Lambda,RDS',certificate_title:'Certified AWS Cloud Practitioner — Belongix',emoji:'☁️',bg:'linear-gradient(135deg,#FF9900,#FFB347)'},
+  {slug:'devops-engineering',title:'DevOps Engineering',subtitle:'CI/CD, Docker, Kubernetes, Terraform — all in one',category:'DevOps',domain:'Development',difficulty:'Intermediate',duration_mins:180,module_count:8,skills:'Docker,Kubernetes,GitHub Actions,Terraform',certificate_title:'Certified DevOps Engineer',emoji:'🔧',bg:'linear-gradient(135deg,#1A1A2E,#16213E)'},
+  {slug:'cybersecurity-fundamentals',title:'Cybersecurity Fundamentals',subtitle:'Protect systems and become an ethical hacker',category:'Cybersecurity',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'Network Security,Ethical Hacking,Penetration Testing,OWASP',certificate_title:'Certified Cybersecurity Analyst',emoji:'🔒',bg:'linear-gradient(135deg,#1F2937,#374151)'},
+  {slug:'artificial-intelligence-fundamentals',title:'Artificial Intelligence Fundamentals',subtitle:'Understand and build AI systems from scratch',category:'AI Fundamentals',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'AI Algorithms,Search,Knowledge Representation,Python',certificate_title:'Certified AI Fundamentals Professional',emoji:'🤖',bg:'linear-gradient(135deg,#4C1D95,#7C3AED)'},
+  {slug:'machine-learning-complete',title:'Machine Learning — Complete Course',subtitle:'From linear regression to neural networks',category:'Machine Learning',domain:'Development',difficulty:'Intermediate',duration_mins:200,module_count:10,skills:'Python,scikit-learn,pandas,Supervised Learning',certificate_title:'Certified Machine Learning Engineer',emoji:'📊',bg:'linear-gradient(135deg,#065F46,#059669)',hot:true},
+  {slug:'data-science-india',title:'Data Science for Indian Professionals',subtitle:'Analyze real Indian datasets — finance, e-commerce, healthcare',category:'Data Science',domain:'Development',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'Python,pandas,Statistics,Visualization',certificate_title:'Certified Data Scientist — Belongix',emoji:'📈',bg:'linear-gradient(135deg,#1E3A5F,#2563EB)'},
+  {slug:'data-analytics',title:'Data Analytics with Python & SQL',subtitle:'Turn raw data into business decisions',category:'Data Analytics',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'SQL,Python,Tableau,Power BI',certificate_title:'Certified Data Analyst',emoji:'📉',bg:'linear-gradient(135deg,#BE185D,#DB2777)'},
+  {slug:'business-analytics',title:'Business Analytics & Intelligence',subtitle:'Use data to drive business strategy',category:'Business Analytics',domain:'Development',difficulty:'Beginner',duration_mins:100,module_count:6,skills:'Power BI,Excel,SQL,Business Strategy',certificate_title:'Certified Business Analyst',emoji:'💹',bg:'linear-gradient(135deg,#0C4A6E,#0369A1)'},
+  {slug:'mobile-app-development',title:'Mobile App Development with Flutter',subtitle:'Build iOS and Android apps with one codebase',category:'Mobile Development',domain:'Development',difficulty:'Beginner',duration_mins:180,module_count:9,skills:'Flutter,Dart,Firebase,App Store',certificate_title:'Certified Mobile App Developer',emoji:'📱',bg:'linear-gradient(135deg,#0284C7,#38BDF8)'},
+  {slug:'android-development',title:'Android Development with Kotlin',subtitle:"Build native Android apps for India's 600M Android users",category:'Android',domain:'Development',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'Kotlin,Android SDK,MVVM,Jetpack Compose',certificate_title:'Certified Android Developer',emoji:'🤖',bg:'linear-gradient(135deg,#166534,#22C55E)'},
+  {slug:'ios-development',title:'iOS Development with Swift',subtitle:'Build apps for iPhone and iPad',category:'iOS',domain:'Development',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'Swift,SwiftUI,UIKit,CoreData',certificate_title:'Certified iOS Developer',emoji:'🍎',bg:'linear-gradient(135deg,#374151,#9CA3AF)'},
+  {slug:'ui-ux-design',title:'UI/UX Design with Figma',subtitle:'Design apps and websites users love',category:'UI/UX Design',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'Figma,Design Thinking,Wireframing,User Research',certificate_title:'Certified UI/UX Designer',emoji:'🎨',bg:'linear-gradient(135deg,#9333EA,#C084FC)'},
+  {slug:'database-administration',title:'Database Administration with PostgreSQL',subtitle:'Design, optimize, and manage production databases',category:'Database',domain:'Development',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'PostgreSQL,SQL,Indexing,Query Optimization',certificate_title:'Certified Database Administrator',emoji:'🗄️',bg:'linear-gradient(135deg,#1C3A5E,#336791)'},
+  {slug:'networking-fundamentals',title:'Computer Networking Fundamentals',subtitle:'OSI model to cloud networking',category:'Networking',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'TCP/IP,DNS,HTTP,VPN,Firewall,OSI Model',certificate_title:'Certified Network Engineer',emoji:'🌐',bg:'linear-gradient(135deg,#164E63,#0891B2)'},
+  {slug:'software-testing-qa',title:'Software Testing & QA',subtitle:'Test like a pro — manual and automated testing',category:'Software Testing',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'Manual Testing,Postman,JIRA,Agile Testing',certificate_title:'Certified QA Engineer',emoji:'🧪',bg:'linear-gradient(135deg,#713F12,#CA8A04)'},
+
+  /* CODING */
+  {slug:'python-development',title:'Python Development — Complete Course',subtitle:'From beginner to backend developer with Python',category:'Python',domain:'Coding',difficulty:'Beginner',duration_mins:180,module_count:7,skills:'Python,OOP,APIs,Django,Flask',certificate_title:'Certified Python Developer',emoji:'🐍',bg:'linear-gradient(135deg,#234F1E,#3776AB)',hot:true},
+  {slug:'java-development',title:'Java Development — Core to Advanced',subtitle:'Master Java for enterprise and product companies',category:'Java',domain:'Coding',difficulty:'Beginner',duration_mins:200,module_count:10,skills:'Java,OOP,Collections,Spring Boot,REST APIs',certificate_title:'Certified Java Developer',emoji:'☕',bg:'linear-gradient(135deg,#B31B1B,#F89820)'},
+  {slug:'javascript-development',title:'JavaScript — Complete Modern Course',subtitle:'ES6+ to async/await and beyond',category:'JavaScript',domain:'Coding',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'JavaScript,ES6+,Promises,Async/Await,DOM',certificate_title:'Certified JavaScript Developer',emoji:'⚡',bg:'linear-gradient(135deg,#854D0E,#EAB308)',hot:true},
+  {slug:'typescript-development',title:'TypeScript Development',subtitle:'Write safer JavaScript for production apps',category:'TypeScript',domain:'Coding',difficulty:'Intermediate',duration_mins:120,module_count:7,skills:'TypeScript,Types,Interfaces,Generics,React+TS',certificate_title:'Certified TypeScript Developer',emoji:'📘',bg:'linear-gradient(135deg,#1B3A6B,#3178C6)'},
+  {slug:'react-development',title:'React Development — Hooks to Production',subtitle:'Build modern React apps used by millions',category:'React',domain:'Coding',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'React,Hooks,Redux Toolkit,React Query,Jest',certificate_title:'Certified React Developer',emoji:'⚛️',bg:'linear-gradient(135deg,#0B3D6E,#61DAFB)'},
+  {slug:'nodejs-development',title:'Node.js Development — APIs to Microservices',subtitle:'Build scalable backend systems with Node.js',category:'Node.js',domain:'Coding',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'Node.js,Express,REST APIs,JWT,Redis,Docker',certificate_title:'Certified Node.js Developer',emoji:'🟢',bg:'linear-gradient(135deg,#1B5E20,#4CAF50)'},
+  {slug:'mern-stack',title:'MERN Stack Development',subtitle:'MongoDB, Express, React, Node — the complete stack',category:'MERN Stack',domain:'Coding',difficulty:'Intermediate',duration_mins:200,module_count:10,skills:'MongoDB,Express,React,Node.js,JWT',certificate_title:'Certified MERN Stack Developer',emoji:'🔋',bg:'linear-gradient(135deg,#0A2540,#00D4AA)'},
+  {slug:'django-development',title:'Django Development — Python Web Framework',subtitle:'Build powerful web apps with Django',category:'Django',domain:'Coding',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'Django,Python,ORM,REST Framework',certificate_title:'Certified Django Developer',emoji:'🎸',bg:'linear-gradient(135deg,#0C4B33,#092E20)'},
+  {slug:'spring-boot-development',title:'Spring Boot Development',subtitle:'Java microservices for enterprise applications',category:'Spring Boot',domain:'Coding',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'Spring Boot,Java,REST APIs,Spring Security,JPA',certificate_title:'Certified Spring Boot Developer',emoji:'🌱',bg:'linear-gradient(135deg,#234E13,#6DB33F)'},
+  {slug:'sql-development',title:'SQL & Database Development',subtitle:'Query mastery from basics to advanced analytics',category:'SQL',domain:'Coding',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'SQL,Joins,Window Functions,PostgreSQL,MySQL',certificate_title:'Certified SQL Developer',emoji:'🗃️',bg:'linear-gradient(135deg,#1E3A5F,#4169E1)'},
+  {slug:'competitive-programming',title:'Competitive Programming',subtitle:'Win hackathons and crack FAANG interviews',category:'Competitive Programming',domain:'Coding',difficulty:'Advanced',duration_mins:200,module_count:10,skills:'Algorithms,Graph Theory,Dynamic Programming',certificate_title:'Certified Competitive Programmer',emoji:'🏆',bg:'linear-gradient(135deg,#7C2D12,#DC2626)'},
+  {slug:'c-programming',title:'C Programming — Systems Foundation',subtitle:'Master the language that powers everything',category:'C Programming',domain:'Coding',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'C,Pointers,Memory Management,File I/O',certificate_title:'Certified C Programmer',emoji:'🔵',bg:'linear-gradient(135deg,#1A237E,#283593)'},
+  {slug:'cpp-development',title:'C++ Development — OOP to Competitive',subtitle:'C++ for software engineering and competitive programming',category:'C++',domain:'Coding',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'C++,OOP,STL,Templates,Algorithms',certificate_title:'Certified C++ Developer',emoji:'⬣',bg:'linear-gradient(135deg,#0D47A1,#1565C0)'},
+  {slug:'automation-testing',title:'Automation Testing with Selenium & Cypress',subtitle:'Automate testing — save hours every release',category:'Automation Testing',domain:'Coding',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'Selenium,Cypress,TestNG,Page Object Model',certificate_title:'Certified Automation Test Engineer',emoji:'🤖',bg:'linear-gradient(135deg,#1B5E20,#388E3C)'},
+  {slug:'php-development',title:'PHP Development & Laravel',subtitle:'Build dynamic websites with PHP and Laravel',category:'PHP',domain:'Coding',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'PHP,Laravel,MySQL,Eloquent ORM',certificate_title:'Certified PHP Laravel Developer',emoji:'🐘',bg:'linear-gradient(135deg,#4A154B,#7B2D8B)'},
+
+  /* AI */
+  {slug:'generative-ai-complete',title:'Generative AI — Complete Course',subtitle:'ChatGPT, Claude, Gemini, Midjourney — master AI tools',category:'Generative AI',domain:'AI',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'LLMs,Prompt Engineering,RAG,LangChain',certificate_title:'Certified Generative AI Professional',emoji:'✨',bg:'linear-gradient(135deg,#312E81,#7C3AED)',hot:true},
+  {slug:'prompt-engineering',title:'Prompt Engineering Mastery',subtitle:'Get 10x better outputs from AI — every time',category:'Prompt Engineering',domain:'AI',difficulty:'Beginner',duration_mins:90,module_count:6,skills:'Prompt Engineering,Chain-of-Thought,Few-Shot,ChatGPT',certificate_title:'Certified Prompt Engineer',emoji:'💬',bg:'linear-gradient(135deg,#064E3B,#10B981)'},
+  {slug:'deep-learning',title:'Deep Learning with PyTorch',subtitle:'Neural networks from basics to transformers',category:'Deep Learning',domain:'AI',difficulty:'Advanced',duration_mins:200,module_count:10,skills:'PyTorch,Neural Networks,CNN,RNN,Transformers',certificate_title:'Certified Deep Learning Engineer',emoji:'🧬',bg:'linear-gradient(135deg,#1A1A2E,#E94560)'},
+  {slug:'nlp-fundamentals',title:'Natural Language Processing (NLP)',subtitle:'Teach computers to understand human language',category:'NLP',domain:'AI',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'NLP,BERT,Transformers,spaCy,Hugging Face',certificate_title:'Certified NLP Engineer',emoji:'💬',bg:'linear-gradient(135deg,#134E4A,#0D9488)'},
+  {slug:'computer-vision',title:'Computer Vision with OpenCV & YOLO',subtitle:'See the world through AI eyes',category:'Computer Vision',domain:'AI',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'OpenCV,YOLO,CNN,Object Detection',certificate_title:'Certified Computer Vision Engineer',emoji:'👁️',bg:'linear-gradient(135deg,#1C1C1E,#3A3A3C)'},
+  {slug:'llm-engineering',title:'Large Language Models (LLM) Engineering',subtitle:'Build production LLM applications',category:'LLM Engineering',domain:'AI',difficulty:'Advanced',duration_mins:200,module_count:10,skills:'LLMs,Fine-tuning,RAG,LangChain,LlamaIndex',certificate_title:'Certified LLM Engineer',emoji:'🔬',bg:'linear-gradient(135deg,#4C1D95,#6D28D9)',hot:true},
+  {slug:'mlops',title:'MLOps — ML in Production',subtitle:'Deploy, monitor, and scale machine learning models',category:'MLOps',domain:'AI',difficulty:'Advanced',duration_mins:180,module_count:9,skills:'MLflow,Docker,Kubernetes,Model Serving',certificate_title:'Certified MLOps Engineer',emoji:'🚀',bg:'linear-gradient(135deg,#1E3A5F,#1D4ED8)'},
+  {slug:'ai-engineering',title:'AI Engineering — Build AI Products',subtitle:'Product-focused AI engineering for modern teams',category:'AI Engineering',domain:'AI',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'RAG,Vector Databases,AI Agents,LangGraph',certificate_title:'Certified AI Engineer',emoji:'⚡',bg:'linear-gradient(135deg,#0C4A6E,#06B6D4)'},
+  {slug:'data-science-ai',title:'Data Science with AI Tools',subtitle:'Use AI to supercharge your data science workflow',category:'Data Science',domain:'AI',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'Python,pandas,scikit-learn,AI Tools',certificate_title:'Certified AI-Powered Data Scientist',emoji:'📊',bg:'linear-gradient(135deg,#065F46,#34D399)'},
+  {slug:'reinforcement-learning',title:'Reinforcement Learning Fundamentals',subtitle:'Train AI agents to solve complex problems',category:'Reinforcement Learning',domain:'AI',difficulty:'Advanced',duration_mins:180,module_count:9,skills:'RL,Q-Learning,DQN,Policy Gradients,OpenAI Gym',certificate_title:'Certified Reinforcement Learning Engineer',emoji:'🎮',bg:'linear-gradient(135deg,#7C2D12,#F97316)'},
+  {slug:'responsible-ai',title:'Responsible & Ethical AI',subtitle:'Build AI that is fair, transparent, and safe',category:'Responsible AI',domain:'AI',difficulty:'Intermediate',duration_mins:120,module_count:7,skills:'AI Ethics,Bias Detection,SHAP,LIME,Fairness',certificate_title:'Certified Responsible AI Practitioner',emoji:'⚖️',bg:'linear-gradient(135deg,#1E3A5F,#3B82F6)'},
+  {slug:'ai-automation',title:'AI Automation — No Code to Pro Code',subtitle:'Automate your work with AI tools and agents',category:'AI Automation',domain:'AI',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'n8n,Make.com,LangChain,AI Agents,Python',certificate_title:'Certified AI Automation Specialist',emoji:'🔄',bg:'linear-gradient(135deg,#134E4A,#0F766E)'},
+  {slug:'ai-product-development',title:'AI Product Development',subtitle:'Build and launch AI-powered products',category:'AI Product',domain:'AI',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'AI Product Strategy,LLM APIs,Evaluation,GTM',certificate_title:'Certified AI Product Developer',emoji:'🛠️',bg:'linear-gradient(135deg,#3B0764,#7E22CE)'},
+  {slug:'predictive-analytics',title:'Predictive Analytics with ML',subtitle:'Forecast the future using data and machine learning',category:'Predictive Analytics',domain:'AI',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'Time Series,Regression,Forecasting,Python',certificate_title:'Certified Predictive Analytics Engineer',emoji:'🔮',bg:'linear-gradient(135deg,#0F172A,#1E3A5F)'},
+  {slug:'ai-chatbot-development',title:'AI Chatbot Development',subtitle:'Build intelligent chatbots for businesses',category:'AI Chatbot',domain:'AI',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'LLMs,RAG,LangChain,FastAPI,Deployment',certificate_title:'Certified AI Chatbot Developer',emoji:'💭',bg:'linear-gradient(135deg,#1A0B4B,#4C2FAA)'}
+];
+
+/* ── INIT ── */
+window.addEventListener('load',async function(){
+  document.addEventListener('click',function(e){
+    if(!e.target.closest('#nav-av'))document.getElementById('nav-dd')&&(document.getElementById('nav-dd').style.display='none');
+  });
+
+  /* Count domains */
+  updateCounts();
+
+  /* Auth check */
+  try{
+    var s=await sb.auth.getSession();
+    if(s.data&&s.data.session&&s.data.session.user){
+      _user=s.data.session.user;
+      showUserNav();
+      await Promise.all([loadEnrollments(),loadCerts()]);
+    }else showGuestNav();
+  }catch(e){showGuestNav();}
+
+  /* Try loading from Supabase, fallback to static */
+  await loadCoursesFromDB();
+  render();
+});
+
+async function loadCoursesFromDB(){
+  try{
+    var r=await sb.from('belongix_courses').select('slug,students_count,rating').eq('is_published',true);
+    if(r.data&&r.data.length){
+      var map={};r.data.forEach(function(c){map[c.slug]=c;});
+      _courses=COURSES.map(function(c){
+        var db=map[c.slug]||{};
+        return Object.assign({},c,{students_count:db.students_count||0,rating:db.rating||4.7});
+      });
+    }else _courses=COURSES;
+  }catch(e){_courses=COURSES;}
+}
+
+async function loadEnrollments(){
+  if(!_user)return;
+  try{
+    var r=await sb.from('course_enrollments').select('*').eq('user_id',_user.id);
+    (r.data||[]).forEach(function(e){_enroll[e.course_id]=e;});
+    /* Also load by course slug mapping */
+    var r2=await sb.from('belongix_courses').select('id,slug').in('slug',COURSES.map(function(c){return c.slug;}));
+    var slugToId={};
+    (r2.data||[]).forEach(function(c){slugToId[c.slug]=c.id;});
+    /* Map slug → enrollment status */
+    (r.data||[]).forEach(function(e){
+      /* Find course by id */
+      var course=COURSES.find(function(c){return slugToId[c.slug]===e.course_id;});
+      if(course)_enroll[course.slug]=e;
+    });
+  }catch(e){}
+}
+
+async function loadCerts(){
+  if(!_user)return;
+  try{
+    var r=await sb.from('certificates').select('*').eq('user_id',_user.id).order('issued_at',{ascending:false});
+    _certs=r.data||[];
+    renderCerts();
+  }catch(e){}
+}
+
+/* ── DOMAIN & FILTER ── */
+function updateCounts(){
+  var dev=COURSES.filter(function(c){return c.domain==='Development';}).length;
+  var cod=COURSES.filter(function(c){return c.domain==='Coding';}).length;
+  var ai=COURSES.filter(function(c){return c.domain==='AI';}).length;
+  var el=function(id){return document.getElementById(id);};
+  el('cnt-all')&&(el('cnt-all').textContent=COURSES.length);
+  el('cnt-dev')&&(el('cnt-dev').textContent=dev);
+  el('cnt-cod')&&(el('cnt-cod').textContent=cod);
+  el('cnt-ai')&&(el('cnt-ai').textContent=ai);
+}
+
+function setDomain(d,btn){
+  _domain=d;
+  document.querySelectorAll('.dtab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var t=document.getElementById('grid-title');
+  if(t)t.textContent=d==='all'?'All Courses':d+' Courses';
+  render();
+}
+
+function setDiff(d,btn){
+  _diff=d;
+  document.querySelectorAll('.fchip').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  render();
+}
+
+/* ── RENDER ── */
+function render(){
+  var q=((document.getElementById('search-inp')||{}).value||'').toLowerCase().trim();
+  _search=q;
+
+  var filtered=(_courses.length?_courses:COURSES).filter(function(c){
+    if(_domain!=='all'&&c.domain!==_domain)return false;
+    if(_diff!=='all'&&c.difficulty!==_diff)return false;
+    if(q&&!c.title.toLowerCase().includes(q)&&!c.category.toLowerCase().includes(q)&&!(c.skills||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+
+  var rc=document.getElementById('result-count');
+  if(rc)rc.textContent=filtered.length+' course'+(filtered.length!==1?'s':'');
+
+  var grid=document.getElementById('grid');
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty"><div class="empty-icon">📚</div><div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px">No courses found</div><div>Try a different search or filter</div></div>';
+    return;
+  }
+
+  grid.innerHTML=filtered.map(function(c){return cardHtml(c);}).join('');
+}
+
+function cardHtml(c){
+  var enr=_enroll[c.slug];
+  var cert=_certs.find(function(x){return x.course_title===c.title||x.cert_title===c.certificate_title;});
+  var prog=cert?100:enr&&enr.status==='completed'?90:enr?40:0;
+
+  var badges='<span class="cc-badge b-free">FREE</span><span class="cc-badge b-cert">CERT</span>';
+  if(c.hot)badges+='<span class="cc-badge b-hot">🔥 HOT</span>';
+  if(cert)badges='<span class="cc-badge b-done">✓ Certified</span>';
+  else if(enr)badges+='<span class="cc-badge b-prog">In Progress</span>';
+
+  var btnHtml=cert
+    ?'<button class="cc-btn done" onclick="event.stopPropagation();viewCert(\''+esc(cert.cert_id)+'\')">🏆 View Certificate</button>'
+    :enr
+      ?'<button class="cc-btn prim" onclick="event.stopPropagation();go(\''+c.slug+'\')">Continue →</button>'
+      :'<button class="cc-btn sec" onclick="event.stopPropagation();go(\''+c.slug+'\')">Enroll Free →</button>';
+
+  var progHtml=enr?'<div class="cc-prog-bar"><div class="cc-prog-fill" style="width:'+prog+'%"></div></div><div class="cc-prog-txt">'+prog+'% complete</div>':'';
+
+  return '<div class="course-card" onclick="go(\''+c.slug+'\',true)">'
+    +'<div class="cc-thumb" style="background:'+c.bg+'"><span>'+c.emoji+'</span>'
+    +'<div class="cc-badges">'+badges+'</div>'
+    +'<div class="cc-domain">'+c.domain+'</div>'
+    +'</div>'
+    +'<div class="cc-body">'
+    +'<div class="cc-category">'+esc(c.category)+'</div>'
+    +'<div class="cc-title">'+esc(c.title)+'</div>'
+    +'<div class="cc-sub">'+esc(c.subtitle)+'</div>'
+    +'<div class="cc-meta">'
+    +'<span>📚 '+c.module_count+' modules</span>'
+    +'<span>⏱ '+c.duration_mins+' min</span>'
+    +'<span>📊 '+c.difficulty+'</span>'
+    +'</div>'
+    +progHtml
+    +btnHtml
+    +'</div></div>';
+}
+
+function renderCerts(){
+  if(!_certs.length)return;
+  var sec=document.getElementById('my-certs');
+  var list=document.getElementById('my-certs-list');
+  if(sec)sec.classList.add('show');
+  if(list)list.innerHTML=_certs.map(function(cert){
+    return '<div class="cert-chip" onclick="viewCert(\''+esc(cert.cert_id)+'\')">'
+      +'<div>🏆</div>'
+      +'<div><div class="cert-chip-name">'+esc(cert.course_title)+'</div>'
+      +'<div class="cert-chip-id">'+esc(cert.cert_id)+'</div></div>'
+      +'</div>';
+  }).join('');
+}
+
+/* ── ACTIONS ── */
+function go(slug,preview){
+  window.location.href='course.html?slug='+slug;
+}
+
+function viewCert(certId){
+  window.open('verify.html?id='+certId,'_blank');
+}
+
+/* ── AUTH ── */
+function showUserNav(){
+  document.getElementById('nav-guest').style.display='none';
+  document.getElementById('nav-user').style.display='flex';
+  var nm=(_user.user_metadata&&_user.user_metadata.full_name)||_user.email.split('@')[0];
+  var av=document.getElementById('nav-av');
+  if(av)av.textContent=nm.substring(0,2).toUpperCase();
+}
+function showGuestNav(){
+  document.getElementById('nav-guest').style.display='flex';
+  document.getElementById('nav-user').style.display='none';
+}
+
+/* ── HELPERS ── */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
+</script>
+</body>
+</html>
