@@ -698,6 +698,10 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     </div>
     <div class="sb-group">
       <div class="sb-group-label">Tools</div>
+      <a class="sb-link" href="courses.html" style="text-decoration:none">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Courses
+        <span style="margin-left:auto;font-size:9px;font-weight:700;background:#6366F1;color:#fff;border-radius:10px;padding:1px 6px">NEW</span>
+      </a>
       <a class="sb-link" href="community.html" style="text-decoration:none">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>Community
         <span style="margin-left:auto;font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 6px">NEW</span>
@@ -1910,6 +1914,8 @@ function renderLiveJobs(jobs, source) {
     if (j.source === 'remotive') srcLabel = '<span style="font-size:10px;color:#6366F1;font-weight:600;margin-left:4px">via Remotive</span>';
     else if (j.source === 'arbeitnow') srcLabel = '<span style="font-size:10px;color:#0891B2;font-weight:600;margin-left:4px">via Arbeitnow</span>';
     else if (j.source === 'jooble') srcLabel = '<span style="font-size:10px;color:#D97706;font-weight:600;margin-left:4px">via Jooble</span>';
+    else if (j.source === 'adzuna') srcLabel = '<span style="font-size:10px;color:#059669;font-weight:600;margin-left:4px">via Adzuna</span>';
+    else if (j.source === 'belongix') srcLabel = '<span style="font-size:10px;color:#2D1B69;font-weight:600;margin-left:4px">Belongix</span>';
 
     /* Skills */
     var skillStr = j.skills || (Array.isArray(j.tags) ? j.tags.join(',') : '');
