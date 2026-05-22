@@ -239,11 +239,14 @@ async function loadCourse(slug) {
     var cr = await sb.from('belongix_courses').select('*').eq('slug', slug).single();
     if (cr.data) _course = cr.data;
 
-    var mr = await sb.from('course_modules').select('*').eq('course_id', _course.id).order('order_index');
-    if (mr.data && mr.data.length) _modules = mr.data;
+    /* Only fetch modules/questions if we have a valid course */
+    if (_course && _course.id) {
+      var mr = await sb.from('course_modules').select('*').eq('course_id', _course.id).order('order_index');
+      if (mr.data && mr.data.length) _modules = mr.data;
 
-    var qr = await sb.from('course_quiz_questions').select('*').eq('course_id', _course.id).order('order_index');
-    if (qr.data && qr.data.length) _questions = qr.data;
+      var qr = await sb.from('course_quiz_questions').select('*').eq('course_id', _course.id).order('order_index');
+      if (qr.data && qr.data.length) _questions = qr.data;
+    }
 
     if (_user) {
       var er = await sb.from('course_enrollments').select('*').eq('user_id', _user.id).eq('course_id', _course.id).maybeSingle();
@@ -256,10 +259,29 @@ async function loadCourse(slug) {
       _certificate = certR.data;
     }
   } catch(e) {
-    /* Fallback to static data */
-    _course = STATIC_COURSES[slug] || STATIC_COURSES['salary-negotiation'];
-    _modules = STATIC_MODULES[slug] || STATIC_MODULES['salary-negotiation'] || [];
-    _questions = STATIC_QUESTIONS[slug] || STATIC_QUESTIONS['salary-negotiation'] || [];
+    /* Fallback to static data only if slug exactly matches */
+    if (STATIC_COURSES[slug]) {
+      _course = STATIC_COURSES[slug];
+      _modules = STATIC_MODULES[slug] || [];
+      _questions = STATIC_QUESTIONS[slug] || [];
+    }
+  }
+
+  /* If course loaded from DB but has no modules yet, add a placeholder */
+  if (_course && _modules.length === 0) {
+    _modules = [{
+      id: 'placeholder',
+      title: 'Content Coming Soon',
+      duration_mins: 5,
+      order_index: 1,
+      is_free_preview: true,
+      content: '<div style="text-align:center;padding:40px 20px">'
+        + '<div style="font-size:48px;margin-bottom:16px">🚀</div>'
+        + '<h2 style="margin-bottom:12px">Content Coming Soon!</h2>'
+        + '<p style="color:var(--muted);max-width:400px;margin:0 auto 24px">We are adding full course content for <strong>' + (_course.title||'this course') + '</strong> very soon. Check back shortly!</p>'
+        + '<a href="courses.html" style="display:inline-block;background:var(--brand);color:#fff;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:600">← Browse Other Courses</a>'
+        + '</div>'
+    }];
   }
 
   if (!_course) {
