@@ -121,8 +121,8 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink)}
 .cert-available-btn{background:#FCD34D;color:#065F46;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;font-family:var(--ff);margin-top:10px;width:100%}
 
 /* TOAST */
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#0D0D1A;color:#fff;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:.3s;pointer-events:none}
-#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#0D0D1A;color:#fff;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:.3s;pointer-events:none;cursor:pointer}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
@@ -488,7 +488,7 @@ function renderPage() {
     + '</div>';
 
   var modulesListHtml = _modules.map(function(m, i) {
-    var isDone = _completedModules.has(m.id) || (typeof m.id === 'string' && m.id.startsWith('m') && i < completedCount);
+    var isDone = _completedModules.has(m.id) || (i < completedCount);
     var isActive = i === _currentModule;
     var cls = 'module-item' + (isActive ? ' active' : '') + (isDone ? ' completed' : '');
     return '<div class="' + cls + '" onclick="goToModule(' + i + ')">'
@@ -499,7 +499,7 @@ function renderPage() {
 
   var currentMod = _modules[_currentModule] || {};
   var isLastModule = _currentModule === _modules.length - 1;
-  var isModuleDone = _completedModules.has(currentMod.id) || (typeof currentMod.id === 'string' && _currentModule < completedCount);
+  var isModuleDone = _completedModules.has(currentMod.id) || (_currentModule < completedCount);
 
   var contentHtml = _mode === 'quiz' ? renderQuizHtml() :
     '<div class="content-card">'
@@ -509,7 +509,9 @@ function renderPage() {
     + '<div class="module-nav">'
     + '<button class="nav-btn prev" onclick="prevModule()" ' + (_currentModule === 0 ? 'disabled' : '') + '>← Previous</button>'
     + (isLastModule
-        ? '<button class="nav-btn complete" onclick="completeModule()">Complete & Take Quiz 🎯</button>'
+        ? (isModuleDone
+            ? '<button class="nav-btn complete" onclick="startQuiz()">Take Quiz 🎯</button>'
+            : '<button class="nav-btn complete" onclick="completeAndStartQuiz()">Complete & Take Quiz 🎯</button>')
         : isModuleDone
           ? '<button class="nav-btn next" onclick="nextModule()">Next Module →</button>'
           : '<button class="nav-btn next" onclick="completeModule()">Mark Complete & Next →</button>')
@@ -624,13 +626,28 @@ async function completeModule() {
 
   var isLast = _currentModule === _modules.length - 1;
   if (isLast) {
-    showToast('All modules complete! 🎉 Take the quiz to earn your certificate.');
-    renderPage();
+    /* Last module done — go straight to quiz */
+    startQuiz();
   } else {
     _currentModule++;
     renderPage();
     window.scrollTo(0, 0);
   }
+}
+
+async function completeAndStartQuiz() {
+  /* Mark last module complete, then start quiz */
+  var mod = _modules[_currentModule];
+  if (mod) {
+    _completedModules.add(mod.id);
+    if (_user && _course.id) {
+      try {
+        await dbPost('course_progress', { user_id: _user.id, course_id: _course.id, module_id: mod.id }, 'resolution=merge-duplicates');
+        await dbPatch('course_enrollments', 'user_id=eq.'+_user.id+'&course_id=eq.'+_course.id, { status: 'completed' });
+      } catch(e) {}
+    }
+  }
+  startQuiz();
 }
 
 function nextModule() {
@@ -736,11 +753,13 @@ function backToModules() {
   renderPage();
 }
 
-function showToast(msg) {
+function showToast(msg, onClick) {
   var t = document.getElementById('toast');
   t.textContent = msg;
+  t.onclick = onClick || null;
+  t.style.cursor = onClick ? 'pointer' : 'default';
   t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 4000);
+  setTimeout(function(){ t.classList.remove('show'); }, 5000);
 }
 
 function esc(s) {
