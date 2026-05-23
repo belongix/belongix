@@ -827,10 +827,10 @@ function renderCertificatePage(cert) {
     + '<button class="btn-share" onclick="shareLinkedIn()">💼 Share on LinkedIn</button>'
     + '<button class="btn-close" onclick="window.close()">✕ Close</button>'
     + '</div>'
-    + '<div class="verify-note">Verify at: belongix.in/verify.html?id=' + certId + '</div>'
+    + '<div class="verify-note">Verify at: belongix.in/certificate.html?id=' + certId + '</div>'
     + '<script>'
     + 'function shareLinkedIn(){'
-    + 'var url=encodeURIComponent("https://www.belongix.in/verify.html?id=' + certId + '");'
+    + 'var url=encodeURIComponent("https://www.belongix.in/certificate.html?id=' + certId + '");'
     + 'var txt=encodeURIComponent("Excited to share that I earned the \"' + certTitle + '\" certificate from @Belongix! India-specific career learning platform. #Belongix #CareerGrowth #India");'
     + 'window.open("https://www.linkedin.com/sharing/share-offsite/?url="+url+"&summary="+txt,"_blank");}'
     + '<\/script>'
@@ -847,7 +847,7 @@ function renderCertificatePage(cert) {
 
 function shareOnLinkedIn() {
   if (!_certificate) { showToast('Complete the course first'); return; }
-  var url = encodeURIComponent('https://www.belongix.in/verify.html?id=' + _certificate.cert_id);
+  var url = encodeURIComponent('https://www.belongix.in/certificate.html?id=' + _certificate.cert_id);
   var title = encodeURIComponent('I just earned the "' + _certificate.cert_title + '" certificate from Belongix! Built for Indian professionals. Check it out:');
   window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + url + '&summary=' + title, '_blank');
 }
