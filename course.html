@@ -365,7 +365,18 @@ window.addEventListener('load', async function() {
     }
   } catch(e) {}
 
-  await loadCourse(slug);
+  try {
+    await loadCourse(slug);
+  } catch(err) {
+    console.error('loadCourse error:', err);
+    document.getElementById('page-content').innerHTML =
+      '<div style="text-align:center;padding:80px;color:#666">'
+      + '<div style="font-size:48px;margin-bottom:16px">⚠️</div>'
+      + '<h2 style="margin-bottom:12px">Something went wrong</h2>'
+      + '<p style="margin-bottom:20px">Error: ' + (err.message||err) + '</p>'
+      + '<a href="courses.html" style="color:#6C3CE1;font-weight:600">← Back to Courses</a>'
+      + '</div>';
+  }
 });
 
 async function loadCourse(slug) {
@@ -807,7 +818,7 @@ function renderCertificatePage(cert) {
     + '<div class="cert-body">'
     + '<div class="cert-seal"><div class="cert-seal-icon">🏆</div><div class="cert-seal-text">BELONGIX<br>VERIFIED</div></div>'
     + '<div class="cert-logo">Belong<span>ix</span></div>'
-    + '<div class="cert-tagline">India's Career Platform</div>'
+    + '<div class="cert-tagline">India&#39;s Career Platform</div>'
     + '<div class="cert-presents">This certifies that</div>'
     + '<div class="cert-title-main">' + userName + '</div>'
     + '<div class="cert-of">has successfully completed</div>'
