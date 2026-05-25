@@ -1571,17 +1571,22 @@ var SB_ADMIN_KEY = SB_KEY;
 function sbFetch(t,p){return fetch(SB_URL+'/rest/v1/'+t+'?'+(p||'select=*'),{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});}
 function sbInsert(t,rows){var key=(typeof SB_ADMIN_KEY!=='undefined')?SB_ADMIN_KEY:SB_KEY;return fetch(SB_URL+'/rest/v1/'+t,{method:'POST',headers:{'apikey':key,'Authorization':'Bearer '+key,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(rows)}).then(function(r){return r.json().then(function(j){if(!r.ok){throw new Error((j&&j.message)||'HTTP '+r.status+' on '+t);}return j;}).catch(function(e){if(e&&e.message)throw e;return[];});});}
 function sbUpdate(t,id,data){
-  /* Use service role key for admin writes — bypasses RLS */
-  var key = (typeof SB_ADMIN_KEY!=='undefined') ? SB_ADMIN_KEY : SB_KEY;
-  return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{
+  var key=(typeof SB_ADMIN_KEY!=='undefined')?SB_ADMIN_KEY:SB_KEY;
+  /* Use raw id without extra encoding — Supabase handles UUID matching */
+  return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+id,{
     method:'PATCH',
-    headers:{'apikey':key,'Authorization':'Bearer '+key,'Content-Type':'application/json','Prefer':'return=minimal'}
-  ,body:JSON.stringify(data)}).then(function(r){
-    if(r.ok) return {};
+    headers:{
+      'apikey':key,
+      'Authorization':'Bearer '+key,
+      'Content-Type':'application/json'
+    },
+    body:JSON.stringify(data)
+  }).then(function(r){
+    if(r.status===204||r.ok) return {};
     return r.text().then(function(txt){
-      var j; try{j=JSON.parse(txt);}catch(e){j={};}
-      var msg=(j&&(j.message||j.error))||('HTTP '+r.status+' on '+t);
-      console.error('sbUpdate error:',msg,j);
+      var j;try{j=JSON.parse(txt);}catch(e){j={};}
+      var msg=(j&&(j.message||j.details||j.error))||('HTTP '+r.status+' on '+t);
+      console.error('sbUpdate error:',t,id,msg,j);
       throw new Error(msg);
     });
   });
@@ -1901,8 +1906,27 @@ async function approveJob(id){
     toast('Job approved — now live!','success');
     await writeAudit('APPROVE','job',id,j&&j.title,'Approved');
   }catch(e){
-    toast('Error: '+(e.message||'Failed'),'error');
-    console.error('approveJob:',e);
+    var msg = e.message||'Failed';
+    /* Show full error so we can debug */
+    toast('Error: '+msg,'error');
+    console.error('approveJob full error:',e);
+    /* Try updating ONLY status with no other fields */
+    try{
+      await fetch(SB_URL+'/rest/v1/jobs?id=eq.'+id,{
+        method:'PATCH',
+        headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
+        body:JSON.stringify({status:'approved'})
+      }).then(function(r){
+        if(r.ok||r.status===204){
+          var jj=_allJobs.find(function(x){return x.id===id;});
+          if(jj)jj.status='approved';
+          filterJobsTable();updateJobStats();
+          toast('Job approved!','success');
+        }else{
+          return r.text().then(function(t){console.error('Fallback also failed:',t);});
+        }
+      });
+    }catch(e2){console.error('Fallback failed:',e2);}
   }
 }
 async function rejectJobRow(id){openConfirm('❌ Reject','Reason:','Enter reason…','Reject','danger',async function(r){try{await sbUpdate('jobs',id,{status:'rejected',rejection_reason:r||''});}catch(e){console.error('reject err:',e.message);}var j=_allJobs.find(function(x){return x.id===id;});if(j){j.status='rejected';j.is_live=false;}filterJobsTable();updateJobStats();toast('Job rejected','success');});}
