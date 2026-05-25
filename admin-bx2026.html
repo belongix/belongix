@@ -1893,8 +1893,9 @@ function filterJobsTable(){var q=(gv('j-search')||'').toLowerCase();var sf=gv('j
 function renderJobsTable(jobs){var tbody=document.getElementById('jobs-tbody');if(!tbody)return;if(!jobs.length){tbody.innerHTML='<tr><td colspan="8">'+emptyState('💼',_allJobs.length?'No jobs match filters':'No jobs yet')+'</td></tr>';return;}tbody.innerHTML=jobs.map(function(j){var st=j.status||'approved';var sb=st==='approved'?'<span class="badge b-success">Live</span>':st==='pending'?'<span class="badge b-warn">Pending</span>':'<span class="badge b-danger">'+st+'</span>';var sal=j.salary_min?'₹'+j.salary_min+'–'+j.salary_max+'L':'—';return '<tr><td><input type="checkbox" class="j-chk" data-id="'+j.id+'"/></td><td><div style="font-weight:600;font-size:13px">'+esc(j.title||'—')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(j.company||'—')+'</div></td><td>'+esc(j.location||j.loc||'—')+'</td><td style="color:var(--accent);font-weight:700">'+sal+'</td><td style="font-size:12px;color:var(--muted)">'+fmtDate(j.created_at)+'</td><td>'+sb+'</td><td>'+(!j.salary_min?'<span title="Missing salary" style="color:var(--warn)">⚠️</span>':'')+'</td><td><div style="display:flex;gap:5px">'+(st!=='approved'?'<button class="btn btn-success btn-xs" onclick="approveJob(\''+j.id+'\')">✅</button>':'')+(st!=='rejected'?'<button class="btn btn-danger btn-xs" onclick="rejectJobRow(\''+j.id+'\')">❌</button>':'')+'<button class="btn btn-ghost btn-xs" onclick="deleteJobRow(\''+j.id+'\')">🗑</button></div></td></tr>';}).join('');}
 async function approveJob(id){
   var j=_allJobs.find(function(x){return x.id===id;});
+  /* Update only status — avoids any constraint issues with other columns */
   try{
-    await sbUpdate('jobs',id,{status:'approved',is_live:true});
+    await sbUpdate('jobs',id,{status:'approved'});
     if(j){j.status='approved';j.is_live=true;}
     filterJobsTable();updateJobStats();
     toast('Job approved — now live!','success');
@@ -1904,7 +1905,7 @@ async function approveJob(id){
     console.error('approveJob:',e);
   }
 }
-async function rejectJobRow(id){openConfirm('❌ Reject','Reason:','Enter reason…','Reject','danger',async function(r){try{await sbUpdate('jobs',id,{status:'rejected',is_live:false,rejection_reason:r||''});}catch(e){try{await sbUpdate('jobs',id,{is_live:false});}catch(e2){console.error(e2);}}var j=_allJobs.find(function(x){return x.id===id;});if(j){j.status='rejected';j.is_live=false;}filterJobsTable();updateJobStats();toast('Job rejected','success');});}
+async function rejectJobRow(id){openConfirm('❌ Reject','Reason:','Enter reason…','Reject','danger',async function(r){try{await sbUpdate('jobs',id,{status:'rejected',rejection_reason:r||''});}catch(e){console.error('reject err:',e.message);}var j=_allJobs.find(function(x){return x.id===id;});if(j){j.status='rejected';j.is_live=false;}filterJobsTable();updateJobStats();toast('Job rejected','success');});}
 async function deleteJobRow(id){openConfirm('🗑 Delete','Delete this job posting?',null,'Delete','danger',async function(){try{await sbDelete('jobs',id);_allJobs=_allJobs.filter(function(j){return j.id!==id;});filterJobsTable();updateJobStats();toast('Deleted','success');}catch(e){toast('Failed','error');}});}
 async function bulkApproveJobs(){
   var checked=document.querySelectorAll('.j-chk:checked');
@@ -1914,7 +1915,7 @@ async function bulkApproveJobs(){
   var count=0;
   for(var i=0;i<ids.length;i++){
     try{
-      await sbUpdate('jobs',ids[i],{status:'approved',is_live:true});
+      await sbUpdate('jobs',ids[i],{status:'approved'});
       var jj=(_allJobs||[]).find(function(x){return x.id===ids[i];});
       if(jj){jj.status='approved';jj.is_live=true;}
       count++;
