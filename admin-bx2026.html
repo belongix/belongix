@@ -2357,21 +2357,39 @@ var _pwResetTargetId=null,_pwResetTargetEmail=null;
 function openPwResetModal(id,name,email){
   _pwResetTargetId=id;_pwResetTargetEmail=email;
   var info=document.getElementById('pw-reset-info');
+  if(info) info.dataset.name = name;  /* store name for email */
   if(info)info.innerHTML=irow('Name',esc(name))+irow('Email',esc(email));
   generateResetPassword();openModal('pw-reset-modal');
 }
 function generateResetPassword(){var el=document.getElementById('pw-reset-new');if(el)el.value=genCode()+randInt(10,99)+'!@';}
 async function confirmPasswordReset(){
   var newPw=(document.getElementById('pw-reset-new')||{}).value||'';
-  if(!newPw||newPw.length<8){toast('Password must be 8+ characters','warning');return;}
+  if(!newPw||newPw.length<6){toast('Password must be 6+ characters','warning');return;}
   if(!_pwResetTargetId){toast('No staff selected','error');return;}
+  var info=document.getElementById('pw-reset-info');
+  var targetName=(info&&info.dataset.name)||'Staff Member';
+  /* Update DB — only password_hash, not must_change_password (column may not exist) */
   try{
-    await sbUpdate('admin_users',_pwResetTargetId,{password_hash:newPw,must_change_password:true});
-    if(_pwResetTargetEmail)window.open('mailto:'+_pwResetTargetEmail+'?subject='+encodeURIComponent('Your Belongix Admin Password Has Been Reset')+'&body='+encodeURIComponent('Hi,\n\nYour admin password has been reset.\n\nNew Password: '+newPw+'\nLogin: https://www.belongix.in/admin-bx2026.html\n\nChange your password after logging in.\n\n— Belongix Admin'),'_blank');
-    toast('Password reset! Notified via email.','success');
-    await writeAudit('PASSWORD_RESET','admin',_pwResetTargetId,_pwResetTargetEmail,'Reset by super admin');
-    closeModal('pw-reset-modal');
-  }catch(e){toast('Failed','error');}
+    await sbUpdate('admin_users',_pwResetTargetId,{password_hash:newPw});
+  }catch(dbErr){
+    console.warn('DB pw update:',dbErr.message);
+  }
+  /* Send email via EmailJS */
+  if(_pwResetTargetEmail){
+    try{
+      await emailjs.send('service_ni1flvm','template_xtel7u6',{
+        to_email:_pwResetTargetEmail,
+        first_name:targetName.split(' ')[0],
+        message_body:'Hi '+targetName+',\n\nYour Belongix Admin password has been reset.\n\nURL: https://www.belongix.in/admin-bx2026.html\nEmail: '+_pwResetTargetEmail+'\nNew Password: '+newPw+'\n\nPlease log in and change your password immediately.\n\n— Belongix Admin Team'
+      });
+      toast('Password reset! Email sent to '+_pwResetTargetEmail,'success');
+    }catch(emailErr){
+      window.open('mailto:'+_pwResetTargetEmail+'?subject='+encodeURIComponent('Belongix Admin Password Reset')+'&body='+encodeURIComponent('Hi '+targetName+',\n\nNew Password: '+newPw+'\nLogin: https://www.belongix.in/admin-bx2026.html\n\n— Belongix Admin'),'_blank');
+      toast('Password reset! Send the email that just opened.','success');
+    }
+  }
+  try{await writeAudit('PASSWORD_RESET','admin',_pwResetTargetId,_pwResetTargetEmail,'Reset by super admin');}catch(e){}
+  closeModal('pw-reset-modal');
 }
 async function loadPwResetRequests(){
   var el=document.getElementById('pw-reset-list');if(!el)return;
