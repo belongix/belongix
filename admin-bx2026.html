@@ -1568,7 +1568,7 @@ var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI
 
 function sbFetch(t,p){return fetch(SB_URL+'/rest/v1/'+t+'?'+(p||'select=*'),{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});}
 function sbInsert(t,rows){return fetch(SB_URL+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(rows)}).then(function(r){return r.json().then(function(j){if(!r.ok){throw new Error((j&&j.message)||'HTTP '+r.status+' on '+t);}return j;}).catch(function(e){if(e&&e.message)throw e;return[];});});}
-function sbUpdate(t,id,data){return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(r){return r.json().catch(function(){return{};});});}
+function sbUpdate(t,id,data){return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(data)}).then(function(r){return r.text().then(function(txt){var j;try{j=JSON.parse(txt);}catch(e){j={};}if(!r.ok){var msg=(j&&j.message)||'HTTP '+r.status+' updating '+t;console.error('sbUpdate error:',msg,j);throw new Error(msg);}return j;});});}
 function sbDelete(t,id){return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(function(r){return r.ok;});}
 
 var adminSession=null,_charts={},_confirmCb=null;
@@ -1854,8 +1854,38 @@ async function loadJobs(){try{_allJobs=await sbFetch('jobs','select=*&order=crea
 function updateJobStats(){setText('jc-live',_allJobs.filter(function(j){return !j.status||j.status==='approved';}).length);setText('jc-pending',_allJobs.filter(function(j){return j.status==='pending';}).length);setText('jc-expired',_allJobs.filter(function(j){return j.status==='expired';}).length);setText('jc-apps',_allJobs.length);setBadge('badge-jobs',_allJobs.filter(function(j){return j.status==='pending';}).length);}
 function filterJobsTable(){var q=(gv('j-search')||'').toLowerCase();var sf=gv('j-status')||'all';var filtered=_allJobs.filter(function(j){return(!q||((j.title||'')+(j.company||'')).toLowerCase().includes(q))&&(sf==='all'||(j.status||'approved')===sf);});renderJobsTable(filtered);}
 function renderJobsTable(jobs){var tbody=document.getElementById('jobs-tbody');if(!tbody)return;if(!jobs.length){tbody.innerHTML='<tr><td colspan="8">'+emptyState('💼',_allJobs.length?'No jobs match filters':'No jobs yet')+'</td></tr>';return;}tbody.innerHTML=jobs.map(function(j){var st=j.status||'approved';var sb=st==='approved'?'<span class="badge b-success">Live</span>':st==='pending'?'<span class="badge b-warn">Pending</span>':'<span class="badge b-danger">'+st+'</span>';var sal=j.salary_min?'₹'+j.salary_min+'–'+j.salary_max+'L':'—';return '<tr><td><input type="checkbox" class="j-chk" data-id="'+j.id+'"/></td><td><div style="font-weight:600;font-size:13px">'+esc(j.title||'—')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(j.company||'—')+'</div></td><td>'+esc(j.location||j.loc||'—')+'</td><td style="color:var(--accent);font-weight:700">'+sal+'</td><td style="font-size:12px;color:var(--muted)">'+fmtDate(j.created_at)+'</td><td>'+sb+'</td><td>'+(!j.salary_min?'<span title="Missing salary" style="color:var(--warn)">⚠️</span>':'')+'</td><td><div style="display:flex;gap:5px">'+(st!=='approved'?'<button class="btn btn-success btn-xs" onclick="approveJob(\''+j.id+'\')">✅</button>':'')+(st!=='rejected'?'<button class="btn btn-danger btn-xs" onclick="rejectJobRow(\''+j.id+'\')">❌</button>':'')+'<button class="btn btn-ghost btn-xs" onclick="deleteJobRow(\''+j.id+'\')">🗑</button></div></td></tr>';}).join('');}
-async function approveJob(id){try{await sbUpdate('jobs',id,{status:'approved',is_live:true});var j=_allJobs.find(function(x){return x.id===id;});if(j){j.status='approved';j.is_live=true;}filterJobsTable();updateJobStats();toast('Job approved — now live!','success');await writeAudit('APPROVE','job',id,j&&j.title,'Approved and set live');}catch(e){toast('Failed','error');}}
-async function rejectJobRow(id){openConfirm('❌ Reject','Reason:','Enter reason…','Reject','danger',async function(r){try{await sbUpdate('jobs',id,{status:'rejected',rejection_reason:r||''});var j=_allJobs.find(function(x){return x.id===id;});if(j)j.status='rejected';filterJobsTable();updateJobStats();toast('Rejected','success');}catch(e){toast('Failed','error');}});}
+async function approveJob(id){
+  var j=_allJobs.find(function(x){return x.id===id;});
+  var updated=false;
+  /* Try with both status+is_live */
+  try{
+    await sbUpdate('jobs',id,{status:'approved',is_live:true});
+    updated=true;
+  }catch(e1){
+    /* Fallback: try is_live only (if status column missing) */
+    try{
+      await sbUpdate('jobs',id,{is_live:true});
+      updated=true;
+    }catch(e2){
+      /* Fallback: try status only */
+      try{
+        await sbUpdate('jobs',id,{status:'approved'});
+        updated=true;
+      }catch(e3){
+        console.error('approveJob all attempts failed:',e3.message);
+        toast('DB error: '+e3.message,'error');
+        return;
+      }
+    }
+  }
+  if(updated){
+    if(j){j.status='approved';j.is_live=true;}
+    filterJobsTable();updateJobStats();
+    toast('Job approved — now live!','success');
+    await writeAudit('APPROVE','job',id,j&&j.title,'Approved');
+  }
+}
+async function rejectJobRow(id){openConfirm('❌ Reject','Reason:','Enter reason…','Reject','danger',async function(r){try{await sbUpdate('jobs',id,{status:'rejected',is_live:false,rejection_reason:r||''});}catch(e){try{await sbUpdate('jobs',id,{is_live:false});}catch(e2){console.error(e2);}}var j=_allJobs.find(function(x){return x.id===id;});if(j){j.status='rejected';j.is_live=false;}filterJobsTable();updateJobStats();toast('Job rejected','success');});}
 async function deleteJobRow(id){openConfirm('🗑 Delete','Delete this job posting?',null,'Delete','danger',async function(){try{await sbDelete('jobs',id);_allJobs=_allJobs.filter(function(j){return j.id!==id;});filterJobsTable();updateJobStats();toast('Deleted','success');}catch(e){toast('Failed','error');}});}
 async function bulkApproveJobs(){
   var checked = document.querySelectorAll('.j-chk:checked');
@@ -1865,11 +1895,14 @@ async function bulkApproveJobs(){
   var count = 0;
   for(var i=0;i<ids.length;i++){
     try{
-      await sbUpdate('jobs', ids[i], {status:'approved', is_live:true});
-      var j = (_allJobs||[]).find(function(x){return x.id===ids[i];});
-      if(j){ j.status='approved'; j.is_live=true; }
-      count++;
-    }catch(e){}
+      var ok=false;
+      try{await sbUpdate('jobs',ids[i],{status:'approved',is_live:true});ok=true;}catch(e1){
+        try{await sbUpdate('jobs',ids[i],{is_live:true});ok=true;}catch(e2){
+          try{await sbUpdate('jobs',ids[i],{status:'approved'});ok=true;}catch(e3){console.error('Bulk approve failed:',e3.message);}
+        }
+      }
+      if(ok){var j=(_allJobs||[]).find(function(x){return x.id===ids[i];});if(j){j.status='approved';j.is_live=true;}count++;}
+    }catch(e){console.error('bulkApprove failed for',ids[i],e);}
   }
   filterJobsTable();
   updateJobStats();
