@@ -682,7 +682,7 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
           </div>
         </div>
         <div class="tbl-scroll">
-          <table><thead><tr><th><input type="checkbox"/></th><th>Title</th><th>Company</th><th>Location</th><th>Salary</th><th>Posted</th><th>Status</th><th>Actions</th></tr></thead>
+          <table><thead><tr><th><input type="checkbox" id="chk-all-jobs" onchange="selectAllJobs(this)"/></th><th>Title</th><th>Company</th><th>Location</th><th>Salary</th><th>Posted</th><th>Status</th><th>Actions</th></tr></thead>
           <tbody id="jobs-tbody"><tr><td colspan="8"><div class="empty"><div class="empty-ic">⏳</div><div class="empty-t">Loading…</div></div></td></tr></tbody></table>
         </div>
       </div>
@@ -1593,6 +1593,10 @@ function openModal(id){var m=document.getElementById(id);if(m)m.classList.add('o
 function closeModal(id){var m=document.getElementById(id);if(m)m.classList.remove('open');}
 function openConfirm(title,msg,ph,okLabel,okClass,cb){setText('confirm-title',title);var pm=document.getElementById('confirm-msg');if(pm)pm.textContent=msg;var inp=document.getElementById('confirm-inp');if(inp){inp.style.display=ph?'block':'none';inp.placeholder=ph||'';inp.value='';}var btn=document.getElementById('confirm-ok-btn');if(btn){btn.textContent=okLabel||'Confirm';btn.className='btn btn-'+(okClass||'danger');}_confirmCb=cb;openModal('confirm-modal');}
 function runConfirmCallback(){closeModal('confirm-modal');if(_confirmCb)_confirmCb(gv('confirm-inp'));_confirmCb=null;}
+async function updateAdminLastLogin(){
+  if(!adminSession||!adminSession.id)return;
+  try{await sbUpdate('admin_users',adminSession.id,{last_login:new Date().toISOString()});}catch(e){}
+}
 async function writeAudit(action,tType,tId,tName,details){
   if(!adminSession)return;
   try{
@@ -1636,7 +1640,7 @@ async function doLogin(){
   var currentPassword=localStorage.getItem('bx_admin_pw')||DEFAULT_PASSWORD;
   if(email===ADMIN_EMAIL){
     if(pass===currentPassword){
-      adminSession={id:'local-001',name:'Keerthi',role:'super_admin',email:ADMIN_EMAIL,dept:'Founder',loginTime:Date.now(),isLocal:true};
+      adminSession={id:'local-001',name:'Keerthi',role:'super_admin',email:ADMIN_EMAIL,dept:'Founder',loginTime:Date.now(),isLocal:true};setTimeout(updateAdminLastLogin,1000);
       sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
       writeAudit('LOGIN',null,null,'Keerthi','Signed in via local auth');
       launchAdmin();return;
@@ -1708,7 +1712,19 @@ function showSection(id){
   if(!_loaded[id]){_loaded[id]=true;lazyLoad(id);}
   try{window.history.replaceState(null,'','#'+id);}catch(e){}
 }
-function refreshSection(id){_loaded[id]=false;lazyLoad(id);}
+function refreshSection(id){
+  _loaded[id]=false;
+  /* Force reload even if section thinks it's already loaded */
+  var fn={dashboard:loadDashboard,users:loadUsers,jobs:loadJobs,mentors:loadMentors,
+    content:loadContent,community:loadCommunity,campaigns:loadCampaigns,
+    announcements:loadAnnouncements,revenue:loadRevenue,coupons:loadCoupons,
+    partnerships:loadPartnerships,tickets:loadTickets,refunds:loadRefunds,
+    bexi:loadBexi,applications:loadApplications,bookings:loadBookings,
+    reviews:loadReviews,referrals:loadReferrals,notifications:loadNotifications,
+    team:loadTeam,staffactivity:loadStaffActivity,shiftnotes:loadShiftNotes,
+    auditlog:loadAudit,security:loadSecurity,settings:loadSettings}[id];
+  if(fn){ _loaded[id]=true; fn(); toast('Refreshed ✓','success'); }
+}
 function lazyLoad(id){var fn={dashboard:loadDashboard,users:loadUsers,jobs:loadJobs,mentors:loadMentors,content:loadContent,community:loadCommunity,campaigns:loadCampaigns,announcements:loadAnnouncements,revenue:loadRevenue,coupons:loadCoupons,partnerships:loadPartnerships,tickets:loadTickets,refunds:loadRefunds,bexi:loadBexi,applications:loadApplications,bookings:loadBookings,reviews:loadReviews,referrals:loadReferrals,notifications:loadNotifications,team:loadTeam,staffactivity:loadStaffActivity,shiftnotes:loadShiftNotes,auditlog:loadAudit,security:loadSecurity,settings:loadSettings}[id];if(fn)fn();}
 function toggleMobSidebar(){var sb=document.getElementById('sidebar'),ov=document.getElementById('sb-overlay');if(sb)sb.classList.toggle('mob-open');if(ov)ov.classList.toggle('mob-open');}
 function closeMobSidebar(){var sb=document.getElementById('sidebar'),ov=document.getElementById('sb-overlay');if(sb)sb.classList.remove('mob-open');if(ov)ov.classList.remove('mob-open');}
@@ -1837,11 +1853,37 @@ function exportUsersCSV(){var rows=[['Name','Email','Plan','City','Score','Joine
 async function loadJobs(){try{_allJobs=await sbFetch('jobs','select=*&order=created_at.desc&limit=300');}catch(e){_allJobs=[];}updateJobStats();filterJobsTable();}
 function updateJobStats(){setText('jc-live',_allJobs.filter(function(j){return !j.status||j.status==='approved';}).length);setText('jc-pending',_allJobs.filter(function(j){return j.status==='pending';}).length);setText('jc-expired',_allJobs.filter(function(j){return j.status==='expired';}).length);setText('jc-apps',_allJobs.length);setBadge('badge-jobs',_allJobs.filter(function(j){return j.status==='pending';}).length);}
 function filterJobsTable(){var q=(gv('j-search')||'').toLowerCase();var sf=gv('j-status')||'all';var filtered=_allJobs.filter(function(j){return(!q||((j.title||'')+(j.company||'')).toLowerCase().includes(q))&&(sf==='all'||(j.status||'approved')===sf);});renderJobsTable(filtered);}
-function renderJobsTable(jobs){var tbody=document.getElementById('jobs-tbody');if(!tbody)return;if(!jobs.length){tbody.innerHTML='<tr><td colspan="8">'+emptyState('💼',_allJobs.length?'No jobs match filters':'No jobs yet')+'</td></tr>';return;}tbody.innerHTML=jobs.map(function(j){var st=j.status||'approved';var sb=st==='approved'?'<span class="badge b-success">Live</span>':st==='pending'?'<span class="badge b-warn">Pending</span>':'<span class="badge b-danger">'+st+'</span>';var sal=j.salary_min?'₹'+j.salary_min+'–'+j.salary_max+'L':'—';return '<tr><td><input type="checkbox"/></td><td><div style="font-weight:600;font-size:13px">'+esc(j.title||'—')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(j.company||'—')+'</div></td><td>'+esc(j.location||j.loc||'—')+'</td><td style="color:var(--accent);font-weight:700">'+sal+'</td><td style="font-size:12px;color:var(--muted)">'+fmtDate(j.created_at)+'</td><td>'+sb+'</td><td>'+(!j.salary_min?'<span title="Missing salary" style="color:var(--warn)">⚠️</span>':'')+'</td><td><div style="display:flex;gap:5px">'+(st!=='approved'?'<button class="btn btn-success btn-xs" onclick="approveJob(\''+j.id+'\')">✅</button>':'')+(st!=='rejected'?'<button class="btn btn-danger btn-xs" onclick="rejectJobRow(\''+j.id+'\')">❌</button>':'')+'<button class="btn btn-ghost btn-xs" onclick="deleteJobRow(\''+j.id+'\')">🗑</button></div></td></tr>';}).join('');}
-async function approveJob(id){try{await sbUpdate('jobs',id,{status:'approved'});var j=_allJobs.find(function(x){return x.id===id;});if(j)j.status='approved';filterJobsTable();updateJobStats();toast('Job approved!','success');await writeAudit('APPROVE','job',id,j&&j.title,'Approved');}catch(e){toast('Failed','error');}}
+function renderJobsTable(jobs){var tbody=document.getElementById('jobs-tbody');if(!tbody)return;if(!jobs.length){tbody.innerHTML='<tr><td colspan="8">'+emptyState('💼',_allJobs.length?'No jobs match filters':'No jobs yet')+'</td></tr>';return;}tbody.innerHTML=jobs.map(function(j){var st=j.status||'approved';var sb=st==='approved'?'<span class="badge b-success">Live</span>':st==='pending'?'<span class="badge b-warn">Pending</span>':'<span class="badge b-danger">'+st+'</span>';var sal=j.salary_min?'₹'+j.salary_min+'–'+j.salary_max+'L':'—';return '<tr><td><input type="checkbox" class="j-chk" data-id="'+j.id+'"/></td><td><div style="font-weight:600;font-size:13px">'+esc(j.title||'—')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(j.company||'—')+'</div></td><td>'+esc(j.location||j.loc||'—')+'</td><td style="color:var(--accent);font-weight:700">'+sal+'</td><td style="font-size:12px;color:var(--muted)">'+fmtDate(j.created_at)+'</td><td>'+sb+'</td><td>'+(!j.salary_min?'<span title="Missing salary" style="color:var(--warn)">⚠️</span>':'')+'</td><td><div style="display:flex;gap:5px">'+(st!=='approved'?'<button class="btn btn-success btn-xs" onclick="approveJob(\''+j.id+'\')">✅</button>':'')+(st!=='rejected'?'<button class="btn btn-danger btn-xs" onclick="rejectJobRow(\''+j.id+'\')">❌</button>':'')+'<button class="btn btn-ghost btn-xs" onclick="deleteJobRow(\''+j.id+'\')">🗑</button></div></td></tr>';}).join('');}
+async function approveJob(id){try{await sbUpdate('jobs',id,{status:'approved',is_live:true});var j=_allJobs.find(function(x){return x.id===id;});if(j){j.status='approved';j.is_live=true;}filterJobsTable();updateJobStats();toast('Job approved — now live!','success');await writeAudit('APPROVE','job',id,j&&j.title,'Approved and set live');}catch(e){toast('Failed','error');}}
 async function rejectJobRow(id){openConfirm('❌ Reject','Reason:','Enter reason…','Reject','danger',async function(r){try{await sbUpdate('jobs',id,{status:'rejected',rejection_reason:r||''});var j=_allJobs.find(function(x){return x.id===id;});if(j)j.status='rejected';filterJobsTable();updateJobStats();toast('Rejected','success');}catch(e){toast('Failed','error');}});}
 async function deleteJobRow(id){openConfirm('🗑 Delete','Delete this job posting?',null,'Delete','danger',async function(){try{await sbDelete('jobs',id);_allJobs=_allJobs.filter(function(j){return j.id!==id;});filterJobsTable();updateJobStats();toast('Deleted','success');}catch(e){toast('Failed','error');}});}
-function bulkApproveJobs(){toast('Use individual approve buttons','warning');}
+async function bulkApproveJobs(){
+  var checked = document.querySelectorAll('.j-chk:checked');
+  if(!checked.length){ toast('Select jobs first','warning'); return; }
+  var ids = Array.from(checked).map(function(c){ return c.dataset.id; }).filter(Boolean);
+  if(!ids.length){ toast('No valid jobs selected','warning'); return; }
+  var count = 0;
+  for(var i=0;i<ids.length;i++){
+    try{
+      await sbUpdate('jobs', ids[i], {status:'approved', is_live:true});
+      var j = (_allJobs||[]).find(function(x){return x.id===ids[i];});
+      if(j){ j.status='approved'; j.is_live=true; }
+      count++;
+    }catch(e){}
+  }
+  filterJobsTable();
+  updateJobStats();
+  /* Uncheck all */
+  document.querySelectorAll('.j-chk').forEach(function(cb){cb.checked=false;});
+  var hdr = document.getElementById('chk-all-jobs');
+  if(hdr) hdr.checked = false;
+  toast(count+' job'+(count!==1?'s':'')+' approved!','success');
+  await writeAudit('BULK_APPROVE','jobs',ids.join(','),'Multiple','Bulk approved '+count+' jobs');
+}
+
+function selectAllJobs(chk){
+  document.querySelectorAll('.j-chk').forEach(function(c){c.checked=chk.checked;});
+}
 
 /* MENTORS */
 async function loadMentors(){try{_allMentorApps=await sbFetch('mentor_applications','select=*&order=applied_at.desc');}catch(e){_allMentorApps=[];}renderKanban();setBadge('badge-mentors',_allMentorApps.filter(function(m){return m.status==='applied';}).length);}
@@ -1856,10 +1898,65 @@ async function loadMentorPerf(){try{var mentors=await sbFetch('mentors','select=
 async function suspendMentor(id){openConfirm('🚫 Suspend Mentor','Suspend from Belongix?','Reason','Suspend','danger',async function(r){try{await sbUpdate('mentors',id,{suspended:true});toast('Mentor suspended','success');}catch(e){toast('Error','error');}});}
 /* CONTENT */
 async function loadContent() {
+  /* Static course catalog — matches course.html exactly */
+  var STATIC_CATALOG = [
+    {slug:'web-development-fundamentals',title:'Web Development Fundamentals',domain:'Development',category:'Web Development',difficulty:'Beginner',duration_mins:90,module_count:6,is_published:true,is_free:true},
+    {slug:'full-stack-development',title:'Full Stack Development',domain:'Development',category:'Full Stack',difficulty:'Intermediate',duration_mins:180,module_count:8,is_published:true,is_free:true},
+    {slug:'frontend-development',title:'Frontend Development with React',domain:'Development',category:'Frontend',difficulty:'Intermediate',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'backend-development',title:'Backend Development with Node.js',domain:'Development',category:'Backend',difficulty:'Intermediate',duration_mins:150,module_count:7,is_published:true,is_free:true},
+    {slug:'dsa-fundamentals',title:'Data Structures & Algorithms',domain:'Development',category:'DSA',difficulty:'Intermediate',duration_mins:200,module_count:10,is_published:true,is_free:true},
+    {slug:'cloud-computing-aws',title:'Cloud Computing with AWS',domain:'Development',category:'Cloud',difficulty:'Beginner',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'devops-engineering',title:'DevOps Engineering',domain:'Development',category:'DevOps',difficulty:'Intermediate',duration_mins:180,module_count:8,is_published:true,is_free:true},
+    {slug:'cybersecurity-fundamentals',title:'Cybersecurity Fundamentals',domain:'Development',category:'Cybersecurity',difficulty:'Beginner',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'machine-learning-complete',title:'Machine Learning — Complete',domain:'Development',category:'ML',difficulty:'Intermediate',duration_mins:200,module_count:10,is_published:true,is_free:true},
+    {slug:'data-science-india',title:'Data Science for Indian Professionals',domain:'Development',category:'Data Science',difficulty:'Beginner',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'data-analytics',title:'Data Analytics with Python & SQL',domain:'Development',category:'Analytics',difficulty:'Beginner',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'ui-ux-design',title:'UI/UX Design with Figma',domain:'Development',category:'Design',difficulty:'Beginner',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'mobile-app-development',title:'Mobile App Development with Flutter',domain:'Development',category:'Mobile',difficulty:'Beginner',duration_mins:180,module_count:9,is_published:true,is_free:true},
+    {slug:'android-development',title:'Android Development with Kotlin',domain:'Development',category:'Android',difficulty:'Intermediate',duration_mins:180,module_count:9,is_published:true,is_free:true},
+    {slug:'ios-development',title:'iOS Development with Swift',domain:'Development',category:'iOS',difficulty:'Intermediate',duration_mins:180,module_count:9,is_published:true,is_free:true},
+    {slug:'database-administration',title:'Database Administration',domain:'Development',category:'Database',difficulty:'Intermediate',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'networking-fundamentals',title:'Computer Networking Fundamentals',domain:'Development',category:'Networking',difficulty:'Beginner',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'software-testing-qa',title:'Software Testing & QA',domain:'Development',category:'Testing',difficulty:'Beginner',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'artificial-intelligence-fundamentals',title:'Artificial Intelligence Fundamentals',domain:'Development',category:'AI',difficulty:'Beginner',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'business-analytics',title:'Business Analytics & Intelligence',domain:'Development',category:'Business',difficulty:'Beginner',duration_mins:100,module_count:6,is_published:true,is_free:true},
+    {slug:'python-development',title:'Python Development — Complete',domain:'Coding',category:'Python',difficulty:'Beginner',duration_mins:180,module_count:7,is_published:true,is_free:true},
+    {slug:'java-development',title:'Java Development — Core to Advanced',domain:'Coding',category:'Java',difficulty:'Beginner',duration_mins:200,module_count:10,is_published:true,is_free:true},
+    {slug:'javascript-development',title:'JavaScript — Complete Modern Course',domain:'Coding',category:'JavaScript',difficulty:'Beginner',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'typescript-development',title:'TypeScript Development',domain:'Coding',category:'TypeScript',difficulty:'Intermediate',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'react-development',title:'React Development — Hooks to Production',domain:'Coding',category:'React',difficulty:'Intermediate',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'nodejs-development',title:'Node.js Development',domain:'Coding',category:'Node.js',difficulty:'Intermediate',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'mern-stack',title:'MERN Stack Development',domain:'Coding',category:'MERN',difficulty:'Intermediate',duration_mins:200,module_count:10,is_published:true,is_free:true},
+    {slug:'django-development',title:'Django Development',domain:'Coding',category:'Django',difficulty:'Intermediate',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'spring-boot-development',title:'Spring Boot Development',domain:'Coding',category:'Spring Boot',difficulty:'Intermediate',duration_mins:180,module_count:9,is_published:true,is_free:true},
+    {slug:'sql-development',title:'SQL & Database Development',domain:'Coding',category:'SQL',difficulty:'Beginner',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'competitive-programming',title:'Competitive Programming',domain:'Coding',category:'CP',difficulty:'Advanced',duration_mins:200,module_count:10,is_published:true,is_free:true},
+    {slug:'c-programming',title:'C Programming — Systems Foundation',domain:'Coding',category:'C',difficulty:'Beginner',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'cpp-development',title:'C++ Development',domain:'Coding',category:'C++',difficulty:'Intermediate',duration_mins:180,module_count:9,is_published:true,is_free:true},
+    {slug:'automation-testing',title:'Automation Testing with Selenium',domain:'Coding',category:'Testing',difficulty:'Intermediate',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'php-development',title:'PHP Development & Laravel',domain:'Coding',category:'PHP',difficulty:'Beginner',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'generative-ai-complete',title:'Generative AI — Complete Course',domain:'AI',category:'GenAI',difficulty:'Beginner',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'prompt-engineering',title:'Prompt Engineering Mastery',domain:'AI',category:'Prompting',difficulty:'Beginner',duration_mins:90,module_count:6,is_published:true,is_free:true},
+    {slug:'deep-learning',title:'Deep Learning with PyTorch',domain:'AI',category:'Deep Learning',difficulty:'Advanced',duration_mins:200,module_count:10,is_published:true,is_free:true},
+    {slug:'nlp-fundamentals',title:'Natural Language Processing (NLP)',domain:'AI',category:'NLP',difficulty:'Intermediate',duration_mins:180,module_count:9,is_published:true,is_free:true},
+    {slug:'computer-vision',title:'Computer Vision with OpenCV & YOLO',domain:'AI',category:'CV',difficulty:'Intermediate',duration_mins:180,module_count:9,is_published:true,is_free:true},
+    {slug:'llm-engineering',title:'LLM Engineering',domain:'AI',category:'LLM',difficulty:'Advanced',duration_mins:200,module_count:10,is_published:true,is_free:true},
+    {slug:'mlops',title:'MLOps — ML in Production',domain:'AI',category:'MLOps',difficulty:'Advanced',duration_mins:180,module_count:9,is_published:true,is_free:true},
+    {slug:'ai-engineering',title:'AI Engineering — Build AI Products',domain:'AI',category:'AI Eng',difficulty:'Intermediate',duration_mins:180,module_count:9,is_published:true,is_free:true},
+    {slug:'data-science-ai',title:'Data Science with AI Tools',domain:'AI',category:'Data Science',difficulty:'Beginner',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'reinforcement-learning',title:'Reinforcement Learning',domain:'AI',category:'RL',difficulty:'Advanced',duration_mins:180,module_count:9,is_published:true,is_free:true},
+    {slug:'responsible-ai',title:'Responsible & Ethical AI',domain:'AI',category:'Ethics',difficulty:'Intermediate',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'ai-automation',title:'AI Automation',domain:'AI',category:'Automation',difficulty:'Beginner',duration_mins:120,module_count:7,is_published:true,is_free:true},
+    {slug:'ai-product-development',title:'AI Product Development',domain:'AI',category:'Product',difficulty:'Intermediate',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'predictive-analytics',title:'Predictive Analytics with ML',domain:'AI',category:'Analytics',difficulty:'Intermediate',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'ai-chatbot-development',title:'AI Chatbot Development',domain:'AI',category:'Chatbot',difficulty:'Intermediate',duration_mins:150,module_count:8,is_published:true,is_free:true},
+    {slug:'salary-negotiation',title:'Salary Negotiation for Indian Professionals',domain:'Career',category:'Career Skills',difficulty:'Beginner',duration_mins:75,module_count:4,is_published:true,is_free:true},
+  ].map(function(c,i){ c.id = c.slug; c.order_index = i+1; c._enrollments = 0; c._certs = 0; return c; });
+
   try {
-    // Load courses from belongix_courses
+    // Try Supabase first
     var cr = await sbFetch('belongix_courses', 'select=*&order=domain,order_index');
-    _allCourses = cr || [];
+    _allCourses = (cr && cr.length) ? cr : STATIC_CATALOG;
 
     // Load enrollment counts
     var er = await sbFetch('course_enrollments', 'select=course_id');
@@ -1882,6 +1979,8 @@ async function loadContent() {
     var totalCerts  = Object.values(certMap).reduce(function(a,b){return a+b;}, 0);
     var published   = _allCourses.filter(function(c){return c.is_published;}).length;
     setText('ck-total',    _allCourses.length);
+    var srcBadge = document.getElementById('ck-source');
+    if(srcBadge) srcBadge.textContent = (_allCourses[0] && _allCourses[0].id === _allCourses[0].slug) ? '📦 Static' : '☁️ Supabase';
     setText('ck-published', published);
     setText('ck-enrolled',  totalEnroll);
     setText('ck-certs',     totalCerts);
@@ -2166,12 +2265,13 @@ function renderTeamGrid(){
       +'<div style="font-size:11.5px;color:'+(m.is_active?'var(--success)':'var(--danger)')+';font-weight:600;margin:12px 0">'+(m.is_active?'\uD83D\uDFE2 Active':'\uD83D\uDD34 Inactive')+'</div>'
       +'<div style="display:flex;gap:6px;flex-wrap:wrap">'
       +(m.id!==adminSession.id
-        ?'<button class="btn btn-ghost btn-sm" onclick="openPwResetModal(\''+esc(m.id)+'\',\''+esc(m.name)+'\',\''+esc(m.email||'')+'\')">🔑 Reset PW</button>'
+        ?'<button class="btn btn-ghost btn-sm" onclick="editTeamMember(\''+esc(m.id)+'\')">✏️ Edit</button>'
+        +'<button class="btn btn-ghost btn-sm" onclick="openPwResetModal(\''+esc(m.id)+'\',\''+esc(m.name)+'\',\''+esc(m.email||'')+'\')">🔑 Reset PW</button>'
         +'<button class="btn btn-ghost btn-sm" onclick="viewStaffLogs(\''+esc(m.name)+'\')">📈 Activity</button>'
         +(m.is_active
           ?'<button class="btn btn-danger btn-sm" onclick="deactivateTeamMember(\''+esc(m.id)+'\')">Deactivate</button>'
           :'<button class="btn btn-success btn-sm" onclick="reactivateTeamMember(\''+esc(m.id)+'\')">Reactivate</button>')
-        :'<button class="btn btn-ghost btn-sm" onclick="showSection(\'settings\')">Edit Profile</button>')
+        :'<button class="btn btn-ghost btn-sm" onclick="editTeamMember(\''+esc(m.id)+'\')">✏️ Edit Profile</button>')
       +'</div></div>';
   }).join('');
 }
@@ -2218,6 +2318,55 @@ async function loadAdminLoginHistory(){
   }catch(e){el.innerHTML=emptyState('⚠️','Could not load login history','');}
 }
 async function reactivateTeamMember(id){try{await sbUpdate('admin_users',id,{is_active:true});_loaded['team']=false;loadTeam();toast('Account reactivated','success');}catch(e){toast('Error','error');}}
+
+function closeEditTeamModal(){var m=document.getElementById('edit-team-modal');if(m)m.remove();}
+function editTeamMember(id) {
+  var m = (_allTeam || []).find(function(x){ return x.id === id; });
+  if (!m) { toast('Member not found', 'error'); return; }
+  // Build inline edit modal
+  var modalHtml = '<div id="edit-team-modal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center">'
+    + '<div style="background:var(--card);border-radius:var(--r-xl);padding:28px;width:420px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,0.3)">'
+    + '<div style="font-size:17px;font-weight:700;margin-bottom:20px">✏️ Edit Team Member</div>'
+    + '<label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Full Name</label>'
+    + '<input id="etm-name" class="form-input" value="' + esc(m.name) + '" style="width:100%;margin-bottom:14px">'
+    + '<label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Email</label>'
+    + '<input id="etm-email" class="form-input" value="' + esc(m.email||'') + '" style="width:100%;margin-bottom:14px">'
+    + '<label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Department</label>'
+    + '<input id="etm-dept" class="form-input" value="' + esc(m.department||'') + '" style="width:100%;margin-bottom:14px">'
+    + '<label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px">Role</label>'
+    + '<select id="etm-role" class="form-input" style="width:100%;margin-bottom:20px">'
+    + '<option value="super_admin"' + (m.role==='super_admin'?' selected':'') + '>Super Admin</option>'
+    + '<option value="manager"' + (m.role==='manager'?' selected':'') + '>Manager</option>'
+    + '<option value="support"' + (m.role==='support'?' selected':'') + '>Support</option>'
+    + '</select>'
+    + '<div style="display:flex;gap:10px;justify-content:flex-end">'
+    + '<button class="btn btn-ghost" onclick="closeEditTeamModal()">Cancel</button>'
+    + '<button class="btn btn-primary" onclick="saveTeamMemberFromModal()">Save Changes</button>'
+    + '</div></div></div>';
+  window._editTeamId = id;  /* store for saveTeamMemberFromModal */
+  document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+async function saveTeamMemberFromModal() {
+  return saveTeamMember(window._editTeamId);
+}
+async function saveTeamMember(id) {
+  var name  = (document.getElementById('etm-name')  || {}).value || '';
+  var email = (document.getElementById('etm-email') || {}).value || '';
+  var dept  = (document.getElementById('etm-dept')  || {}).value || '';
+  var role  = (document.getElementById('etm-role')  || {}).value || 'support';
+  if (!name) { toast('Name is required', 'warning'); return; }
+  try {
+    await sbUpdate('admin_users', id, { name: name, email: email, department: dept, role: role });
+    closeEditTeamModal();
+    _loaded['team'] = false;
+    loadTeam();
+    toast('Team member updated!', 'success');
+    await writeAudit('EDIT', 'admin', id, name, 'Updated team member details');
+  } catch(e) {
+    toast('Failed to save: ' + e.message, 'error');
+  }
+}
 function viewStaffLogs(name){showSection('staffactivity');setTimeout(function(){var sel=document.getElementById('activity-member');if(sel){for(var i=0;i<sel.options.length;i++){if(sel.options[i].text===name){sel.selectedIndex=i;break;}}}loadStaffActivity();},300);}
 async function loadStaffActivity(){
   var period=gv('activity-period')||'today';var member=gv('activity-member')||'all';
