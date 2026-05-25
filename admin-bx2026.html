@@ -418,6 +418,12 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
   .drawer{width:100%}
 }
 </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script>
+    (function(){
+      if(window.emailjs) emailjs.init({publicKey:'IcRELBElDRmomweEj'});
+    })();
+  </script>
 </head>
 <body>
 
@@ -2389,7 +2395,24 @@ async function loadAdminLoginHistory(){
     el.innerHTML=logs.map(function(l){return '<div class="act-item"><div class="act-ic" style="background:rgba(59,130,246,.1)">🔵</div><div class="act-body"><div class="act-msg"><strong>'+esc(l.admin_name||'Unknown')+'</strong> signed in <span class="badge b-gray" style="font-size:10px">'+esc(l.admin_role||'—')+'</span></div><div class="act-time">'+relTime(l.created_at)+'</div></div></div>';}).join('');
   }catch(e){el.innerHTML=emptyState('⚠️','Could not load login history','');}
 }
-async function reactivateTeamMember(id){try{await sbUpdate('admin_users',id,{is_active:true});_loaded['team']=false;loadTeam();toast('Account reactivated','success');}catch(e){toast('Error','error');}}
+async function reactivateTeamMember(id){
+  try{
+    await sbUpdate('admin_users',id,{is_active:true});
+    _loaded['team']=false;loadTeam();
+    toast('Account reactivated','success');
+    /* Notify the member */
+    var m=(_allTeam||[]).find(function(x){return x.id===id;});
+    if(m&&m.email){
+      try{
+        await emailjs.send('service_ni1flvm','template_xtel7u6',{
+          to_email:m.email,
+          first_name:(m.name||'').split(' ')[0],
+          message_body:'Hi '+m.name+',\n\nYour Belongix Admin account has been reactivated.\n\nLogin: https://www.belongix.in/admin-bx2026.html\n\n— Belongix Founder'
+        });
+      }catch(e){}
+    }
+  }catch(e){toast('Error','error');}
+}
 
 function closeEditTeamModal(){var m=document.getElementById('edit-team-modal');if(m)m.remove();}
 function editTeamMember(id) {
@@ -2522,8 +2545,36 @@ async function createTeamMember(){
   var perms={approve_mentors:(document.getElementById('perm-approve-mentor')||{}).checked,approve_jobs:(document.getElementById('perm-approve-jobs')||{}).checked,view_users:(document.getElementById('perm-view-users')||{}).checked,email_users:(document.getElementById('perm-email-users')||{}).checked,community:(document.getElementById('perm-community')||{}).checked,tickets:(document.getElementById('perm-tickets')||{}).checked};
   try{
     await sbInsert('admin_users',[{name:name,email:email,password_hash:tempPass,role:role,department:dept,phone:phone,permissions:perms,is_active:true}]);
-    window.open('mailto:'+email+'?subject='+encodeURIComponent('You\'ve been added to Belongix Admin Team')+'&body='+encodeURIComponent('Hi '+name+',\n\nYou\'ve been added to the Belongix Admin Team.\n\nLogin: '+email+'\nTemporary Password: '+tempPass+'\nAdmin Portal: https://www.belongix.in/admin-bx2026.html\n\nChange your password on first login.\n\n— Belongix Founder'),'_blank');
-    toast('Team member created! Login details emailed.','success');
+    /* Send welcome email via EmailJS */
+    try {
+      await emailjs.send('service_ni1flvm', 'template_xtel7u6', {
+        to_email:   email,
+        first_name: name.split(' ')[0],
+        message_body:
+          'Hi ' + name + ',\n\n' +
+          'Welcome to the Belongix Admin Team! Your account has been created.\n\n' +
+          '🔐 Login Details:\n' +
+          'URL: https://www.belongix.in/admin-bx2026.html\n' +
+          'Email: ' + email + '\n' +
+          'Temporary Password: ' + tempPass + '\n' +
+          'Role: ' + role + '\n\n' +
+          'Please change your password after your first login.\n\n' +
+          '— Belongix Founder\nbelongix.in'
+      });
+      toast('Team member created! Welcome email sent to ' + email, 'success');
+    } catch(emailErr) {
+      console.warn('Email send failed:', emailErr);
+      /* Fallback: open mailto so admin can send manually */
+      window.open('mailto:' + email +
+        '?subject=' + encodeURIComponent('You have been added to Belongix Admin Team') +
+        '&body=' + encodeURIComponent(
+          'Hi ' + name + ',\n\nYou have been added to the Belongix Admin Team.\n\n' +
+          'Login: ' + email + '\nTemporary Password: ' + tempPass +
+          '\nAdmin Portal: https://www.belongix.in/admin-bx2026.html\n\n' +
+          'Change your password on first login.\n\n— Belongix Founder'
+        ), '_blank');
+      toast('Team member created! Please send the email that just opened.', 'success');
+    }
     await writeAudit('CREATE_ADMIN','admin',email,name,'Added: '+role);
   }catch(e){toast('Error creating team member','error');}
   closeModal('team-modal');_loaded['team']=false;loadTeam();
