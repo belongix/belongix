@@ -899,13 +899,19 @@ async function loadCourse(slug) {
   }
 
   /* Load progress from localStorage for ALL users (logged in + guests) */
+  var _slug = _course.slug || _course.id;
+  var _uid = _user ? _user.id : 'guest';
   try {
-    var slug = _course.slug || _course.id;
-    var userId = _user ? _user.id : 'guest';
-    var lsKey = 'bx_progress_' + slug + '_' + userId;
+    var lsKey = 'bx_progress_' + _slug + '_' + _uid;
     var lsProgress = JSON.parse(localStorage.getItem(lsKey) || '[]');
     lsProgress.forEach(function(mid){ _completedModules.add(mid); });
   } catch(ex) {}
+
+  /* Restore last visited module position */
+  var savedModule = loadCurrentModuleFromLocalStorage(_slug, _uid);
+  if (savedModule > 0 && savedModule < _modules.length) {
+    _currentModule = savedModule;
+  }
 
   /* Check localStorage for existing certificate if DB cert not found */
   if (!_certificate && _course && _user) {
@@ -922,11 +928,7 @@ async function loadCourse(slug) {
     } catch(e) {}
   }
 
-  /* If all modules completed, start on last module so user sees completion state */
-  if (_completedModules.size >= _modules.length && _modules.length > 0 && !_certificate) {
-    _currentModule = _modules.length - 1;
-  }
-  /* If certificate exists, go to quiz/result view */
+  /* If certificate earned, show certificate immediately */
   if (_certificate) {
     _mode = 'result';
   }
@@ -1084,12 +1086,18 @@ function renderResultHtml() {
 function goToModule(idx) {
   _currentModule = idx;
   _mode = 'content';
+  saveCurrentModuleToLocalStorage(_course.slug || _course.id, _user ? _user.id : null, idx);
   renderPage();
   window.scrollTo(0, 0);
 }
 
 function prevModule() {
-  if (_currentModule > 0) { _currentModule--; renderPage(); window.scrollTo(0,0); }
+  if (_currentModule > 0) {
+    _currentModule--;
+    saveCurrentModuleToLocalStorage(_course.slug || _course.id, _user ? _user.id : null, _currentModule);
+    renderPage();
+    window.scrollTo(0,0);
+  }
 }
 
 function saveProgressToLocalStorage(slug, userId, moduleId) {
@@ -1099,6 +1107,21 @@ function saveProgressToLocalStorage(slug, userId, moduleId) {
     if (arr.indexOf(moduleId) === -1) arr.push(moduleId);
     localStorage.setItem(key, JSON.stringify(arr));
   } catch(ex) {}
+}
+
+function saveCurrentModuleToLocalStorage(slug, userId, moduleIndex) {
+  try {
+    var key = 'bx_current_' + slug + '_' + (userId || 'guest');
+    localStorage.setItem(key, String(moduleIndex));
+  } catch(ex) {}
+}
+
+function loadCurrentModuleFromLocalStorage(slug, userId) {
+  try {
+    var key = 'bx_current_' + slug + '_' + (userId || 'guest');
+    var val = localStorage.getItem(key);
+    return val !== null ? parseInt(val, 10) : 0;
+  } catch(ex) { return 0; }
 }
 
 async function completeModule() {
@@ -1124,6 +1147,7 @@ async function completeModule() {
     startQuiz();
   } else {
     _currentModule++;
+    saveCurrentModuleToLocalStorage(_course.slug || _course.id, _user ? _user.id : null, _currentModule);
     renderPage();
     window.scrollTo(0, 0);
   }
@@ -1148,7 +1172,12 @@ async function completeAndStartQuiz() {
 }
 
 function nextModule() {
-  if (_currentModule < _modules.length - 1) { _currentModule++; renderPage(); window.scrollTo(0,0); }
+  if (_currentModule < _modules.length - 1) {
+    _currentModule++;
+    saveCurrentModuleToLocalStorage(_course.slug || _course.id, _user ? _user.id : null, _currentModule);
+    renderPage();
+    window.scrollTo(0,0);
+  }
 }
 
 function startQuiz() {
