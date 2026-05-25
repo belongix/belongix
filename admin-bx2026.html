@@ -2349,6 +2349,7 @@ function renderTeamGrid(){
         +(m.is_active
           ?'<button class="btn btn-danger btn-sm" onclick="deactivateTeamMember(\''+esc(m.id)+'\')">Deactivate</button>'
           :'<button class="btn btn-success btn-sm" onclick="reactivateTeamMember(\''+esc(m.id)+'\')">Reactivate</button>')
+        +'<button class="btn btn-ghost btn-sm" style="color:#ef4444;border-color:#ef4444" onclick="deleteTeamMember(\''+esc(m.id)+'\',\''+esc(m.name)+'\')">🗑 Delete</button>'
         :'<button class="btn btn-ghost btn-sm" onclick="editTeamMember(\''+esc(m.id)+'\')">✏️ Edit Profile</button>')
       +'</div></div>';
   }).join('');
@@ -2598,6 +2599,26 @@ async function createTeamMember(){
   closeModal('team-modal');_loaded['team']=false;loadTeam();
 }
 async function deactivateTeamMember(id){openConfirm('🔴 Deactivate','Remove admin access for this team member?',null,'Deactivate','danger',async function(){try{await sbUpdate('admin_users',id,{is_active:false});_loaded['team']=false;loadTeam();toast('Deactivated','success');await writeAudit('DEACTIVATE','admin',id,'','Deactivated');}catch(e){toast('Error','error');}});}
+
+async function deleteTeamMember(id, name){
+  openConfirm(
+    '🗑️ Delete Team Member',
+    'Permanently delete "'+name+'" from the admin team? This cannot be undone.',
+    null, 'Delete Permanently', 'danger',
+    async function(){
+      try{
+        await sbDelete('admin_users', id);
+        _loaded['team']=false;
+        loadTeam();
+        toast(name+' has been removed from the team.','success');
+        await writeAudit('DELETE_ADMIN','admin',id,name,'Permanently deleted');
+      }catch(e){
+        toast('Error deleting: '+(e.message||'Failed'),'error');
+        console.error('deleteTeamMember:',e);
+      }
+    }
+  );
+}
 
 /* AUDIT LOG */
 async function loadAudit(){
