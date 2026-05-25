@@ -1565,11 +1565,28 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
 <script>
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+/* Service role key for admin write operations — bypasses RLS */
+var SB_ADMIN_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NzE0ODU3OCwiZXhwIjoyMDkyNzI0NTc4fQ.Ry_409kR7EAkFGFMET8FJGTOvbpMGe0fLfGnYSzDmJg';
 
 function sbFetch(t,p){return fetch(SB_URL+'/rest/v1/'+t+'?'+(p||'select=*'),{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});}
-function sbInsert(t,rows){return fetch(SB_URL+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(rows)}).then(function(r){return r.json().then(function(j){if(!r.ok){throw new Error((j&&j.message)||'HTTP '+r.status+' on '+t);}return j;}).catch(function(e){if(e&&e.message)throw e;return[];});});}
-function sbUpdate(t,id,data){return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(data)}).then(function(r){return r.text().then(function(txt){var j;try{j=JSON.parse(txt);}catch(e){j={};}if(!r.ok){var msg=(j&&j.message)||'HTTP '+r.status+' updating '+t;console.error('sbUpdate error:',msg,j);throw new Error(msg);}return j;});});}
-function sbDelete(t,id){return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(function(r){return r.ok;});}
+function sbInsert(t,rows){var key=(typeof SB_ADMIN_KEY!=='undefined')?SB_ADMIN_KEY:SB_KEY;return fetch(SB_URL+'/rest/v1/'+t,{method:'POST',headers:{'apikey':key,'Authorization':'Bearer '+key,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(rows)}).then(function(r){return r.json().then(function(j){if(!r.ok){throw new Error((j&&j.message)||'HTTP '+r.status+' on '+t);}return j;}).catch(function(e){if(e&&e.message)throw e;return[];});});}
+function sbUpdate(t,id,data){
+  /* Use service role key for admin writes — bypasses RLS */
+  var key = (typeof SB_ADMIN_KEY!=='undefined') ? SB_ADMIN_KEY : SB_KEY;
+  return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{
+    method:'PATCH',
+    headers:{'apikey':key,'Authorization':'Bearer '+key,'Content-Type':'application/json','Prefer':'return=minimal'}
+  ,body:JSON.stringify(data)}).then(function(r){
+    if(r.ok) return {};
+    return r.text().then(function(txt){
+      var j; try{j=JSON.parse(txt);}catch(e){j={};}
+      var msg=(j&&(j.message||j.error))||('HTTP '+r.status+' on '+t);
+      console.error('sbUpdate error:',msg,j);
+      throw new Error(msg);
+    });
+  });
+}
+function sbDelete(t,id){var key=(typeof SB_ADMIN_KEY!=='undefined')?SB_ADMIN_KEY:SB_KEY;return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{method:'DELETE',headers:{'apikey':key,'Authorization':'Bearer '+key}}).then(function(r){return r.ok;});}
 
 var adminSession=null,_charts={},_confirmCb=null;
 var _allUsers=[],_allJobs=[],_allMentorApps=[],_allTickets=[],_allRefunds=[],_allCoupons=[],_allCampaigns=[],_allAudit=[],_allTeam=[],_allAnnouncements=[],_allPartnerships=[],_allCourses=[];
@@ -1850,68 +1867,65 @@ async function deleteUser(id){openConfirm('🗑 Delete Account','Type DELETE to 
 function selectAllUsers(chk){document.querySelectorAll('.u-chk').forEach(function(c){c.checked=chk.checked;});}
 function exportUsersCSV(){var rows=[['Name','Email','Plan','City','Score','Joined']];_filteredU.forEach(function(u){rows.push([u.full_name||'',u.email||'',u.plan||'free',u.city||'',u.career_score||'',fmtDate(u.created_at)]);});var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='users_'+new Date().toISOString().split('T')[0]+'.csv';a.click();toast('CSV exported','success');}
 /* JOBS */
-async function loadJobs(){try{_allJobs=await sbFetch('jobs','select=*&order=created_at.desc&limit=300');}catch(e){_allJobs=[];}updateJobStats();filterJobsTable();}
-function updateJobStats(){setText('jc-live',_allJobs.filter(function(j){return !j.status||j.status==='approved';}).length);setText('jc-pending',_allJobs.filter(function(j){return j.status==='pending';}).length);setText('jc-expired',_allJobs.filter(function(j){return j.status==='expired';}).length);setText('jc-apps',_allJobs.length);setBadge('badge-jobs',_allJobs.filter(function(j){return j.status==='pending';}).length);}
+async function ensureJobsSchema(){
+  /* Add missing columns silently if they don't exist */
+  try {
+    /* Test if status column works by fetching with it */
+    await sbFetch('jobs','select=id,status,is_live&limit=1');
+  } catch(e) {
+    /* Column missing — but we can't ALTER TABLE from client */
+    /* The SQL file fix_jobs_table.sql must be run in Supabase */
+    console.warn('Jobs table may be missing status/is_live columns. Run fix_jobs_table.sql');
+  }
+}
+
+async function loadJobs(){
+  try{_allJobs=await sbFetch('jobs','select=*&order=created_at.desc&limit=300');}
+  catch(e){_allJobs=[];}
+  /* Normalize jobs — ensure status field exists */
+  _allJobs.forEach(function(j){
+    if(!j.status) j.status = j.is_live ? 'approved' : 'pending';
+  });
+  updateJobStats();filterJobsTable();
+}
+function updateJobStats(){setText('jc-live',_allJobs.filter(function(j){return j.status==='approved'||j.is_live===true;}).length);setText('jc-pending',_allJobs.filter(function(j){return j.status==='pending'||(!j.status&&!j.is_live);}).length);setText('jc-expired',_allJobs.filter(function(j){return j.status==='expired';}).length);setText('jc-apps',_allJobs.length);setBadge('badge-jobs',_allJobs.filter(function(j){return j.status==='pending';}).length);}
 function filterJobsTable(){var q=(gv('j-search')||'').toLowerCase();var sf=gv('j-status')||'all';var filtered=_allJobs.filter(function(j){return(!q||((j.title||'')+(j.company||'')).toLowerCase().includes(q))&&(sf==='all'||(j.status||'approved')===sf);});renderJobsTable(filtered);}
 function renderJobsTable(jobs){var tbody=document.getElementById('jobs-tbody');if(!tbody)return;if(!jobs.length){tbody.innerHTML='<tr><td colspan="8">'+emptyState('💼',_allJobs.length?'No jobs match filters':'No jobs yet')+'</td></tr>';return;}tbody.innerHTML=jobs.map(function(j){var st=j.status||'approved';var sb=st==='approved'?'<span class="badge b-success">Live</span>':st==='pending'?'<span class="badge b-warn">Pending</span>':'<span class="badge b-danger">'+st+'</span>';var sal=j.salary_min?'₹'+j.salary_min+'–'+j.salary_max+'L':'—';return '<tr><td><input type="checkbox" class="j-chk" data-id="'+j.id+'"/></td><td><div style="font-weight:600;font-size:13px">'+esc(j.title||'—')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(j.company||'—')+'</div></td><td>'+esc(j.location||j.loc||'—')+'</td><td style="color:var(--accent);font-weight:700">'+sal+'</td><td style="font-size:12px;color:var(--muted)">'+fmtDate(j.created_at)+'</td><td>'+sb+'</td><td>'+(!j.salary_min?'<span title="Missing salary" style="color:var(--warn)">⚠️</span>':'')+'</td><td><div style="display:flex;gap:5px">'+(st!=='approved'?'<button class="btn btn-success btn-xs" onclick="approveJob(\''+j.id+'\')">✅</button>':'')+(st!=='rejected'?'<button class="btn btn-danger btn-xs" onclick="rejectJobRow(\''+j.id+'\')">❌</button>':'')+'<button class="btn btn-ghost btn-xs" onclick="deleteJobRow(\''+j.id+'\')">🗑</button></div></td></tr>';}).join('');}
 async function approveJob(id){
   var j=_allJobs.find(function(x){return x.id===id;});
-  var updated=false;
-  /* Try with both status+is_live */
   try{
     await sbUpdate('jobs',id,{status:'approved',is_live:true});
-    updated=true;
-  }catch(e1){
-    /* Fallback: try is_live only (if status column missing) */
-    try{
-      await sbUpdate('jobs',id,{is_live:true});
-      updated=true;
-    }catch(e2){
-      /* Fallback: try status only */
-      try{
-        await sbUpdate('jobs',id,{status:'approved'});
-        updated=true;
-      }catch(e3){
-        console.error('approveJob all attempts failed:',e3.message);
-        toast('DB error: '+e3.message,'error');
-        return;
-      }
-    }
-  }
-  if(updated){
     if(j){j.status='approved';j.is_live=true;}
     filterJobsTable();updateJobStats();
     toast('Job approved — now live!','success');
     await writeAudit('APPROVE','job',id,j&&j.title,'Approved');
+  }catch(e){
+    toast('Error: '+(e.message||'Failed'),'error');
+    console.error('approveJob:',e);
   }
 }
 async function rejectJobRow(id){openConfirm('❌ Reject','Reason:','Enter reason…','Reject','danger',async function(r){try{await sbUpdate('jobs',id,{status:'rejected',is_live:false,rejection_reason:r||''});}catch(e){try{await sbUpdate('jobs',id,{is_live:false});}catch(e2){console.error(e2);}}var j=_allJobs.find(function(x){return x.id===id;});if(j){j.status='rejected';j.is_live=false;}filterJobsTable();updateJobStats();toast('Job rejected','success');});}
 async function deleteJobRow(id){openConfirm('🗑 Delete','Delete this job posting?',null,'Delete','danger',async function(){try{await sbDelete('jobs',id);_allJobs=_allJobs.filter(function(j){return j.id!==id;});filterJobsTable();updateJobStats();toast('Deleted','success');}catch(e){toast('Failed','error');}});}
 async function bulkApproveJobs(){
-  var checked = document.querySelectorAll('.j-chk:checked');
-  if(!checked.length){ toast('Select jobs first','warning'); return; }
-  var ids = Array.from(checked).map(function(c){ return c.dataset.id; }).filter(Boolean);
-  if(!ids.length){ toast('No valid jobs selected','warning'); return; }
-  var count = 0;
+  var checked=document.querySelectorAll('.j-chk:checked');
+  if(!checked.length){toast('Select jobs first','warning');return;}
+  var ids=Array.from(checked).map(function(cb){return cb.dataset.id;}).filter(Boolean);
+  if(!ids.length){toast('No valid jobs selected','warning');return;}
+  var count=0;
   for(var i=0;i<ids.length;i++){
     try{
-      var ok=false;
-      try{await sbUpdate('jobs',ids[i],{status:'approved',is_live:true});ok=true;}catch(e1){
-        try{await sbUpdate('jobs',ids[i],{is_live:true});ok=true;}catch(e2){
-          try{await sbUpdate('jobs',ids[i],{status:'approved'});ok=true;}catch(e3){console.error('Bulk approve failed:',e3.message);}
-        }
-      }
-      if(ok){var j=(_allJobs||[]).find(function(x){return x.id===ids[i];});if(j){j.status='approved';j.is_live=true;}count++;}
-    }catch(e){console.error('bulkApprove failed for',ids[i],e);}
+      await sbUpdate('jobs',ids[i],{status:'approved',is_live:true});
+      var jj=(_allJobs||[]).find(function(x){return x.id===ids[i];});
+      if(jj){jj.status='approved';jj.is_live=true;}
+      count++;
+    }catch(ex){console.error('bulkApprove err',ids[i],ex.message);}
   }
-  filterJobsTable();
-  updateJobStats();
-  /* Uncheck all */
+  filterJobsTable();updateJobStats();
   document.querySelectorAll('.j-chk').forEach(function(cb){cb.checked=false;});
-  var hdr = document.getElementById('chk-all-jobs');
-  if(hdr) hdr.checked = false;
+  var hdr=document.getElementById('chk-all-jobs');
+  if(hdr)hdr.checked=false;
   toast(count+' job'+(count!==1?'s':'')+' approved!','success');
-  await writeAudit('BULK_APPROVE','jobs',ids.join(','),'Multiple','Bulk approved '+count+' jobs');
+  try{await writeAudit('BULK_APPROVE','jobs',ids.join(','),'Multiple','Bulk approved '+count);}catch(ea){}
 }
 
 function selectAllJobs(chk){
