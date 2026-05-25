@@ -865,6 +865,13 @@ async function loadCourse(slug) {
     var prog = await dbGet('course_progress', 'user_id=eq.' + _user.id + '&course_id=eq.' + _course.id + '&select=module_id');
     prog.forEach(function(p){ _completedModules.add(p.module_id); });
 
+    /* Also load from localStorage — works even when Supabase tables don't exist yet */
+    try {
+      var lsKey = 'bx_progress_' + slug + '_' + _user.id;
+      var lsProgress = JSON.parse(localStorage.getItem(lsKey) || '[]');
+      lsProgress.forEach(function(mid){ _completedModules.add(mid); });
+    } catch(ex) {}
+
     var certs = await dbGet('certificates', 'user_id=eq.' + _user.id + '&course_id=eq.' + _course.id + '&select=*&limit=1');
     _certificate = certs[0] || null;
   }
@@ -891,6 +898,15 @@ async function loadCourse(slug) {
     return;
   }
 
+  /* Load progress from localStorage for ALL users (logged in + guests) */
+  try {
+    var slug = _course.slug || _course.id;
+    var userId = _user ? _user.id : 'guest';
+    var lsKey = 'bx_progress_' + slug + '_' + userId;
+    var lsProgress = JSON.parse(localStorage.getItem(lsKey) || '[]');
+    lsProgress.forEach(function(mid){ _completedModules.add(mid); });
+  } catch(ex) {}
+
   /* Check localStorage for existing certificate if DB cert not found */
   if (!_certificate && _course && _user) {
     try {
@@ -904,6 +920,15 @@ async function loadCourse(slug) {
     try {
       await dbPost('course_enrollments', { user_id: _user.id, course_id: _course.id, status: 'in_progress' }, 'resolution=merge-duplicates');
     } catch(e) {}
+  }
+
+  /* If all modules completed, start on last module so user sees completion state */
+  if (_completedModules.size >= _modules.length && _modules.length > 0 && !_certificate) {
+    _currentModule = _modules.length - 1;
+  }
+  /* If certificate exists, go to quiz/result view */
+  if (_certificate) {
+    _mode = 'result';
   }
 
   renderPage();
@@ -1067,24 +1092,35 @@ function prevModule() {
   if (_currentModule > 0) { _currentModule--; renderPage(); window.scrollTo(0,0); }
 }
 
+function saveProgressToLocalStorage(slug, userId, moduleId) {
+  try {
+    var key = 'bx_progress_' + slug + '_' + (userId || 'guest');
+    var arr = JSON.parse(localStorage.getItem(key) || '[]');
+    if (arr.indexOf(moduleId) === -1) arr.push(moduleId);
+    localStorage.setItem(key, JSON.stringify(arr));
+  } catch(ex) {}
+}
+
 async function completeModule() {
   var mod = _modules[_currentModule];
-  if (mod && _user && _course.id && !_completedModules.has(mod.id)) {
+  if (mod && !_completedModules.has(mod.id)) {
     _completedModules.add(mod.id);
-    try {
-      await dbPost('course_progress', { user_id: _user.id, course_id: _course.id, module_id: mod.id }, 'resolution=merge-duplicates');
-      /* Update enrollment status */
-      var isDone = _completedModules.size >= _modules.length;
-      await dbPatch('course_enrollments', 'user_id=eq.'+_user.id+'&course_id=eq.'+_course.id, { status: isDone ? 'completed' : 'in_progress' });
-    } catch(e) {}
-  } else if (!_user) {
-    /* Allow progress in localStorage for guests */
-    if (mod) _completedModules.add(mod.id);
+
+    /* Always save to localStorage first — works for everyone */
+    saveProgressToLocalStorage(_course.slug || _course.id, _user ? _user.id : null, mod.id);
+
+    /* Also try Supabase if logged in */
+    if (_user && _course.id) {
+      try {
+        await dbPost('course_progress', { user_id: _user.id, course_id: _course.id, module_id: mod.id }, 'resolution=merge-duplicates');
+        var isDone = _completedModules.size >= _modules.length;
+        await dbPatch('course_enrollments', 'user_id=eq.'+_user.id+'&course_id=eq.'+_course.id, { status: isDone ? 'completed' : 'in_progress' });
+      } catch(e) {}
+    }
   }
 
   var isLast = _currentModule === _modules.length - 1;
   if (isLast) {
-    /* Last module done — go straight to quiz */
     startQuiz();
   } else {
     _currentModule++;
@@ -1094,10 +1130,13 @@ async function completeModule() {
 }
 
 async function completeAndStartQuiz() {
-  /* Mark last module complete, then start quiz */
   var mod = _modules[_currentModule];
-  if (mod) {
+  if (mod && !_completedModules.has(mod.id)) {
     _completedModules.add(mod.id);
+
+    /* Always save to localStorage first */
+    saveProgressToLocalStorage(_course.slug || _course.id, _user ? _user.id : null, mod.id);
+
     if (_user && _course.id) {
       try {
         await dbPost('course_progress', { user_id: _user.id, course_id: _course.id, module_id: mod.id }, 'resolution=merge-duplicates');
