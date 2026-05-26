@@ -1,8 +1,8 @@
 {
   "name": "Belongix — Professional Career Platform",
   "short_name": "Belongix",
-  "description": "India's professional career platform — Jobs, Salary Insights, AI Career Guide, Mentors & Upskilling",
-  "start_url": "/app.html",
+  "description": "India's career platform — Jobs, Salary, AI Guide, 50 Courses with Certificates, Mentors & Community",
+  "start_url": "/dashboard.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FAFAFE",
@@ -105,7 +105,19 @@
       "name": "Upskilling",
       "short_name": "Learn",
       "description": "Browse 48+ curated courses",
-      "url": "/dashboard.html?page=upskill",
+      "url": "/courses.html",
+      "icons": [
+        {
+          "src": "icons/icon-96.png",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "My Courses",
+      "short_name": "Courses",
+      "description": "50 courses with Belongix certificates",
+      "url": "/courses.html",
       "icons": [
         {
           "src": "icons/icon-96.png",
@@ -123,5 +135,6 @@
       "label": "Belongix Dashboard"
     }
   ],
-  "prefer_related_applications": false
+  "prefer_related_applications": false,
+  "id": "belongix-india-career-platform"
 }
