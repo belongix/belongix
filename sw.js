@@ -1,5 +1,5 @@
 /* Belongix Service Worker v1.0 */
-var CACHE = "belongix-v4";
+var CACHE = "belongix-v5";
 var OFFLINE_URL = "/offline.html";
 
 var PRECACHE = [
@@ -31,7 +31,11 @@ var PRECACHE = [
   "/salary-negotiation.html",
   "/system-design-basics.html",
   "/bangalore-tech-jobs.html",
-  "/software-engineer-salary-india.html"
+  "/software-engineer-salary-india.html",
+  "/courses.html",
+  "/course.html",
+  "/certificate.html",
+  "/404.html"
 ];
 
 /* Install — cache core files */
@@ -74,7 +78,9 @@ self.addEventListener("fetch", function(e) {
     url.hostname.includes("anthropic.com") ||
     url.hostname.includes("fonts.gstatic.com") ||
     url.hostname.includes("cdn.jsdelivr.net") ||
-    url.hostname.includes("cdnjs.cloudflare.com")
+    url.hostname.includes("cdnjs.cloudflare.com") ||
+    url.hostname.includes("emailjs.com") ||
+    url.hostname.includes("smtpjs.com")
   ) {
     return;
   }
@@ -101,5 +107,42 @@ self.addEventListener("fetch", function(e) {
           }
         });
       })
+  );
+});
+
+/* ── Push Notifications ── */
+self.addEventListener("push", function(e) {
+  var data = {};
+  try { data = e.data ? e.data.json() : {}; } catch(ex) {}
+  var options = {
+    body: data.body || "You have a new update from Belongix",
+    icon: "/icons/icon-192.png",
+    badge: "/icons/icon-72.png",
+    vibrate: [200, 100, 200],
+    tag: data.tag || "belongix-notification",
+    data: { url: data.url || "/dashboard.html" },
+    actions: [
+      { action: "open", title: "Open Belongix" },
+      { action: "dismiss", title: "Dismiss" }
+    ]
+  };
+  e.waitUntil(
+    self.registration.showNotification(data.title || "Belongix", options)
+  );
+});
+
+self.addEventListener("notificationclick", function(e) {
+  e.notification.close();
+  if (e.action === "dismiss") return;
+  var url = (e.notification.data && e.notification.data.url) || "/dashboard.html";
+  e.waitUntil(
+    clients.matchAll({ type: "window", includeUncontrolled: true }).then(function(list) {
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].url.includes(url) && "focus" in list[i]) {
+          return list[i].focus();
+        }
+      }
+      if (clients.openWindow) return clients.openWindow(url);
+    })
   );
 });
