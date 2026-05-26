@@ -136,7 +136,7 @@
     e.preventDefault();
     deferredPrompt = e;
     /* Show on 2nd visit or more, and not dismissed */
-    if (getVisitCount() >= 2 && !isDismissed()) {
+    if (getVisitCount() >= 1 && !isDismissed()) {
       setTimeout(function() {
         if (!document.getElementById('bx-install-banner')) {
           document.body.appendChild(makeBanner());
@@ -149,7 +149,7 @@
   var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
   var isStandalone = window.navigator.standalone;
 
-  if (isIOS && !isStandalone && !isDismissed() && getVisitCount() >= 2) {
+  if (isIOS && !isStandalone && !isDismissed() && getVisitCount() >= 1) {
     setTimeout(function () {
       if (document.getElementById('bx-ios-tip')) return;
       var tip = document.createElement('div');
@@ -256,5 +256,57 @@
     return output;
   }
 
-})();
+  /* ── STANDALONE MODE TWEAKS ── */
+  /* Makes installed app feel truly native — no browser chrome */
+  var isRunningStandalone = window.matchMedia('(display-mode: standalone)').matches
+    || window.navigator.standalone
+    || document.referrer.includes('android-app://');
 
+  if (isRunningStandalone) {
+    /* isStandalone mode tweaks — lock portrait, disable overscroll */
+    document.documentElement.style.setProperty(
+      '--safe-bottom', 'env(safe-area-inset-bottom, 16px)'
+    );
+
+    /* Prevent pull-to-refresh on Android in standalone mode */
+    document.body.style.overscrollBehaviorY = 'contain';
+
+    /* Hide any elements that say "Open in browser" */
+    document.querySelectorAll('.browser-only').forEach(function(el) {
+      el.style.display = 'none';
+    });
+
+    /* Add app-mode class so CSS can target standalone */
+    document.documentElement.classList.add('pwa-standalone');
+
+    /* Log for analytics */
+    try {
+      var launchCount = parseInt(localStorage.getItem('bx_pwa_launches') || '0') + 1;
+      localStorage.setItem('bx_pwa_launches', String(launchCount));
+    } catch(e) {}
+  }
+
+  /* ── NETWORK STATUS BANNER ── */
+  window.addEventListener('offline', function() {
+    var banner = document.getElementById('bx-offline-banner');
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = 'bx-offline-banner';
+      banner.innerHTML = '📡 You are offline — some features may not work';
+      Object.assign(banner.style, {
+        position: 'fixed', top: '0', left: '0', right: '0',
+        background: '#1a1a2e', color: '#fff',
+        padding: '10px 16px', textAlign: 'center',
+        fontSize: '13px', fontWeight: '600',
+        zIndex: '99999', fontFamily: 'system-ui,sans-serif'
+      });
+      document.body.prepend(banner);
+    }
+  });
+
+  window.addEventListener('online', function() {
+    var banner = document.getElementById('bx-offline-banner');
+    if (banner) banner.remove();
+  });
+
+})();
