@@ -39,6 +39,14 @@ body{font-family:var(--ffb);color:var(--ink);background:#FAFAFE;background-image
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .foot-note{font-size:12px;color:var(--subtle);margin-top:24px}
 .foot-note a{color:var(--brand);text-decoration:none;font-weight:600}
+
+/* PWA standalone mode — remove browser chrome look */
+@media (display-mode: standalone) {
+  body { padding-bottom: env(safe-area-inset-bottom, 16px); }
+}
+html.pwa-standalone body {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
 </style>
 </head>
 <body>
@@ -78,6 +86,14 @@ body{font-family:var(--ffb);color:var(--ink);background:#FAFAFE;background-image
       <a class="cached-link" href="index.html">
         <div class="cl-icon" style="background:#FFF7ED">🏠</div>
         <div><div class="cl-label">Home</div><div class="cl-sub">Belongix homepage</div></div>
+      </a>
+      <a class="cached-link" href="courses.html">
+        <div class="cl-icon" style="background:#F3F0FF">📚</div>
+        <div><div class="cl-label">Courses</div><div class="cl-sub">50 courses — works offline</div></div>
+      </a>
+      <a class="cached-link" href="community.html">
+        <div class="cl-icon" style="background:#EFF6FF">💬</div>
+        <div><div class="cl-label">Community</div><div class="cl-sub">Cached discussions</div></div>
       </a>
     </div>
   </div>
