@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Belongix — Your Career Dashboard | Learn, Grow, Know Your Worth</title>
+<title>Belongix Dashboard — Your Learning Hub</title>
 <link rel="manifest" href="manifest.json"/>
 <link rel="icon" href="icons/icon-32.png"/>
 <meta name="theme-color" content="#2D1B69"/>
@@ -639,10 +639,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
     <span>Courses</span>
   </button>
-  <button class="mnb-item" id="mnb-salary" onclick="showPage('salary',document.querySelector('[data-page=salary]'));setMobActive('mnb-salary')">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-    <span>Salary</span>
-  </button>
+  
   <button class="mnb-item" id="mnb-upskill" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'));setMobActive('mnb-upskill')">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/></svg>
     <span>Learn</span>
@@ -674,12 +671,8 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <button class="sb-link" data-page="upskill" onclick="showPage('upskill',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>Courses &amp; Skills
       </button>
-      <button class="sb-link" data-page="upskill" onclick="showPage('upskill',this)">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Upskilling Hub
-      </button>
-      <button class="sb-link" data-page="salary" onclick="showPage('salary',this)">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Salary Insights
-      </button>
+      
+      
       
       <button class="sb-link" onclick="window.location.href='community.html'">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>Community
@@ -700,7 +693,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Courses
         <span style="margin-left:auto;font-size:9px;font-weight:700;background:#6366F1;color:#fff;border-radius:10px;padding:1px 6px">NEW</span>
       </a>
-      <a class="sb-link" href="community.html" style="text-decoration:none">
+      <a class="sb-link" href="courses.html" style="text-decoration:none">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/></svg>Community
         <span style="margin-left:auto;font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 6px">NEW</span>
       </a>
@@ -771,7 +764,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
   <button class="wc-dismiss" onclick="dismissWelcomeCard()" title="Dismiss">✕</button>
   <div class="wc-inner">
     <div class="wc-title" id="wc-greeting">👋 Welcome to Belongix!</div>
-    <div class="wc-sub">Complete your profile to unlock your full Career Score and get personalised course recommendations.</div>
+    <div class="wc-sub">Complete your profile to get personalised course recommendations and track your learning progress.</div>
     <div class="wc-progress-wrap"><div class="wc-progress-fill" id="wc-bar" style="width:0%"></div></div>
     <div class="wc-progress-label" id="wc-pct-lbl">0% complete</div>
     <div class="wc-checklist">
@@ -857,13 +850,13 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <div class="psc-lbl" style="margin-bottom:5px">Quick Access</div>
       <div class="ql-row" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))"><div class="ql-ic" style="background:#EFEFF8">&#127891;</div><span class="ql-name">Browse Courses</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="showPage('salary',document.querySelector('[data-page=salary]'))"><div class="ql-ic" style="background:#ECFDF5">&#128176;</div><span class="ql-name">Salary Insights</span><span class="ql-arr">&#8250;</span></div>
-      <div class="ql-row" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))"><div class="ql-ic" style="background:#FEF9C3">&#127891;</div><span class="ql-name">Upskilling Hub</span><span class="ql-arr">&#8250;</span></div>
+      
             <div class="ql-row" onclick="window.location.href='resume-builder.html'"><div class="ql-ic" style="background:#FFF1F2">&#128196;</div><span class="ql-name">Resume Builder</span><span class="ql-arr">&#8250;</span></div><span class="ql-name">Find a Mentor</span><span class="ql-arr">&#8250;</span></div>
-      <div class="ql-row" onclick="window.open('community.html','_self')"><div class="ql-ic" style="background:#ECFDF5">&#128101;</div><span class="ql-name">Community Q&amp;A</span><span style="font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 6px;margin-left:auto">NEW</span></div>
-      <div class="ql-row" onclick="showPage('settings',document.querySelector('[data-page=settings]'))"><div class="ql-ic" style="background:#FEF9C3">&#127881;</div><span class="ql-name">Referral Program</span><span style="font-size:9px;font-weight:700;background:#F59E0B;color:#fff;border-radius:10px;padding:1px 6px;margin-left:auto">+10 pts</span></div>
+      
+      
       <div class="ql-row" onclick="window.open('resume-builder.html','_blank')"><div class="ql-ic" style="background:#EFF6FF">&#128196;</div><span class="ql-name">Resume Builder</span><span class="ql-arr">&#8250;</span></div>
-      <div class="ql-row" onclick="window.location.href='resume-builder.html'"><div class="ql-ic" style="background:#FFF7ED">&#128196;</div><span class="ql-name">Build Resume</span><span class="ql-arr">&#8250;</span></div>
-      <div class="ql-row" onclick="window.location.href='community.html'"><div class="ql-ic" style="background:#F0FDF4">&#128172;</div><span class="ql-name">Community Q&amp;A</span><span class="ql-arr">&#8250;</span></div>
+      
+      <span class="ql-name">Community Q&amp;A</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="showPage('upgrade',null)"><div class="ql-ic" style="background:#F5F3FF">&#9889;</div><span class="ql-name">Upgrade Pro</span><span class="ql-arr">&#8250;</span></div>
     </div>
   </div>
@@ -964,44 +957,6 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     </div>
   </div>
 </div></div>
-    <div class="page-section" id="page-jobs"><div class="jobs-topbar">
-  <div class="job-search-wrap">
-    <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-    <input class="job-search-inp" type="text" id="job-search" placeholder="Search roles, companies, skills..."/>
-  </div>
-  <select class="job-sel" id="job-city">
-    <option value="india">All India</option><option value="bangalore">Bangalore</option>
-    <option value="hyderabad">Hyderabad</option><option value="mumbai">Mumbai</option>
-    <option value="pune">Pune</option><option value="chennai">Chennai</option>
-    <option value="delhi">Delhi NCR</option><option value="remote">Remote</option>
-  </select>
-  <select class="job-sel" id="job-type">
-    <option value="">All Types</option><option value="FULLTIME">Full Time</option>
-    <option value="INTERN">Internship</option><option value="CONTRACT">Contract</option>
-  </select>
-  <button class="btn-search" onclick="searchJobs()">
-    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search
-  </button>
-  <button class="set-alert-btn" onclick="openAlertModal()">&#128276; Set Alert</button>
-</div>
-<div id="alerts-row" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:10px"></div>
-<div class="chips-row">
-  <span class="chip on" onclick="toggleChip(this,'all')">All</span>
-  <span class="chip" onclick="toggleChip(this,'fresher')">Fresher</span>
-  <span class="chip" onclick="toggleChip(this,'remote')">Remote</span>
-  <span class="chip" onclick="toggleChip(this,'internship')">Internship</span>
-  <span class="chip" onclick="toggleChip(this,'ai')">AI / ML</span>
-  <span class="chip" onclick="toggleChip(this,'data')">Data</span>
-  <span class="chip" onclick="toggleChip(this,'cloud')">Cloud</span>
-  <span class="chip" onclick="toggleChip(this,'devops')">DevOps</span>
-</div>
-<div id="jobs-count"></div>
-<div id="jobs-container">
-  <div class="jobs-loading">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-    <div>Loading jobs...</div>
-  </div>
-</div></div>
     <div class="page-section" id="page-upskill"><div class="page-title">Upskilling Hub</div>
       <div class="page-subtitle">Real courses from Google, AWS, Meta, Kaggle, Scaler, NPTEL — trending in 2026</div>
       <!-- ✅ FIX #21: Progress summary bar -->
@@ -1078,202 +1033,6 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       </style>
     </div>
     <!-- ✅ FIX #16: Salary section with tabs — Benchmarks + Compare Offers -->
-    <div class="page-section" id="page-salary">
-
-      <!-- Tab bar -->
-      <div class="sal-tab-bar">
-        <button class="sal-tab active" id="sal-tab-bench" onclick="salSwitchTab('bench')">📊 Salary Benchmarks</button>
-        <button class="sal-tab" id="sal-tab-compare" onclick="salSwitchTab('compare')">⚖️ Compare Two Offers</button>
-      </div>
-
-      <!-- Tab 1: 3D Salary Benchmarks -->
-      <div id="sal-panel-bench">
-
-        <!-- 3D Chart Hero -->
-        <div class="sal-3d-wrap">
-          <div class="sal-3d-header">
-            <div>
-              <div class="sal-3d-title">&#127881; India Salary Intelligence 2026</div>
-              <div class="sal-3d-subtitle">Real CTC data from 2,400+ professionals across top companies</div>
-            </div>
-            <div style="text-align:right">
-              <div style="font-size:20px;font-weight:800;color:#34D399;font-family:var(--ff)" id="sal3d-selected-val">&#8377;15-35L</div>
-              <div style="font-size:10px;color:rgba(255,255,255,0.5)">Selected role median</div>
-            </div>
-          </div>
-
-          <!-- Stats strip -->
-          <div class="sal-stats-strip">
-            <div class="sal-stat-tile">
-              <div class="sal-stat-val">&#8377;22L</div>
-              <div class="sal-stat-lbl">Avg Tech CTC</div>
-              <div class="sal-stat-delta">&#9650; 18% YoY</div>
-            </div>
-            <div class="sal-stat-tile">
-              <div class="sal-stat-val">&#8377;45L</div>
-              <div class="sal-stat-lbl">FAANG Median</div>
-              <div class="sal-stat-delta">&#9650; 12% YoY</div>
-            </div>
-            <div class="sal-stat-tile">
-              <div class="sal-stat-val">&#8377;8L</div>
-              <div class="sal-stat-lbl">Fresher Avg</div>
-              <div class="sal-stat-delta">&#9650; 22% YoY</div>
-            </div>
-            <div class="sal-stat-tile">
-              <div class="sal-stat-val">38%</div>
-              <div class="sal-stat-lbl">Max Switch Hike</div>
-              <div class="sal-stat-delta">&#9650; AI roles</div>
-            </div>
-          </div>
-
-          <!-- Role filter chips -->
-          <div class="sal-3d-role-filter" id="sal3d-chips"></div>
-
-          <!-- 3D Bar Chart -->
-          <div style="position:relative">
-            <div class="sal-3d-chart" id="sal3d-chart"></div>
-            <div class="sal-3d-tooltip" id="sal3d-tooltip"></div>
-          </div>
-
-          <!-- Legend -->
-          <div class="sal-3d-legend">
-            <div class="sal-3d-leg-item"><div class="sal-3d-leg-dot" style="background:linear-gradient(#7C3AED,#5B21B6)"></div>P10 (Entry)</div>
-            <div class="sal-3d-leg-item"><div class="sal-3d-leg-dot" style="background:linear-gradient(#2563EB,#1D4ED8)"></div>Median</div>
-            <div class="sal-3d-leg-item"><div class="sal-3d-leg-dot" style="background:linear-gradient(#0891B2,#0E7490)"></div>P90 (Senior)</div>
-          </div>
-        </div>
-
-        <!-- Role Cards -->
-        <div class="sal-cards-new" id="sal3d-cards"></div>
-      </div>
-
-      <!-- Tab 2: Offer Comparison Widget -->
-      <div id="sal-panel-compare" style="display:none">
-        <p style="font-size:13px;color:var(--muted);margin-bottom:16px;line-height:1.6">Fill in the details for both offers. Bexi AI will score each one across 5 dimensions and tell you which to pick.</p>
-
-        <!-- Two-column input form -->
-        <div class="oc-grid">
-          <!-- Job A -->
-          <div class="oc-col">
-            <div class="oc-col-head">
-              <span class="oc-badge a">A</span> Offer A
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">Company</div>
-              <input class="oc-input" id="oc-a-company" type="text" placeholder="e.g. Razorpay"/>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">Role</div>
-              <input class="oc-input" id="oc-a-role" type="text" placeholder="e.g. SDE-2"/>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">Total CTC (LPA)</div>
-              <input class="oc-input" id="oc-a-ctc" type="number" placeholder="e.g. 22" min="1" max="500"/>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">City</div>
-              <select class="oc-select" id="oc-a-city">
-                <option value="">Select city</option>
-                <option>Bangalore</option><option>Hyderabad</option><option>Mumbai</option>
-                <option>Pune</option><option>Delhi/NCR</option><option>Chennai</option>
-                <option>Remote</option><option>Other</option>
-              </select>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">WFH days/week</div>
-              <select class="oc-select" id="oc-a-wfh">
-                <option value="0">0 — Full office</option>
-                <option value="2">2 — Hybrid</option>
-                <option value="3">3 — Mostly remote</option>
-                <option value="5">5 — Fully remote</option>
-              </select>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">Growth potential</div>
-              <select class="oc-select" id="oc-a-growth">
-                <option value="3">Average</option>
-                <option value="4">Good</option>
-                <option value="5">Excellent</option>
-                <option value="2">Limited</option>
-              </select>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">ESOPs / equity</div>
-              <select class="oc-select" id="oc-a-esops">
-                <option value="none">None</option>
-                <option value="small">Small grant (&lt;₹10L)</option>
-                <option value="medium">Medium (₹10L–₹50L)</option>
-                <option value="large">Large (&gt;₹50L)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Job B -->
-          <div class="oc-col">
-            <div class="oc-col-head">
-              <span class="oc-badge b">B</span> Offer B
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">Company</div>
-              <input class="oc-input" id="oc-b-company" type="text" placeholder="e.g. Zepto"/>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">Role</div>
-              <input class="oc-input" id="oc-b-role" type="text" placeholder="e.g. SDE-2"/>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">Total CTC (LPA)</div>
-              <input class="oc-input" id="oc-b-ctc" type="number" placeholder="e.g. 26" min="1" max="500"/>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">City</div>
-              <select class="oc-select" id="oc-b-city">
-                <option value="">Select city</option>
-                <option>Bangalore</option><option>Hyderabad</option><option>Mumbai</option>
-                <option>Pune</option><option>Delhi/NCR</option><option>Chennai</option>
-                <option>Remote</option><option>Other</option>
-              </select>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">WFH days/week</div>
-              <select class="oc-select" id="oc-b-wfh">
-                <option value="0">0 — Full office</option>
-                <option value="2">2 — Hybrid</option>
-                <option value="3">3 — Mostly remote</option>
-                <option value="5">5 — Fully remote</option>
-              </select>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">Growth potential</div>
-              <select class="oc-select" id="oc-b-growth">
-                <option value="3">Average</option>
-                <option value="4">Good</option>
-                <option value="5">Excellent</option>
-                <option value="2">Limited</option>
-              </select>
-            </div>
-            <div class="oc-field">
-              <div class="oc-label">ESOPs / equity</div>
-              <select class="oc-select" id="oc-b-esops">
-                <option value="none">None</option>
-                <option value="small">Small grant (&lt;₹10L)</option>
-                <option value="medium">Medium (₹10L–₹50L)</option>
-                <option value="large">Large (&gt;₹50L)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Compare button -->
-        <button class="oc-compare-btn" id="oc-compare-btn" onclick="ocCompare()">
-          <span id="oc-btn-text">⚖️ Compare with Bexi AI</span>
-        </button>
-
-        <!-- Result area -->
-        <div class="oc-result" id="oc-result"></div>
-      </div>
-
-    </div>
     <div class="page-section" id="page-profile"><div class="pw">
   <div class="pl">
     <div class="pcard">
@@ -1338,26 +1097,6 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
   </div>
 </div></div>
 
-    <div class="page-section" id="page-tracker">
-      <div class="tracker-stats">
-        <div class="tstat"><div class="tstat-v" id="tr-total">0</div><div class="tstat-l">Total Applied</div></div>
-        <div class="tstat"><div class="tstat-v" id="tr-viewed">0</div><div class="tstat-l">Viewed</div></div>
-        <div class="tstat"><div class="tstat-v" id="tr-interview">0</div><div class="tstat-l">Interviews</div></div>
-        <div class="tstat"><div class="tstat-v" id="tr-offer">0</div><div class="tstat-l">Offers</div></div>
-      </div>
-      <div class="kanban" id="kanban-board">
-        <div class="kol"><div class="kol-head"><div class="kol-title">&#128235; Applied</div><span class="kol-count" id="kc-applied">0</span></div><div id="kol-applied"></div></div>
-        <div class="kol"><div class="kol-head"><div class="kol-title">&#128064; Viewed</div><span class="kol-count" id="kc-viewed">0</span></div><div id="kol-viewed"></div></div>
-        <div class="kol"><div class="kol-head"><div class="kol-title">&#129309; Interview</div><span class="kol-count" id="kc-interview">0</span></div><div id="kol-interview"></div></div>
-        <div class="kol"><div class="kol-head"><div class="kol-title">&#127881; Offer</div><span class="kol-count" id="kc-offer">0</span></div><div id="kol-offer"></div></div>
-      </div>
-      <div id="tracker-empty" style="text-align:center;padding:40px;color:var(--subtle);display:none">
-        <div style="font-size:32px;margin-bottom:10px">&#128203;</div>
-        <div style="font-size:14px;font-weight:600;color:var(--ink);margin-bottom:6px">No applications yet</div>
-        <div style="font-size:13px">Apply to jobs to track them here.</div>
-      </div>
-    </div>
-
     <div class="page-section" id="page-settings"><div class="settings-group">
   <div class="settings-row"><div><div class="settings-label">Account Email</div><div class="settings-desc">Your login email</div></div><div style="font-size:13px;color:var(--muted)" id="settings-email">--</div></div>
   <div class="settings-row"><div><div class="settings-label">Plan</div><div class="settings-desc">Current subscription</div></div><span class="settings-badge" id="settings-plan">Free</span></div>
@@ -1368,7 +1107,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
 <div class="settings-group">
   <div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:12px">
     <div>
-      <div class="settings-label">🎁 Referral Program</div>
+      <div class="settings-label">🎓 My Learning</div>
       <div class="settings-desc">Invite friends to Belongix. Both of you earn <strong>+10 Career Score points</strong> when they sign up.</div>
     </div>
     <div style="background:linear-gradient(135deg,#2D1B69,#4C2FAA);border-radius:12px;padding:14px 16px;width:100%">
