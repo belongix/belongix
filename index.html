@@ -108,8 +108,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;ali
 .hero-orb-1{width:600px;height:600px;background:radial-gradient(circle,#6B48CC,transparent);top:-100px;right:-100px}
 .hero-orb-2{width:400px;height:400px;background:radial-gradient(circle,#FF5C35,transparent);bottom:-80px;left:10%}
 .hero-orb-3{width:300px;height:300px;background:radial-gradient(circle,#06B6D4,transparent);top:40%;left:40%}
-.hero-in{max-width:800px;margin:0 auto;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:2;padding:0 24px}
-.hero-badge{display:inline-flex;margin:0 auto;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(45,27,105,.07),rgba(107,72,204,.07));border:1px solid rgba(45,27,105,.15);border-radius:100px;padding:5px 16px 5px 8px;font-size:12px;font-weight:600;color:var(--brand);margin-bottom:26px;letter-spacing:.2px}
+.hero-in{max-width:860px;margin:0 auto;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:2;padding:0 24px}
+.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:100px;padding:6px 16px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.85);margin-bottom:24px;letter-spacing:.2px}
 .badge-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 @keyframes scrollBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
@@ -117,16 +117,16 @@ h1{font-family:var(--ff);font-size:clamp(36px,4.2vw,58px);font-weight:800;line-h
 h1 .hl{position:relative;display:inline-block;color:var(--brand)}
 h1 .hl::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent),var(--brand3));border-radius:2px}
 h1 .accent-word{color:var(--accent)}
-.hero-desc{font-size:16.5px;color:var(--muted);line-height:1.8;margin-top:20px;max-width:500px}
-.hero-cta{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;align-items:center;justify-content:center}
+.hero-desc{font-size:clamp(15px,1.8vw,18px);color:rgba(255,255,255,.72);line-height:1.75;margin-bottom:24px;max-width:600px;text-align:center;margin-left:auto;margin-right:auto}
+.hero-cta{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;align-items:center;justify-content:center}
 .btn-primary{padding:13px 26px;border-radius:10px;background:var(--brand);color:#fff;border:none;font-size:14.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
 .btn-primary:hover{background:var(--brand2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,27,105,.3)}
 .btn-ghost{padding:13px 22px;border-radius:10px;background:transparent;color:var(--ink2);border:1.5px solid var(--border2);font-size:14.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
 .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
-.hero-note{font-size:12px;color:var(--subtle);margin-top:14px}
+.hero-note{font-size:13px;color:rgba(255,255,255,.5);margin-top:8px;text-align:center}
 /* Hero stats */
-.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);max-width:500px;margin:0 auto;background:var(--off);border:1px solid var(--border);border-radius:16px;padding:14px 20px;margin-top:32px}
-.hstat{text-align:center;padding:8px 0}
+.hero-stats{display:flex;gap:28px;justify-content:center;margin-top:36px;flex-wrap:wrap}
+.hstat{text-align:center}
 .hstat:not(:last-child){border-right:1px solid var(--border)}
 .hstat-n{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--brand);letter-spacing:-0.5px}
 .hstat-l{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500}
@@ -302,7 +302,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){
-  .hero-in{grid-template-columns:1fr}
+  .hero-in{max-width:860px;margin:0 auto;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:2;padding:0 24px}
   .hero-card{display:none}
   .who-grid{grid-template-columns:repeat(2,1fr)}
   .feat-grid{grid-template-columns:repeat(2,1fr)}
@@ -315,8 +315,8 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   .nlinks{display:none}
   .nbtns{display:none}
   .nav-hamburger{display:flex}
-  .hstat{padding:6px 0}
-  .hero-stats{grid-template-columns:repeat(2,1fr)}
+  .hstat{text-align:center}
+  .hero-stats{display:flex;gap:28px;justify-content:center;margin-top:36px;flex-wrap:wrap}
   
   .who-grid{grid-template-columns:1fr}
   .footer-g{grid-template-columns:1fr}
@@ -332,12 +332,12 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 @media(max-width:600px){#sticky-bar p{font-size:12px}#sticky-bar button{padding:7px 14px;font-size:12px}}
 
 /* ── F1: HERO SEARCH ── */
-.hero-search{display:flex;gap:10px;margin:22px 0 10px;max-width:580px;flex-wrap:wrap}
+.hero-search{display:flex;gap:10px;margin:22px auto 8px;max-width:560px;width:100%;flex-wrap:wrap}
 .hero-search input,.hero-search select{flex:1;padding:13px 16px;border:1.5px solid #E4E4F0;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;background:#fff;color:#0D0D1A;min-width:0}
 .hero-search input:focus,.hero-search select:focus{border-color:#2D1B69;box-shadow:0 0 0 3px rgba(45,27,105,.08)}
 .hero-search-btn{padding:13px 22px;background:#FF5C35;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:.2s;flex-shrink:0}
 .hero-search-btn:hover{background:#FF7A59;transform:translateY(-1px)}
-.hero-urgency{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap}
+.hero-urgency{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px;font-size:13px;color:rgba(255,255,255,.65)}
 /* Preview jobs for guests */
 /* FIX #11 — Exclusive badge */
 /* FIX #12 — Referral flag */
@@ -422,11 +422,11 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 
 /* ── MOBILE FIXES ── */
 @media(max-width:600px){
-  .hero-search{flex-direction:column}
+  .hero-search{display:flex;gap:10px;margin:22px auto 8px;max-width:560px;width:100%;flex-wrap:wrap}
   .hero-search input,.hero-search select,.hero-search-btn{width:100%}
   .test-grid{grid-template-columns:1fr}
   
-  .hero-cta{flex-direction:column}
+  .hero-cta{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;align-items:center;justify-content:center}
   .hero-cta .btn-primary,.hero-cta .btn-ghost{width:100%;justify-content:center}
   .quiz-opts{grid-template-columns:1fr}
   nav{padding:0 4%}
@@ -455,7 +455,7 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 <!-- NAV -->
 <nav id="main-nav">
   <div class="nav-in">
-    <a href="index.html" class="nlogo">Belong<span>ix</span></a><span style="font-size:9px;font-weight:700;background:#FF5C35;color:#fff;border-radius:10px;padding:2px 8px;margin-left:6px;letter-spacing:.3px;vertical-align:middle">BETA</span>
+    <a href="index.html" class="nlogo">Belong<span>ix</span></a>
     <ul class="nlinks">
       <li>
         <button class="nav-link" onclick="toggleDD('dd-platform',this)">
@@ -569,10 +569,8 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
         <a href="courses.html#learning-paths" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85);text-decoration:none">🗺️ Career Paths</a>
       </div>
 
-          </div>
-        </div>
-        </div>
-      <div class="hero-cta" id="hero-guest-cta">
+          
+<div class="hero-cta" id="hero-guest-cta">
         <button class="btn-primary" onclick="openModal('signup')">
           Get Started Free
           <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
@@ -733,45 +731,6 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
      ✅ Supports avatar_url photo OR initials fallback
      ✅ Admin adds real testimonials directly in Supabase dashboard
 -->
-<section style="padding:72px 5%;background:rgba(255,255,255,.88)" class="grid-section">
-  <div class="sec-in">
-    <div class="sec-center rv">
-      <div class="sec-tag">Real Results</div>
-      <h2>Real people. <span>Real results.</span></h2>
-      <p class="sec-sub">Join thousands of Indian professionals who've upgraded their careers with Belongix</p>
-    </div>
-    <!-- Testimonials rendered by JS below — skeleton shown while loading -->
-    <div class="test-grid rv" id="testimonials-grid">
-      <div class="test-card" style="animation:testPulse 1.5s ease infinite">
-        <div style="height:14px;background:var(--off);border-radius:6px;width:80px;margin-bottom:12px"></div>
-        <div style="height:60px;background:var(--off);border-radius:8px;margin-bottom:12px"></div>
-        <div class="test-divider"></div>
-        <div class="test-person">
-          <div class="test-av" style="background:var(--off)"></div>
-          <div style="flex:1"><div style="height:12px;background:var(--off);border-radius:4px;width:100px;margin-bottom:6px"></div><div style="height:10px;background:var(--off);border-radius:4px;width:140px"></div></div>
-        </div>
-      </div>
-      <div class="test-card" style="animation:testPulse 1.5s ease .2s infinite">
-        <div style="height:14px;background:var(--off);border-radius:6px;width:80px;margin-bottom:12px"></div>
-        <div style="height:60px;background:var(--off);border-radius:8px;margin-bottom:12px"></div>
-        <div class="test-divider"></div>
-        <div class="test-person">
-          <div class="test-av" style="background:var(--off)"></div>
-          <div style="flex:1"><div style="height:12px;background:var(--off);border-radius:4px;width:100px;margin-bottom:6px"></div><div style="height:10px;background:var(--off);border-radius:4px;width:140px"></div></div>
-        </div>
-      </div>
-      <div class="test-card" style="animation:testPulse 1.5s ease .4s infinite">
-        <div style="height:14px;background:var(--off);border-radius:6px;width:80px;margin-bottom:12px"></div>
-        <div style="height:60px;background:var(--off);border-radius:8px;margin-bottom:12px"></div>
-        <div class="test-divider"></div>
-        <div class="test-person">
-          <div class="test-av" style="background:var(--off)"></div>
-          <div style="flex:1"><div style="height:12px;background:var(--off);border-radius:4px;width:100px;margin-bottom:6px"></div><div style="height:10px;background:var(--off);border-radius:4px;width:140px"></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- FAQ + MENTOR -->
 
