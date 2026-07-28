@@ -1484,6 +1484,12 @@ function renderPage(){
   grid.innerHTML=page.map(cardHTML).join('');
 }
 
+function goToCourse(slug){
+  var course=COURSES.find(function(c){return c.slug===slug;});
+  if(course){try{sessionStorage.setItem('bx_course_'+slug,JSON.stringify(course));}catch(e){}}
+  window.location.href='course.html?slug='+encodeURIComponent(slug);
+}
+
 function cardHTML(c){
   var stars='★'.repeat(Math.round(c.rating))+'☆'.repeat(5-Math.round(c.rating));
   var bNum=c.students>=1000?((c.students/1000).toFixed(c.students>=10000?0:1)+'k'):c.students;
@@ -1491,7 +1497,7 @@ function cardHTML(c){
   if(c.hot)badges+='<span class="badge-hot">🔥 Hot</span>';
   if(c['new'])badges+='<span class="badge-new">New</span>';
   badges+='<span class="badge-free">Free</span>';
-  return '<div class="ccard" onclick="openCDetail('+JSON.stringify(c).replace(/"/g,"&quot;")+')">'
+  return '<div class="ccard" onclick="goToCourse(\''+c.slug+'\')">'
     +'<div class="ccard-banner" style="'+c.bg+'">'
       +'<span class="ccard-emoji">'+c.emoji+'</span>'
       +'<div class="ccard-badges">'+badges+'</div>'
@@ -1567,7 +1573,7 @@ function openCDetail(c){
       +'<div class="cdetail-skills"><h4>Skills you&#39;ll learn</h4><div class="skill-tags">'+tags+'</div></div>'
       +'<div class="cdetail-cert"><span class="cdetail-cert-icon">🏆</span><div class="cdetail-cert-text">Certificate included<br/><span class="cdetail-cert-title">'+escH(c.cert)+'</span></div></div>'
       +'<div class="cdetail-actions">'
-        +'<button class="btn-enroll-detail" onclick="enrollCourse(this,'+JSON.stringify(c.slug)+');closeCDetail()">Enroll Free →</button>'
+        +'<button class="btn-enroll-detail" onclick="goToCourse(\''+c.slug+'\')" style="text-decoration:none">Start Course →</button>'
         +'<button class="btn-wishlist" onclick="showToast(&quot;Added to wishlist 💜&quot;)">💜</button>'
       +'</div>'
     +'</div>';
