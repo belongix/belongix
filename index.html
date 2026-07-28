@@ -102,14 +102,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;ali
 .mm-btns{display:flex;flex-direction:column;gap:10px;margin-top:24px}
 
 /* ── HERO ── */
-.hero{min-height:100vh;padding:100px 5% 80px;position:relative;overflow:hidden;background:transparent;display:flex;align-items:center}
+.hero{min-height:auto;padding:80px 5% 80px;position:relative;overflow:hidden;background:transparent;display:flex;align-items:center}
 .hero-mesh{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
 .hero-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.18}
 .hero-orb-1{width:600px;height:600px;background:radial-gradient(circle,#6B48CC,transparent);top:-100px;right:-100px}
 .hero-orb-2{width:400px;height:400px;background:radial-gradient(circle,#FF5C35,transparent);bottom:-80px;left:10%}
 .hero-orb-3{width:300px;height:300px;background:radial-gradient(circle,#06B6D4,transparent);top:40%;left:40%}
-.hero-in{max-width:var(--max);margin:0 auto;width:100%;display:grid;grid-template-columns:1.1fr 1fr;gap:56px;align-items:center;position:relative;z-index:2}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(45,27,105,.07),rgba(107,72,204,.07));border:1px solid rgba(45,27,105,.15);border-radius:100px;padding:5px 16px 5px 8px;font-size:12px;font-weight:600;color:var(--brand);margin-bottom:26px;letter-spacing:.2px}
+.hero-in{max-width:800px;margin:0 auto;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:2;padding:0 24px}
+.hero-badge{display:inline-flex;margin:0 auto;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(45,27,105,.07),rgba(107,72,204,.07));border:1px solid rgba(45,27,105,.15);border-radius:100px;padding:5px 16px 5px 8px;font-size:12px;font-weight:600;color:var(--brand);margin-bottom:26px;letter-spacing:.2px}
 .badge-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 @keyframes scrollBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
@@ -118,14 +118,14 @@ h1 .hl{position:relative;display:inline-block;color:var(--brand)}
 h1 .hl::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent),var(--brand3));border-radius:2px}
 h1 .accent-word{color:var(--accent)}
 .hero-desc{font-size:16.5px;color:var(--muted);line-height:1.8;margin-top:20px;max-width:500px}
-.hero-cta{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;align-items:center}
+.hero-cta{display:flex;gap:12px;margin-top:32px;flex-wrap:wrap;align-items:center;justify-content:center}
 .btn-primary{padding:13px 26px;border-radius:10px;background:var(--brand);color:#fff;border:none;font-size:14.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
 .btn-primary:hover{background:var(--brand2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,27,105,.3)}
 .btn-ghost{padding:13px 22px;border-radius:10px;background:transparent;color:var(--ink2);border:1.5px solid var(--border2);font-size:14.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
 .btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
 .hero-note{font-size:12px;color:var(--subtle);margin-top:14px}
 /* Hero stats */
-.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);background:var(--off);border:1px solid var(--border);border-radius:16px;padding:14px 20px;margin-top:32px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);max-width:500px;margin:0 auto;background:var(--off);border:1px solid var(--border);border-radius:16px;padding:14px 20px;margin-top:32px}
 .hstat{text-align:center;padding:8px 0}
 .hstat:not(:last-child){border-right:1px solid var(--border)}
 .hstat-n{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--brand);letter-spacing:-0.5px}
@@ -590,194 +590,10 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
       <div class="hero-note" id="hero-signed-note" style="display:none">Welcome back! Continue where you left off.</div>
       <div class="hero-stats">
         <div class="hstat"><div class="hstat-n">8</div><div class="hstat-l">Career Paths</div></div>
-        <div class="hstat"><div class="hstat-n">150+</div><div class="hstat-l">Skill Courses</div></div>
-        <div class="hstat"><div class="hstat-n">7</div><div class="hstat-l">Career Tools</div></div>
+        <div class="hstat"><div class="hstat-n">50+</div><div class="hstat-l">Free Courses</div></div>
+        <div class="hstat"><div class="hstat-n">Verified</div><div class="hstat-l">Certificates</div></div>
         <div class="hstat"><div class="hstat-n">Free</div><div class="hstat-l">Always</div></div>
       </div>
-    </div>
-    <!-- Hero signup card -->
-    <div class="hero-card rv rv-delay-2" id="hero-signup-card">
-      <div class="hc-title">Create your free account</div>
-      <div class="m-tabs">
-        <button class="m-tab active" onclick="switchHeroTab('signup')">Sign Up</button>
-        <button class="m-tab" onclick="switchHeroTab('signin')">Sign In</button>
-      </div>
-      <div id="hc-signup-form">
-        <div class="hc-form-row">
-          <label class="hc-label">Email Address</label>
-          <input class="hc-input" type="email" id="hc-email" placeholder="you@email.com"/>
-        </div>
-        <div class="hc-form-row">
-          <label class="hc-label">Password</label>
-          <input class="hc-input" type="password" id="hc-pass" placeholder="Create a password"/>
-        </div>
-        <button class="hc-btn" onclick="heroAuth('signup')">Create Account <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
-        <div class="hc-or">or</div>
-        <button class="hc-google" onclick="googleAuth()">
-          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Continue with Google
-        </button>
-        <div class="hc-ok" id="hc-ok">✓ Check your email to complete signup!</div>
-      </div>
-      <div id="hc-signin-form" style="display:none">
-        <div class="hc-form-row">
-          <label class="hc-label">Email Address</label>
-          <input class="hc-input" type="email" id="hc-si-email" placeholder="you@email.com"/>
-        </div>
-        <div class="hc-form-row">
-          <label class="hc-label">Password</label>
-          <input class="hc-input" type="password" id="hc-si-pass" placeholder="Your password"/>
-        </div>
-        <button class="hc-btn" onclick="heroAuth('signin')">Sign In <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
-        <div style="text-align:center;margin-top:10px">
-          <span style="font-size:13px;color:#8B8BA8;cursor:pointer;text-decoration:underline" onclick="heroForgotPassword()">Forgot password?</span>
-        </div>
-        <div class="hc-or">or</div>
-        <button class="hc-google" onclick="googleAuth()">
-          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-          Continue with Google
-        </button>
-        <div class="hc-ok" id="hc-si-ok"></div>
-      </div>
-      <div class="hc-fine">Free plan always available · No credit card needed</div>
-    </div>
-  </div>
-  <!-- Scroll down indicator -->
-  <div id="hero-scroll-arrow" onclick="document.getElementById('for-who').scrollIntoView({behavior:'smooth'})" style="position:absolute;bottom:28px;left:50%;transform:translateX(-50%);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;z-index:10;opacity:.7;transition:.2s" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.7'">
-    <span style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase">Scroll</span>
-    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="var(--brand)" stroke-width="2.2" style="animation:scrollBounce 1.8s ease-in-out infinite"><path d="M19 9l-7 7-7-7"/></svg>
-  </div>
-</section>
-
-<!-- F2: SOCIAL PROOF STATS BAR -->
-<div class="stats-bar-wrap" style="padding-top:40px;padding-bottom:0">
-  <div class="stats-bar">
-    <div class="sbar-item">
-      <div class="sbar-num"><span id="sb-pros">2,400</span>+</div>
-      <div class="sbar-lbl">Professionals joined</div>
-    </div>
-    <div class="sbar-item">
-      <div class="sbar-num"><span id="sb-paths">8</span> <span class="sbar-dot"></span></div>
-      <div class="sbar-lbl">Career Paths</div>
-    </div>
-    <div class="sbar-item">
-      <div class="sbar-num"><span id="sb-mentors">50</span>+</div>
-      <div class="sbar-lbl">Expert mentors</div>
-    </div>
-    <div class="sbar-item">
-      <div class="sbar-num"><span id="sb-courses">48</span>+</div>
-      <div class="sbar-lbl">Skill courses</div>
-    </div>
-  </div>
-</div>
-
-<!-- F4: COMPANIES HIRING STRIP -->
-<div style="padding:0 5%;margin-top:32px">
-  <div class="companies-wrap">
-    <div class="companies-label">Our members work at</div>
-    <div class="companies-track" id="companies-track">
-      <span class="co-badge">Google</span><span class="co-badge">Microsoft</span>
-      <span class="co-badge">Amazon</span><span class="co-badge">Swiggy</span>
-      <span class="co-badge">Zomato</span><span class="co-badge">Razorpay</span>
-      <span class="co-badge">CRED</span><span class="co-badge">PhonePe</span>
-      <span class="co-badge">Infosys</span><span class="co-badge">Wipro</span>
-      <span class="co-badge">TCS</span><span class="co-badge">Meesho</span>
-      <span class="co-badge">Zepto</span><span class="co-badge">Atlassian</span>
-      <span class="co-badge">Adobe</span>
-      <span class="co-badge">Google</span><span class="co-badge">Microsoft</span>
-      <span class="co-badge">Amazon</span><span class="co-badge">Swiggy</span>
-      <span class="co-badge">Zomato</span><span class="co-badge">Razorpay</span>
-      <span class="co-badge">CRED</span><span class="co-badge">PhonePe</span>
-      <span class="co-badge">Infosys</span><span class="co-badge">Wipro</span>
-      <span class="co-badge">TCS</span><span class="co-badge">Meesho</span>
-      <span class="co-badge">Zepto</span><span class="co-badge">Atlassian</span>
-      <span class="co-badge">Adobe</span>
-    </div>
-  </div>
-</div>
-
-<!-- WHO + FEATURES -->
-<section style="padding:72px 5%;background:rgba(250,250,254,.82)" id="for-who" class="grid-section">
-  <div class="sec-in">
-    <div class="sec-center rv" style="margin-bottom:36px">
-      <div class="sec-tag">It's For You</div>
-      <h2>Built for <span>every career stage</span></h2>
-    </div>
-    <div class="who-grid rv" style="margin-bottom:64px">
-      <div class="who-card" onclick="whoCardClick()">
-        <span class="who-icon">🎓</span>
-        <div class="who-title">College Students</div>
-        <div class="who-desc">Internship guidance, placement prep, skill building and career score from day one.</div>
-        <span class="who-tag">Internships &amp; Placements</span>
-      </div>
-      <div class="who-card" onclick="whoCardClick()">
-        <span class="who-icon">🌱</span>
-        <div class="who-title">Fresh Graduates</div>
-        <div class="who-desc">First job roadmap, resume tips, interview prep and salary benchmarks for freshers.</div>
-        <span class="who-tag">First Job Ready</span>
-      </div>
-      <div class="who-card" onclick="whoCardClick()">
-        <span class="who-icon">💼</span>
-        <div class="who-title">Working Professionals</div>
-        <div class="who-desc">Salary negotiation, promotions, upskilling and mentor sessions for real growth.</div>
-        <span class="who-tag">Grow Your Career</span>
-      </div>
-      <div class="who-card" onclick="whoCardClick()">
-        <span class="who-icon">🔄</span>
-        <div class="who-title">Career Changers</div>
-        <div class="who-desc">Field transition roadmaps, reskilling paths and mentors who've made the switch.</div>
-        <span class="who-tag">Switch Fields</span>
-      </div>
-    </div>
-    <div style="height:1px;background:var(--border);margin-bottom:64px"></div>
-    <div class="sec-center rv" style="margin-bottom:36px">
-      <div class="sec-tag">Everything You Need</div>
-      <h2>Six powerful tools, <span>one platform</span></h2>
-      <p class="sec-sub">No more switching between apps. Belongix brings everything into one career-first experience.</p>
-    </div>
-    <div class="feat-grid rv" id="features">
-            <a class="feat-card" href="courses.html">
-        <div class="feat-num">01</div>
-        <div class="feat-icon-wrap" style="background:#EEF0FF">🎓</div>
-        <div class="feat-title">50+ Free Courses</div>
-        <div class="feat-desc">Development, Coding and AI courses built for India — each with a verified certificate on completion.</div>
-        <div class="feat-link">Browse courses <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
-      </a>
-      <a class="feat-card" href="dashboard.html">
-        <div class="feat-num">02</div>
-        <div class="feat-icon-wrap" style="background:#ECFDF5">💰</div>
-        <div class="feat-title">Salary Intelligence</div>
-        <div class="feat-desc">Real market salary data for 15+ tech roles across Bangalore, Hyderabad, Mumbai, Pune and remote.</div>
-        <div class="feat-link">Check salaries <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
-      </a>
-            <a class="feat-card" href="verify.html">
-        <div class="feat-num">03</div>
-        <div class="feat-icon-wrap" style="background:#FFF0E8">🏆</div>
-        <div class="feat-title">Verified Certificates</div>
-        <div class="feat-desc">Every completed course earns a QR-verified Belongix certificate you can share on LinkedIn instantly.</div>
-        <div class="feat-link">See certificates <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
-      </a>
-      <a class="feat-card" href="dashboard.html?page=overview">
-        <div class="feat-num">04</div>
-        <div class="feat-icon-wrap" style="background:#FFF1F2">📊</div>
-        <div class="feat-title">Career Score</div>
-        <div class="feat-desc">A dynamic score that tracks your professional growth — built on profile, skills, applications and activity.</div>
-        <div class="feat-link">Get your score <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
-      </a>
-            <a class="feat-card" href="courses.html#learning-paths">
-        <div class="feat-num">05</div>
-        <div class="feat-icon-wrap" style="background:#FEF3C7">🗺️</div>
-        <div class="feat-title">Career Learning Paths</div>
-        <div class="feat-desc">8 structured paths — Full Stack, Data Analyst, AI/ML, Cloud, PM, UX and more — each with salary outcomes.</div>
-        <div class="feat-link">See paths <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
-      </a>
-            <a class="feat-card" href="courses.html#skill-gap">
-        <div class="feat-num">06</div>
-        <div class="feat-icon-wrap" style="background:#F0FDF4">🔍</div>
-        <div class="feat-title">Skill Gap Analyser</div>
-        <div class="feat-desc">Enter your goal role and current skills — get an instant personalised learning roadmap. Free.</div>
-        <div class="feat-link">Analyse skills <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></div>
-      </a>
     </div>
   </div>
 </section>
