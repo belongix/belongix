@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Belongix Dashboard</title>
+<title>Belongix — Your Career Dashboard | Learn, Grow, Know Your Worth</title>
 <link rel="manifest" href="manifest.json"/>
 <link rel="icon" href="icons/icon-32.png"/>
 <meta name="theme-color" content="#2D1B69"/>
@@ -37,7 +37,7 @@
     send(TPL.WELCOME, {
       to_email    : data.email||'',
       first_name  : fn,
-      message_body: 'Hi ' + fn + ',\n\nWelcome to Belongix — India\'s career platform!\n\nYour account is ready. Here\'s what to do first:\n\n1. Complete your profile (+30 Career Score pts)\n   belongix.in/dashboard.html?page=profile\n\n2. Check jobs matched for you\n   belongix.in/dashboard.html?page=jobs\n\n3. Ask Bexi AI your first career question\n   belongix.in/dashboard.html\n\n4. Know your salary worth\n   belongix.in/dashboard.html?page=salary\n\nYour Career Score starts at 30/100. Complete your profile to reach 70+ this week!\n\n— Team Belongix\nbelongix.in'
+      message_body: 'Hi ' + fn + ',\n\nWelcome to Belongix — India\'s career platform!\n\nYour account is ready. Here\'s what to do first:\n\n1. Complete your profile (+30 Career Score pts)\n   belongix.in/dashboard.html?page=profile\n\n2. Browse 50+ courses matched for you\n   belongix.in/courses.html\n\n3. Ask Bexi AI your first career question\n   belongix.in/dashboard.html\n\n4. Know your salary worth\n   belongix.in/dashboard.html?page=salary\n\nYour Career Score starts at 30/100. Complete your profile to reach 70+ this week!\n\n— Team Belongix\nbelongix.in'
     });
   };
   window.BxEmail.jobApplicationConfirm = function(data) {
@@ -356,19 +356,19 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
 .li-inp:focus{border-color:#2D1B69}
 .li-save{background:#2D1B69;color:#fff;border:none;border-radius:8px;padding:9px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--ffb)}
 
-/* MENTORS */
-.mentor-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
-.mentor-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:18px;transition:.2s;display:flex;flex-direction:column;gap:10px}
-.mentor-card:hover{border-color:#2D1B69;box-shadow:var(--shadow);transform:translateY(-2px)}
-.mentor-top{display:flex;gap:11px;align-items:flex-start}
-.mentor-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;flex-shrink:0;font-family:var(--ff)}
-.mentor-info{flex:1;min-width:0}
-.mentor-name{font-family:var(--ff);font-size:13px;font-weight:700;color:var(--ink);margin-bottom:1px}
-.mentor-role{font-size:12px;color:var(--muted)}.mentor-company{font-size:12px;color:#2D1B69;font-weight:600}
-.mentor-tags{display:flex;gap:5px;flex-wrap:wrap}
+
+
+
+
+
+
+
+
+
+
 .mtag{font-size:11px;font-weight:600;background:var(--bg);color:var(--muted);border:1px solid var(--border);border-radius:6px;padding:2px 7px}
-.mentor-book{width:100%;padding:8px;background:#2D1B69;color:#fff;border:none;border-radius:9px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.15s}
-.mentor-book:hover{background:#4C2FAA}
+
+
 
 /* SETTINGS & UPGRADE */
 .settings-group{background:var(--white);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px}
@@ -447,7 +447,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
 .upg-wa-btn{display:inline-flex;align-items:center;gap:7px;background:#25D366;color:#fff;border:none;border-radius:9px;padding:10px 20px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:var(--ffb);text-decoration:none;transition:.15s;margin-top:10px}
 .upg-wa-btn:hover{background:#1ebe57}
 
-/* ── FIX 5: MENTOR SESSION LIMIT BANNER ── */
+
 .session-limit-banner{background:linear-gradient(135deg,#FFF7ED,#FEF9C3);border:1.5px solid #FDE68A;border-radius:12px;padding:14px 16px;margin-bottom:14px;display:none}
 .session-limit-banner.show{display:flex;align-items:flex-start;gap:12px}
 .slb-icon{font-size:22px;flex-shrink:0;margin-top:1px}
@@ -635,9 +635,9 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
     <span>Portfolio</span>
   </button>
-  <button class="mnb-item" id="mnb-jobs" onclick="showPage('jobs',document.querySelector('[data-page=jobs]'));setMobActive('mnb-jobs')">
+  <button class="mnb-item" id="mnb-jobs" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'));setMobActive('mnb-jobs')">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>
-    <span>Jobs</span>
+    <span>Courses</span>
   </button>
   <button class="mnb-item" id="mnb-salary" onclick="showPage('salary',document.querySelector('[data-page=salary]'));setMobActive('mnb-salary')">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
@@ -671,8 +671,8 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <button class="sb-link active" data-page="overview" onclick="showPage('overview',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Portfolio
       </button>
-      <button class="sb-link" data-page="jobs" onclick="showPage('jobs',this)">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>Jobs &amp; Internships
+      <button class="sb-link" data-page="upskill" onclick="showPage('upskill',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>Courses &amp; Skills
       </button>
       <button class="sb-link" data-page="upskill" onclick="showPage('upskill',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Upskilling Hub
@@ -680,11 +680,9 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <button class="sb-link" data-page="salary" onclick="showPage('salary',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Salary Insights
       </button>
-      <button class="sb-link" data-page="network" onclick="showPage('network',this)">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Find a Mentor
-      </button>
-      <button class="sb-link" data-page="tracker" onclick="showPage('tracker',this)">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>My Applications
+      
+      <button class="sb-link" onclick="window.location.href='community.html'">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>Community
       </button>
     </div>
     <div class="sb-group">
@@ -709,11 +707,11 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <a class="sb-link" href="resume-builder.html" target="_blank" style="text-decoration:none">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Resume Builder
       </a>
-      <a class="sb-link" href="post-job.html" target="_blank" style="text-decoration:none">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>Post a Job
+      <a class="sb-link" href="resume-builder.html" style="text-decoration:none">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>Resume Builder
       </a>
-      <a class="sb-link" href="recruiter-dashboard.html" target="_blank" style="text-decoration:none">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>Recruiter Portal
+      <a class="sb-link" href="about.html" style="text-decoration:none">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>About Belongix
       </a>
     </div>
   </nav>
@@ -773,7 +771,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
   <button class="wc-dismiss" onclick="dismissWelcomeCard()" title="Dismiss">✕</button>
   <div class="wc-inner">
     <div class="wc-title" id="wc-greeting">👋 Welcome to Belongix!</div>
-    <div class="wc-sub">Complete your profile to unlock your full Career Score and get matched to the right jobs.</div>
+    <div class="wc-sub">Complete your profile to unlock your full Career Score and get personalised course recommendations.</div>
     <div class="wc-progress-wrap"><div class="wc-progress-fill" id="wc-bar" style="width:0%"></div></div>
     <div class="wc-progress-label" id="wc-pct-lbl">0% complete</div>
     <div class="wc-checklist">
@@ -792,9 +790,9 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         <div class="wc-item-text">Add 5+ skills</div>
         <div class="wc-item-pts" id="wc-pts-skills">+15 pts</div>
       </div>
-      <div class="wc-item" onclick="showPage('jobs',document.querySelector('[data-page=jobs]'))">
+      <div class="wc-item" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))">
         <div class="wc-item-check" id="wc-chk-apply">☐</div>
-        <div class="wc-item-text">Apply to your first job</div>
+        <div class="wc-item-text">Start your first course</div>
         <div class="wc-item-pts" id="wc-pts-apply">+15 pts</div>
       </div>
       <div class="wc-item" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))">
@@ -844,7 +842,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         <div class="an-stat"><div class="an-val" id="an-score-v">--</div><div class="an-lbl">Career Score</div><div class="an-trend up" id="an-score-trend"></div></div>
       </div>
       <div style="margin-bottom:8px">
-        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Recruiter Searches</div>
+        <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">Your Top Skills</div>
         <div id="an-skills-row" style="display:flex;flex-wrap:wrap;gap:6px"></div>
       </div>
     </div>
@@ -857,15 +855,15 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     </div>
     <div class="port-ql">
       <div class="psc-lbl" style="margin-bottom:5px">Quick Access</div>
-      <div class="ql-row" onclick="showPage('jobs',document.querySelector('[data-page=jobs]'))"><div class="ql-ic" style="background:#EFEFF8">&#128188;</div><span class="ql-name">Find Jobs</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-row" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))"><div class="ql-ic" style="background:#EFEFF8">&#127891;</div><span class="ql-name">Browse Courses</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="showPage('salary',document.querySelector('[data-page=salary]'))"><div class="ql-ic" style="background:#ECFDF5">&#128176;</div><span class="ql-name">Salary Insights</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))"><div class="ql-ic" style="background:#FEF9C3">&#127891;</div><span class="ql-name">Upskilling Hub</span><span class="ql-arr">&#8250;</span></div>
-      <div class="ql-row" onclick="showPage('network',document.querySelector('[data-page=network]'))"><div class="ql-ic" style="background:#FFF1F2">&#129309;</div><span class="ql-name">Find a Mentor</span><span class="ql-arr">&#8250;</span></div>
+            <div class="ql-row" onclick="window.location.href='resume-builder.html'"><div class="ql-ic" style="background:#FFF1F2">&#128196;</div><span class="ql-name">Resume Builder</span><span class="ql-arr">&#8250;</span></div><span class="ql-name">Find a Mentor</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="window.open('community.html','_self')"><div class="ql-ic" style="background:#ECFDF5">&#128101;</div><span class="ql-name">Community Q&amp;A</span><span style="font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 6px;margin-left:auto">NEW</span></div>
       <div class="ql-row" onclick="showPage('settings',document.querySelector('[data-page=settings]'))"><div class="ql-ic" style="background:#FEF9C3">&#127881;</div><span class="ql-name">Referral Program</span><span style="font-size:9px;font-weight:700;background:#F59E0B;color:#fff;border-radius:10px;padding:1px 6px;margin-left:auto">+10 pts</span></div>
       <div class="ql-row" onclick="window.open('resume-builder.html','_blank')"><div class="ql-ic" style="background:#EFF6FF">&#128196;</div><span class="ql-name">Resume Builder</span><span class="ql-arr">&#8250;</span></div>
-      <div class="ql-row" onclick="window.open('post-job.html','_blank')"><div class="ql-ic" style="background:#FFF7ED">&#128188;</div><span class="ql-name">Post a Job</span><span class="ql-arr">&#8250;</span></div>
-      <div class="ql-row" onclick="window.open('recruiter-dashboard.html','_blank')"><div class="ql-ic" style="background:#F0FDF4">&#128101;</div><span class="ql-name">Recruiter Portal</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-row" onclick="window.location.href='resume-builder.html'"><div class="ql-ic" style="background:#FFF7ED">&#128196;</div><span class="ql-name">Build Resume</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-row" onclick="window.location.href='community.html'"><div class="ql-ic" style="background:#F0FDF4">&#128172;</div><span class="ql-name">Community Q&amp;A</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="showPage('upgrade',null)"><div class="ql-ic" style="background:#F5F3FF">&#9889;</div><span class="ql-name">Upgrade Pro</span><span class="ql-arr">&#8250;</span></div>
     </div>
   </div>
@@ -1276,13 +1274,6 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       </div>
 
     </div>
-    <div class="page-section" id="page-network"><div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-  <input type="text" id="dash-mentor-search" placeholder="Search mentors..." oninput="dashFilterMentors()" style="flex:1;padding:10px 16px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:var(--ffb);outline:none;color:var(--ink)"/>
-  <a href="mentors.html" target="_blank" style="background:#2D1B69;color:#fff;border-radius:10px;padding:10px 18px;font-size:13px;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap">Full Directory &#8599;</a>
-</div>
-<div id="dash-mentors-grid" class="mentor-grid">
-  <div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--subtle)">Loading mentors...</div>
-</div></div>
     <div class="page-section" id="page-profile"><div class="pw">
   <div class="pl">
     <div class="pcard">
@@ -1417,14 +1408,12 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
 <div id="paySuccess" style="display:none;background:#ECFDF5;border:1.5px solid #6EE7B7;border-radius:14px;padding:24px;text-align:center;margin-bottom:14px">
   <div style="font-size:32px;margin-bottom:6px">🎉</div>
   <div style="font-size:16px;font-weight:700;color:#15803D">Welcome to Belongix Pro!</div>
-  <div style="font-size:13px;color:#047857;margin-top:4px">All Pro features are now unlocked. Enjoy unlimited Bexi AI, 2 mentor sessions/month, and all 150+ courses.</div>
+  <div style="font-size:13px;color:#047857;margin-top:4px">All Pro features are now unlocked. Enjoy unlimited Bexi AI, 2 coaching sessions/month, and all 150+ courses.</div>
 </div>
 
-<!-- ── FIX 5: MENTOR SESSION LIMIT BANNER ── -->
-<div class="session-limit-banner" id="session-limit-banner">
-  <div class="slb-icon">⚠️</div>
+
   <div class="slb-body">
-    <div class="slb-title">You've used <span id="slb-used">2</span>/<span id="slb-total">2</span> mentor sessions this month</div>
+    <div class="slb-title">You've used <span id="slb-used">2</span>/<span id="slb-total">2</span> coaching sessions this month</div>
     <div class="slb-sub">Sessions reset on <strong id="slb-reset-date">1 Jul 2026</strong>. Need more sessions before then?</div>
     <button class="slb-upgrade" onclick="openUpgradeModal('premium')">👑 Upgrade to Premium — 5 sessions/month →</button>
   </div>
@@ -1442,7 +1431,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <div class="upg-feat"><div class="upg-check">✓</div>Live Job Board</div>
       <div class="upg-feat"><div class="upg-check">✓</div>Bexi AI (10 questions/day)</div>
       <div class="upg-feat"><div class="upg-check">✓</div>5 Learning Tracks</div>
-      <div class="upg-feat"><div class="upg-check no">—</div><span style="color:var(--subtle)">Mentor Sessions</span></div>
+      <div class="upg-feat"><div class="upg-check no">—</div><span style="color:var(--subtle)">Bexi AI Coach Sessions</span></div>
       <div class="upg-feat"><div class="upg-check no">—</div><span style="color:var(--subtle)">Full Salary Data</span></div>
     </div>
     <button class="upg-btn" disabled style="cursor:default;opacity:.7">Current Plan</button>
@@ -1456,7 +1445,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     <div class="upg-feats">
       <div class="upg-feat"><div class="upg-check">✓</div>Everything in Starter</div>
       <div class="upg-feat"><div class="upg-check">✓</div>Unlimited Bexi AI</div>
-      <div class="upg-feat"><div class="upg-check">✓</div>2 Mentor Sessions/month</div>
+      <div class="upg-feat"><div class="upg-check">✓</div>2 Bexi AI Coach Sessions/month</div>
       <div class="upg-feat"><div class="upg-check">✓</div>All 150+ Courses</div>
       <div class="upg-feat"><div class="upg-check">✓</div>Full Salary Data + Percentiles</div>
       <div class="upg-feat"><div class="upg-check">✓</div>Priority Support</div>
@@ -1470,7 +1459,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     <div style="height:1px;background:var(--bg);margin-bottom:14px"></div>
     <div class="upg-feats">
       <div class="upg-feat"><div class="upg-check">✓</div>Everything in Pro</div>
-      <div class="upg-feat"><div class="upg-check">✓</div>5 Mentor Sessions/month</div>
+      <div class="upg-feat"><div class="upg-check">✓</div>5 Bexi AI Coach Sessions/month</div>
       <div class="upg-feat"><div class="upg-check">✓</div>Dedicated Career Coach</div>
       <!-- ── FIX 3: Company Referrals with tooltip ── -->
       <div class="upg-feat">
@@ -1515,8 +1504,8 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <tr><td>Resume Builder</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
       <tr><td>5 Starter Courses</td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
       <tr><td>All 150+ Courses</td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td><td><span class="cmp-yes">✓</span></td></tr>
-      <tr class="cmp-section-head"><td colspan="4">🧑‍💼 Mentorship</td></tr>
-      <tr><td>Mentor Sessions</td><td><span class="cmp-no">—</span></td><td><span class="cmp-val">2 / month</span></td><td><span class="cmp-val-gold">5 / month</span></td></tr>
+      
+      <tr><td>Bexi AI Coach Sessions</td><td><span class="cmp-no">—</span></td><td><span class="cmp-val">2 / month</span></td><td><span class="cmp-val-gold">5 / month</span></td></tr>
       <tr><td>Dedicated Career Coach</td><td><span class="cmp-no">—</span></td><td><span class="cmp-no">—</span></td><td><span class="cmp-yes">✓</span></td></tr>
       <tr>
         <td>
@@ -2562,7 +2551,7 @@ function showPage(page, btn) {
   }
   /* 5. Topbar title */
   var titles = {overview:'Portfolio',jobs:'Jobs & Internships',upskill:'Upskilling Hub',
-    salary:'Salary Insights',network:'Find a Mentor',tracker:'My Applications',
+    salary:'Salary Insights',network:'Courses',tracker:'My Applications',
     profile:'My Profile',settings:'Settings',upgrade:'Upgrade Plan'};
   var tb = document.getElementById('topbar-title');
   if (tb) tb.textContent = titles[page] || 'Dashboard';
@@ -2570,12 +2559,12 @@ function showPage(page, btn) {
   try { window.history.replaceState(null,'','#'+page); } catch(e) {}
   /* 7. Page-specific loaders — all in one place, no wrappers needed */
   if (page === 'jobs') { loadJobs(); }
-  if (page === 'network') { setTimeout(loadDashMentors, 100); }
+  if (page === 'network') { window.location.href = 'courses.html'; }
   if (page === 'tracker') { loadTracker(); }
   if (page === 'upskill') { setTimeout(function(){ if(typeof renderFilters==='function'){renderFilters();renderTracks();} }, 50); }
   if (page === 'salary') { setTimeout(function(){ if(typeof init3D==='function')init3D(); }, 80); }
   if (page === 'settings' && currentUser) { if(typeof refPopulateSettings==='function') refPopulateSettings(currentUser.id); }
-  if (page === 'upgrade') { if(typeof checkMentorSessionLimit==='function') checkMentorSessionLimit(); }
+  
   /* 8. Close mobile sidebar */
   var sb = document.querySelector('.sidebar');
   if (sb) sb.classList.remove('open');
@@ -3114,19 +3103,7 @@ async function onPaySuccess(r, plan) {
   }
 }
 
-async function loadDashMentors() {
-  var grid=document.getElementById('dash-mentors-grid');if(!grid)return;
-  try{
-    var r=await supaClient.from('mentors').select('*').limit(12);
-    var mentors=r.data||[];
-    if(!mentors.length){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px"><a href="mentors.html" style="background:var(--blue);color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">Browse Mentors</a></div>';return;}
-    var colors=['#2D1B69','#4C2FAA','#0EA5E9','#10B981','#F59E0B','#EF4444'];
-    grid.innerHTML=mentors.map(function(m,i){
-      var clr=colors[i%colors.length];var init=(m.name||'M').substring(0,2).toUpperCase();
-      return '<div class="mentor-card"><div class="mentor-top"><div class="mentor-av" style="background:'+clr+'">'+init+'</div><div class="mentor-info"><div class="mentor-name">'+(m.name||'Mentor')+'</div><div class="mentor-role">'+(m.role||'Professional')+'</div><div class="mentor-company">'+(m.company||'')+'</div></div></div><button class="mentor-book" onclick="window.open(\'mentors.html\',\'_blank\')">Book Session</button></div>';
-    }).join('');
-  }catch(e){grid.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:40px"><a href="mentors.html" style="background:#2D1B69;color:#fff;padding:12px 24px;border-radius:10px;text-decoration:none;font-weight:600">Browse All Mentors</a></div>';}
-}
+
 
 function dashFilterMentors() {
   var q=((document.getElementById('dash-mentor-search')||{}).value||'');
@@ -3469,7 +3446,7 @@ async function moveApp(sel, jobId) {
 // ════════════════════════════════════════════
 /* ═══════════════════════════════════════════════════════
    FIX 2 + 5 — Analytics: real profile_views, zero defaults,
-   Pro lock on Recruiter Searches
+   Pro lock on skill insights
 ═══════════════════════════════════════════════════════ */
 async function loadAnalytics(profile) {
   if (!currentUser) return;
@@ -3516,7 +3493,7 @@ async function loadAnalytics(profile) {
     st('an-apps-trend', '→ Apply to jobs');
   }
 
-  /* ── FIX 2: Recruiter Searches — Pro lock ── */
+  /* ── FIX 2: skill insights — Pro lock ── */
   var skillsRow = document.getElementById('an-skills-row');
   if (skillsRow) {
     var plan = (profile && profile.plan) || 'free';
@@ -3528,10 +3505,10 @@ async function loadAnalytics(profile) {
       }).join('');
     } else {
       /* Show Pro lock tooltip */
-      skillsRow.innerHTML = '<div style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:#F5F3FF;border-radius:8px;cursor:pointer" onclick="showPage(\'upgrade\',null)" title="Upgrade to Pro to see which recruiters searched your skills">'
+      skillsRow.innerHTML = '<div style="display:flex;align-items:center;gap:7px;padding:6px 10px;background:#F5F3FF;border-radius:8px;cursor:pointer" onclick="showPage(\'upgrade\',null)" title="Upgrade to Pro to unlock all courses and salary insights">'
         + '<span style="font-size:16px">🔒</span>'
         + '<span style="font-size:12px;font-weight:600;color:#7C3AED">Pro feature</span>'
-        + '<span style="font-size:11.5px;color:#6B48CC">— Upgrade to see recruiter searches</span>'
+        + '<span style="font-size:11.5px;color:#6B48CC">— Upgrade to Pro to unlock all features</span>'
         + '</div>';
     }
   }
@@ -4267,7 +4244,7 @@ function ocReset() {
     <button class="upg-modal-close" onclick="document.getElementById('upgrade-modal').classList.remove('open')">✕</button>
 
     <div class="upg-modal-title" id="upg-modal-title">Upgrade to Belongix Pro</div>
-    <div class="upg-modal-sub" id="upg-modal-sub">Unlock mentor sessions, unlimited Bexi AI & all 150+ courses</div>
+    <div class="upg-modal-sub" id="upg-modal-sub">Unlock coaching sessions, unlimited Bexi AI & all 150+ courses</div>
 
     <!-- Billing toggle -->
     <div class="upg-billing-toggle">
@@ -4314,11 +4291,11 @@ var _upgBilling = 'monthly';
 var UPG_CONFIG = {
   pro: {
     title: 'Upgrade to Belongix Pro',
-    sub: 'Unlock mentor sessions, unlimited Bexi AI & all 150+ courses',
+    sub: 'Unlock coaching sessions, unlimited Bexi AI & all 150+ courses',
     monthly: 499, yearly: 4999,
     features: [
       'Unlimited Bexi AI questions',
-      '2 Mentor Sessions / month',
+      '2 Bexi AI Coach Sessions / month',
       'All 150+ Upskilling Courses',
       'Company-wise Salary Data + Percentiles',
       'Priority Email Support',
@@ -4330,7 +4307,7 @@ var UPG_CONFIG = {
     sub: 'The full career acceleration package with dedicated coaching',
     monthly: 999, yearly: 9999,
     features: [
-      '5 Mentor Sessions / month',
+      '5 Bexi AI Coach Sessions / month',
       'Dedicated Career Coach (1-on-1)',
       'Company Referrals (3× interview chance)',
       'Everything in Pro plan',
