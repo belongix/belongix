@@ -1349,37 +1349,7 @@ function showJobsError() {
 ══════════════════════════════════════════════════════════ */
 
 /* ── Seed 20 curated Indian jobs to Supabase ── */
-async function seedJobs() {
-  var seeds = [
-    {title:'Senior Software Engineer',company:'Google',location:'Bangalore',salary_min:25,salary_max:40,experience:'3-5 yrs',type:'Full Time',skills:'Python,ML,System Design',applicants:18,posted_days_ago:2,color:'#4285F4'},
-    {title:'Data Scientist',company:'Razorpay',location:'Mumbai',salary_min:18,salary_max:32,experience:'2-4 yrs',type:'Full Time',skills:'Python,SQL,ML',applicants:34,posted_days_ago:1,color:'#2EB8CC'},
-    {title:'Product Manager',company:'Swiggy',location:'Bangalore',salary_min:22,salary_max:38,experience:'3-7 yrs',type:'Full Time',skills:'Product,SQL,Analytics',applicants:41,posted_days_ago:0,color:'#FC8019'},
-    {title:'ML Engineer',company:'CRED',location:'Bangalore',salary_min:20,salary_max:40,experience:'2-5 yrs',type:'Full Time',skills:'Python,PyTorch,LLMs',applicants:28,posted_days_ago:0,color:'#7C4DFF'},
-    {title:'DevOps Engineer',company:'Zepto',location:'Mumbai',salary_min:15,salary_max:28,experience:'2-4 yrs',type:'Full Time',skills:'Kubernetes,AWS,Docker',applicants:17,posted_days_ago:2,color:'#CC0000'},
-    {title:'Backend Engineer',company:'PhonePe',location:'Bangalore',salary_min:14,salary_max:26,experience:'2-5 yrs',type:'Full Time',skills:'Java,Kafka,Microservices',applicants:22,posted_days_ago:4,color:'#5F259F'},
-    {title:'Frontend Engineer',company:'Meesho',location:'Bangalore',salary_min:12,salary_max:22,experience:'1-3 yrs',type:'Full Time',skills:'React,TypeScript,CSS',applicants:31,posted_days_ago:2,color:'#F72585'},
-    {title:'Data Engineer',company:'Atlassian',location:'Bangalore',salary_min:16,salary_max:30,experience:'2-5 yrs',type:'Full Time',skills:'dbt,Spark,SQL,Kafka',applicants:14,posted_days_ago:3,color:'#0052CC'},
-    {title:'Cloud Architect',company:'Infosys',location:'Hyderabad',salary_min:20,salary_max:40,experience:'5-10 yrs',type:'Full Time',skills:'AWS,Azure,Terraform',applicants:9,posted_days_ago:5,color:'#007CC3'},
-    {title:'UI/UX Designer',company:'Zomato',location:'Bangalore',salary_min:10,salary_max:18,experience:'2-4 yrs',type:'Full Time',skills:'Figma,Prototyping,Research',applicants:26,posted_days_ago:0,color:'#E23744'},
-    {title:'AI Engineer',company:'Groww',location:'Bangalore',salary_min:18,salary_max:35,experience:'2-4 yrs',type:'Full Time',skills:'LangChain,Python,GenAI',applicants:19,posted_days_ago:0,color:'#00C896'},
-    {title:'SDE-2 Android',company:'Flipkart',location:'Bangalore',salary_min:18,salary_max:30,experience:'2-4 yrs',type:'Full Time',skills:'Kotlin,Android,Java',applicants:23,posted_days_ago:3,color:'#F7941D'},
-    {title:'Product Analyst',company:'Navi',location:'Bangalore',salary_min:12,salary_max:20,experience:'1-3 yrs',type:'Full Time',skills:'SQL,Excel,Analytics',applicants:37,posted_days_ago:2,color:'#1A73E8'},
-    {title:'Security Engineer',company:'BrowserStack',location:'Mumbai',salary_min:15,salary_max:28,experience:'2-5 yrs',type:'Full Time',skills:'Security,Python,AWS',applicants:11,posted_days_ago:4,color:'#E94B35'},
-    {title:'Data Analyst',company:'Ola',location:'Bangalore',salary_min:8,salary_max:16,experience:'0-2 yrs',type:'Full Time',skills:'SQL,Python,Tableau',applicants:52,posted_days_ago:0,color:'#2D2D2D'},
-    {title:'Full Stack Engineer',company:'Razorpay',location:'Bangalore',salary_min:15,salary_max:28,experience:'2-5 yrs',type:'Full Time',skills:'React,Node.js,PostgreSQL',applicants:29,posted_days_ago:2,color:'#2EB8CC'},
-    {title:'Software Intern',company:'Google',location:'Bangalore',salary_min:4,salary_max:6,experience:'Fresher',type:'Internship',skills:'Python,DSA,Problem Solving',applicants:180,posted_days_ago:0,color:'#4285F4'},
-    {title:'ML Research Intern',company:'Microsoft',location:'Hyderabad',salary_min:3,salary_max:5,experience:'Fresher',type:'Internship',skills:'Python,ML,Research',applicants:94,posted_days_ago:1,color:'#00A4EF'},
-    {title:'SDE-1',company:'Amazon',location:'Hyderabad',salary_min:18,salary_max:28,experience:'0-2 yrs',type:'Full Time',skills:'Java,DSA,System Design',applicants:67,posted_days_ago:3,color:'#FF9900'},
-    {title:'Product Manager',company:'Zepto',location:'Mumbai',salary_min:20,salary_max:35,experience:'3-6 yrs',type:'Full Time',skills:'Product,Analytics,GTM',applicants:33,posted_days_ago:2,color:'#CC0000'}
-  ];
-  try {
-    var r = await supaClient.from('jobs').insert(seeds);
-    if (r.error) throw r.error;
-    console.log('[Belongix] Seeded 20 jobs');
-  } catch(e) {
-    console.warn('[Belongix] Seed jobs failed:', e.message);
-  }
-}
+
 
 /* ── Fetch live jobs from free public APIs (direct fallback) ── */
 async function fetchLiveJobsDirect() {
@@ -1498,7 +1468,6 @@ async function loadJobs() {
 
     /* Table empty — seed it then try live APIs */
     if (!r.error && (!r.data || r.data.length === 0)) {
-      await seedJobs();
       var r2 = await supaClient.from('jobs').select('*').order('created_at', { ascending: false }).limit(100);
       if (!r2.error && r2.data && r2.data.length > 0) {
         renderLiveJobs(r2.data, 'supabase');
@@ -1549,7 +1518,7 @@ async function fetchAndMergeWithSupabase(existingJobs) {
 
     /* Upsert — apply_url is unique key */
     if (toInsert.length > 0) {
-      await supaClient.from('jobs').upsert(toInsert, { onConflict: 'apply_url', ignoreDuplicates: true });
+      
       console.log('[Belongix] Saved', toInsert.length, 'live jobs to Supabase');
     }
 
@@ -2826,12 +2795,6 @@ async function onPaySuccess(r, plan) {
   }
 }
 
-async 
-
-function dashFilterMentors() {
-  var q=((document.getElementById('dash-mentor-search')||{}).value||'');
-  document.querySelectorAll('.mentor-card').forEach(function(c){c.style.display=c.textContent.toLowerCase().includes(q.toLowerCase())?'flex':'none';});
-}
 
 
 
