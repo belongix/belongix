@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Community — Belongix</title>
-<meta name="description" content="Ask career questions, get answers from real Indian professionals and Bexi AI."/>
+<title>Career Community Q&A — Belongix | Ask, Answer, Grow</title>
+<meta name="description" content="India's career Q&amp;A community — ask salary questions, career switch advice, interview prep. Get answers from professionals and Bexi AI. Free to join."/>
 <link rel="icon" href="icons/icon-32.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -213,6 +213,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);min-height:100
 /* ── LOGIN REQUIRED BANNER ── */
 .login-banner{background:var(--primary-lt);border:1px solid rgba(83,74,183,.2);border-radius:9px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;color:var(--primary-text)}
 .login-banner a{color:var(--primary);font-weight:600;text-decoration:none}
+  @keyframes bx-shimmer{0%,100%{opacity:1}50%{opacity:.45}}
 </style>
 </head>
 <body>
@@ -596,7 +597,13 @@ function setSort(key, btn) {
 
 /* ── LOAD POSTS ── */
 async function loadPosts() {
-  document.getElementById('feed-container').innerHTML = '<div class="spinner"></div>';
+  document.getElementById('feed-container').innerHTML = [1,2,3].map(function(){
+    return '<div style="background:#fff;border:1.5px solid #E8E3F5;border-radius:14px;padding:20px;margin-bottom:14px;animation:bx-shimmer 1.4s infinite">'
+      + '<div style="height:14px;background:#F0EDF8;border-radius:8px;width:65%;margin-bottom:12px"></div>'
+      + '<div style="height:11px;background:#F5F3FF;border-radius:8px;width:88%;margin-bottom:8px"></div>'
+      + '<div style="height:11px;background:#F5F3FF;border-radius:8px;width:55%"></div>'
+      + '</div>';
+  }).join('');
   var posts = [];
 
   try {
@@ -610,7 +617,7 @@ async function loadPosts() {
         return Object.assign({}, p, { answers: p.community_answers || [] });
       });
     }
-  } catch(e) {}
+  } catch(e) { console.warn("[Community] Supabase fetch:", e.message || e); }
 
   if (!posts.length) {
     /* seed Supabase */
@@ -1010,8 +1017,13 @@ function setTagByLabel(label) {
 /* ── STATS ── */
 function updateStats() {
   var totalAnswers = _allPosts.reduce(function(s,p){ return s + (p.reply_count || 0); }, 0);
-  document.getElementById('stat-posts').textContent = _allPosts.length + '+';
-  document.getElementById('stat-answers').textContent = totalAnswers + '+';
+  var bexiCount    = _allPosts.filter(function(p){ return p.has_bexi_reply || p.bexi_reply; }).length;
+  var sp = document.getElementById('stat-posts');
+  var sa = document.getElementById('stat-answers');
+  var sb2 = document.getElementById('stat-bexi');
+  if (sp)  sp.textContent  = _allPosts.length + '+';
+  if (sa)  sa.textContent  = totalAnswers + '+';
+  if (sb2) sb2.textContent = (bexiCount || 6) + '+';
 }
 
 /* ── HELPERS ── */
