@@ -148,9 +148,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
   <a href="index.html" class="nav-logo">Belong<span>ix</span><span style="font-size:9px;background:var(--accent);color:#fff;border-radius:10px;padding:2px 7px;margin-left:6px;vertical-align:middle;letter-spacing:.3px">BETA</span></a>
   <div class="nav-links">
     <a href="courses.html" class="nl on">Courses</a>
-    <a href="community.html" class="nl">Community</a>
-    <a href="dashboard.html?page=salary" class="nl">Salary</a>
-    <a href="resume-builder.html" class="nl">Resume</a>
+    <a href="dashboard.html" class="nl">Dashboard</a>
+    <a href="about.html" class="nl">About</a>
   </div>
   <div class="nav-r">
     <div id="nav-guest"><a href="index.html" class="nbtn ghost">Sign In</a><a href="index.html" class="nbtn fill">Join Free →</a></div>
@@ -315,7 +314,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
   <div style="max-width:760px;margin:0 auto;text-align:center">
     <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--brand);margin-bottom:8px">AI-Powered</div>
     <div style="font-family:var(--ff);font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.5px;margin-bottom:8px">Find Your Skill Gap</div>
-    <div style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6">Tell Bexi AI your goal and current skills — get an instant, personalised roadmap of exactly what to learn first.</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6">Enter your goal and current skills — get an instant, personalised roadmap of exactly what to learn first.</div>
     <div style="background:#fff;border:1.5px solid #DDD6FE;border-radius:16px;padding:24px;text-align:left">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
         <div>
@@ -346,12 +345,12 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
         <label style="font-size:12px;font-weight:700;color:var(--ink);display:block;margin-bottom:6px">Skills I Already Have <span style="font-weight:400;color:var(--muted)">(comma-separated)</span></label>
         <input id="gap-skills" type="text" placeholder="e.g. Python, SQL, Excel, JavaScript..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:var(--fb);outline:none;transition:.15s" onfocus="this.style.borderColor='var(--brand)'" onblur="this.style.borderColor='var(--border)'"/>
       </div>
-      <button onclick="analyseSkillGap()" style="width:100%;background:var(--brand);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:700;font-family:var(--ff);cursor:pointer;transition:.2s" onmouseover="this.style.background='var(--brand2)'" onmouseout="this.style.background='var(--brand)'">🔍 Analyse My Skill Gap with Bexi AI →</button>
+      <button onclick="analyseSkillGap()" style="width:100%;background:var(--brand);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:700;font-family:var(--ff);cursor:pointer;transition:.2s" onmouseover="this.style.background='var(--brand2)'" onmouseout="this.style.background='var(--brand)'">🔍 Analyse My Skill Gap →</button>
       <div id="gap-result" style="display:none;margin-top:16px;background:#F5F3FF;border:1.5px solid #DDD6FE;border-radius:12px;padding:18px">
-        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--brand);margin-bottom:8px">🤖 Bexi AI Analysis</div>
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--brand);margin-bottom:8px">🔍 AI Analysis</div>
         <div id="gap-result-text" style="font-size:13.5px;color:var(--ink);line-height:1.75"></div>
       </div>
-      <div id="gap-loading" style="display:none;text-align:center;padding:20px;color:var(--muted);font-size:13px">🤖 Bexi AI is analysing your skill gap...</div>
+      <div id="gap-loading" style="display:none;text-align:center;padding:20px;color:var(--muted);font-size:13px">🤖 Analysing your skill gap......</div>
     </div>
   </div>
 </div>
@@ -752,7 +751,7 @@ async function analyseSkillGap() {
     + skillsLine + ' What am I missing? Which Belongix courses should I start with? '
     + 'Give me a clear 3-month plan in under 150 words. India job market 2026.';
 
-  var SYS = "You are Bexi, an AI career guide for Indian professionals built by Belongix. "
+  var SYS = "You are an AI career guide for Indian professionals built by Belongix. "
     + "You know India 2026 job market — salaries in LPA, top companies, in-demand skills. "
     + "Be specific, practical and encouraging. Format with clear numbered steps.";
 
