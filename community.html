@@ -116,8 +116,8 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);min-height:100
 .action-btn.voted{color:var(--primary);background:var(--primary-lt)}
 .action-btn.upvote svg,.action-btn.voted svg{fill:currentColor}
 .action-sep{flex:1}
-.mentor-btn{padding:5px 12px;border-radius:7px;border:1.5px solid var(--primary);background:none;font-size:12px;font-weight:500;color:var(--primary);cursor:pointer;font-family:var(--ffb);transition:.15s}
-.mentor-btn:hover{background:var(--primary);color:#fff}
+
+
 /* Replies section */
 .replies-section{margin-top:14px;border-top:0.5px solid var(--border);padding-top:14px}
 .reply-item{padding:10px 12px;background:#F8F7FF;border-radius:8px;margin-bottom:8px}
@@ -143,15 +143,15 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);min-height:100
 .trending-item:last-child{border-bottom:none}
 .trending-tag{font-size:13px;font-weight:500;color:var(--ink)}
 .trending-count{font-size:11px;color:var(--muted);background:var(--bg);padding:2px 7px;border-radius:10px}
-/* Mentor online */
-.mentor-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:0.5px solid var(--border)}
-.mentor-row:last-of-type{border-bottom:none}
-.mentor-av-wrap{position:relative;flex-shrink:0}
-.mentor-av-sm{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff}
+
+
+
+
+
 .online-dot{position:absolute;bottom:0;right:0;width:9px;height:9px;border-radius:50%;background:var(--teal);border:2px solid #fff}
-.mentor-info{flex:1;min-width:0}
-.mentor-name{font-size:12px;font-weight:500;color:var(--ink)}
-.mentor-role{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+
+
 .browse-btn{width:100%;padding:8px;border:1.5px solid var(--border);border-radius:8px;background:none;font-size:12px;font-weight:500;color:var(--muted);cursor:pointer;font-family:var(--ffb);margin-top:8px;transition:.15s}
 .browse-btn:hover{border-color:var(--primary);color:var(--primary)}
 /* Salary pulse */
@@ -224,9 +224,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);min-height:100
   <div class="nav-links">
     <a href="dashboard.html?page=jobs" class="nav-link">Jobs</a>
     <a href="courses.html" class="nav-link" style="display:flex;align-items:center;gap:5px">Courses <span style="font-size:9px;font-weight:700;background:#6366F1;color:#fff;border-radius:10px;padding:1px 5px">NEW</span></a>
-    <a href="mentors.html" class="nav-link">Mentors</a>
     <a href="community.html" class="nav-link active">Community</a>
-    <a href="mentors.html#become-mentor" class="nav-link">Become a Mentor</a>
   </div>
   <div class="nav-right">
     <div id="nav-guest" style="display:none;align-items:center;gap:8px">
@@ -307,7 +305,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);min-height:100
       <button class="sort-chip active" data-sort="latest" onclick="setSort('latest',this)">🔥 Latest</button>
       <button class="sort-chip" data-sort="top" onclick="setSort('top',this)">⬆ Top</button>
       <button class="sort-chip" data-sort="unanswered" onclick="setSort('unanswered',this)">💬 Unanswered</button>
-      <button class="sort-chip" data-sort="mentor" onclick="setSort('mentor',this)">🤝 From Mentors</button>
+      
       <button class="sort-chip" data-sort="bexi" onclick="setSort('bexi',this)">🤖 Bexi Answered</button>
     </div>
 
@@ -337,9 +335,7 @@ body{font-family:var(--ffb);background:var(--bg);color:var(--ink);min-height:100
 
     <!-- Mentors Online -->
     <div class="card">
-      <div class="sidebar-title">🟢 Mentors Online</div>
-      <div id="mentors-online"></div>
-      <button class="browse-btn" onclick="window.location.href='mentors.html'">Browse all mentors →</button>
+      
     </div>
 
     <!-- Salary Pulse -->
@@ -426,7 +422,7 @@ var TOPICS = [
   {key:'Rant',    label:'Rant / vent',   emoji:'😤', color:'#BE185D'},
   {key:'Startups',label:'Startups',      emoji:'🚀', color:'#059669'},
   {key:'WFH',     label:'WFH / remote',  emoji:'🏠', color:'#7C3AED'},
-  {key:'Mentorship', label:'Mentorship', emoji:'🤝', color:'#DB2777'},
+  
 ];
 
 var TAG_COLORS = {
@@ -436,7 +432,7 @@ var TAG_COLORS = {
   'Interviews':{'bg':'#F5F3FF','color':'#7C3AED'},
   'Skills':{'bg':'#FFF7ED','color':'#C2410C'},
   'Career Switch':{'bg':'#FEF9C3','color':'#A16207'},
-  'Mentorship':{'bg':'#FDF2F8','color':'#BE185D'},
+  
   'Startups':{'bg':'#F0FDF4','color':'#15803D'},
   'Rant':{'bg':'#FFF1F2','color':'#BE123C'},
   'WFH':{'bg':'#F5F3FF','color':'#6D28D9'}
@@ -456,17 +452,12 @@ var SEED_POSTS = [
   {id:'p8',title:'Remote work in India — which companies actually allow it?',body:'I have a toddler at home and WFH has been a lifesaver. Which companies in India are truly remote-friendly and not just remote-first on paper?',tags:['WFH','Jobs'],author:'Preethi_K',author_id:'u8',is_anonymous:false,role_title:'SDE-2',city:'Coimbatore',upvotes:93,reply_count:0,has_bexi_reply:false,bexi_reply:'',created_at:new Date(Date.now()-3600000*15).toISOString()},
 ];
 
-var MENTORS_ONLINE = [
-  {name:'Rohit S.',role:'SDE-3 @ Google',color:'#2D1B69'},
-  {name:'Anika M.',role:'PM @ Razorpay',color:'#065F46'},
-  {name:'Vikram P.',role:'Lead @ Swiggy',color:'#7C3AED'},
-];
+
 
 /* ── INIT ── */
 window.addEventListener('load', async function() {
   buildTopicList();
   buildModalTags();
-  buildMentorsOnline();
   buildTrending();
   restoreAnonToggle();
 
@@ -531,7 +522,7 @@ function showScoreWidget() {
     {min:0,  max:20, label:'Level 1', next:'Complete profile (+30 pts)'},
     {min:20, max:40, label:'Level 2', next:'Apply to a job (+15 pts)'},
     {min:40, max:60, label:'Level 3', next:'Answer 2 posts (+4 pts)'},
-    {min:60, max:80, label:'Level 4', next:'Book a mentor (+20 pts)'},
+    {min:60, max:80, label:'Level 4', next:'Complete a learning path (+30 pts)'},
     {min:80, max:100,label:'Level 5', next:'You are at the top!'},
   ];
   var lv = levels.find(function(l){ return score >= l.min && score < l.max; }) || levels[4];
@@ -562,7 +553,7 @@ function setTag(key, btn) {
 
 /* ── MODAL TAGS ── */
 function buildModalTags() {
-  var tags = ['Jobs','Salary','Interviews','Skills','Career Switch','Rant','Startups','WFH','Mentorship','Resume'];
+  var tags = ['Jobs','Salary','Interviews','Skills','Career Switch','Rant','Startups','WFH','Resume'];
   document.getElementById('modal-tags').innerHTML = tags.map(function(t) {
     return '<div class="modal-tag" data-tag="' + t + '" onclick="selectModalTag(this)">' + t + '</div>';
   }).join('');
@@ -657,8 +648,6 @@ function getFilteredPosts() {
     posts.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
   } else if (_activeSort === 'unanswered') {
     posts = posts.filter(function(p){ return !(p.reply_count > 0) && !p.has_bexi_reply; });
-  } else if (_activeSort === 'mentor') {
-    posts = posts.filter(function(p){ return p.is_mentor; });
   } else if (_activeSort === 'bexi') {
     posts = posts.filter(function(p){ return p.has_bexi_reply; });
   }
@@ -775,7 +764,7 @@ function renderPostCard(p) {
     'Share' +
     '</button>' +
     '<div class="action-sep"></div>' +
-    '<button class="mentor-btn" onclick="askMentor(\'' + esc(p.title) + '\')">Ask a mentor</button>' +
+    
     '</div>' +
     '</div>';
 }
@@ -852,9 +841,7 @@ function sharePost(id, title) {
   } else { showToast('Copy: ' + url); }
 }
 
-function askMentor(title) {
-  window.location.href = 'mentors.html?context=' + encodeURIComponent(title);
-}
+
 
 /* ── COMPOSE MODAL ── */
 function openAskModal() {
@@ -979,14 +966,7 @@ async function triggerBexiReply(post) {
 }
 
 /* ── RIGHT SIDEBAR ── */
-function buildMentorsOnline() {
-  document.getElementById('mentors-online').innerHTML = MENTORS_ONLINE.map(function(m) {
-    return '<div class="mentor-row">' +
-      '<div class="mentor-av-wrap"><div class="mentor-av-sm" style="background:' + m.color + '">' + m.name.substring(0,2) + '</div><div class="online-dot"></div></div>' +
-      '<div class="mentor-info"><div class="mentor-name">' + m.name + '</div><div class="mentor-role">' + m.role + '</div></div>' +
-      '</div>';
-  }).join('');
-}
+
 
 function buildTrending() {
   var trending = [
