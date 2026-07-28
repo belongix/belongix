@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Belongix Courses — Learn, Get Certified, Get Hired</title>
-<meta name="description" content="50+ free courses across Development, Coding and AI. Earn verified Belongix certificates. Built for Indian professionals."/>
+<title>Career Courses & Learning Paths — Belongix | Free · Certified · India-Built</title>
+<meta name="description" content="50+ India-relevant courses across Development, Coding and AI. Structured career learning paths with clear salary outcomes. Free Belongix certificates. Built for Indian professionals."/>
 <link rel="icon" href="icons/icon-32.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -92,6 +92,8 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
 .section-sub{font-size:13px;color:var(--muted)}
 
 /* COURSE GRID */
+.path-card:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.25)!important}
+.path-card{transition:.22s cubic-bezier(.4,0,.2,1)!important}
 .courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px;margin-bottom:40px}
 .course-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;overflow:hidden;transition:.2s;cursor:pointer;display:flex;flex-direction:column;position:relative}
 .course-card:hover{border-color:var(--brand);box-shadow:0 8px 28px rgba(45,27,105,.14);transform:translateY(-3px)}
@@ -145,10 +147,11 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
 <nav class="nav">
   <a href="index.html" class="nav-logo">Belong<span>ix</span><span style="font-size:9px;background:var(--accent);color:#fff;border-radius:10px;padding:2px 7px;margin-left:6px;vertical-align:middle;letter-spacing:.3px">BETA</span></a>
   <div class="nav-links">
-    <a href="dashboard.html?page=jobs" class="nl">Jobs</a>
     <a href="courses.html" class="nl on">Courses</a>
     <a href="mentors.html" class="nl">Mentors</a>
     <a href="community.html" class="nl">Community</a>
+    <a href="dashboard.html?page=salary" class="nl">Salary</a>
+    <a href="resume-builder.html" class="nl">Resume</a>
   </div>
   <div class="nav-r">
     <div id="nav-guest"><a href="index.html" class="nbtn ghost">Sign In</a><a href="index.html" class="nbtn fill">Join Free →</a></div>
@@ -159,16 +162,19 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
 <!-- HERO -->
 <div class="hero">
   <div class="hero-inner">
-    <div class="hero-pill">🏆 Free · Verified Certificates · India-Specific</div>
-    <h1>Learn Anything.<br/><em>Get Certified by Belongix.</em></h1>
-    <p class="hero-sub">50 courses across Development, Coding and AI — built specifically for Indian professionals. Complete a course, pass the quiz, earn a verified certificate you can share on LinkedIn.</p>
+    <div class="hero-pill">🚀 Free to Start · Verified Certificates · Built for India</div>
+    <h1>Learn Your Way to<br/><em>A Better Career.</em></h1>
+    <p class="hero-sub">Structured learning paths built for India's job market. 50+ courses across Development, Coding and AI — each with a clear salary outcome and a Belongix certificate you can share on LinkedIn.</p>
     <div class="hero-stats">
-      <div class="hstat"><div class="hstat-v" id="h-courses">50</div><div class="hstat-l">Courses</div></div>
+      <div class="hstat"><div class="hstat-v" id="h-courses">50+</div><div class="hstat-l">Courses</div></div>
+      <div class="hstat"><div class="hstat-v">8</div><div class="hstat-l">Career Paths</div></div>
       <div class="hstat"><div class="hstat-v">Free</div><div class="hstat-l">Always</div></div>
-      <div class="hstat"><div class="hstat-v">3</div><div class="hstat-l">Domains</div></div>
       <div class="hstat"><div class="hstat-v">Verified</div><div class="hstat-l">Certificates</div></div>
     </div>
-    <a href="#courses" class="hero-cta">Browse All Courses →</a>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:4px">
+      <a href="#learning-paths" class="hero-cta">Explore Learning Paths →</a>
+      <a href="#courses" style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.25);color:#fff;padding:14px 28px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;font-family:var(--ff);transition:.2s">Browse All Courses</a>
+    </div>
   </div>
 </div>
 
@@ -176,9 +182,178 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
 <div class="domain-bar">
   <div class="domain-inner">
     <button class="dtab on" data-domain="all" onclick="setDomain('all',this)">🌐 All <span class="dtab-count" id="cnt-all">50</span></button>
-    <button class="dtab" data-domain="Development" onclick="setDomain('Development',this)">💻 Development <span class="dtab-count" id="cnt-dev">0</span></button>
-    <button class="dtab" data-domain="Coding" onclick="setDomain('Coding',this)">👨‍💻 Coding <span class="dtab-count" id="cnt-cod">0</span></button>
-    <button class="dtab" data-domain="AI" onclick="setDomain('AI',this)">🤖 AI <span class="dtab-count" id="cnt-ai">0</span></button>
+    <button class="dtab" data-domain="Development" onclick="setDomain('Development',this)">💻 Development <span class="dtab-count" id="cnt-dev">20</span></button>
+    <button class="dtab" data-domain="Coding" onclick="setDomain('Coding',this)">👨‍💻 Coding <span class="dtab-count" id="cnt-cod">15</span></button>
+    <button class="dtab" data-domain="AI" onclick="setDomain('AI',this)">🤖 AI <span class="dtab-count" id="cnt-ai">15</span></button>
+  </div>
+</div>
+
+<!-- LEARNING PATHS -->
+<div id="learning-paths" style="background:#fff;border-bottom:1.5px solid var(--border);padding:40px 24px 48px">
+  <div style="max-width:1280px;margin:0 auto">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:28px">
+      <div>
+        <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--brand);margin-bottom:6px">Structured Career Paths</div>
+        <div style="font-family:var(--ff);font-size:26px;font-weight:800;color:var(--ink);letter-spacing:-.5px;margin-bottom:6px">From Where You Are → Where You Want to Be</div>
+        <div style="font-size:14px;color:var(--muted)">Each path has a clear sequence, time estimate and salary outcome. Start free.</div>
+      </div>
+      <div style="font-size:13px;color:var(--muted)">8 paths · 50+ courses · All India-relevant</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" id="paths-grid">
+
+      <!-- Full Stack -->
+      <div class="path-card" onclick="filterByPath('fullstack')" style="background:linear-gradient(135deg,#134E4A,#0D9488);border-radius:16px;padding:22px;cursor:pointer;transition:.2s;position:relative;overflow:hidden">
+        <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#fff">🔥 Most Popular</div>
+        <div style="font-size:32px;margin-bottom:12px">🖥️</div>
+        <div style="font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">Full Stack Developer</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:12px">HTML → CSS → JS → React → Node → PostgreSQL → AWS</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">⏱ 6 months</span>
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">7 courses</span>
+          <span style="background:rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#FCD34D">₹8–18 LPA</span>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.9)">Start This Path →</div>
+      </div>
+
+      <!-- Data Analyst -->
+      <div class="path-card" onclick="filterByPath('data-analyst')" style="background:linear-gradient(135deg,#BE185D,#9333EA);border-radius:16px;padding:22px;cursor:pointer;transition:.2s;position:relative;overflow:hidden">
+        <div style="position:absolute;top:12px;right:12px;background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#fff">🔥 Most Popular</div>
+        <div style="font-size:32px;margin-bottom:12px">📊</div>
+        <div style="font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">Data Analyst</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:12px">SQL → Python → Pandas → Tableau → Statistics</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">⏱ 4 months</span>
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">6 courses</span>
+          <span style="background:rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#FCD34D">₹6–14 LPA</span>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.9)">Start This Path →</div>
+      </div>
+
+      <!-- AI/ML -->
+      <div class="path-card" onclick="filterByPath('ai-ml')" style="background:linear-gradient(135deg,#4C1D95,#7C3AED);border-radius:16px;padding:22px;cursor:pointer;transition:.2s">
+        <div style="font-size:32px;margin-bottom:12px">🤖</div>
+        <div style="font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">AI / ML Engineer</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:12px">Python → ML Basics → Deep Learning → LangChain → GenAI</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">⏱ 8 months</span>
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">8 courses</span>
+          <span style="background:rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#FCD34D">₹18–45 LPA</span>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.9)">Start This Path →</div>
+      </div>
+
+      <!-- Cloud -->
+      <div class="path-card" onclick="filterByPath('cloud')" style="background:linear-gradient(135deg,#FF9900,#c47800);border-radius:16px;padding:22px;cursor:pointer;transition:.2s">
+        <div style="font-size:32px;margin-bottom:12px">☁️</div>
+        <div style="font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">Cloud Engineer</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.85);margin-bottom:12px">Linux → AWS → EC2/S3 → Kubernetes → Terraform</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span style="background:rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">⏱ 5 months</span>
+          <span style="background:rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">7 courses</span>
+          <span style="background:rgba(255,255,255,.25);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#fff">₹12–28 LPA</span>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.9)">Start This Path →</div>
+      </div>
+
+      <!-- Product Manager -->
+      <div class="path-card" onclick="filterByPath('pm')" style="background:linear-gradient(135deg,#0C4A6E,#0369A1);border-radius:16px;padding:22px;cursor:pointer;transition:.2s">
+        <div style="font-size:32px;margin-bottom:12px">🎯</div>
+        <div style="font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">Product Manager</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:12px">Product Thinking → User Research → SQL → Metrics → Cases</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">⏱ 3 months</span>
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">5 courses</span>
+          <span style="background:rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#FCD34D">₹15–35 LPA</span>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.9)">Start This Path →</div>
+      </div>
+
+      <!-- UI/UX -->
+      <div class="path-card" onclick="filterByPath('uiux')" style="background:linear-gradient(135deg,#9333EA,#C084FC);border-radius:16px;padding:22px;cursor:pointer;transition:.2s">
+        <div style="font-size:32px;margin-bottom:12px">🎨</div>
+        <div style="font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">UI/UX Designer</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.8);margin-bottom:12px">Design Principles → Figma → User Research → Prototyping</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">⏱ 4 months</span>
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">6 courses</span>
+          <span style="background:rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#FCD34D">₹8–20 LPA</span>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.9)">Start This Path →</div>
+      </div>
+
+      <!-- Data Engineer -->
+      <div class="path-card" onclick="filterByPath('data-eng')" style="background:linear-gradient(135deg,#065F46,#059669);border-radius:16px;padding:22px;cursor:pointer;transition:.2s">
+        <div style="font-size:32px;margin-bottom:12px">📈</div>
+        <div style="font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">Data Engineer</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.7);margin-bottom:12px">SQL → Python → Spark → dbt → Kafka → Airflow</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">⏱ 6 months</span>
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">7 courses</span>
+          <span style="background:rgba(255,255,255,.2);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#FCD34D">₹14–32 LPA</span>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.9)">Start This Path →</div>
+      </div>
+
+      <!-- Cybersecurity -->
+      <div class="path-card" onclick="filterByPath('security')" style="background:linear-gradient(135deg,#1F2937,#374151);border-radius:16px;padding:22px;cursor:pointer;transition:.2s">
+        <div style="font-size:32px;margin-bottom:12px">🔐</div>
+        <div style="font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:4px">Cybersecurity</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.65);margin-bottom:12px">Networking → Linux Security → Ethical Hacking → OWASP</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span style="background:rgba(255,255,255,.12);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">⏱ 5 months</span>
+          <span style="background:rgba(255,255,255,.12);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:600;color:#fff">6 courses</span>
+          <span style="background:rgba(255,255,255,.15);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:700;color:#FCD34D">₹10–25 LPA</span>
+        </div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.9)">Start This Path →</div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- SKILL GAP ANALYSER -->
+<div id="skill-gap" style="background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border-bottom:1.5px solid #DDD6FE;padding:40px 24px">
+  <div style="max-width:760px;margin:0 auto;text-align:center">
+    <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--brand);margin-bottom:8px">AI-Powered</div>
+    <div style="font-family:var(--ff);font-size:24px;font-weight:800;color:var(--ink);letter-spacing:-.5px;margin-bottom:8px">Find Your Skill Gap</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6">Tell Bexi AI your goal and current skills — get an instant, personalised roadmap of exactly what to learn first.</div>
+    <div style="background:#fff;border:1.5px solid #DDD6FE;border-radius:16px;padding:24px;text-align:left">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--ink);display:block;margin-bottom:6px">My Goal Role</label>
+          <select id="gap-goal" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:var(--fb);background:#fff;color:var(--ink);outline:none">
+            <option value="">Select your target role...</option>
+            <option>Full Stack Developer</option>
+            <option>Data Analyst</option>
+            <option>AI / ML Engineer</option>
+            <option>Cloud Engineer</option>
+            <option>Product Manager</option>
+            <option>UI/UX Designer</option>
+            <option>Data Engineer</option>
+            <option>Cybersecurity Analyst</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px;font-weight:700;color:var(--ink);display:block;margin-bottom:6px">Years of Experience</label>
+          <select id="gap-exp" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:var(--fb);background:#fff;color:var(--ink);outline:none">
+            <option>Fresher (0–1 yr)</option>
+            <option>1–3 years</option>
+            <option>3–5 years</option>
+            <option>5+ years</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-bottom:16px">
+        <label style="font-size:12px;font-weight:700;color:var(--ink);display:block;margin-bottom:6px">Skills I Already Have <span style="font-weight:400;color:var(--muted)">(comma-separated)</span></label>
+        <input id="gap-skills" type="text" placeholder="e.g. Python, SQL, Excel, JavaScript..." style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;font-family:var(--fb);outline:none;transition:.15s" onfocus="this.style.borderColor='var(--brand)'" onblur="this.style.borderColor='var(--border)'"/>
+      </div>
+      <button onclick="analyseSkillGap()" style="width:100%;background:var(--brand);color:#fff;border:none;padding:13px;border-radius:10px;font-size:14px;font-weight:700;font-family:var(--ff);cursor:pointer;transition:.2s" onmouseover="this.style.background='var(--brand2)'" onmouseout="this.style.background='var(--brand)'">🔍 Analyse My Skill Gap with Bexi AI →</button>
+      <div id="gap-result" style="display:none;margin-top:16px;background:#F5F3FF;border:1.5px solid #DDD6FE;border-radius:12px;padding:18px">
+        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--brand);margin-bottom:8px">🤖 Bexi AI Analysis</div>
+        <div id="gap-result-text" style="font-size:13.5px;color:var(--ink);line-height:1.75"></div>
+      </div>
+      <div id="gap-loading" style="display:none;text-align:center;padding:20px;color:var(--muted);font-size:13px">🤖 Bexi AI is analysing your skill gap...</div>
+    </div>
   </div>
 </div>
 
@@ -217,6 +392,31 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100v
       <div style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px"></div>
       <div style="font-size:14px;color:var(--muted)">Loading courses...</div>
     </div>
+  </div>
+</div>
+
+
+<!-- CERTIFICATE SHOWCASE -->
+<div style="background:linear-gradient(135deg,#0F0527,#2D1B69);border-radius:20px;padding:36px;margin:32px 0;display:flex;align-items:center;gap:32px;flex-wrap:wrap">
+  <div style="flex:1;min-width:220px">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:8px">Belongix Certified</div>
+    <div style="font-family:var(--ff);font-size:22px;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.3">Complete a path.<br/>Earn a certificate.</div>
+    <div style="font-size:13.5px;color:rgba(255,255,255,.6);line-height:1.7;margin-bottom:16px">Every learning path ends with a verified Belongix Certificate — complete with your name, path, date and a QR verification code. Share it on LinkedIn with one click.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;color:rgba(255,255,255,.8)">✅ QR Verified</span>
+      <span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;color:rgba(255,255,255,.8)">🔗 LinkedIn Ready</span>
+      <span style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;color:rgba(255,255,255,.8)">🆓 Always Free</span>
+    </div>
+  </div>
+  <!-- Sample Certificate Preview -->
+  <div style="background:linear-gradient(135deg,#1A0B4B,#2D1B69);border:1.5px solid rgba(255,255,255,.15);border-radius:16px;padding:24px 28px;min-width:260px;max-width:320px;text-align:center;flex-shrink:0;box-shadow:0 20px 48px rgba(0,0,0,.4)">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:12px">Certificate of Completion</div>
+    <div style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:6px">This certifies that</div>
+    <div style="font-family:var(--ff);font-size:20px;font-weight:800;color:#FCD34D;margin-bottom:6px;letter-spacing:.5px">Your Name Here</div>
+    <div style="font-size:12px;color:rgba(255,255,255,.5);margin-bottom:4px">has successfully completed</div>
+    <div style="font-family:var(--ff);font-size:14px;font-weight:700;color:#fff;margin-bottom:4px">Full Stack Developer Path</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:16px">July 2026 · ID: BX2026-FS-4821</div>
+    <div style="font-size:10px;color:rgba(255,255,255,.3);border-top:1px solid rgba(255,255,255,.1);padding-top:10px">Belongix · belongix.in/verify/BX2026-FS-4821</div>
   </div>
 </div>
 
@@ -492,6 +692,100 @@ function showGuestNav(){
 /* ── HELPERS ── */
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
+
+/* ── FILTER BY PATH ── */
+var PATH_FILTERS = {
+  'fullstack':    ['web-development-fundamentals','full-stack-development','frontend-development','backend-development','dsa-fundamentals','cloud-computing-aws','devops-engineering'],
+  'data-analyst': ['data-analytics','business-analytics','sql-development','python-development','data-science-india','business-analytics'],
+  'ai-ml':        ['artificial-intelligence-fundamentals','machine-learning-complete','deep-learning','generative-ai-complete','llm-engineering','data-science-ai','ai-engineering'],
+  'cloud':        ['cloud-computing-aws','devops-engineering','networking-fundamentals','cybersecurity-fundamentals','database-administration'],
+  'pm':           ['business-analytics','data-analytics','sql-development','ui-ux-design','data-science-india'],
+  'uiux':         ['ui-ux-design','frontend-development','web-development-fundamentals','mobile-app-development'],
+  'data-eng':     ['sql-development','python-development','data-analytics','data-science-india','machine-learning-complete'],
+  'security':     ['cybersecurity-fundamentals','networking-fundamentals','python-development','devops-engineering','database-administration']
+};
+
+function filterByPath(pathKey) {
+  var slugs = PATH_FILTERS[pathKey] || [];
+  if (!slugs.length) return;
+  /* Scroll to courses */
+  var coursesEl = document.getElementById('courses');
+  if (coursesEl) coursesEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  /* Filter to matching courses — highlight them */
+  var cards = document.querySelectorAll('.course-card');
+  cards.forEach(function(card) {
+    var slug = card.getAttribute('data-slug') || '';
+    if (slugs.indexOf(slug) !== -1) {
+      card.style.border = '2px solid var(--brand)';
+      card.style.transform = 'scale(1.02)';
+      setTimeout(function(){ card.style.transform = ''; }, 1200);
+    } else {
+      card.style.opacity = '0.4';
+    }
+  });
+  /* Reset after 4 seconds */
+  setTimeout(function() {
+    cards.forEach(function(card) {
+      card.style.opacity = '';
+      card.style.border = '';
+    });
+  }, 5000);
+  /* Also set domain filter to All so all cards show */
+  setDomain('all');
+}
+
+/* ── SKILL GAP ANALYSER ── */
+async function analyseSkillGap() {
+  var goal   = (document.getElementById('gap-goal') || {}).value || '';
+  var exp    = (document.getElementById('gap-exp') || {}).value || 'Fresher';
+  var skills = (document.getElementById('gap-skills') || {}).value || '';
+  var result  = document.getElementById('gap-result');
+  var loading = document.getElementById('gap-loading');
+  var resultText = document.getElementById('gap-result-text');
+
+  if (!goal) { alert('Please select your goal role first'); return; }
+
+  if (result)  result.style.display  = 'none';
+  if (loading) loading.style.display = 'block';
+
+  var skillsLine = skills ? ('I already know: ' + skills + '.') : 'I am starting from scratch.';
+  var prompt = 'I want to become a ' + goal + ' in India. I have ' + exp + ' of experience. '
+    + skillsLine + ' What am I missing? Which Belongix courses should I start with? '
+    + 'Give me a clear 3-month plan in under 150 words. India job market 2026.';
+
+  var SYS = "You are Bexi, an AI career guide for Indian professionals built by Belongix. "
+    + "You know India 2026 job market — salaries in LPA, top companies, in-demand skills. "
+    + "Be specific, practical and encouraging. Format with clear numbered steps.";
+
+  try {
+    var apiKey = typeof BX_API_KEY !== 'undefined' ? BX_API_KEY : 'YOUR_CLAUDE_API_KEY_HERE';
+    var resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 400,
+        system: SYS,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    var data = await resp.json();
+    var text = (data.content && data.content[0]) ? data.content[0].text : 'Unable to analyse right now — please try again.';
+    if (resultText) resultText.innerHTML = text.replace(/\n/g, '<br/>');
+    if (loading) loading.style.display = 'none';
+    if (result)  result.style.display  = 'block';
+  } catch(e) {
+    if (loading) loading.style.display = 'none';
+    if (result)  result.style.display  = 'block';
+    if (resultText) resultText.textContent = 'Connection error — please try again.';
+  }
+}
+
 </script>
 </body>
 </html>
