@@ -637,7 +637,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
   </button>
   
   
-  <button class="mnb-item" id="mnb-upskill" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'));setMobActive('mnb-upskill')">
+  <button class="mnb-item" id="mnb-upskill" onclick="window.location.href='courses.html');setMobActive('mnb-upskill')">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01z"/></svg>
     <span>Learn</span>
   </button>
@@ -669,9 +669,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
       <button class="sb-link" data-page="mycourses" onclick="showPage('mycourses',this)">
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>My Courses
       </button>
-      <button class="sb-link" data-page="upskill" onclick="showPage('upskill',this)">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3m8 0h3a2 2 0 002-2v-3"/></svg>Upskilling Hub
-      </button>
+
       
       
       
@@ -685,31 +683,9 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>Settings
       </button>
     </div>
-    <div class="sb-group">
-      <div class="sb-group-label">Tools</div>
       <a class="sb-link" href="courses.html" style="text-decoration:none">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Courses
-        <span style="margin-left:auto;font-size:9px;font-weight:700;background:#6366F1;color:#fff;border-radius:10px;padding:1px 6px">NEW</span>
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>Browse Courses
       </a>
-      
-      <a class="sb-link" href="resume-builder.html" target="_blank" style="text-decoration:none">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>Resume Builder
-      </a>
-      
-      
-    </div>
-  </nav>
-  <button class="sb-upgrade" data-page="upgrade" onclick="showPage('upgrade',null)" style="cursor:pointer!important;pointer-events:all!important">
-    <div class="sb-upgrade-title">&#9889; Upgrade your plan</div>
-    <div class="sb-upgrade-text">Go Pro &mdash; &#8377;499/month</div>
-  </button>
-  <div class="sb-bottom">
-    <div class="sb-user">
-      <div class="sb-av" id="sb-avatar">?</div>
-      <div style="flex:1;min-width:0">
-        <div class="sb-name" id="sb-name">Loading...</div>
-        <div class="sb-role-txt" id="sb-role">Member</div>
-      </div>
       <button class="sb-signout" onclick="signOut()" title="Sign Out">
         <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/></svg>
       </button>
@@ -774,12 +750,12 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         <div class="wc-item-text">Add 5+ skills</div>
         <div class="wc-item-pts" id="wc-pts-skills">+15 pts</div>
       </div>
-      <div class="wc-item" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))">
+      <div class="wc-item" onclick="window.location.href='courses.html')">
         <div class="wc-item-check" id="wc-chk-apply">☐</div>
         <div class="wc-item-text">Start your first course</div>
         <div class="wc-item-pts" id="wc-pts-apply">+15 pts</div>
       </div>
-      <div class="wc-item" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))">
+      <div class="wc-item" onclick="window.location.href='courses.html')">
         <div class="wc-item-check" id="wc-chk-course">☐</div>
         <div class="wc-item-text">Complete a course</div>
         <div class="wc-item-pts" id="wc-pts-course">+10 pts</div>
@@ -839,10 +815,10 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     </div>
     <div class="port-ql">
       <div class="psc-lbl" style="margin-bottom:5px">Quick Access</div>
-      <div class="ql-row" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))"><div class="ql-ic" style="background:#EFEFF8">&#128188;</div><span class="ql-name">Browse Courses</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-row" onclick="window.location.href='courses.html')"><div class="ql-ic" style="background:#EFEFF8">&#128188;</div><span class="ql-name">Browse Courses</span><span class="ql-arr">&#8250;</span></div>
       <div class="ql-row" onclick="window.location.href='courses.html#learning-paths'"><div class="ql-ic" style="background:#ECFDF5">&#128172;</div><span class="ql-name">Career Paths</span><span class="ql-arr">&#8250;</span></div>
-      <div class="ql-row" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))"><div class="ql-ic" style="background:#FEF9C3">&#127891;</div><span class="ql-name">Upskilling Hub</span><span class="ql-arr">&#8250;</span></div>
-      <div class="ql-row" onclick="showPage('upskill',document.querySelector('[data-page=upskill]')))"><div class="ql-ic" style="background:#FFF1F2">&#129309;</div><span class="ql-name">Find a Mentor</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-row" onclick="window.location.href='courses.html')"><div class="ql-ic" style="background:#FEF9C3">&#127891;</div><span class="ql-name">Browse Courses</span><span class="ql-arr">&#8250;</span></div>
+      <div class="ql-row" onclick="window.location.href='courses.html'))"><div class="ql-ic" style="background:#FFF1F2">&#129309;</div><span class="ql-name">Find a Mentor</span><span class="ql-arr">&#8250;</span></div>
       <span class="ql-name">Community Q&amp;A</span><span style="font-size:9px;font-weight:700;background:#10B981;color:#fff;border-radius:10px;padding:1px 6px;margin-left:auto">NEW</span></div>
       <div class="ql-row" onclick="showPage('settings',document.querySelector('[data-page=settings]'))"><div class="ql-ic" style="background:#FEF9C3">&#127881;</div><span class="ql-name">Referral Program</span><span style="font-size:9px;font-weight:700;background:#F59E0B;color:#fff;border-radius:10px;padding:1px 6px;margin-left:auto">+10 pts</span></div>
       <div class="ql-row" onclick="window.open('resume-builder.html','_blank')"><div class="ql-ic" style="background:#EFF6FF">&#128196;</div><span class="ql-name">Resume Builder</span><span class="ql-arr">&#8250;</span></div>
@@ -930,10 +906,10 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     <div class="psec2"><div class="psec2-head"><div class="psec2-title"><svg width="13" height="13" viewBox="0 0 24 24" fill="#0077B5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z"/></svg> LinkedIn</div><a id="li-link" href="#" target="_blank" style="font-size:12px;color:#0077B5;display:none">View &#8599;</a></div>
       <div class="li-row"><input class="li-inp" id="li-inp" placeholder="https://linkedin.com/in/yourname"/><button class="li-save" onclick="saveLinkedIn()">Save</button></div>
     </div>
-    <div class="psec2"><div class="psec2-head"><div class="psec2-title">&#127942; Courses &amp; Certifications</div><button class="psec2-btn" onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))">Browse</button></div>
-      <div style="display:flex;align-items:center;gap:10px;padding:9px 0"><div style="width:34px;height:34px;border-radius:8px;background:#ECFDF5;display:flex;align-items:center;justify-content:center;font-size:15px">&#127891;</div><div><div style="font-size:13px;font-weight:600;color:var(--ink)">150+ Courses Available</div><div style="font-size:11px;color:var(--muted)">Google, AWS, Coursera, Kaggle, NPTEL</div></div><button onclick="showPage('upskill',document.querySelector('[data-page=upskill]'))" style="margin-left:auto;background:#2D1B69;color:#fff;border:none;border-radius:7px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0">Start &#8250;</button></div>
+    <div class="psec2"><div class="psec2-head"><div class="psec2-title">&#127942; Courses &amp; Certifications</div><button class="psec2-btn" onclick="window.location.href='courses.html')">Browse</button></div>
+      <div style="display:flex;align-items:center;gap:10px;padding:9px 0"><div style="width:34px;height:34px;border-radius:8px;background:#ECFDF5;display:flex;align-items:center;justify-content:center;font-size:15px">&#127891;</div><div><div style="font-size:13px;font-weight:600;color:var(--ink)">150+ Courses Available</div><div style="font-size:11px;color:var(--muted)">Full Stack · AI/ML · DevOps · DSA · 22 domains</div></div><button onclick="window.location.href='courses.html')" style="margin-left:auto;background:#2D1B69;color:#fff;border:none;border-radius:7px;padding:5px 11px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;flex-shrink:0">Start &#8250;</button></div>
     </div>
-    <div class="psec2"><div class="psec2-head"><div class="psec2-title">&#128196; Resume</div><button class="set-alert-btn" onclick="openResumeBuilder()" style="font-size:11.5px;padding:5px 12px">&#128196; Build Resume</button></div>
+    <div class="psec2"><div class="psec2-head"><div class="psec2-title">&#128196; Resume</div><button class="set-alert-btn" onclick="showPage('profile',document.querySelector('[data-page=profile]'))" style="font-size:11.5px;padding:5px 12px">&#128196; Build Resume</button></div>
       <div id="resume-drop" class="resume-drop" onclick="document.getElementById('res-file').click()">
         <div style="font-size:26px;margin-bottom:6px">&#128196;</div>
         <div style="font-size:13px;font-weight:600;color:var(--ink2);margin-bottom:2px">Upload Resume</div>
@@ -980,83 +956,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     <a href="courses.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--brand);color:#fff;border-radius:10px;font-family:var(--ff);font-size:14px;font-weight:700;text-decoration:none">🚀 Browse 1000+ Courses →</a>
   </div>
 </div>
-<div class="page-section" id="page-upskill"><div class="page-title">Upskilling Hub</div>
-      <div class="page-subtitle">Real courses from Google, AWS, Meta, Kaggle, Scaler, NPTEL — trending in 2026</div>
-      <!-- ✅ FIX #21: Progress summary bar -->
-      <div class="up-summary-bar" id="up-summary-bar">
-        <div class="up-stat"><div class="up-stat-num" id="up-stat-total">0</div><div class="up-stat-lbl">Courses Started</div></div>
-        <div class="up-stat"><div class="up-stat-num" id="up-stat-done" style="color:#10B981">0</div><div class="up-stat-lbl">Completed</div></div>
-        <div class="up-stat"><div class="up-stat-num" id="up-stat-pts" style="color:#F59E0B">0</div><div class="up-stat-lbl">Score Pts Earned</div></div>
-        <div style="flex:1;display:flex;align-items:center;justify-content:flex-end">
-          <button onclick="upShowCompleted()" style="font-size:11.5px;font-weight:600;color:#2D1B69;background:none;border:1.5px solid rgba(45,27,105,.2);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:inherit" id="up-completed-btn">🏅 My Completed</button>
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px" id="upskillFilters"></div>
-
-      <!-- ✅ FIX #22: SKILL GAP ANALYSER -->
-      <div class="sg-wrap" id="sg-wrap">
-        <div class="sg-head">
-          <div>
-            <div class="sg-title">🎯 Skill Gap Analyser</div>
-            <div class="sg-sub">Select a target role to see exactly which skills you have and which you need.</div>
-          </div>
-          <div class="sg-controls">
-            <select class="sg-select" id="sg-role-select">
-              <option value="">— Choose your target role —</option>
-              <option value="sde">Software Engineer (SDE)</option>
-              <option value="sde2">Senior Software Engineer (SDE-2)</option>
-              <option value="datascience">Data Scientist</option>
-              <option value="mlengineer">ML / AI Engineer</option>
-              <option value="dataengineer">Data Engineer</option>
-              <option value="devops">DevOps / SRE Engineer</option>
-              <option value="product">Product Manager</option>
-              <option value="ux">UI / UX Designer</option>
-              <option value="fullstack">Full Stack Developer</option>
-              <option value="backend">Backend Engineer</option>
-              <option value="frontend">Frontend Engineer</option>
-              <option value="cybersecurity">Cybersecurity Analyst</option>
-            </select>
-            <button class="sg-btn" onclick="sgAnalyse()">Analyse →</button>
-          </div>
-        </div>
-        <div class="sg-result" id="sg-result"></div>
-      </div>
-
-      <div id="tracksGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px"></div>
-      <style>
-        .cCard{background:white;border:1.5px solid #E2E8F0;border-radius:16px;padding:20px;transition:.25s}
-        .cCard:hover{border-color:#2563EB;box-shadow:0 4px 20px rgba(37,99,235,.1)}
-        .cLink{display:flex;align-items:center;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s;margin-bottom:7px;gap:10px}
-        .cLink:hover{background:#EFF6FF;border-color:#2563EB}.cLink:last-child{margin-bottom:0}
-        .tTab{padding:6px 14px;border-radius:20px;border:1.5px solid #E2E8F0;background:white;color:#64748B;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:.2s}
-        .tTab.active,.tTab:hover{background:#EFF6FF;color:#2563EB;border-color:#2563EB}
-        .bFree{background:#F0FDF4;color:#15803D;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
-        .bHot{background:#FFF1F2;color:#BE123C;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
-        .bCert{background:#FEF9C3;color:#A16207;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
-        .bPaid{background:#F5F3FF;color:#7C3AED;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
-        .bIndia{background:#FFF7ED;color:#C2410C;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;flex-shrink:0}
-        /* ✅ FIX #21: Course progress pills and start button */
-        .cLink-wrap{position:relative}
-        .cLink-prog{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E2E8F0;border-radius:10px;text-decoration:none;transition:.15s;margin-bottom:7px;gap:10px;cursor:pointer;background:#fff;position:relative;z-index:5}
-        .cLink-prog:hover{background:#EFF6FF;border-color:#2563EB}
-        .cLink-prog.in-progress{border-color:#F59E0B;background:#FFFBEB}
-        .cLink-prog.completed{border-color:#10B981;background:#F0FDF4;opacity:.8}
-        .cp-pill{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;white-space:nowrap}
-        .cp-pill.not-started{background:#F1F5F9;color:#64748B}
-        .cp-pill.in-progress{background:#FEF9C3;color:#A16207}
-        .cp-pill.completed{background:#DCFCE7;color:#15803D}
-        .cp-bar-bg{height:3px;background:#E2E8F0;border-radius:3px;margin-top:4px;overflow:hidden}
-        .cp-bar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#2D1B69,#06B6D4);transition:width .6s ease}
-        .cp-start-btn{font-size:11px;font-weight:700;color:#2563EB;flex-shrink:0;white-space:nowrap}
-        .cp-start-btn.done{color:#10B981}
-        .up-summary-bar{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;padding:14px 18px;background:linear-gradient(135deg,rgba(45,27,105,.05),rgba(107,72,204,.04));border:1.5px solid rgba(45,27,105,.1);border-radius:14px}
-        .up-stat{text-align:center;min-width:60px}
-        .up-stat-num{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:#2D1B69;line-height:1}
-        .up-stat-lbl{font-size:10.5px;color:#64748B;margin-top:3px;font-weight:500}
-      </style>
-    </div>
-    <!-- ✅ FIX #16: Salary section with tabs — Benchmarks + Compare Offers -->
-    <div class="page-section" id="page-profile"><div class="pw">
+<div class="page-section" id="page-profile"><div class="pw">
   <div class="pl">
     <div class="pcard">
       <div class="pbanner"></div>
@@ -2278,7 +2178,6 @@ function showPage(page, btn) {
   }
   /* 5. Topbar title */
   var titles = {overview:'Portfolio',jobs:'Jobs & Internships',mycourses:'My Courses',
-    upskill:'Upskilling Hub',
     
     profile:'My Profile',settings:'Settings',upgrade:'Upgrade Plan'};
   var tb = document.getElementById('topbar-title');
@@ -2287,7 +2186,6 @@ function showPage(page, btn) {
   try { window.history.replaceState(null,'','#'+page); } catch(e) {}
   /* 7. Page-specific loaders — all in one place, no wrappers needed */
   if (page === 'mycourses') { if(typeof loadMyCourses==='function') loadMyCourses(); }
-  if (page === 'upskill') { setTimeout(function(){ if(typeof renderFilters==='function'){renderFilters();renderTracks();} }, 50); }
   if (page === 'settings' && typeof currentUser!=='undefined' && currentUser) { if(typeof refPopulateSettings==='function') refPopulateSettings(currentUser.id); }
   /* 8. Close mobile sidebar */
   var sb = document.querySelector('.sidebar');
