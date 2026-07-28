@@ -102,38 +102,38 @@ nav{position:fixed;top:0;left:0;right:0;z-index:900;height:64px;display:flex;ali
 .mm-btns{display:flex;flex-direction:column;gap:10px;margin-top:24px}
 
 /* ── HERO ── */
-.hero{min-height:auto;padding:80px 5% 80px;position:relative;overflow:hidden;background:transparent;display:flex;align-items:center}
-.hero-mesh{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.18}
-.hero-orb-1{width:600px;height:600px;background:radial-gradient(circle,#6B48CC,transparent);top:-100px;right:-100px}
-.hero-orb-2{width:400px;height:400px;background:radial-gradient(circle,#FF5C35,transparent);bottom:-80px;left:10%}
-.hero-orb-3{width:300px;height:300px;background:radial-gradient(circle,#06B6D4,transparent);top:40%;left:40%}
-.hero-in{max-width:860px;margin:0 auto;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:2;padding:0 24px}
-.hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:100px;padding:6px 16px;font-size:12.5px;font-weight:600;color:rgba(255,255,255,.85);margin-bottom:24px;letter-spacing:.2px}
-.badge-pulse{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+
+
+
+
+
+
+
+
+
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
 @keyframes scrollBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
 h1{font-family:var(--ff);font-size:clamp(36px,4.2vw,58px);font-weight:800;line-height:1.08;letter-spacing:-1.5px;color:var(--ink)}
 h1 .hl{position:relative;display:inline-block;color:var(--brand)}
 h1 .hl::after{content:'';position:absolute;bottom:-3px;left:0;width:100%;height:3px;background:linear-gradient(90deg,var(--accent),var(--brand3));border-radius:2px}
 h1 .accent-word{color:var(--accent)}
-.hero-desc{font-size:clamp(15px,1.8vw,18px);color:rgba(255,255,255,.72);line-height:1.75;margin-bottom:24px;max-width:600px;text-align:center;margin-left:auto;margin-right:auto}
-.hero-cta{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;align-items:center;justify-content:center}
-.btn-primary{padding:13px 26px;border-radius:10px;background:var(--brand);color:#fff;border:none;font-size:14.5px;font-weight:600;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
-.btn-primary:hover{background:var(--brand2);transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,27,105,.3)}
-.btn-ghost{padding:13px 22px;border-radius:10px;background:transparent;color:var(--ink2);border:1.5px solid var(--border2);font-size:14.5px;font-weight:500;cursor:pointer;font-family:var(--ffb);transition:.2s;display:inline-flex;align-items:center;gap:8px}
-.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
-.hero-note{font-size:13px;color:rgba(255,255,255,.5);margin-top:8px;text-align:center}
+
+
+
+
+
+
+
 /* Hero stats */
-.hero-stats{display:flex;gap:28px;justify-content:center;margin-top:36px;flex-wrap:wrap}
-.hstat{text-align:center}
-.hstat:not(:last-child){border-right:1px solid var(--border)}
-.hstat-n{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--brand);letter-spacing:-0.5px}
-.hstat-l{font-size:11px;color:var(--muted);margin-top:2px;font-weight:500}
+
+
+
+
+
 
 /* Hero signup card */
-.hero-card{background:#fff;border:1px solid var(--border);border-radius:22px;padding:28px;box-shadow:var(--shadow-xl);position:relative}
-.hero-card::before{content:'';position:absolute;top:0;left:20px;right:20px;height:3px;background:linear-gradient(90deg,var(--brand),var(--accent));border-radius:0 0 3px 3px}
+
+
 .hc-title{font-family:var(--ff);font-size:17px;font-weight:700;color:var(--ink);margin-bottom:18px}
 .hc-form-row{margin-bottom:12px}
 .hc-label{font-size:11.5px;font-weight:600;color:var(--muted);display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
@@ -302,8 +302,8 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 
 /* ── RESPONSIVE ── */
 @media(max-width:1024px){
-  .hero-in{max-width:860px;margin:0 auto;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;z-index:2;padding:0 24px}
-  .hero-card{display:none}
+  
+  
   .who-grid{grid-template-columns:repeat(2,1fr)}
   .feat-grid{grid-template-columns:repeat(2,1fr)}
   .salary-wrap{grid-template-columns:1fr}
@@ -315,8 +315,8 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
   .nlinks{display:none}
   .nbtns{display:none}
   .nav-hamburger{display:flex}
-  .hstat{text-align:center}
-  .hero-stats{display:flex;gap:28px;justify-content:center;margin-top:36px;flex-wrap:wrap}
+  
+  
   
   .who-grid{grid-template-columns:1fr}
   .footer-g{grid-template-columns:1fr}
@@ -332,12 +332,12 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 @media(max-width:600px){#sticky-bar p{font-size:12px}#sticky-bar button{padding:7px 14px;font-size:12px}}
 
 /* ── F1: HERO SEARCH ── */
-.hero-search{display:flex;gap:10px;margin:22px auto 8px;max-width:560px;width:100%;flex-wrap:wrap}
-.hero-search input,.hero-search select{flex:1;padding:13px 16px;border:1.5px solid #E4E4F0;border-radius:10px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;background:#fff;color:#0D0D1A;min-width:0}
-.hero-search input:focus,.hero-search select:focus{border-color:#2D1B69;box-shadow:0 0 0 3px rgba(45,27,105,.08)}
-.hero-search-btn{padding:13px 22px;background:#FF5C35;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:.2s;flex-shrink:0}
-.hero-search-btn:hover{background:#FF7A59;transform:translateY(-1px)}
-.hero-urgency{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px;font-size:13px;color:rgba(255,255,255,.65)}
+
+
+
+
+
+
 /* Preview jobs for guests */
 /* FIX #11 — Exclusive badge */
 /* FIX #12 — Referral flag */
@@ -422,12 +422,12 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 
 /* ── MOBILE FIXES ── */
 @media(max-width:600px){
-  .hero-search{display:flex;gap:10px;margin:22px auto 8px;max-width:560px;width:100%;flex-wrap:wrap}
-  .hero-search input,.hero-search select,.hero-search-btn{width:100%}
+  
+  
   .test-grid{grid-template-columns:1fr}
   
-  .hero-cta{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;align-items:center;justify-content:center}
-  .hero-cta .btn-primary,.hero-cta .btn-ghost{width:100%;justify-content:center}
+  
+  
   .quiz-opts{grid-template-columns:1fr}
   nav{padding:0 4%}
   #hero-scroll-arrow{display:none}
@@ -435,6 +435,186 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 /* ✅ FIX #41: Referral banner */
 #ref-banner{display:none}
 #ref-banner.show{display:flex!important}
+
+/* ══ HERO ══════════════════════════════════════════════ */
+.hero{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#08011F 0%,#130836 40%,#1A0A4A 70%,#0D1F3C 100%);
+  padding:90px 24px 80px;display:flex;align-items:center;justify-content:center;
+  min-height:100vh;
+}
+.hero-bg{position:absolute;inset:0;pointer-events:none;z-index:0}
+.hero-glow{position:absolute;border-radius:50%;filter:blur(100px);opacity:.35}
+.hero-glow-1{width:700px;height:700px;background:#4C2FAA;top:-200px;right:-150px;opacity:.25}
+.hero-glow-2{width:500px;height:500px;background:#FF5C35;bottom:-150px;left:-100px;opacity:.18}
+.hero-glow-3{width:400px;height:400px;background:#7C4DFF;top:30%;left:50%;transform:translateX(-50%);opacity:.12}
+.hero-grid-overlay{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+}
+.hero-in{
+  position:relative;z-index:2;
+  max-width:780px;width:100%;margin:0 auto;
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:0;
+}
+
+/* Pill */
+.hero-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(124,77,255,.2);
+  border:1px solid rgba(124,77,255,.4);
+  border-radius:100px;padding:7px 18px;
+  font-size:12.5px;font-weight:700;color:rgba(255,255,255,.9);
+  letter-spacing:.3px;margin-bottom:28px;
+}
+.hero-pill-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#7C4DFF;
+  box-shadow:0 0 8px #7C4DFF;
+  animation:pillpulse 2s infinite;
+  flex-shrink:0;
+}
+@keyframes pillpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.3)}}
+
+/* H1 */
+.hero-h1{
+  font-family:var(--ff);
+  font-size:clamp(48px,7vw,86px);
+  font-weight:900;
+  line-height:1.08;
+  letter-spacing:-2.5px;
+  color:#fff;
+  margin-bottom:24px;
+}
+.hero-h1-purple{
+  background:linear-gradient(90deg,#A78BFF,#7C4DFF);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-h1-orange{color:#FF5C35}
+
+/* Description */
+.hero-desc{
+  font-size:clamp(16px,2vw,19px);
+  color:rgba(255,255,255,.62);
+  line-height:1.7;
+  max-width:560px;
+  margin:0 auto 20px;
+}
+
+/* Live ticker */
+.hero-ticker{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:100px;padding:6px 16px;
+  font-size:13px;font-weight:500;color:rgba(255,255,255,.75);
+  margin-bottom:32px;
+}
+.hero-ticker-dot{
+  width:7px;height:7px;border-radius:50%;background:#10B981;
+  box-shadow:0 0 6px #10B981;flex-shrink:0;
+}
+
+/* Search */
+.hero-search-wrap{width:100%;max-width:600px;margin-bottom:32px}
+.hero-search-inner{
+  display:flex;align-items:center;gap:0;
+  background:#fff;border-radius:14px;
+  box-shadow:0 8px 40px rgba(0,0,0,.4),0 0 0 1px rgba(124,77,255,.15);
+  overflow:hidden;padding:6px 6px 6px 18px;
+}
+.hero-search-icon{font-size:18px;flex-shrink:0;margin-right:2px}
+.hero-search-input{
+  flex:1;border:none;outline:none;
+  font-size:14.5px;font-family:var(--ffb);
+  color:#0D0D1A;background:transparent;min-width:0;
+  padding:8px 0;
+}
+.hero-search-input::placeholder{color:#9CA3AF}
+.hero-search-btn{
+  flex-shrink:0;
+  background:linear-gradient(135deg,#2D1B69,#4C2FAA);
+  color:#fff;border:none;border-radius:10px;
+  padding:11px 20px;font-size:13.5px;font-weight:700;
+  cursor:pointer;font-family:var(--ffb);
+  display:inline-flex;align-items:center;gap:7px;
+  transition:.2s;white-space:nowrap;
+}
+.hero-search-btn:hover{background:linear-gradient(135deg,#4C2FAA,#6C3FCA);transform:scale(1.02)}
+
+/* Category chips */
+.hero-chips{
+  display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+  margin-top:12px;
+}
+.hero-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.15);
+  border-radius:100px;padding:6px 14px;
+  font-size:12.5px;font-weight:600;
+  color:rgba(255,255,255,.8);
+  text-decoration:none;
+  transition:.15s;
+}
+.hero-chip:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);color:#fff}
+
+/* CTAs */
+.hero-cta{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.hero-btn-primary{
+  display:inline-flex;align-items:center;gap:9px;
+  background:linear-gradient(135deg,#FF5C35,#FF8A50);
+  color:#fff;border:none;border-radius:12px;
+  padding:15px 28px;font-size:15px;font-weight:700;
+  cursor:pointer;font-family:var(--ff);
+  box-shadow:0 8px 32px rgba(255,92,53,.45);
+  transition:.2s;text-decoration:none;
+}
+.hero-btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(255,92,53,.6)}
+.hero-btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.08);
+  border:1.5px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.85);border-radius:12px;
+  padding:15px 24px;font-size:15px;font-weight:600;
+  cursor:pointer;font-family:var(--ff);
+  transition:.2s;text-decoration:none;
+}
+.hero-btn-ghost:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.35);color:#fff}
+
+/* Note */
+.hero-note{font-size:12.5px;color:rgba(255,255,255,.38);margin-bottom:36px;letter-spacing:.2px}
+
+/* Stats */
+.hero-stats{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;flex-wrap:wrap;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;padding:20px 32px;
+  width:100%;max-width:560px;
+}
+.hero-stat{text-align:center;padding:0 24px}
+.hero-stat-n{
+  font-family:var(--ff);font-size:26px;font-weight:900;
+  color:#fff;letter-spacing:-1px;line-height:1;
+}
+.hero-stat-l{font-size:11.5px;color:rgba(255,255,255,.45);margin-top:4px;font-weight:500;white-space:nowrap}
+.hero-stat-div{width:1px;height:36px;background:rgba(255,255,255,.12);flex-shrink:0}
+
+/* Mobile */
+@media(max-width:640px){
+  .hero{padding:70px 16px 60px;min-height:auto}
+  .hero-h1{letter-spacing:-1.5px}
+  .hero-search-inner{flex-wrap:wrap;padding:10px}
+  .hero-search-input{width:100%}
+  .hero-search-btn{width:100%;justify-content:center;border-radius:10px}
+  .hero-stat{padding:0 14px}
+  .hero-stats{padding:16px 20px}
+  .hero-stat-n{font-size:22px}
+}
 </style>
 <meta name="theme-color" content="#2D1B69"/>
 </head>
@@ -541,58 +721,107 @@ footer{background:var(--ink);padding:64px 5% 32px;border-top:1px solid rgba(255,
 
 <!-- HERO -->
 <section class="hero" id="home">
-  <div class="hero-mesh">
-    <div class="hero-orb hero-orb-1"></div>
-    <div class="hero-orb hero-orb-2"></div>
-    <div class="hero-orb hero-orb-3"></div>
+  <!-- Background -->
+  <div class="hero-bg">
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="hero-glow hero-glow-3"></div>
+    <div class="hero-grid-overlay"></div>
   </div>
+
   <div class="hero-in">
-    <div class="hero-left rv">
-      <div class="hero-badge"><span class="badge-pulse"></span>India's Career Platform</div>
-      <h1>Learn Skills.<br/><span class="hl">Get Certified.</span> <span class="accent-word">Grow.</span></h1>
-      <p class="hero-desc">50+ free courses across Development, Coding and AI — 8 structured career paths with salary outcomes. Earn a verified Belongix certificate. Built for India.</p>
-      <div class="hero-urgency" id="hero-urgency-bar">
-        <span>🔥</span><span>247 professionals joined this week</span>
-        <span style="color:var(--border2)">·</span><span>50+ free courses available</span>
-      </div>
-            <!-- Course search bar -->
-      <div class="hero-search" id="hero-search-wrap" style="background:#fff;border:1.5px solid rgba(45,27,105,.18);border-radius:14px;padding:6px 6px 6px 16px;display:flex;gap:8px;align-items:center;box-shadow:0 4px 20px rgba(45,27,105,.08);max-width:580px">
-        <span style="font-size:18px">🎓</span>
-        <input type="text" id="hs-query" placeholder="Search courses — Python, React, AWS, Data Analytics..." aria-label="Search courses" style="flex:1;border:none;outline:none;font-size:14px;font-family:var(--ffb);color:var(--ink);background:transparent" onkeydown="if(event.key==='Enter')goToCourses()"/>
-        <button class="hero-search-btn" onclick="goToCourses()" style="white-space:nowrap;flex-shrink:0">Browse Courses <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></button>
+
+    <!-- Pill badge -->
+    <div class="hero-pill">
+      <span class="hero-pill-dot"></span>
+      India's #1 Career Learning Platform
+    </div>
+
+    <!-- H1 -->
+    <h1 class="hero-h1">
+      Learn Skills.<br/>
+      <span class="hero-h1-purple">Get Certified.</span>
+      <span class="hero-h1-orange"> Grow.</span>
+    </h1>
+
+    <!-- Description -->
+    <p class="hero-desc">
+      50+ free courses across Development, Coding and AI.<br/>
+      8 career paths with real salary outcomes.<br/>
+      Earn a verified Belongix certificate. <strong style="color:#fff">Built for India.</strong>
+    </p>
+
+    <!-- Live ticker -->
+    <div class="hero-ticker">
+      <span class="hero-ticker-dot"></span>
+      <span id="hero-ticker-text">🔥 247 professionals enrolled this week · 50+ free courses available</span>
+    </div>
+
+    <!-- Course search -->
+    <div class="hero-search-wrap">
+      <div class="hero-search-inner">
+        <span class="hero-search-icon">🔍</span>
+        <input
+          type="text"
+          id="hs-query"
+          class="hero-search-input"
+          placeholder="Search courses — Python, React, AWS, Data Science..."
+          onkeydown="if(event.key==='Enter')goToCourses()"
+        />
+        <button class="hero-search-btn" onclick="goToCourses()">
+          Browse Courses
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+        </button>
       </div>
       <!-- Category chips -->
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
-        <a href="courses.html?domain=AI" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85);text-decoration:none">🤖 AI &amp; ML</a>
-        <a href="courses.html?domain=Development" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85);text-decoration:none">💻 Development</a>
-        <a href="courses.html?domain=Coding" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85);text-decoration:none">👨‍💻 Coding</a>
-        <a href="courses.html#learning-paths" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,.85);text-decoration:none">🗺️ Career Paths</a>
-      </div>
-
-          
-<div class="hero-cta" id="hero-guest-cta">
-        <button class="btn-primary" onclick="openModal('signup')">
-          Get Started Free
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
-        </button>
-        <button class="btn-ghost" onclick="window.location.href='dashboard.html'">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="currentColor"/></svg>
-          See Dashboard
-        </button>
-      </div>
-      <div class="hero-cta" id="hero-signed-cta" style="display:none">
-        <a href="dashboard.html" class="btn-primary" style="text-decoration:none">Go to Dashboard <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
-        <a href="courses.html" class="btn-ghost" style="text-decoration:none">Explore Courses <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
-      </div>
-      <div class="hero-note" id="hero-guest-note">Free to join &middot; No credit card &middot; Cancel anytime</div>
-      <div class="hero-note" id="hero-signed-note" style="display:none">Welcome back! Continue where you left off.</div>
-      <div class="hero-stats">
-        <div class="hstat"><div class="hstat-n">8</div><div class="hstat-l">Career Paths</div></div>
-        <div class="hstat"><div class="hstat-n">50+</div><div class="hstat-l">Free Courses</div></div>
-        <div class="hstat"><div class="hstat-n">Verified</div><div class="hstat-l">Certificates</div></div>
-        <div class="hstat"><div class="hstat-n">Free</div><div class="hstat-l">Always</div></div>
+      <div class="hero-chips">
+        <a href="courses.html?domain=AI" class="hero-chip">🤖 AI &amp; ML</a>
+        <a href="courses.html?domain=Development" class="hero-chip">💻 Development</a>
+        <a href="courses.html?domain=Coding" class="hero-chip">👨‍💻 Coding</a>
+        <a href="courses.html#learning-paths" class="hero-chip">🗺️ Career Paths</a>
       </div>
     </div>
+
+    <!-- CTAs -->
+    <div class="hero-cta" id="hero-guest-cta">
+      <button class="hero-btn-primary" onclick="openModal('signup')">
+        Get Started Free — It's Free
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
+      </button>
+      <button class="hero-btn-ghost" onclick="window.location.href='courses.html'">
+        Browse Courses
+      </button>
+    </div>
+    <div class="hero-cta" id="hero-signed-cta" style="display:none">
+      <a href="dashboard.html" class="hero-btn-primary" style="text-decoration:none">Go to Dashboard <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-7-7l7 7-7 7"/></svg></a>
+      <a href="courses.html" class="hero-btn-ghost" style="text-decoration:none">Browse Courses</a>
+    </div>
+    <div class="hero-note" id="hero-guest-note">No credit card required · Cancel anytime · Always free plan available</div>
+    <div class="hero-note" id="hero-signed-note" style="display:none">Welcome back! Continue where you left off.</div>
+
+    <!-- Stats bar -->
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-n">50+</div>
+        <div class="hero-stat-l">Free Courses</div>
+      </div>
+      <div class="hero-stat-div"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-n">8</div>
+        <div class="hero-stat-l">Career Paths</div>
+      </div>
+      <div class="hero-stat-div"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-n">12K+</div>
+        <div class="hero-stat-l">Certificates Issued</div>
+      </div>
+      <div class="hero-stat-div"></div>
+      <div class="hero-stat">
+        <div class="hero-stat-n">Free</div>
+        <div class="hero-stat-l">Always</div>
+      </div>
+    </div>
+
   </div>
 </section>
 
