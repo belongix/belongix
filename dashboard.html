@@ -656,7 +656,7 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
   <div class="sb-top">
     <a href="index.html" class="sb-logo-link">
       <div class="sb-logo-icon">B</div>
-      <div class="sb-logo-text">Belong<span>ix</span></div><span style="font-size:9px;font-weight:700;background:#FF5C35;color:#fff;border-radius:10px;padding:2px 7px;margin-left:4px;letter-spacing:.3px">BETA</span>
+      <div class="sb-logo-text">Belong<span>ix</span></div>
     </a>
   </div>
   <nav class="sb-nav">
@@ -666,8 +666,11 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
         <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>Portfolio
       </button>
       
+      <button class="sb-link" data-page="mycourses" onclick="showPage('mycourses',this)">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>My Courses
+      </button>
       <button class="sb-link" data-page="upskill" onclick="showPage('upskill',this)">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Upskilling Hub
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3M3 16v3a2 2 0 002 2h3m8 0h3a2 2 0 002-2v-3"/></svg>Upskilling Hub
       </button>
       
       
@@ -945,7 +948,39 @@ textarea.pfin{resize:vertical;min-height:70px;line-height:1.6}
     </div>
   </div>
 </div></div>
-    <div class="page-section" id="page-upskill"><div class="page-title">Upskilling Hub</div>
+    <div class="page-section" id="page-mycourses">
+  <div class="page-title">My Courses</div>
+  <div class="page-subtitle">Track your learning progress and continue where you left off</div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;margin-bottom:28px" id="mc-stats-row">
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-family:var(--ff);font-size:28px;font-weight:900;color:var(--brand)" id="mc-enrolled-count">0</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">Enrolled</div>
+    </div>
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-family:var(--ff);font-size:28px;font-weight:900;color:#10B981" id="mc-completed-count">0</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">Completed</div>
+    </div>
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-family:var(--ff);font-size:28px;font-weight:900;color:#F59E0B" id="mc-inprogress-count">0</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">In Progress</div>
+    </div>
+    <div class="card" style="text-align:center;padding:18px">
+      <div style="font-family:var(--ff);font-size:28px;font-weight:900;color:#7C3AED" id="mc-certs-count">0</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">Certificates</div>
+    </div>
+  </div>
+
+  <div id="mc-courses-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px"></div>
+
+  <div id="mc-empty" style="display:none;text-align:center;padding:60px 24px;background:var(--white);border-radius:16px;border:1.5px solid var(--border)">
+    <div style="font-size:52px;margin-bottom:16px">📚</div>
+    <div style="font-family:var(--ff);font-size:20px;font-weight:800;color:var(--ink);margin-bottom:8px">No courses yet</div>
+    <div style="font-size:14px;color:var(--muted);margin-bottom:24px;line-height:1.6">Browse 1019 courses and start learning — completely free</div>
+    <a href="courses.html" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:var(--brand);color:#fff;border-radius:10px;font-family:var(--ff);font-size:14px;font-weight:700;text-decoration:none">🚀 Browse 1000+ Courses →</a>
+  </div>
+</div>
+<div class="page-section" id="page-upskill"><div class="page-title">Upskilling Hub</div>
       <div class="page-subtitle">Real courses from Google, AWS, Meta, Kaggle, Scaler, NPTEL — trending in 2026</div>
       <!-- ✅ FIX #21: Progress summary bar -->
       <div class="up-summary-bar" id="up-summary-bar">
@@ -2242,7 +2277,8 @@ function showPage(page, btn) {
     if (navBtn) navBtn.classList.add('active');
   }
   /* 5. Topbar title */
-  var titles = {overview:'Portfolio',jobs:'Jobs & Internships',upskill:'Upskilling Hub',
+  var titles = {overview:'Portfolio',jobs:'Jobs & Internships',mycourses:'My Courses',
+    upskill:'Upskilling Hub',
     
     profile:'My Profile',settings:'Settings',upgrade:'Upgrade Plan'};
   var tb = document.getElementById('topbar-title');
@@ -2250,13 +2286,9 @@ function showPage(page, btn) {
   /* 6. Update URL hash */
   try { window.history.replaceState(null,'','#'+page); } catch(e) {}
   /* 7. Page-specific loaders — all in one place, no wrappers needed */
-  if (page === 'jobs') { loadJobs(); }
-  if (page === 'network') { setTimeout(loadDashMentors, 100); }
-  if (page === 'tracker') { loadTracker(); }
+  if (page === 'mycourses') { if(typeof loadMyCourses==='function') loadMyCourses(); }
   if (page === 'upskill') { setTimeout(function(){ if(typeof renderFilters==='function'){renderFilters();renderTracks();} }, 50); }
-  if (page === 'salary') { setTimeout(function(){ if(typeof init3D==='function')init3D(); }, 80); }
-  if (page === 'settings' && currentUser) { if(typeof refPopulateSettings==='function') refPopulateSettings(currentUser.id); }
-  if (page === 'upgrade') { if(typeof checkMentorSessionLimit==='function') checkMentorSessionLimit(); }
+  if (page === 'settings' && typeof currentUser!=='undefined' && currentUser) { if(typeof refPopulateSettings==='function') refPopulateSettings(currentUser.id); }
   /* 8. Close mobile sidebar */
   var sb = document.querySelector('.sidebar');
   if (sb) sb.classList.remove('open');
@@ -3379,8 +3411,7 @@ async function init() {
 
   /* STEP 2: Route to correct starting page */
   var PAGE_MAP = {
-    overview:'overview', jobs:'jobs', salary:'salary', upskill:'upskill',
-    network:'network', mentor:'network', tracker:'tracker', applications:'tracker',
+    overview:'overview', upskill:'upskill', mycourses:'mycourses',
     profile:'profile', settings:'settings', upgrade:'upgrade'
   };
   var urlPage  = new URLSearchParams(window.location.search).get('page');
@@ -3389,8 +3420,6 @@ async function init() {
   var startBtn  = document.querySelector('[data-page="' + startPage + '"]');
   showPage(startPage, startBtn);
 
-  /* Pre-load jobs data */
-  if (startPage !== 'jobs') loadJobs();
 
   /* STEP 3: Try auth in background — navigation already works */
   try {
@@ -4169,6 +4198,104 @@ window.bxTrackMentorSession = function() {
 </script>
 
 <script>if(typeof supaClient!=='undefined')window._bxSb=supaClient;</script>
-<script src="pwa-install.js"></script>
-</body>
-</html>
+<script src="pwa-install.js">
+
+// ── MY COURSES ──
+function loadMyCourses(){
+  var grid=document.getElementById('mc-courses-grid');
+  var emptyEl=document.getElementById('mc-empty');
+  if(!grid)return;
+
+  // Scan localStorage for all enrolled courses
+  var enrolled=[];
+  for(var i=0;i<localStorage.length;i++){
+    var key=localStorage.key(i);
+    if(key&&key.startsWith('bx_enrolled_')){
+      var slug=key.replace('bx_enrolled_','');
+      var progress={};
+      try{
+        var pr=localStorage.getItem('bx_progress_'+slug);
+        if(pr)progress=JSON.parse(pr);
+      }catch(e){}
+      enrolled.push({slug:slug,progress:progress});
+    }
+  }
+
+  // Compute stats
+  var completed=0,inProgress=0;
+  enrolled.forEach(function(e){
+    var pct=mcGetPct(e);
+    if(pct>=100)completed++;
+    else if(pct>0)inProgress++;
+  });
+
+  // Update stat counters
+  var el;
+  el=document.getElementById('mc-enrolled-count');if(el)el.textContent=enrolled.length;
+  el=document.getElementById('mc-completed-count');if(el)el.textContent=completed;
+  el=document.getElementById('mc-inprogress-count');if(el)el.textContent=inProgress;
+  el=document.getElementById('mc-certs-count');if(el)el.textContent=completed;
+
+  if(!enrolled.length){
+    grid.style.display='none';
+    emptyEl.style.display='block';
+    return;
+  }
+  grid.style.display='grid';
+  emptyEl.style.display='none';
+
+  grid.innerHTML=enrolled.map(function(e){
+    var pct=mcGetPct(e);
+    var done=pct>=100;
+    // Try to get course metadata from sessionStorage
+    var info=null;
+    try{
+      var ci=sessionStorage.getItem('bx_course_'+e.slug);
+      if(ci)info=JSON.parse(ci);
+    }catch(err){}
+    var title=info?info.title:e.slug.replace(/-/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});
+    var emoji=info?info.emoji:'📚';
+    var bg=info?info.bg:'linear-gradient(135deg,#2D1B69,#4C2FAA)';
+    var domain=info?info.domain:'Course';
+    var level=info?info.level:'';
+    var levelCls=level==='Beginner'?'#166534,#DCFCE7':level==='Advanced'?'#991B1B,#FEE2E2':'#854D0E,#FEF9C3';
+    var lColors=levelCls.split(',');
+    var courseUrl='course.html?slug='+encodeURIComponent(e.slug);
+    return '<div class="card" style="padding:0;overflow:hidden;cursor:pointer;transition:.2s" onclick="window.location.href=''+courseUrl+''" onmouseenter="this.style.transform='translateY(-3px)';this.style.boxShadow='0 12px 32px rgba(45,27,105,.14)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">'
+      +'<div style="'+bg+';height:72px;display:flex;align-items:center;justify-content:center;font-size:34px">'+emoji+'</div>'
+      +'<div style="padding:14px 16px">'
+        +'<div style="font-size:10.5px;font-weight:700;color:var(--brand);opacity:.7;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px">'+esc(domain)+'</div>'
+        +'<div style="font-family:var(--ff);font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:10px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+esc(title)+'</div>'
+        +'<div style="background:#F0EEFF;border-radius:100px;height:5px;margin-bottom:6px">'
+          +'<div style="height:5px;border-radius:100px;background:linear-gradient(90deg,'+(done?'#10B981,#34D399':'#2D1B69,#4C2FAA')+');width:'+pct+'%;transition:.4s"></div>'
+        +'</div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:center">'
+          +'<span style="font-size:12px;color:var(--muted)">'+pct+'% complete</span>'
+          +(done
+            ?'<span style="font-size:11px;font-weight:700;color:#166534;background:#DCFCE7;padding:2px 8px;border-radius:6px">✓ Certified</span>'
+            :(pct>0?'<span style="font-size:12px;font-weight:600;color:var(--brand)">Continue →</span>':'<span style="font-size:12px;font-weight:600;color:var(--muted)">Not started</span>')
+          )
+        +'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+function mcGetPct(e){
+  // Count done lessons vs estimated total
+  var done=Object.keys(e.progress).filter(function(k){return e.progress[k];}).length;
+  if(!done)return 0;
+  var info=null;
+  try{
+    var ci=sessionStorage.getItem('bx_course_'+e.slug);
+    if(ci)info=JSON.parse(ci);
+  }catch(err){}
+  // Use modules * 4 + floor(modules/2) — same formula as course.html generateModules
+  var mods=info?info.modules:6;
+  var total=mods*4+Math.floor(mods/2);
+  return done>=total?100:Math.round(done/total*100);
+}
+
+// loadMyCourses is called from showPage directly
+
+</script>
