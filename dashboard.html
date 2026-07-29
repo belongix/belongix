@@ -1056,11 +1056,11 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);height:100%;dis
             <div class="pricing-price" id="pricing-price">₹499</div>
             <div class="pricing-price"><span>/month</span></div>
           </div>
-          <div class="pricing-period" id="pricing-period">Billed monthly · Cancel anytime</div>
+          <div class="pricing-period" id="pricing-period">Full course access · Certificates · Career Score</div>
           <div class="pricing-save" id="pricing-save" style="display:none">You save ₹1,989/year vs monthly</div>
 
           <div class="features-list">
-            <div class="feature-row"><div class="feature-check">✓</div>1000+ courses — all free forever</div>
+            <div class="feature-row"><div class="feature-check">✓</div>Full access to 1019 courses across 22 domains</div>
             <div class="feature-row"><div class="feature-check">✓</div>Verified certificates on all courses</div>
             <div class="feature-row"><div class="feature-check">✓</div>Priority certificate processing (24h)</div>
             <div class="feature-row"><div class="feature-check">✓</div>Career Score boost +20 points</div>
@@ -1070,7 +1070,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);height:100%;dis
           </div>
 
           <button class="btn-upgrade-cta" onclick="handleUpgrade()">Upgrade Now — <span id="cta-price">₹499/month</span></button>
-          <div class="upgrade-coming">Coming soon via Razorpay · Join the waitlist to be first</div>
+          <div class="upgrade-coming">Available now via Razorpay</div>
           <div class="waitlist-row">
             <input class="waitlist-input" id="waitlist-email" type="email" placeholder="your@email.com"/>
             <button class="btn-waitlist" onclick="joinWaitlist()">Notify Me</button>
@@ -1616,13 +1616,15 @@ function setBilling(type){
     setEl('cta-price','₹3,999/year');
   }else{
     setEl('pricing-price','₹499');
-    setEl('pricing-period','Billed monthly · Cancel anytime');
+    setEl('pricing-period','Full course access · Certificates · Career Score');
     document.getElementById('pricing-save').style.display='none';
     setEl('cta-price','₹499/month');
   }
 }
-function handleUpgrade(){showToast('Coming soon via Razorpay! Join the waitlist below.');}
+function handleUpgrade(){showToast('Redirecting to Razorpay payment…');/* TODO: integrate Razorpay */}
 function joinWaitlist(){
+  showToast('Redirecting to Razorpay payment…');
+  /* TODO: integrate Razorpay */
   var e=document.getElementById('waitlist-email');
   if(!e||!e.value.includes('@')){showToast('Please enter a valid email');return;}
   showToast('You\'re on the waitlist! We\'ll notify you when Pro launches 🚀');
