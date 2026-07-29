@@ -4,265 +4,299 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>About Belongix — India's Career Learning Platform</title>
-<meta name="description" content="We built Belongix to give every Indian professional the career tools they deserve — regardless of college or network. 1000+ free courses, verified certificates, built for India."/>
+<meta name="description" content="We built Belongix to give every Indian professional the career tools they deserve. 1019 courses, verified certificates, built for India."/>
 <link rel="icon" href="icons/icon-32.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:wght@0,400;0,500;0,600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+/* ── TOKENS ─────────────────────────────────────── */
 :root{
-  --brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;--accent2:#FF8A50;
+  --brand:#2D1B69;--brand2:#4C2FAA;--brand-lt:#EDE9FF;
+  --accent:#FF5C35;--accent2:#FF8A50;
   --green:#10B981;--amber:#F59E0B;
   --ink:#0D0D1A;--muted:#5A5A7A;--subtle:#94A3B8;
   --border:#E4E4F0;--bg:#F7F7FC;--card:#fff;
   --ff:'Sora',sans-serif;--fb:'DM Sans',sans-serif;
+  --radius:14px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--fb);color:var(--ink);background:#fff;line-height:1.6}
+body{font-family:var(--fb);color:var(--ink);background:#fff;line-height:1.6;font-size:15px}
 a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
 
 /* ── NAV ─────────────────────────────────────────── */
-.nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:60px;display:flex;align-items:center;padding:0 24px;gap:24px;}
-.nav-logo{font-family:var(--ff);font-size:19px;font-weight:800;color:var(--ink);flex-shrink:0}
-.nav-logo span{color:var(--accent)}
-.nav-center{display:flex;align-items:center;gap:4px;flex:1;justify-content:center}
-.nav-link{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);transition:.12s;white-space:nowrap;text-decoration:none;}
-.nav-link:hover{color:var(--brand);background:#F0EEFF}
-.nav-link.active{color:var(--brand);font-weight:700;background:#F0EEFF}
-.nav-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.btn-ghost{padding:7px 16px;border-radius:9px;border:1.5px solid var(--border);background:#fff;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--fb);transition:.12s;}
-.btn-ghost:hover{border-color:var(--brand);color:var(--brand)}
-.btn-cta{padding:8px 18px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));font-size:13.5px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--ff);transition:.15s;}
-.btn-cta:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,92,53,.35)}
-.nav-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));display:flex;align-items:center;justify-content:center;font-family:var(--ff);font-size:13px;font-weight:800;color:#fff;cursor:pointer;position:relative;}
-.nav-user-dd{display:none;position:absolute;top:42px;right:0;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(13,13,26,.1);min-width:176px;padding:6px;z-index:300;}
-.nav-user-dd.open{display:block}
-.nav-user-dd a,.nav-user-dd button{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--ink);background:none;border:none;cursor:pointer;font-family:var(--fb);transition:.12s;text-decoration:none;}
-.nav-user-dd a:hover,.nav-user-dd button:hover{background:#F0EEFF;color:var(--brand)}
-.nav-user-dd hr{border:none;border-top:1px solid var(--border);margin:4px 0}
-#nav-guest{display:flex;align-items:center;gap:8px}
-#nav-user{display:none;align-items:center;gap:8px}
-.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--ink)}
-.hamburger svg{display:block;width:22px;height:22px;stroke:currentColor}
-.mobile-menu{display:none;position:fixed;inset:0;z-index:300;background:#fff;flex-direction:column;padding:20px 24px;overflow-y:auto;}
-.mobile-menu.open{display:flex}
-.mobile-menu-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
-.mobile-close{background:none;border:none;cursor:pointer;font-size:24px;color:var(--muted)}
-.mobile-link{display:block;padding:14px 0;font-size:16px;font-weight:600;color:var(--ink);border-bottom:1px solid var(--border);}
-.mobile-btns{margin-top:24px;display:flex;flex-direction:column;gap:10px}
-
-/* ── HERO ────────────────────────────────────────── */
-.about-hero{
-  background:linear-gradient(150deg,#08011F 0%,#130836 45%,#1A0A4A 100%);
-  padding:80px 24px 88px;text-align:center;position:relative;overflow:hidden;
+.nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(255,255,255,.96);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  height:60px;display:flex;align-items:center;
+  padding:0 24px;gap:20px;
 }
-.about-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px;}
+.logo{font-family:var(--ff);font-size:19px;font-weight:800;color:var(--ink);flex-shrink:0}
+.logo em{font-style:normal;color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1;justify-content:center}
+.nav-a{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);transition:.12s;white-space:nowrap}
+.nav-a:hover{color:var(--brand);background:var(--brand-lt)}
+.nav-a.on{color:var(--brand);font-weight:700;background:var(--brand-lt)}
+.nav-end{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.btn-outline{padding:7px 16px;border-radius:9px;border:1.5px solid var(--border);background:#fff;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--fb);transition:.12s}
+.btn-outline:hover{border-color:var(--brand);color:var(--brand)}
+.btn-fill{padding:8px 18px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));font-size:13.5px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--ff);transition:.15s}
+.btn-fill:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,92,53,.35)}
+.nav-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));display:flex;align-items:center;justify-content:center;font-family:var(--ff);font-size:13px;font-weight:800;color:#fff;cursor:pointer;position:relative;flex-shrink:0}
+.nav-dd{display:none;position:absolute;top:42px;right:0;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.1);min-width:180px;padding:6px;z-index:300}
+.nav-dd.show{display:block}
+.nav-dd a,.nav-dd button{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--ink);background:none;border:none;cursor:pointer;font-family:var(--fb);transition:.12s}
+.nav-dd a:hover,.nav-dd button:hover{background:var(--brand-lt);color:var(--brand)}
+.nav-dd hr{border:none;border-top:1px solid var(--border);margin:4px 0}
+#g-nav{display:flex;align-items:center;gap:8px}
+#u-nav{display:none;align-items:center;gap:8px}
+.hbg{display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--ink)}
+.hbg svg{display:block;width:22px;height:22px;stroke:currentColor;fill:none}
+
+/* Mobile menu */
+.mob{display:none;position:fixed;inset:0;z-index:400;background:#fff;flex-direction:column;padding:20px 24px;overflow-y:auto}
+.mob.open{display:flex}
+.mob-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
+.mob-x{background:none;border:none;font-size:24px;cursor:pointer;color:var(--muted)}
+.mob-a{display:block;padding:14px 0;font-size:16px;font-weight:600;color:var(--ink);border-bottom:1px solid var(--border)}
+.mob-btns{margin-top:24px;display:flex;flex-direction:column;gap:10px}
+
+/* ── SHARED SECTION SHELL ─────────────────────────── */
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+.sec{padding:80px 24px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--brand);text-align:center;margin-bottom:10px}
+.sec-h{font-family:var(--ff);font-size:clamp(26px,3.8vw,42px);font-weight:900;color:var(--ink);letter-spacing:-1.2px;text-align:center;margin-bottom:10px;line-height:1.1}
+.sec-sub{font-size:16px;color:var(--muted);text-align:center;max-width:520px;margin:0 auto 50px;line-height:1.65}
+
+/* ── HERO ─────────────────────────────────────────── */
+.hero{
+  background:linear-gradient(150deg,#08011F 0%,#130836 45%,#1A0A4A 100%);
+  padding:88px 24px 96px;text-align:center;position:relative;overflow:hidden;
+}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
 .hero-orb{position:absolute;border-radius:50%;filter:blur(110px);pointer-events:none}
-.hero-orb-1{width:500px;height:500px;background:#4C2FAA;top:-80px;right:-60px;opacity:.25}
-.hero-orb-2{width:400px;height:400px;background:#FF5C35;bottom:-80px;left:-40px;opacity:.15}
-.about-hero-inner{max-width:740px;margin:0 auto;position:relative;z-index:2}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(124,77,255,.18);border:1px solid rgba(124,77,255,.35);border-radius:100px;padding:7px 18px;margin-bottom:24px;font-size:12.5px;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.4px;text-transform:uppercase;}
-.about-hero h1{font-family:var(--ff);font-size:clamp(32px,5.5vw,64px);font-weight:900;color:#fff;line-height:1.1;letter-spacing:-2px;margin-bottom:20px;}
-.about-hero h1 em{font-style:normal;background:linear-gradient(90deg,#A78BFF,#7C4DFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.about-hero-sub{font-size:clamp(15px,2vw,18px);color:rgba(255,255,255,.62);line-height:1.7;max-width:560px;margin:0 auto 36px;}
-.hero-stats-bar{display:inline-flex;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:16px 28px;gap:0;}
-.hstat{text-align:center;padding:0 24px;flex:1}
-.hstat:not(:last-child){border-right:1px solid rgba(255,255,255,.12)}
-.hstat-n{font-family:var(--ff);font-size:26px;font-weight:900;color:#fff;letter-spacing:-1px}
-.hstat-l{font-size:11.5px;color:rgba(255,255,255,.45);margin-top:2px}
+.orb1{width:520px;height:520px;background:#4C2FAA;top:-100px;right:-80px;opacity:.25}
+.orb2{width:400px;height:400px;background:#FF5C35;bottom:-80px;left:-50px;opacity:.14}
+.hero-inner{position:relative;z-index:2;max-width:720px;margin:0 auto}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(124,77,255,.18);border:1px solid rgba(124,77,255,.35);
+  border-radius:100px;padding:7px 18px;margin-bottom:26px;
+  font-size:12px;font-weight:700;color:rgba(255,255,255,.88);letter-spacing:.5px;text-transform:uppercase;
+}
+.hero-pill-dot{width:7px;height:7px;border-radius:50%;background:#10B981;box-shadow:0 0 7px #10B981;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+.hero h1{font-family:var(--ff);font-size:clamp(34px,6vw,68px);font-weight:900;color:#fff;letter-spacing:-2.5px;line-height:1.08;margin-bottom:22px}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,#A78BFF,#7C4DFF);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-p{font-size:clamp(15px,2vw,18px);color:rgba(255,255,255,.62);line-height:1.7;max-width:560px;margin:0 auto 40px}
+.stat-bar{
+  display:inline-flex;
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);
+  border-radius:16px;padding:18px 0;gap:0;
+}
+.stat-item{text-align:center;padding:0 28px}
+.stat-item:not(:last-child){border-right:1px solid rgba(255,255,255,.12)}
+.stat-n{font-family:var(--ff);font-size:26px;font-weight:900;color:#fff;letter-spacing:-1px}
+.stat-l{font-size:11.5px;color:rgba(255,255,255,.45);margin-top:3px}
 
-/* ── SECTION SHELL ───────────────────────────────── */
-.section{padding:80px 24px}
-.section-inner{max-width:1080px;margin:0 auto}
-.section-eyebrow{font-size:11.5px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:1px;text-align:center;margin-bottom:10px;}
-.section-title{font-family:var(--ff);font-size:clamp(24px,3.5vw,40px);font-weight:900;color:var(--ink);text-align:center;letter-spacing:-1px;margin-bottom:10px;}
-.section-sub{font-size:16px;color:var(--muted);text-align:center;max-width:520px;margin:0 auto 52px;line-height:1.6}
+/* ── MISSION ─────────────────────────────────────── */
+.mission-grid{display:grid;grid-template-columns:1fr 400px;gap:64px;align-items:center}
+.mission-text .eyebrow{text-align:left}
+.mission-h{font-family:var(--ff);font-size:clamp(24px,3.2vw,36px);font-weight:900;color:var(--ink);letter-spacing:-1px;margin-bottom:18px;line-height:1.15}
+.mission-h em{font-style:normal;color:var(--accent)}
+.mission-p{font-size:15px;color:var(--muted);margin-bottom:14px;line-height:1.75}
+.checks{display:flex;flex-direction:column;gap:11px;margin-top:22px}
+.check{display:flex;align-items:flex-start;gap:10px;font-size:14.5px;color:var(--ink);font-weight:500;line-height:1.5}
+.check-dot{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;margin-top:1px}
 
-/* ── MISSION ────────────────────────────────────── */
-.mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
-.mission-text .section-eyebrow{text-align:left}
-.mission-text h2{font-family:var(--ff);font-size:clamp(26px,3.5vw,38px);font-weight:900;color:var(--ink);letter-spacing:-1px;margin-bottom:16px;line-height:1.15}
-.mission-text h2 em{font-style:normal;color:var(--accent)}
-.mission-text p{font-size:15.5px;color:var(--muted);margin-bottom:14px;line-height:1.75}
-.mission-checks{display:flex;flex-direction:column;gap:10px;margin-top:20px}
-.mcheck{display:flex;align-items:flex-start;gap:11px;font-size:14.5px;color:var(--ink);font-weight:500}
-.mcheck-dot{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;margin-top:1px;}
-.mission-stats-card{background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:16px;}
-.mstat-row{display:flex;align-items:center;gap:18px;padding:16px;background:#fff;border:1px solid var(--border);border-radius:14px;transition:.15s;}
-.mstat-row:hover{border-color:rgba(45,27,105,.2);transform:translateX(4px)}
-.mstat-icon{font-size:28px;flex-shrink:0;width:48px;text-align:center}
-.mstat-n{font-family:var(--ff);font-size:26px;font-weight:900;color:var(--brand)}
-.mstat-l{font-size:13px;color:var(--muted);margin-top:1px}
+/* Mission stats card */
+.m-stats{background:var(--bg);border:1px solid var(--border);border-radius:18px;padding:28px;display:flex;flex-direction:column;gap:14px}
+.m-row{display:flex;align-items:center;gap:16px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:.15s;cursor:default}
+.m-row:hover{border-color:rgba(45,27,105,.2);transform:translateX(3px);box-shadow:0 4px 16px rgba(45,27,105,.07)}
+.m-emoji{font-size:26px;width:44px;text-align:center;flex-shrink:0}
+.m-n{font-family:var(--ff);font-size:24px;font-weight:900;color:var(--brand);line-height:1}
+.m-l{font-size:12.5px;color:var(--muted);margin-top:2px;line-height:1.4}
 
-/* ── TIMELINE ────────────────────────────────────── */
-.timeline-section{background:var(--bg)}
-.timeline{position:relative;max-width:680px;margin:0 auto;display:flex;flex-direction:column;gap:0}
-.timeline::before{content:'';position:absolute;left:24px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--brand),rgba(45,27,105,.1));}
-.tl-item{display:flex;gap:24px;padding-bottom:36px;position:relative}
+/* ── TIMELINE ─────────────────────────────────────── */
+.tl-wrap{max-width:640px;margin:0 auto}
+.tl{position:relative;display:flex;flex-direction:column;gap:0;padding-left:36px}
+.tl::before{content:'';position:absolute;left:17px;top:24px;bottom:24px;width:2px;background:linear-gradient(180deg,var(--brand),rgba(45,27,105,.15))}
+.tl-item{position:relative;padding-bottom:36px}
 .tl-item:last-child{padding-bottom:0}
-.tl-dot{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1;box-shadow:0 0 0 4px #F7F7FC;}
-.tl-dot-icon{font-size:20px}
-.tl-body{padding-top:10px;flex:1}
-.tl-date{font-size:11.5px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.tl-dot{
+  position:absolute;left:-36px;top:0;
+  width:36px;height:36px;border-radius:50%;
+  background:linear-gradient(135deg,var(--brand),var(--brand2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;z-index:1;
+  box-shadow:0 0 0 4px #F7F7FC;
+}
+.tl-date{font-size:11px;font-weight:800;color:var(--brand);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
 .tl-title{font-family:var(--ff);font-size:17px;font-weight:800;color:var(--ink);margin-bottom:6px}
 .tl-desc{font-size:14px;color:var(--muted);line-height:1.65}
 
-/* ── PLATFORM ────────────────────────────────────── */
-.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.pcard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px;transition:.2s;position:relative;overflow:hidden;}
-.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--brand),var(--brand2));opacity:0;transition:.2s;}
-.pcard:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(45,27,105,.1);border-color:rgba(45,27,105,.15)}
-.pcard:hover::before{opacity:1}
-.pcard-icon{font-size:36px;margin-bottom:14px}
-.pcard-title{font-family:var(--ff);font-size:16px;font-weight:800;color:var(--ink);margin-bottom:7px}
-.pcard-desc{font-size:14px;color:var(--muted);line-height:1.65}
-.pcard-link{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--brand);margin-top:12px;text-decoration:none;transition:.12s;}
-.pcard-link:hover{gap:8px}
+/* ── PLATFORM CARDS ───────────────────────────────── */
+.p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.p-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:26px;
+  transition:.2s;position:relative;overflow:hidden;
+}
+.p-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--brand),var(--brand2));opacity:0;transition:.2s}
+.p-card:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(45,27,105,.1);border-color:rgba(45,27,105,.15)}
+.p-card:hover::after{opacity:1}
+.p-icon{font-size:34px;margin-bottom:14px}
+.p-title{font-family:var(--ff);font-size:15.5px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.p-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.p-link{display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--brand);transition:.12s}
+.p-link:hover{gap:9px}
 
 /* ── VALUES ──────────────────────────────────────── */
-.values-section{background:linear-gradient(150deg,#08011F 0%,#130836 45%,#1A0A4A 100%);position:relative;overflow:hidden;}
-.values-section::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.02) 1px,transparent 1px);background-size:32px 32px;}
-.values-section .section-eyebrow{color:rgba(255,255,255,.55)}
-.values-section .section-title{color:#fff}
-.values-section .section-sub{color:rgba(255,255,255,.55)}
-.values-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.vcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:26px;transition:.2s;}
-.vcard:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
-.vcard-icon{font-size:32px;margin-bottom:14px}
-.vcard-title{font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px}
-.vcard-desc{font-size:14px;color:rgba(255,255,255,.62);line-height:1.65}
+.values-bg{background:linear-gradient(150deg,#08011F 0%,#130836 50%,#1A0A4A 100%);padding:80px 24px;position:relative;overflow:hidden}
+.values-bg::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.022) 1px,transparent 1px);background-size:32px 32px}
+.values-bg .eyebrow{color:rgba(255,255,255,.5)}
+.values-bg .sec-h{color:#fff}
+.values-bg .sec-sub{color:rgba(255,255,255,.52)}
+.v-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.v-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.11);border-radius:14px;padding:26px;transition:.2s}
+.v-card:hover{background:rgba(255,255,255,.11);transform:translateY(-2px)}
+.v-icon{font-size:30px;margin-bottom:12px}
+.v-title{font-family:var(--ff);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px}
+.v-desc{font-size:14px;color:rgba(255,255,255,.6);line-height:1.65}
 
-/* ── BEFORE/AFTER ────────────────────────────────── */
-.gap-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:800px;margin:0 auto}
-.gap-card{border-radius:16px;padding:28px}
-.gap-card.before{background:var(--bg);border:1px solid var(--border)}
-.gap-card.after{background:linear-gradient(135deg,#F0EEFF,#E8E0FF);border:1px solid rgba(45,27,105,.2)}
-.gap-card-label{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-.gap-card.before .gap-card-label{color:var(--muted)}
-.gap-card.after .gap-card-label{color:var(--brand)}
-.gap-item{display:flex;align-items:flex-start;gap:9px;font-size:14px;margin-bottom:10px;line-height:1.5;}
-.gap-item:last-child{margin-bottom:0}
-.gap-item.no{color:var(--muted)}.gap-item.no .gi{color:#EF4444;flex-shrink:0;margin-top:1px}
-.gap-item.yes{color:var(--ink);font-weight:500}.gap-item.yes .gi{color:var(--green);flex-shrink:0;margin-top:1px}
+/* ── BEFORE / AFTER ───────────────────────────────── */
+.ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:780px;margin:0 auto}
+.ba-card{border-radius:14px;padding:28px}
+.ba-before{background:var(--bg);border:1.5px solid var(--border)}
+.ba-after{background:linear-gradient(135deg,#F0EEFF,#EAE3FF);border:1.5px solid rgba(45,27,105,.2)}
+.ba-label{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:7px}
+.ba-before .ba-label{color:var(--muted)}
+.ba-after .ba-label{color:var(--brand)}
+.ba-item{display:flex;align-items:flex-start;gap:9px;font-size:14px;margin-bottom:10px;line-height:1.5}
+.ba-item:last-child{margin-bottom:0}
+.ba-item.bad{color:var(--muted)}.ba-item.bad .bi{color:#EF4444;flex-shrink:0;margin-top:2px}
+.ba-item.good{color:var(--ink);font-weight:500}.ba-item.good .bi{color:var(--green);flex-shrink:0;margin-top:2px}
 
 /* ── TEAM ────────────────────────────────────────── */
-.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:800px;margin:0 auto}
-.tcard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;text-align:center;transition:.2s;}
-.tcard:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,27,105,.1)}
-.tcard-av{width:68px;height:68px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-family:var(--ff);font-size:22px;font-weight:900;color:#fff;}
-.tcard-name{font-family:var(--ff);font-size:17px;font-weight:800;color:var(--ink);margin-bottom:3px}
-.tcard-role{font-size:12.5px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
-.tcard-bio{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:14px}
-.tcard-link{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--brand);text-decoration:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 12px;transition:.12s;}
-.tcard-link:hover{background:#EDE9FF;border-color:var(--brand)}
+.t-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:780px;margin:0 auto}
+.t-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:28px;text-align:center;transition:.2s}
+.t-card:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(45,27,105,.1)}
+.t-av{width:64px;height:64px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-family:var(--ff);font-size:20px;font-weight:900;color:#fff}
+.t-name{font-family:var(--ff);font-size:17px;font-weight:800;color:var(--ink);margin-bottom:3px}
+.t-role{font-size:12px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px}
+.t-bio{font-size:13.5px;color:var(--muted);line-height:1.6;margin-bottom:15px}
+.t-btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--brand);background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:5px 12px;transition:.12s}
+.t-btn:hover{background:var(--brand-lt);border-color:var(--brand)}
 
 /* ── PRESS ───────────────────────────────────────── */
-.press-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:720px;margin:0 auto 40px;}
-.press-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;display:flex;gap:14px;align-items:flex-start;transition:.15s;}
-.press-card:hover{border-color:rgba(45,27,105,.2);background:#F9F8FF}
-.press-icon{font-size:28px;flex-shrink:0}
-.press-title{font-family:var(--ff);font-size:14px;font-weight:800;color:var(--ink);margin-bottom:4px}
-.press-desc{font-size:13px;color:var(--muted)}
-.press-cta{text-align:center}
+.pr-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:700px;margin:0 auto 36px}
+.pr-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;display:flex;gap:14px;align-items:flex-start;transition:.15s}
+.pr-card:hover{border-color:rgba(45,27,105,.2);background:#FAFAFE}
+.pr-icon{font-size:26px;flex-shrink:0}
+.pr-title{font-family:var(--ff);font-size:14px;font-weight:800;color:var(--ink);margin-bottom:4px}
+.pr-desc{font-size:13px;color:var(--muted);line-height:1.5}
 
 /* ── CTA BANNER ──────────────────────────────────── */
-.cta-banner{background:linear-gradient(135deg,#08011F,#130836,#1A0A4A);padding:80px 24px;text-align:center;position:relative;overflow:hidden;}
-.cta-banner::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px;}
-.cta-banner-inner{position:relative;z-index:1;max-width:580px;margin:0 auto}
-.cta-banner h2{font-family:var(--ff);font-size:clamp(26px,4vw,40px);font-weight:900;color:#fff;letter-spacing:-1px;margin-bottom:12px;}
-.cta-banner p{font-size:16px;color:rgba(255,255,255,.62);margin-bottom:30px}
-.cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
-.btn-hero-primary{display:inline-flex;align-items:center;gap:9px;padding:14px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:var(--ff);font-size:15px;font-weight:800;cursor:pointer;transition:.2s;text-decoration:none;box-shadow:0 6px 24px rgba(255,92,53,.35);}
-.btn-hero-primary:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(255,92,53,.45)}
-.btn-hero-ghost{display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:12px;background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.22);color:rgba(255,255,255,.88);font-family:var(--ff);font-size:15px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none;}
-.btn-hero-ghost:hover{background:rgba(255,255,255,.14)}
+.cta-bg{background:linear-gradient(135deg,#08011F,#130836,#1A0A4A);padding:80px 24px;text-align:center;position:relative;overflow:hidden}
+.cta-bg::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px}
+.cta-inner{position:relative;z-index:1;max-width:580px;margin:0 auto}
+.cta-bg h2{font-family:var(--ff);font-size:clamp(26px,4vw,42px);font-weight:900;color:#fff;letter-spacing:-1.2px;margin-bottom:12px}
+.cta-bg p{font-size:16px;color:rgba(255,255,255,.62);margin-bottom:30px}
+.cta-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-cta-lg{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:var(--ff);font-size:15px;font-weight:800;cursor:pointer;transition:.2s;text-decoration:none;box-shadow:0 6px 24px rgba(255,92,53,.35)}
+.btn-cta-lg:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(255,92,53,.45)}
+.btn-ghost-lg{display:inline-flex;align-items:center;gap:8px;padding:14px 24px;border-radius:12px;background:rgba(255,255,255,.09);border:1.5px solid rgba(255,255,255,.22);color:rgba(255,255,255,.88);font-family:var(--ff);font-size:15px;font-weight:700;cursor:pointer;transition:.15s;text-decoration:none}
+.btn-ghost-lg:hover{background:rgba(255,255,255,.14)}
 
 /* ── FOOTER ─────────────────────────────────────── */
-.footer{background:#0D0D1A;padding:64px 24px 0;color:rgba(255,255,255,.55)}
-.footer-inner{max-width:1080px;margin:0 auto}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
-.footer-brand-name{font-family:var(--ff);font-size:20px;font-weight:800;color:#fff;margin-bottom:10px}
-.footer-brand-name span{color:var(--accent)}
-.footer-tagline{font-size:13.5px;line-height:1.65;margin-bottom:20px;color:rgba(255,255,255,.45)}
-.footer-socials{display:flex;gap:10px}
-.footer-social{width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);transition:.15s;text-decoration:none;}
-.footer-social:hover{background:rgba(255,255,255,.08);color:#fff}
-.footer-col-title{font-family:var(--ff);font-size:12px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
-.footer-col a{display:block;font-size:13.5px;color:rgba(255,255,255,.45);margin-bottom:9px;text-decoration:none;transition:.12s;}
-.footer-col a:hover{color:#fff}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding:20px 0;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.3);flex-wrap:wrap;gap:10px;}
+.footer{background:#0D0D1A;padding:64px 24px 0}
+.f-inner{max-width:1080px;margin:0 auto}
+.f-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+.f-brand{font-family:var(--ff);font-size:20px;font-weight:800;color:#fff;margin-bottom:10px}
+.f-brand em{font-style:normal;color:var(--accent)}
+.f-tag{font-size:13.5px;color:rgba(255,255,255,.42);line-height:1.65;margin-bottom:20px}
+.f-socials{display:flex;gap:10px}
+.f-soc{width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.5);transition:.15s}
+.f-soc:hover{background:rgba(255,255,255,.08);color:#fff}
+.f-col-h{font-family:var(--ff);font-size:11px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.9px;margin-bottom:14px}
+.f-col a{display:block;font-size:13.5px;color:rgba(255,255,255,.42);margin-bottom:9px;transition:.12s}
+.f-col a:hover{color:#fff}
+.f-bar{border-top:1px solid rgba(255,255,255,.07);padding:20px 0;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.28);flex-wrap:wrap;gap:10px}
 
 /* ── AUTH MODAL ──────────────────────────────────── */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;padding:20px;}
-.modal-overlay.open{display:flex}
-.modal-box{background:#fff;border-radius:20px;padding:32px;width:100%;max-width:400px;position:relative}
-.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1}
-.modal-title{font-family:var(--ff);font-size:22px;font-weight:900;color:var(--ink);margin-bottom:4px}
-.modal-sub{font-size:13.5px;color:var(--muted);margin-bottom:22px}
-.modal-tabs{display:flex;background:#F0EEFF;border-radius:10px;padding:3px;margin-bottom:20px}
-.modal-tab{flex:1;padding:9px;border-radius:8px;border:none;background:transparent;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--fb);transition:.12s;}
-.modal-tab.active{background:#fff;color:var(--brand);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.modal-field{margin-bottom:12px}
-.modal-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--fb);outline:none;transition:.15s;color:var(--ink);}
-.modal-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,27,105,.07)}
-.modal-err{background:#FEE2E2;color:#991B1B;font-size:13px;padding:9px 13px;border-radius:9px;margin-bottom:12px;display:none;}
-.btn-modal-submit{width:100%;padding:13px;border-radius:10px;border:none;margin-bottom:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-family:var(--ff);font-size:15px;font-weight:700;cursor:pointer;}
-.modal-or{text-align:center;font-size:13px;color:var(--muted);margin:8px 0;position:relative}
-.modal-or::before,.modal-or::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
-.modal-or::before{left:0}.modal-or::after{right:0}
-.btn-google{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--fb);display:flex;align-items:center;justify-content:center;gap:8px;}
-.modal-note{font-size:12px;color:var(--subtle);text-align:center;margin-top:14px;line-height:1.5}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex}
+.modal{background:#fff;border-radius:20px;padding:32px;width:100%;max-width:400px;position:relative}
+.modal-x{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1}
+.modal-h{font-family:var(--ff);font-size:22px;font-weight:900;color:var(--ink);margin-bottom:4px}
+.modal-s{font-size:13.5px;color:var(--muted);margin-bottom:20px}
+.modal-tabs{display:flex;background:#F0EEFF;border-radius:10px;padding:3px;margin-bottom:18px}
+.m-tab{flex:1;padding:9px;border-radius:8px;border:none;background:transparent;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--fb);transition:.12s}
+.m-tab.on{background:#fff;color:var(--brand);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.m-err{background:#FEE2E2;color:#991B1B;font-size:13px;padding:9px 13px;border-radius:9px;margin-bottom:12px;display:none}
+.m-field{margin-bottom:12px}
+.m-inp{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--fb);outline:none;transition:.15s;color:var(--ink)}
+.m-inp:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,27,105,.07)}
+.m-btn{width:100%;padding:13px;border-radius:10px;border:none;margin-bottom:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-family:var(--ff);font-size:15px;font-weight:700;cursor:pointer;transition:.15s}
+.m-btn:hover{opacity:.92}
+.m-or{text-align:center;font-size:13px;color:var(--muted);margin:8px 0;position:relative}
+.m-or::before,.m-or::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
+.m-or::before{left:0}.m-or::after{right:0}
+.m-google{width:100%;padding:11px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--fb);display:flex;align-items:center;justify-content:center;gap:8px;transition:.12s}
+.m-google:hover{border-color:var(--brand);color:var(--brand)}
+.m-note{font-size:12px;color:var(--subtle);text-align:center;margin-top:14px;line-height:1.5}
 
 /* ── TOAST ───────────────────────────────────────── */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0D0D1A;color:#fff;padding:11px 22px;border-radius:100px;font-size:13.5px;font-weight:500;z-index:9999;transition:.3s;box-shadow:0 8px 32px rgba(0,0,0,.25);pointer-events:none;white-space:nowrap;}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0D0D1A;color:#fff;padding:11px 22px;border-radius:100px;font-size:13.5px;font-weight:500;z-index:9999;transition:.3s;box-shadow:0 8px 32px rgba(0,0,0,.25);pointer-events:none;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
 
 /* ── RESPONSIVE ──────────────────────────────────── */
 @media(max-width:960px){
+  .nav-links{display:none}
   .mission-grid{grid-template-columns:1fr;gap:40px}
-  .platform-grid{grid-template-columns:repeat(2,1fr)}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
-  .nav-center{display:none}
+  .p-grid{grid-template-columns:repeat(2,1fr)}
+  .f-grid{grid-template-columns:1fr 1fr;gap:32px}
 }
 @media(max-width:768px){
-  .about-hero{padding:56px 20px 64px}
-  .values-grid{grid-template-columns:1fr}
-  .gap-grid{grid-template-columns:1fr}
-  .team-grid{grid-template-columns:1fr}
-  .press-grid{grid-template-columns:1fr}
-  .hero-stats-bar{flex-direction:column;align-items:center;width:100%;max-width:280px}
-  .hstat:not(:last-child){border-right:none;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:12px;margin-bottom:12px}
-  #nav-guest .btn-ghost{display:none}
-  .hamburger{display:flex}
-  .footer-grid{grid-template-columns:1fr 1fr}
+  .hero{padding:60px 20px 72px}
+  .hbg{display:flex}
+  #g-nav .btn-outline{display:none}
+  .v-grid{grid-template-columns:1fr}
+  .ba-grid{grid-template-columns:1fr}
+  .t-grid{grid-template-columns:1fr;max-width:380px}
+  .pr-grid{grid-template-columns:1fr}
+  .stat-bar{flex-direction:column;align-items:stretch;padding:16px 0;text-align:center}
+  .stat-item:not(:last-child){border-right:none;border-bottom:1px solid rgba(255,255,255,.12);padding-bottom:14px;margin-bottom:14px}
 }
 @media(max-width:480px){
-  .platform-grid{grid-template-columns:1fr}
-  .footer-grid{grid-template-columns:1fr}
+  .p-grid{grid-template-columns:1fr}
+  .f-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- ── NAV ──────────────────────────────────────── -->
 <nav class="nav">
-  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
-  <div class="nav-center">
-    <a href="courses.html" class="nav-link">Courses</a>
-    <a href="dashboard.html" class="nav-link">Dashboard</a>
-    <a href="contact.html" class="nav-link">Contact</a>
-    <a href="about.html" class="nav-link active">About</a>
+  <a href="index.html" class="logo">Belong<em>ix</em></a>
+  <div class="nav-links">
+    <a href="courses.html" class="nav-a">Courses</a>
+    <a href="dashboard.html" class="nav-a">Dashboard</a>
+    <a href="contact.html" class="nav-a">Contact</a>
+    <a href="about.html" class="nav-a on">About</a>
   </div>
-  <div class="nav-r">
-    <div id="nav-guest">
-      <button class="btn-ghost" onclick="openModal('signin')">Sign In</button>
-      <button class="btn-cta" onclick="openModal('signup')">Get Started Free</button>
+  <div class="nav-end">
+    <div id="g-nav">
+      <button class="btn-outline" onclick="openModal('signin')">Sign In</button>
+      <button class="btn-fill" onclick="openModal('signup')">Get Started Free</button>
     </div>
-    <div id="nav-user" style="display:none;align-items:center;gap:8px">
-      <a href="dashboard.html" class="btn-ghost" style="text-decoration:none">Dashboard</a>
+    <div id="u-nav">
+      <a href="dashboard.html" class="btn-outline" style="text-decoration:none">Dashboard</a>
       <div style="position:relative">
-        <div class="nav-av" id="nav-av" onclick="toggleDD()"><span id="nav-initials">?</span></div>
-        <div class="nav-user-dd" id="nav-user-dd">
+        <div class="nav-av" id="nav-av" onclick="toggleDD()"><span id="nav-init">?</span></div>
+        <div class="nav-dd" id="nav-dd">
           <a href="dashboard.html">📊 Dashboard</a>
           <a href="dashboard.html#profile">👤 My Profile</a>
           <hr/>
@@ -270,385 +304,385 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
     </div>
-    <button class="hamburger" onclick="toggleMobileMenu()">
-      <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+    <button class="hbg" onclick="openMob()">
+      <svg viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
     </button>
   </div>
 </nav>
 
-<!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobile-menu">
-  <div class="mobile-menu-top">
-    <span class="nav-logo">Belong<span style="color:var(--accent)">ix</span></span>
-    <button class="mobile-close" onclick="toggleMobileMenu()">✕</button>
+<!-- ── MOBILE MENU ───────────────────────────────── -->
+<div class="mob" id="mob">
+  <div class="mob-top">
+    <span class="logo">Belong<em style="color:var(--accent)">ix</em></span>
+    <button class="mob-x" onclick="closeMob()">✕</button>
   </div>
-  <a href="courses.html" class="mobile-link">Courses</a>
-  <a href="dashboard.html" class="mobile-link">Dashboard</a>
-  <a href="contact.html" class="mobile-link">Contact</a>
-  <a href="about.html" class="mobile-link">About</a>
-  <div class="mobile-btns">
-    <button class="btn-ghost" style="width:100%;padding:13px" onclick="openModal('signin');toggleMobileMenu()">Sign In</button>
-    <button class="btn-cta" style="width:100%;padding:13px;font-size:15px" onclick="openModal('signup');toggleMobileMenu()">Get Started Free →</button>
+  <a href="courses.html" class="mob-a">Courses</a>
+  <a href="dashboard.html" class="mob-a">Dashboard</a>
+  <a href="contact.html" class="mob-a">Contact</a>
+  <a href="about.html" class="mob-a">About</a>
+  <div class="mob-btns">
+    <button class="btn-outline" style="width:100%;padding:12px" onclick="openModal('signin');closeMob()">Sign In</button>
+    <button class="btn-fill" style="width:100%;padding:13px;font-size:15px" onclick="openModal('signup');closeMob()">Get Started Free →</button>
   </div>
 </div>
 
-<!-- HERO -->
-<section class="about-hero">
-  <div class="hero-orb hero-orb-1"></div>
-  <div class="hero-orb hero-orb-2"></div>
-  <div class="about-hero-inner">
-    <div class="hero-eyebrow">Our Mission</div>
-    <h1>Career growth shouldn't<br/>be <em>a privilege</em></h1>
-    <p class="about-hero-sub">In India, the best career advice often comes from who you know — not what you know. We built Belongix to change that.</p>
-    <div class="hero-stats-bar">
-      <div class="hstat"><div class="hstat-n">1000+</div><div class="hstat-l">Free Courses</div></div>
-      <div class="hstat"><div class="hstat-n">22</div><div class="hstat-l">Domains</div></div>
-      <div class="hstat"><div class="hstat-n">12K+</div><div class="hstat-l">Certificates</div></div>
-      <div class="hstat"><div class="hstat-n">Free</div><div class="hstat-l">Always</div></div>
+<!-- ── HERO ──────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="hero-inner">
+    <div class="hero-pill"><div class="hero-pill-dot"></div>Our Mission</div>
+    <h1>Career growth<br/>shouldn't be <em>a privilege</em></h1>
+    <p class="hero-p">In India, the best career advice often comes from who you know — not what you know. We built Belongix to change that — one free course at a time.</p>
+    <div class="stat-bar">
+      <div class="stat-item"><div class="stat-n">1000+</div><div class="stat-l">Free Courses</div></div>
+      <div class="stat-item"><div class="stat-n">22</div><div class="stat-l">Domains</div></div>
+      <div class="stat-item"><div class="stat-n">12K+</div><div class="stat-l">Certificates</div></div>
+      <div class="stat-item"><div class="stat-n">Free</div><div class="stat-l">Always</div></div>
     </div>
   </div>
 </section>
 
-<!-- MISSION -->
-<section class="section" style="background:#fff">
-  <div class="section-inner">
+<!-- ── MISSION ───────────────────────────────────── -->
+<section class="sec" style="background:#fff">
+  <div class="wrap">
     <div class="mission-grid">
       <div class="mission-text">
-        <div class="section-eyebrow">Why we exist</div>
-        <h2>One platform. Every Indian professional.</h2>
-        <p>If you didn't go to an IIT, or didn't have the right network, you were on your own. Career advice was locked behind privilege — premium courses, paid mentors, elite college networks.</p>
-        <p>We built Belongix to give every Indian professional — regardless of college, city, or background — the same tools that used to be available only to the privileged few.</p>
-        <div class="mission-checks">
-          <div class="mcheck"><div class="mcheck-dot">✓</div>1000+ structured courses across 22 domains — free forever</div>
-          <div class="mcheck"><div class="mcheck-dot">✓</div>Verified Belongix certificates to showcase on LinkedIn</div>
-          <div class="mcheck"><div class="mcheck-dot">✓</div>Career Score to track your real professional growth</div>
-          <div class="mcheck"><div class="mcheck-dot">✓</div>Core features always free — no hidden paywalls</div>
+        <div class="eyebrow" style="text-align:left">Why we exist</div>
+        <div class="mission-h">One platform.<br/><em>Every</em> Indian professional.</div>
+        <p class="mission-p">If you didn't go to an IIT, or didn't have the right network, you were on your own. Career advice was locked behind privilege — expensive courses, elite college networks, the right connections.</p>
+        <p class="mission-p">We built Belongix to give every Indian professional — regardless of college, city, or background — the same career tools that used to be available only to the privileged few. Structured, certified, and completely free.</p>
+        <div class="checks">
+          <div class="check"><div class="check-dot">✓</div>1000+ structured courses across 22 domains — free to browse</div>
+          <div class="check"><div class="check-dot">✓</div>Verified Belongix certificates on every completed course</div>
+          <div class="check"><div class="check-dot">✓</div>Career Score to track and improve your professional growth</div>
+          <div class="check"><div class="check-dot">✓</div>Core features Pro from ₹499/mo — no hidden paywalls</div>
         </div>
       </div>
-      <div class="mission-stats-card">
-        <div class="mstat-row">
-          <div class="mstat-icon">📚</div>
-          <div><div class="mstat-n">1019</div><div class="mstat-l">Courses across Full Stack, AI/ML, DevOps & 19 more domains</div></div>
+      <div class="m-stats">
+        <div class="m-row">
+          <div class="m-emoji">📚</div>
+          <div><div class="m-n">1019</div><div class="m-l">Courses across Full Stack, AI/ML,<br/>DevOps, DSA & 18 more domains</div></div>
         </div>
-        <div class="mstat-row">
-          <div class="mstat-icon">🏆</div>
-          <div><div class="mstat-n">12K+</div><div class="mstat-l">Verified certificates issued to Indian professionals</div></div>
+        <div class="m-row">
+          <div class="m-emoji">🏆</div>
+          <div><div class="m-n">12K+</div><div class="m-l">Verified certificates issued to<br/>Indian professionals</div></div>
         </div>
-        <div class="mstat-row">
-          <div class="mstat-icon">🎯</div>
-          <div><div class="mstat-n">100</div><div class="mstat-l">Max Career Score — track your professional growth</div></div>
+        <div class="m-row">
+          <div class="m-emoji">🎯</div>
+          <div><div class="m-n">100</div><div class="m-l">Max Career Score — tracks your<br/>real professional growth</div></div>
         </div>
-        <div class="mstat-row">
-          <div class="mstat-icon">🇮🇳</div>
-          <div><div class="mstat-n">Free</div><div class="mstat-l">Always — core platform will never have paywalls</div></div>
+        <div class="m-row">
+          <div class="m-emoji">🆓</div>
+          <div><div class="m-n">Always</div><div class="m-l">Core platform free to browse —<br/>no hidden paywalls ever</div></div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- JOURNEY / TIMELINE -->
-<section class="section timeline-section">
-  <div class="section-inner">
-    <div class="section-eyebrow">Our Journey</div>
-    <h2 class="section-title">How we got here</h2>
-    <p class="section-sub">Building in public — here's our story so far.</p>
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-dot"><div class="tl-dot-icon">💡</div></div>
-        <div class="tl-body">
+<!-- ── JOURNEY ───────────────────────────────────── -->
+<section class="sec" style="background:var(--bg)">
+  <div class="wrap">
+    <div class="eyebrow">Our Journey</div>
+    <h2 class="sec-h">How we got here</h2>
+    <p class="sec-sub">Building in public — here's our story so far.</p>
+    <div class="tl-wrap">
+      <div class="tl">
+        <div class="tl-item">
+          <div class="tl-dot">💡</div>
           <div class="tl-date">Early 2025</div>
           <div class="tl-title">The idea sparks</div>
-          <div class="tl-desc">Frustrated by scattered career tools and outdated learning resources, we started asking: why doesn't India have a proper career learning platform built for us?</div>
+          <div class="tl-desc">Frustrated by scattered learning resources and no clear structure for Indian developers, we started asking: why doesn't India have a proper career learning platform built for us?</div>
         </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"><div class="tl-dot-icon">⚡</div></div>
-        <div class="tl-body">
+        <div class="tl-item">
+          <div class="tl-dot">⚡</div>
           <div class="tl-date">Mid 2025</div>
           <div class="tl-title">Building starts</div>
-          <div class="tl-desc">First lines of code. We built the Course Catalogue, Career Score, and Certificate system — the three tools we wished we had when we were starting out.</div>
+          <div class="tl-desc">First lines of code. We built the Course Catalogue, Career Score, and Certificate system — the three tools we wished we had when we were starting our own careers.</div>
         </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"><div class="tl-dot-icon">🚀</div></div>
-        <div class="tl-body">
+        <div class="tl-item">
+          <div class="tl-dot">🚀</div>
           <div class="tl-date">Late 2025</div>
           <div class="tl-title">1000+ courses live</div>
-          <div class="tl-desc">We curated and structured 1019 courses across 22 domains — Full Stack to AI/ML, DSA to Cybersecurity. Every course includes a verified Belongix certificate.</div>
+          <div class="tl-desc">We curated and structured 1019 courses across 22 domains — Full Stack to AI/ML, DSA to Cybersecurity. Every single course includes a verified Belongix certificate.</div>
         </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot"><div class="tl-dot-icon">🏆</div></div>
-        <div class="tl-body">
+        <div class="tl-item">
+          <div class="tl-dot">🏆</div>
           <div class="tl-date">2026</div>
           <div class="tl-title">12,000+ certificates issued</div>
-          <div class="tl-desc">Indian professionals are completing courses, earning certificates, and growing their careers. We're just getting started — the roadmap ahead is exciting.</div>
+          <div class="tl-desc">Indian professionals are completing courses, earning certificates, and growing their careers. We're just getting started — the roadmap ahead keeps us up at night.</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PLATFORM FEATURES -->
-<section class="section" style="background:#fff">
-  <div class="section-inner">
-    <div class="section-eyebrow">The Platform</div>
-    <h2 class="section-title">Built for learning. Built for India.</h2>
-    <p class="section-sub">Everything your career needs in one place — structured, certified, and always free.</p>
-    <div class="platform-grid">
-      <div class="pcard">
-        <div class="pcard-icon">📚</div>
-        <div class="pcard-title">1000+ Courses</div>
-        <div class="pcard-desc">Full Stack to AI/ML, DSA to Cybersecurity — 22 domains covering every in-demand skill for Indian professionals in 2026.</div>
-        <a href="courses.html" class="pcard-link">Browse courses →</a>
+<!-- ── PLATFORM ───────────────────────────────────── -->
+<section class="sec" style="background:#fff">
+  <div class="wrap">
+    <div class="eyebrow">The Platform</div>
+    <h2 class="sec-h">Built for learning. Built for India.</h2>
+    <p class="sec-sub">Everything your career needs in one place — structured, certified, and Pro from ₹499/mo.</p>
+    <div class="p-grid">
+      <div class="p-card">
+        <div class="p-icon">📚</div>
+        <div class="p-title">1000+ Free Courses</div>
+        <div class="p-desc">Full Stack to AI/ML, DSA to Cybersecurity — 22 domains covering every in-demand skill for Indian professionals.</div>
+        <a href="courses.html" class="p-link">Browse courses →</a>
       </div>
-      <div class="pcard">
-        <div class="pcard-icon">🏆</div>
-        <div class="pcard-title">Verified Certificates</div>
-        <div class="pcard-desc">Complete a course, earn a verified Belongix certificate. Share it directly on LinkedIn to signal your skills to recruiters and hiring managers.</div>
-        <a href="courses.html" class="pcard-link">Start learning →</a>
+      <div class="p-card">
+        <div class="p-icon">🏆</div>
+        <div class="p-title">Verified Certificates</div>
+        <div class="p-desc">Complete a course, earn a verified Belongix certificate. Share directly on LinkedIn to signal your skills to recruiters.</div>
+        <a href="courses.html" class="p-link">Start learning →</a>
       </div>
-      <div class="pcard">
-        <div class="pcard-icon">🎯</div>
-        <div class="pcard-title">Career Score</div>
-        <div class="pcard-desc">A dynamic score that tracks your professional growth based on your profile completeness, courses completed, and certificates earned. Max 100.</div>
-        <a href="dashboard.html" class="pcard-link">See your score →</a>
+      <div class="p-card">
+        <div class="p-icon">🎯</div>
+        <div class="p-title">Career Score</div>
+        <div class="p-desc">A dynamic score that tracks your professional growth based on profile completeness, courses completed, and certificates earned.</div>
+        <a href="dashboard.html" class="p-link">See your score →</a>
       </div>
-      <div class="pcard">
-        <div class="pcard-icon">🗺️</div>
-        <div class="pcard-title">Career Paths</div>
-        <div class="pcard-desc">8 structured paths from fresher to expert — each with clear milestones. From beginner to FAANG-ready in a structured sequence.</div>
-        <a href="courses.html" class="pcard-link">Explore paths →</a>
+      <div class="p-card">
+        <div class="p-icon">🗺️</div>
+        <div class="p-title">Career Paths</div>
+        <div class="p-desc">8 structured paths from fresher to expert — clear milestones, each domain covered end-to-end from beginner to FAANG-ready.</div>
+        <a href="courses.html" class="p-link">Explore paths →</a>
       </div>
-      <div class="pcard">
-        <div class="pcard-icon">📊</div>
-        <div class="pcard-title">My Dashboard</div>
-        <div class="pcard-desc">Track your enrolled courses, completed certifications, and Career Score progress — all in one place. Your personal learning command centre.</div>
-        <a href="dashboard.html" class="pcard-link">Open dashboard →</a>
+      <div class="p-card">
+        <div class="p-icon">📊</div>
+        <div class="p-title">Your Dashboard</div>
+        <div class="p-desc">Track enrolled courses, completed certificates, and Career Score progress — all in one personal learning command centre.</div>
+        <a href="dashboard.html" class="p-link">Open dashboard →</a>
       </div>
-      <div class="pcard">
-        <div class="pcard-icon">⚡</div>
-        <div class="pcard-title">Always Free</div>
-        <div class="pcard-desc">Core platform is free forever. Every course is free. Every certificate is earned, not bought. Career guidance should not be a privilege.</div>
-        <a href="index.html" class="pcard-link">Get started →</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- VALUES -->
-<section class="section values-section">
-  <div class="section-inner">
-    <div class="section-eyebrow">Our Values</div>
-    <h2 class="section-title">What we stand for</h2>
-    <p class="section-sub">Four principles that shape every decision we make.</p>
-    <div class="values-grid">
-      <div class="vcard">
-        <div class="vcard-icon">🌟</div>
-        <div class="vcard-title">Honesty</div>
-        <div class="vcard-desc">No inflated numbers. No fake stats. We'd rather tell you the truth and show you less than mislead you. Real courses, real certificates, real progress.</div>
-      </div>
-      <div class="vcard">
-        <div class="vcard-icon">🇮🇳</div>
-        <div class="vcard-title">India First</div>
-        <div class="vcard-desc">Built for Indian professionals. Courses chosen for India's job market. Career paths designed for what companies here actually hire for. Not adapted from the US.</div>
-      </div>
-      <div class="vcard">
-        <div class="vcard-icon">🆓</div>
-        <div class="vcard-title">Access for All</div>
-        <div class="vcard-desc">Core features are always free. 1000+ courses are free. Certificates are free. Career growth should not be limited by your background or budget.</div>
-      </div>
-      <div class="vcard">
-        <div class="vcard-icon">🔒</div>
-        <div class="vcard-title">Privacy First</div>
-        <div class="vcard-desc">Your data belongs to you. We never sell user data to advertisers. We never share it without permission. Simple, no exceptions.</div>
+      <div class="p-card">
+        <div class="p-icon">⚡</div>
+        <div class="p-title">Pro from ₹499/mo</div>
+        <div class="p-desc">Core platform is free to browse. Pro plan from ₹499/month. Every certificate is earned, not bought. No exceptions, no fine print.</div>
+        <a href="index.html" class="p-link">Get started →</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- BEFORE / AFTER -->
-<section class="section" style="background:var(--bg)">
-  <div class="section-inner">
-    <div class="section-eyebrow">The Gap We Fill</div>
-    <h2 class="section-title">Before Belongix vs After</h2>
-    <p class="section-sub">One platform that replaces the chaos of scattered career resources.</p>
-    <div class="gap-grid">
-      <div class="gap-card before">
-        <div class="gap-card-label">❌ Without Belongix</div>
-        <div class="gap-item no"><span class="gi">✗</span>Searching 5 different platforms for the right course</div>
-        <div class="gap-item no"><span class="gi">✗</span>No structure — random YouTube videos, no sequence</div>
-        <div class="gap-item no"><span class="gi">✗</span>No certificate to show recruiters after you learn</div>
-        <div class="gap-item no"><span class="gi">✗</span>No way to track or measure your career progress</div>
-        <div class="gap-item no"><span class="gi">✗</span>Premium courses behind expensive paywalls</div>
-        <div class="gap-item no"><span class="gi">✗</span>Preparing for interviews with no clear roadmap</div>
+<!-- ── VALUES ────────────────────────────────────── -->
+<section class="values-bg">
+  <div class="wrap">
+    <div class="eyebrow">Our Values</div>
+    <h2 class="sec-h">What we stand for</h2>
+    <p class="sec-sub">Four principles that shape every decision we make at Belongix.</p>
+    <div class="v-grid">
+      <div class="v-card">
+        <div class="v-icon">🌟</div>
+        <div class="v-title">Honesty</div>
+        <div class="v-desc">No inflated numbers. No fake stats. We'd rather tell you the truth and show you less than mislead you. Real courses, real certificates, real progress.</div>
       </div>
-      <div class="gap-card after">
-        <div class="gap-card-label">✅ With Belongix</div>
-        <div class="gap-item yes"><span class="gi">✓</span>1019 structured courses across 22 domains in one place</div>
-        <div class="gap-item yes"><span class="gi">✓</span>Clear career paths — Beginner to Expert, step by step</div>
-        <div class="gap-item yes"><span class="gi">✓</span>Verified Belongix certificate on every completed course</div>
-        <div class="gap-item yes"><span class="gi">✓</span>Career Score that tracks your real professional growth</div>
-        <div class="gap-item yes"><span class="gi">✓</span>Everything free — no hidden paywalls on any course</div>
-        <div class="gap-item yes"><span class="gi">✓</span>DSA, System Design, interview paths — all structured</div>
+      <div class="v-card">
+        <div class="v-icon">🇮🇳</div>
+        <div class="v-title">India First</div>
+        <div class="v-desc">Built for Indian professionals. Courses chosen for India's job market. Career paths designed for what companies here actually hire for — not adapted from the US.</div>
+      </div>
+      <div class="v-card">
+        <div class="v-icon">🆓</div>
+        <div class="v-title">Access for All</div>
+        <div class="v-desc">Core features are Pro from ₹499/mo. Pro plan from ₹499/month. Certificates are free. Career growth should not be limited by your background or your budget.</div>
+      </div>
+      <div class="v-card">
+        <div class="v-icon">🔒</div>
+        <div class="v-title">Privacy First</div>
+        <div class="v-desc">Your data belongs to you. We never sell user data to advertisers. We never share it without your permission. Simple — no exceptions.</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TEAM -->
-<section class="section" style="background:#fff">
-  <div class="section-inner">
-    <div class="section-eyebrow">The Team</div>
-    <h2 class="section-title">Built by people who get it</h2>
-    <p class="section-sub">We've been through the same career struggles. That's why we built Belongix.</p>
-    <div class="team-grid">
-      <div class="tcard">
-        <div class="tcard-av" style="background:linear-gradient(135deg,#2D1B69,#4C2FAA)">KV</div>
-        <div class="tcard-name">KV</div>
-        <div class="tcard-role">Founder · Product & Engineering</div>
-        <div class="tcard-bio">Building Belongix to give every Indian professional the career tools they deserve — regardless of college or network.</div>
-        <a href="https://www.linkedin.com/company/belongix" class="tcard-link" target="_blank" rel="noopener">
+<!-- ── BEFORE / AFTER ─────────────────────────────── -->
+<section class="sec" style="background:var(--bg)">
+  <div class="wrap">
+    <div class="eyebrow">The Gap We Fill</div>
+    <h2 class="sec-h">Before Belongix vs After</h2>
+    <p class="sec-sub">One platform that replaces the chaos of scattered career resources.</p>
+    <div class="ba-grid">
+      <div class="ba-card ba-before">
+        <div class="ba-label">❌ Without Belongix</div>
+        <div class="ba-item bad"><span class="bi">✗</span>Searching 5 different sites for the right course</div>
+        <div class="ba-item bad"><span class="bi">✗</span>No structure — random YouTube videos, no sequence</div>
+        <div class="ba-item bad"><span class="bi">✗</span>No certificate to show recruiters after you learn</div>
+        <div class="ba-item bad"><span class="bi">✗</span>No way to track or measure your career progress</div>
+        <div class="ba-item bad"><span class="bi">✗</span>Good courses locked behind expensive paywalls</div>
+        <div class="ba-item bad"><span class="bi">✗</span>Interview prep with no clear roadmap or structure</div>
+      </div>
+      <div class="ba-card ba-after">
+        <div class="ba-label">✅ With Belongix</div>
+        <div class="ba-item good"><span class="bi">✓</span>1019 structured courses across 22 domains in one place</div>
+        <div class="ba-item good"><span class="bi">✓</span>Clear paths from Beginner to Expert, step by step</div>
+        <div class="ba-item good"><span class="bi">✓</span>Verified Belongix certificate on every completed course</div>
+        <div class="ba-item good"><span class="bi">✓</span>Career Score that tracks your real professional growth</div>
+        <div class="ba-item good"><span class="bi">✓</span>Pro plan ₹499/month — full access to all 1019 courses</div>
+        <div class="ba-item good"><span class="bi">✓</span>DSA, System Design, interview paths — all structured</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TEAM ──────────────────────────────────────── -->
+<section class="sec" style="background:#fff">
+  <div class="wrap">
+    <div class="eyebrow">The Team</div>
+    <h2 class="sec-h">Built by people who get it</h2>
+    <p class="sec-sub">We've been through the same career struggles. That's why we built Belongix.</p>
+    <div class="t-grid">
+      <div class="t-card">
+        <div class="t-av" style="background:linear-gradient(135deg,#2D1B69,#4C2FAA)">KV</div>
+        <div class="t-name">KV</div>
+        <div class="t-role">Founder · Product &amp; Engineering</div>
+        <div class="t-bio">Building Belongix to give every Indian professional the career tools they deserve — regardless of college or network.</div>
+        <a href="https://www.linkedin.com/company/belongix" class="t-btn" target="_blank" rel="noopener">
           <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
           LinkedIn
         </a>
       </div>
-      <div class="tcard">
-        <div class="tcard-av" style="background:linear-gradient(135deg,#10B981,#059669);font-size:28px">🤖</div>
-        <div class="tcard-name">The Platform</div>
-        <div class="tcard-role">1019 Courses · 22 Domains</div>
-        <div class="tcard-bio">Every course, every certificate, every career path — built with one goal: give Indian professionals the tools that used to be out of reach.</div>
-        <a href="courses.html" class="tcard-link">Browse courses →</a>
+      <div class="t-card">
+        <div class="t-av" style="background:linear-gradient(135deg,#059669,#10B981);font-size:26px">📚</div>
+        <div class="t-name">The Platform</div>
+        <div class="t-role">1019 Courses · 22 Domains</div>
+        <div class="t-bio">Every course, every certificate, every career path — built with one goal: give Indian professionals tools that used to be out of reach.</div>
+        <a href="courses.html" class="t-btn">Browse courses →</a>
       </div>
-      <div class="tcard">
-        <div class="tcard-av" style="background:linear-gradient(135deg,#FF5C35,#FF8A50);font-size:28px">🤝</div>
-        <div class="tcard-name">The Community</div>
-        <div class="tcard-role">Co-builders</div>
-        <div class="tcard-bio">Every piece of feedback shapes Belongix. Join 12,000+ professionals who are learning, earning certificates, and building their careers with us.</div>
-        <a href="contact.html" class="tcard-link">Share feedback →</a>
+      <div class="t-card">
+        <div class="t-av" style="background:linear-gradient(135deg,#FF5C35,#FF8A50);font-size:26px">🤝</div>
+        <div class="t-name">The Community</div>
+        <div class="t-role">12,000+ Co-builders</div>
+        <div class="t-bio">Every piece of feedback shapes Belongix. Join 12,000+ professionals who are learning, earning certificates, and growing with us.</div>
+        <a href="contact.html" class="t-btn">Share feedback →</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- PRESS -->
-<section class="section" style="background:var(--bg)">
-  <div class="section-inner">
-    <div class="section-eyebrow">Press & Media</div>
-    <h2 class="section-title">Want to cover us?</h2>
-    <p class="section-sub">We're building in public and happy to speak with journalists, podcasters, and content creators covering the Indian startup and education ecosystem.</p>
-    <div class="press-grid">
-      <div class="press-card">
-        <div class="press-icon">📰</div>
+<!-- ── PRESS ─────────────────────────────────────── -->
+<section class="sec" style="background:var(--bg)">
+  <div class="wrap">
+    <div class="eyebrow">Press &amp; Media</div>
+    <h2 class="sec-h">Want to cover us?</h2>
+    <p class="sec-sub">Building in public — happy to speak with journalists, podcasters, and creators covering Indian startups and education.</p>
+    <div class="pr-grid">
+      <div class="pr-card">
+        <div class="pr-icon">📰</div>
         <div>
-          <div class="press-title">Press Kit</div>
-          <div class="press-desc">Logos, screenshots, brand guidelines — everything you need to cover Belongix.</div>
+          <div class="pr-title">Press Kit</div>
+          <div class="pr-desc">Logos, screenshots, brand guidelines — everything you need.</div>
         </div>
       </div>
-      <div class="press-card">
-        <div class="press-icon">🎙️</div>
+      <div class="pr-card">
+        <div class="pr-icon">🎙️</div>
         <div>
-          <div class="press-title">Podcast / Interview</div>
-          <div class="press-desc">Happy to share the founder story — building India's career learning platform from scratch.</div>
+          <div class="pr-title">Podcast / Interview</div>
+          <div class="pr-desc">Happy to share the founder story — building Belongix from scratch.</div>
         </div>
       </div>
-      <div class="press-card">
-        <div class="press-icon">📊</div>
+      <div class="pr-card">
+        <div class="pr-icon">📊</div>
         <div>
-          <div class="press-title">Data & Stats</div>
-          <div class="press-desc">Platform usage, courses completed, certificates issued, and growth data available on request.</div>
+          <div class="pr-title">Data &amp; Stats</div>
+          <div class="pr-desc">Platform usage, courses completed, certificates issued — on request.</div>
         </div>
       </div>
-      <div class="press-card">
-        <div class="press-icon">🤝</div>
+      <div class="pr-card">
+        <div class="pr-icon">🤝</div>
         <div>
-          <div class="press-title">Partnerships</div>
-          <div class="press-desc">Corporate training, college integrations, and EdTech collaborations — let's talk.</div>
+          <div class="pr-title">Partnerships</div>
+          <div class="pr-desc">Corporate training, college integrations, EdTech collaborations.</div>
         </div>
       </div>
     </div>
-    <div class="press-cta">
-      <a href="contact.html" class="btn-hero-primary" style="display:inline-flex">Contact for Press →</a>
+    <div style="text-align:center">
+      <a href="contact.html" class="btn-cta-lg">Contact for Press →</a>
     </div>
   </div>
 </section>
 
-<!-- CTA BANNER -->
-<div class="cta-banner">
-  <div class="cta-banner-inner">
+<!-- ── CTA BANNER ────────────────────────────────── -->
+<div class="cta-bg">
+  <div class="cta-inner">
     <h2>Start your learning journey today</h2>
-    <p>Join 12,000+ Indian professionals. 1000+ free courses. Verified certificates. Free forever.</p>
-    <div class="cta-btns">
-      <button class="btn-hero-primary" onclick="openModal('signup')">Get Started Free →</button>
-      <a href="courses.html" class="btn-hero-ghost">Browse Courses →</a>
+    <p>Join 12,000+ Indian professionals. 1000+ free courses. Verified certificates. Free to browse.</p>
+    <div class="cta-row">
+      <button class="btn-cta-lg" onclick="openModal('signup')">Get Started Free →</button>
+      <a href="courses.html" class="btn-ghost-lg">Browse Courses →</a>
     </div>
   </div>
 </div>
 
-<!-- FOOTER -->
+<!-- ── FOOTER ─────────────────────────────────────── -->
 <footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-grid">
+  <div class="f-inner">
+    <div class="f-grid">
       <div>
-        <div class="footer-brand-name">Belong<span>ix</span></div>
-        <div class="footer-tagline">India's career learning platform — 1000+ free courses, verified certificates, built for Indian professionals.</div>
-        <div class="footer-socials">
-          <a href="https://linkedin.com/company/belongix" class="footer-social" target="_blank" rel="noopener"><svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
-          <a href="https://instagram.com/belongix" class="footer-social" target="_blank" rel="noopener"><svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg></a>
-          <a href="https://twitter.com/belongix" class="footer-social" target="_blank" rel="noopener"><svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <div class="f-brand">Belong<em>ix</em></div>
+        <div class="f-tag">India's career learning platform — 1019 courses, verified certificates, built for Indian professionals.</div>
+        <div class="f-socials">
+          <a href="https://linkedin.com/company/belongix" class="f-soc" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          </a>
+          <a href="https://instagram.com/belongix" class="f-soc" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg>
+          </a>
+          <a href="https://twitter.com/belongix" class="f-soc" target="_blank" rel="noopener" aria-label="Twitter/X">
+            <svg width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
         </div>
       </div>
-      <div class="footer-col">
-        <div class="footer-col-title">Learn</div>
+      <div class="f-col">
+        <div class="f-col-h">Learn</div>
         <a href="courses.html">All Courses</a>
         <a href="courses.html?domain=AI+%2F+ML">AI &amp; ML</a>
         <a href="courses.html?domain=Full+Stack">Full Stack</a>
         <a href="courses.html?domain=DSA">DSA</a>
         <a href="courses.html?domain=Cloud+%26+DevOps">DevOps</a>
       </div>
-      <div class="footer-col">
-        <div class="footer-col-title">Platform</div>
+      <div class="f-col">
+        <div class="f-col-h">Platform</div>
         <a href="dashboard.html">Dashboard</a>
         <a href="dashboard.html#overview">Career Score</a>
         <a href="dashboard.html#mycourses">Certificates</a>
       </div>
-      <div class="footer-col">
-        <div class="footer-col-title">Company</div>
+      <div class="f-col">
+        <div class="f-col-h">Company</div>
         <a href="about.html">About Us</a>
         <a href="contact.html">Contact</a>
         <a href="privacy.html">Privacy Policy</a>
         <a href="terms.html">Terms of Service</a>
       </div>
     </div>
-    <div class="footer-bottom">
+    <div class="f-bar">
       <span>© 2026 Belongix · Built with ❤️ in India 🇮🇳</span>
       <span><a href="privacy.html" style="color:inherit">Privacy</a> · <a href="terms.html" style="color:inherit">Terms</a></span>
     </div>
   </div>
 </footer>
 
-<!-- AUTH MODAL -->
-<div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)closeModal()">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title" id="modal-title">Create your free account</div>
-    <div class="modal-sub">Join 12,000+ professionals learning on Belongix</div>
+<!-- ── AUTH MODAL ────────────────────────────────── -->
+<div class="overlay" id="auth-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal()">✕</button>
+    <div class="modal-h" id="m-title">Create your free account</div>
+    <div class="modal-s">Join 12,000+ professionals learning on Belongix</div>
     <div class="modal-tabs">
-      <button class="modal-tab active" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
-      <button class="modal-tab" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
+      <button class="m-tab on" id="tab-up" onclick="switchTab('signup')">Sign Up</button>
+      <button class="m-tab" id="tab-in" onclick="switchTab('signin')">Sign In</button>
     </div>
-    <div class="modal-err" id="modal-err"></div>
-    <div class="modal-field" id="name-field"><input class="modal-input" id="auth-name" type="text" placeholder="Full name"/></div>
-    <div class="modal-field"><input class="modal-input" id="auth-email" type="email" placeholder="you@email.com"/></div>
-    <div class="modal-field"><input class="modal-input" id="auth-pass" type="password" placeholder="Password"/></div>
-    <button class="btn-modal-submit" id="auth-btn" onclick="doAuth()">Create Account →</button>
-    <div class="modal-or">or</div>
-    <button class="btn-google" onclick="doGoogle()">
+    <div class="m-err" id="m-err"></div>
+    <div class="m-field" id="name-f"><input class="m-inp" id="m-name" type="text" placeholder="Full name"/></div>
+    <div class="m-field"><input class="m-inp" id="m-email" type="email" placeholder="you@email.com"/></div>
+    <div class="m-field"><input class="m-inp" id="m-pass" type="password" placeholder="Password"/></div>
+    <button class="m-btn" id="m-btn" onclick="doAuth()">Create Account →</button>
+    <div class="m-or">or</div>
+    <button class="m-google" onclick="doGoogle()">
       <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
       Continue with Google
     </button>
-    <div class="modal-note">Free plan always available · No credit card needed</div>
+    <div class="m-note">Browse free · Pro ₹499/mo for full access</div>
   </div>
 </div>
 
@@ -659,74 +693,91 @@ var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
 var sb=supabase.createClient(SB_URL,SB_KEY);
 
+/* ── INIT ─────────────────────────────────────────── */
 window.addEventListener('load',function(){
   initAuth();
   document.addEventListener('click',function(e){
-    if(!e.target.closest('#nav-av')&&!e.target.closest('#nav-user-dd'))
-      document.getElementById('nav-user-dd').classList.remove('open');
+    if(!e.target.closest('#nav-av')&&!e.target.closest('#nav-dd'))
+      document.getElementById('nav-dd').classList.remove('show');
   });
 });
 
+/* ── AUTH ─────────────────────────────────────────── */
 async function initAuth(){
   try{
     var s=await sb.auth.getSession();
-    if(s.data&&s.data.session&&s.data.session.user)showUserNav(s.data.session.user);
-    else showGuestNav();
-  }catch(e){showGuestNav();}
+    if(s.data&&s.data.session)showUser(s.data.session.user);
+    else showGuest();
+  }catch(e){showGuest();}
 }
-function showUserNav(user){
-  document.getElementById('nav-guest').style.display='none';
-  var nu=document.getElementById('nav-user');nu.style.display='flex';
-  if(user){var n=(user.user_metadata&&user.user_metadata.full_name)||user.email||'U';document.getElementById('nav-initials').textContent=n[0].toUpperCase();}
+function showUser(u){
+  document.getElementById('g-nav').style.display='none';
+  document.getElementById('u-nav').style.display='flex';
+  if(u){var n=(u.user_metadata&&u.user_metadata.full_name)||u.email||'U';document.getElementById('nav-init').textContent=n[0].toUpperCase();}
 }
-function showGuestNav(){document.getElementById('nav-guest').style.display='flex';document.getElementById('nav-user').style.display='none';}
-async function doSignOut(){await sb.auth.signOut();showGuestNav();showToast('Signed out.');}
+function showGuest(){
+  document.getElementById('g-nav').style.display='flex';
+  document.getElementById('u-nav').style.display='none';
+}
+async function doSignOut(){
+  await sb.auth.signOut();showGuest();showToast('Signed out.');
+}
+function toggleDD(){document.getElementById('nav-dd').classList.toggle('show');}
 
-var _modalTab='signup';
+/* ── MODAL ─────────────────────────────────────────── */
+var _tab='signup';
 function openModal(tab){
   switchTab(tab||'signup');
-  document.getElementById('auth-modal').classList.add('open');
+  document.getElementById('auth-overlay').classList.add('open');
   document.body.style.overflow='hidden';
-  setTimeout(function(){document.getElementById('auth-email').focus();},100);
+  setTimeout(function(){document.getElementById('m-email').focus();},100);
 }
-function closeModal(){document.getElementById('auth-modal').classList.remove('open');document.body.style.overflow='';}
+function closeModal(){
+  document.getElementById('auth-overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
 function switchTab(t){
-  _modalTab=t;
-  document.getElementById('tab-signup').classList.toggle('active',t==='signup');
-  document.getElementById('tab-signin').classList.toggle('active',t==='signin');
-  document.getElementById('modal-title').textContent=t==='signup'?'Create your free account':'Welcome back';
-  document.getElementById('name-field').style.display=t==='signup'?'block':'none';
-  document.getElementById('auth-btn').textContent=t==='signup'?'Create Account →':'Sign In →';
-  document.getElementById('modal-err').style.display='none';
+  _tab=t;
+  document.getElementById('tab-up').classList.toggle('on',t==='signup');
+  document.getElementById('tab-in').classList.toggle('on',t==='signin');
+  document.getElementById('m-title').textContent=t==='signup'?'Create your free account':'Welcome back';
+  document.getElementById('name-f').style.display=t==='signup'?'block':'none';
+  document.getElementById('m-btn').textContent=t==='signup'?'Create Account →':'Sign In →';
+  document.getElementById('m-err').style.display='none';
 }
 async function doAuth(){
-  var email=document.getElementById('auth-email').value.trim();
-  var pass=document.getElementById('auth-pass').value;
-  var name=document.getElementById('auth-name').value.trim();
-  var err=document.getElementById('modal-err');err.style.display='none';
-  if(!email||!pass){err.textContent='Please enter email and password.';err.style.display='block';return;}
-  var btn=document.getElementById('auth-btn');btn.textContent='Please wait…';btn.disabled=true;
+  var email=document.getElementById('m-email').value.trim();
+  var pass=document.getElementById('m-pass').value;
+  var name=document.getElementById('m-name').value.trim();
+  var err=document.getElementById('m-err');
+  err.style.display='none';
+  if(!email||!pass){err.textContent='Please enter your email and password.';err.style.display='block';return;}
+  var btn=document.getElementById('m-btn');btn.textContent='Please wait…';btn.disabled=true;
   try{
-    var r=_modalTab==='signup'?await sb.auth.signUp({email,password:pass,options:{data:{full_name:name||email.split('@')[0]}}}):await sb.auth.signInWithPassword({email,password:pass});
+    var r=_tab==='signup'
+      ?await sb.auth.signUp({email:email,password:pass,options:{data:{full_name:name||email.split('@')[0]}}})
+      :await sb.auth.signInWithPassword({email:email,password:pass});
     if(r.error)throw r.error;
-    showToast('Success! Redirecting…');setTimeout(function(){window.location.href='dashboard.html';},700);
+    showToast('Success! Redirecting…');
+    setTimeout(function(){window.location.href='dashboard.html';},700);
   }catch(e){err.textContent=e.message||'Something went wrong.';err.style.display='block';}
-  btn.textContent=_modalTab==='signup'?'Create Account →':'Sign In →';btn.disabled=false;
+  btn.textContent=_tab==='signup'?'Create Account →':'Sign In →';btn.disabled=false;
 }
 async function doGoogle(){
-  try{await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});}
-  catch(e){showToast('Google sign-in unavailable. Try email.');}
+  try{
+    await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});
+  }catch(e){showToast('Google sign-in unavailable. Try email.');}
 }
-function toggleDD(){document.getElementById('nav-user-dd').classList.toggle('open');}
-function toggleMobileMenu(){
-  var m=document.getElementById('mobile-menu');
-  m.classList.toggle('open');
-  document.body.style.overflow=m.classList.contains('open')?'hidden':'';
-}
-var _toastTimer;
+
+/* ── MOBILE ─────────────────────────────────────────── */
+function openMob(){document.getElementById('mob').classList.add('open');document.body.style.overflow='hidden';}
+function closeMob(){document.getElementById('mob').classList.remove('open');document.body.style.overflow='';}
+
+/* ── TOAST ─────────────────────────────────────────── */
+var _tt;
 function showToast(msg){
   var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
-  clearTimeout(_toastTimer);_toastTimer=setTimeout(function(){t.classList.remove('show');},3000);
+  clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('show');},3000);
 }
 </script>
 </body>
