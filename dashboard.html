@@ -612,6 +612,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);height:100%;dis
   .mc-stats{flex-direction:column}
 }
 </style>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -647,7 +648,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);height:100%;dis
   </nav>
   <a href="courses.html" class="sb-browse">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-    Browse 1000+ Courses
+    Browse 1019 Courses
     <svg style="margin-left:auto;width:14px;height:14px;flex-shrink:0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14m-7-7l7 7-7 7"/></svg>
   </a>
   <div class="sb-bottom">
@@ -800,7 +801,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);height:100%;dis
           <div class="card">
             <div class="card-title"><div class="card-title-text">Quick Access</div></div>
             <button class="ql-row" onclick="window.location.href='courses.html'">
-              <span class="ql-icon">📚</span>Browse 1000+ Courses<span class="ql-arrow">›</span>
+              <span class="ql-icon">📚</span>Browse 1019 Courses<span class="ql-arrow">›</span>
             </button>
             <button class="ql-row" onclick="showPage('profile',document.querySelector('[data-page=profile]'))">
               <span class="ql-icon">👤</span>Edit My Profile<span class="ql-arrow">›</span>
@@ -848,7 +849,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);height:100%;dis
       <div class="mc-empty" id="mc-empty" style="display:none">
         <div class="mc-empty-emoji">📚</div>
         <h3>No courses yet</h3>
-        <p>Browse 1000+ free courses and start learning today</p>
+        <p>Browse 1019 courses and start learning today</p>
         <a href="courses.html" class="btn-primary">Browse Courses →</a>
       </div>
     </div><!-- /page-mycourses -->
@@ -1263,7 +1264,7 @@ function renderContinueLearning(){
     el.innerHTML='<div style="text-align:center;padding:24px 0">'
       +'<div style="font-size:36px;margin-bottom:10px">🎓</div>'
       +'<div style="font-size:14px;color:var(--muted);margin-bottom:14px">No courses started yet</div>'
-      +'<a href="courses.html" class="btn-primary" style="font-size:13px">Browse 1000+ Courses →</a>'
+      +'<a href="courses.html" class="btn-primary" style="font-size:13px">Browse 1019 Courses →</a>'
       +'</div>';
     return;
   }
@@ -1578,7 +1579,7 @@ function copyReferral(){
 function shareWhatsApp(){
   var el=document.getElementById('referral-link-input');
   var link=el?el.value:'https://www.belongix.in';
-  window.open('https://wa.me/?text='+encodeURIComponent('Join me on Belongix — India\'s career learning platform. 1000+ free courses! '+link),'_blank');
+  window.open('https://wa.me/?text='+encodeURIComponent('Join me on Belongix — India\'s career learning platform. 1019 courses! '+link),'_blank');
 }
 function shareLinkedIn(){
   var el=document.getElementById('referral-link-input');
@@ -1621,7 +1622,47 @@ function setBilling(type){
     setEl('cta-price','₹499/month');
   }
 }
-function handleUpgrade(){showToast('Redirecting to Razorpay payment…');/* TODO: integrate Razorpay */}
+function handleUpgrade(){
+  // Real Razorpay checkout
+  var isYearly = document.getElementById('toggle-yearly') && document.getElementById('toggle-yearly').checked;
+  var amount = isYearly ? 499900 : 49900; // paise: ₹4999 yearly or ₹499 monthly
+  var desc   = isYearly ? 'Belongix Pro — ₹4,999/year' : 'Belongix Pro — ₹499/month';
+
+  var options = {
+    key: 'rzp_live_YOUR_KEY_HERE', // ← Replace with your Razorpay Live Key ID
+    amount: amount,
+    currency: 'INR',
+    name: 'Belongix',
+    description: desc,
+    image: 'https://www.belongix.in/icons/icon-192.png',
+    prefill: {
+      name:  (_user && _user.user_metadata && _user.user_metadata.full_name) || '',
+      email: (_user && _user.email) || '',
+    },
+    theme: { color: '#2D1B69' },
+    modal: { backdropclose: false },
+    handler: function(response){
+      // Payment successful — update plan in Supabase
+      showToast('🎉 Payment successful! Pro is now active.');
+      if(response.razorpay_payment_id){
+        // TODO: verify payment server-side via /api/verify-payment
+        localStorage.setItem('bx_plan','pro');
+        setTimeout(function(){ location.reload(); }, 1500);
+      }
+    }
+  };
+
+  if(typeof Razorpay === 'undefined'){
+    showToast('Payment gateway unavailable. Please refresh and try again.');
+    return;
+  }
+
+  var rzp = new Razorpay(options);
+  rzp.on('payment.failed', function(resp){
+    showToast('Payment failed: ' + (resp.error.description || 'Please try again'));
+  });
+  rzp.open();
+}
 function joinWaitlist(){
   showToast('Redirecting to Razorpay payment…');
   /* TODO: integrate Razorpay */
@@ -1632,6 +1673,13 @@ function joinWaitlist(){
 }
 
 // ── PAGE SWITCHING ────────────────────────────────────
+// ── DYNAMIC DATE HELPERS ─────────────────────────────
+function nextBillingDate(){
+  var d = new Date();
+  return new Date(d.getFullYear(), d.getMonth()+1, 1)
+    .toLocaleDateString('en-IN', {day:'numeric', month:'long', year:'numeric'});
+}
+
 var PAGE_TITLES={overview:'Overview',mycourses:'My Courses',profile:'My Profile',settings:'Settings',upgrade:'Upgrade Plan'};
 function showPage(page,btn){
   // Hide all
