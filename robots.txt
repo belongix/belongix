@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Disallow admin
+Disallow: /admin-bx2026.html
+
+# Sitemap
+Sitemap: https://www.belongix.in/sitemap.xml

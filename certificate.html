@@ -3,223 +3,308 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Verify Certificate | Belongix</title>
+<title id="doc-title">Certificate — Belongix</title>
+<meta id="og-title" property="og:title" content="Belongix Certificate"/>
+<meta id="og-desc" property="og:description" content="Verified course completion certificate from Belongix"/>
+<meta property="og:image" content="https://www.belongix.in/icons/og-image.png"/>
 <link rel="icon" href="icons/icon-32.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,sans-serif;background:#f8f6ff;min-height:100vh;padding:40px 20px;color:#1a1a2e}
-.top-bar{display:flex;justify-content:space-between;align-items:center;max-width:820px;margin:0 auto 32px}
-.logo{font-size:24px;font-weight:900;text-decoration:none;color:#1a1a2e}
-.logo span{color:#FF6B35}
-.back-btn{font-size:13px;color:#6C3CE1;text-decoration:none;font-weight:600;padding:8px 16px;border-radius:8px;border:1.5px solid #6C3CE1;transition:.15s}
-.back-btn:hover{background:#6C3CE1;color:#fff}
-.center{max-width:820px;margin:0 auto}
+:root{--brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;--amber:#F59E0B;--green:#10B981;--ink:#0D0D1A;--muted:#5A5A7A;--border:#E4E4F0;--bg:#F7F7FC;--ff:'Sora',sans-serif;--fb:'DM Sans',sans-serif;--fp:'Playfair Display',serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);color:var(--ink);background:var(--bg);min-height:100vh}
 
-/* Certificate display */
-.cert-wrap{background:#fff;border-radius:24px;box-shadow:0 20px 80px rgba(108,60,225,0.18);max-width:820px;width:100%;overflow:hidden;margin-bottom:24px}
-.cert-top-bar{background:linear-gradient(135deg,#6C3CE1,#4F46E5);height:12px}
-.cert-body{padding:60px 70px;text-align:center;border:3px solid #e8e0ff;margin:16px;border-radius:16px;position:relative}
-.cert-logo-txt{font-size:28px;font-weight:900;color:#1a1a2e;margin-bottom:6px}
-.cert-logo-txt span{color:#FF6B35}
-.cert-tagline{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#6C3CE1;margin-bottom:40px}
-.cert-presents{font-size:14px;color:#888;font-style:italic;margin-bottom:6px}
-.cert-name{font-family:Georgia,serif;font-size:38px;color:#1a1a2e;font-weight:bold;margin-bottom:4px;line-height:1.2}
-.cert-of{font-size:13px;color:#888;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
-.cert-course{font-size:22px;color:#6C3CE1;font-weight:bold;margin-bottom:8px;line-height:1.3}
-.cert-score{display:inline-block;background:#f3f0ff;color:#6C3CE1;padding:6px 20px;border-radius:20px;font-size:13px;font-weight:600;margin-bottom:32px}
-.cert-divider{display:flex;align-items:center;gap:16px;margin:0 auto 28px;max-width:400px}
-.cert-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,#d4c5ff,transparent)}
-.cert-desc{font-family:Georgia,serif;font-size:15px;color:#555;line-height:1.7;font-style:italic;max-width:500px;margin:0 auto 36px}
-.cert-footer{display:flex;justify-content:space-between;align-items:flex-end;margin-top:24px;padding-top:24px;border-top:1px solid #f0eaff;gap:20px}
-.cert-sig{text-align:center;flex:1}
-.cert-sig-name{font-size:15px;font-weight:bold;color:#1a1a2e}
-.cert-sig-role{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-top:2px}
-.cert-sig-line{width:140px;height:1px;background:#ddd;margin:10px auto 8px}
-.cert-id-block{text-align:center;flex:1}
-.cert-id{font-size:13px;font-weight:700;color:#6C3CE1;font-family:monospace;letter-spacing:1px}
-.cert-id-label,.cert-date-label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-top:4px}
-.cert-date-block{text-align:center;flex:1}
-.cert-date{font-size:13px;font-weight:600;color:#1a1a2e}
-.cert-seal{position:absolute;top:40px;right:50px;width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,#6C3CE1,#4F46E5);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;box-shadow:0 4px 20px rgba(108,60,225,0.4)}
-.cert-seal-icon{font-size:24px;margin-bottom:2px}
-.cert-seal-text{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-align:center;line-height:1.4}
+/* NAV */
+.nav{background:#fff;border-bottom:1px solid var(--border);height:58px;display:flex;align-items:center;padding:0 24px;gap:16px;}
+.nav-logo{font-family:var(--ff);font-size:18px;font-weight:800;color:var(--ink);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-r{margin-left:auto;display:flex;gap:8px}
+.btn-dash{padding:8px 18px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-size:13px;font-weight:700;text-decoration:none;font-family:var(--ff)}
+.btn-back{padding:8px 16px;border-radius:9px;border:1.5px solid var(--border);background:#fff;color:var(--muted);font-size:13px;font-weight:600;text-decoration:none;transition:.12s}
+.btn-back:hover{border-color:var(--brand);color:var(--brand)}
 
-/* Verification badge */
-.verify-badge{display:flex;align-items:center;gap:12px;background:#f0fdf4;border:1.5px solid #86efac;border-radius:12px;padding:16px 20px;margin-bottom:20px}
-.verify-icon{font-size:28px;flex-shrink:0}
-.verify-title{font-size:15px;font-weight:700;color:#15803d}
-.verify-sub{font-size:13px;color:#166534;margin-top:2px}
-.fail-badge{background:#fef2f2;border-color:#fca5a5}
-.fail-title{color:#dc2626}
-.fail-sub{color:#991b1b}
+/* PAGE */
+.page{max-width:900px;margin:0 auto;padding:40px 24px 80px}
+.page-title{font-family:var(--ff);font-size:22px;font-weight:900;color:var(--ink);margin-bottom:4px}
+.page-sub{font-size:14px;color:var(--muted);margin-bottom:32px}
 
-/* Actions */
-.actions{display:flex;gap:12px;margin-bottom:32px;flex-wrap:wrap}
-.btn{padding:12px 24px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;border:none;transition:.15s;font-family:inherit}
-.btn-primary{background:#6C3CE1;color:#fff}
-.btn-primary:hover{background:#5a2ed4}
-.btn-linkedin{background:#0077B5;color:#fff}
-.btn-outline{background:#f3f0ff;color:#6C3CE1;border:1.5px solid #6C3CE1}
+/* CERT WRAPPER */
+.cert-wrap{background:#fff;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 8px 48px rgba(0,0,0,.08);margin-bottom:28px}
 
-/* Search form */
-.search-box{background:#fff;border-radius:16px;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,0.06);margin-bottom:24px}
-.search-title{font-size:20px;font-weight:700;margin-bottom:8px}
-.search-sub{font-size:14px;color:#888;margin-bottom:20px}
-.search-row{display:flex;gap:12px}
-.search-input{flex:1;padding:12px 16px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:14px;font-family:inherit;outline:none;transition:.15s}
-.search-input:focus{border-color:#6C3CE1;box-shadow:0 0 0 3px rgba(108,60,225,0.1)}
-.search-btn{padding:12px 24px;background:#6C3CE1;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
-.search-btn:hover{background:#5a2ed4}
+/* CERT TOP BAR */
+.cert-topbar{background:linear-gradient(135deg,var(--brand),var(--brand2));padding:18px 32px;display:flex;align-items:center;gap:12px}
+.cert-topbar-logo{font-family:var(--ff);font-size:20px;font-weight:900;color:#fff}
+.cert-topbar-logo span{color:var(--accent)}
+.cert-topbar-tagline{font-size:12px;color:rgba(255,255,255,.55);margin-left:auto}
 
-@media print{
-  .top-bar,.actions,.search-box,.verify-badge{display:none}
-  body{background:#fff;padding:0}
-  .cert-wrap{box-shadow:none;max-width:100%;margin:0}
-}
-@media(max-width:600px){
-  .cert-body{padding:40px 24px}
-  .cert-name{font-size:26px}
-  .cert-course{font-size:16px}
-  .cert-footer{flex-direction:column;gap:16px}
-  .cert-seal{top:20px;right:20px;width:64px;height:64px}
-  .cert-seal-icon{font-size:18px}
-  .search-row{flex-direction:column}
+/* CERT BODY */
+.cert-body{padding:40px 48px;position:relative;overflow:hidden}
+.cert-body::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 120%,rgba(245,158,11,.06),transparent);pointer-events:none}
+.cert-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:20px;text-align:center}
+.cert-presents{font-size:14px;color:var(--muted);text-align:center;margin-bottom:8px}
+.cert-name{font-family:var(--fp);font-size:clamp(28px,4vw,48px);font-weight:900;color:var(--brand);text-align:center;margin-bottom:14px;line-height:1.1}
+.cert-completed{font-size:15px;color:var(--muted);text-align:center;margin-bottom:10px}
+.cert-course{font-family:var(--ff);font-size:clamp(18px,2.5vw,26px);font-weight:900;color:var(--ink);text-align:center;margin-bottom:24px;line-height:1.3;max-width:600px;margin-left:auto;margin-right:auto}
+.cert-divider{width:80px;height:3px;background:linear-gradient(90deg,var(--amber),var(--accent));border-radius:100px;margin:0 auto 24px}
+
+.cert-meta{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-bottom:32px}
+.cert-meta-item{text-align:center}
+.cert-meta-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px}
+.cert-meta-val{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink)}
+
+.cert-badge-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:32px}
+.cert-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 16px;border-radius:100px;font-size:12.5px;font-weight:700}
+.badge-verified{background:#DCFCE7;color:#166534;border:1px solid #BBF7D0}
+.badge-domain{background:#EDE9FF;color:var(--brand);border:1px solid #DDD6FE}
+.badge-level{background:#FEF9C3;color:#92400E;border:1px solid #FDE68A}
+
+.cert-footer{border-top:1px solid var(--border);padding:20px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;background:var(--bg)}
+.cert-footer-left{font-size:12px;color:var(--muted);line-height:1.5}
+.cert-footer-left strong{color:var(--ink);display:block;margin-bottom:2px}
+.cert-id{font-family:'Courier New',monospace;font-size:11px;color:var(--muted);margin-top:4px}
+.cert-seal{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--amber),#D97706);display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(245,158,11,.35)}
+.cert-seal-icon{font-size:22px}
+.cert-seal-text{font-family:var(--ff);font-size:8px;font-weight:800;color:#fff;margin-top:1px;letter-spacing:.3px}
+
+/* ACTIONS */
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px}
+.btn-download{flex:1;min-width:180px;padding:14px;border-radius:12px;background:linear-gradient(135deg,var(--amber),#D97706);color:#fff;border:none;font-family:var(--ff);font-size:15px;font-weight:800;cursor:pointer;transition:.2s;text-align:center;box-shadow:0 4px 14px rgba(245,158,11,.35);}
+.btn-download:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(245,158,11,.45)}
+.btn-share-li{flex:1;min-width:160px;padding:14px;border-radius:12px;background:#0A66C2;color:#fff;border:none;font-family:var(--ff);font-size:15px;font-weight:700;cursor:pointer;transition:.2s;text-align:center;}
+.btn-share-li:hover{background:#0958a8;transform:translateY(-1px)}
+.btn-share-tw{flex:1;min-width:160px;padding:14px;border-radius:12px;background:#000;color:#fff;border:none;font-family:var(--ff);font-size:15px;font-weight:700;cursor:pointer;transition:.2s;text-align:center;}
+.btn-share-tw:hover{background:#1a1a1a;transform:translateY(-1px)}
+
+/* WHAT YOU LEARNED */
+.skills-section{background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:20px}
+.skills-section h3{font-family:var(--ff);font-size:16px;font-weight:800;color:var(--ink);margin-bottom:14px}
+.skill-tags{display:flex;flex-wrap:wrap;gap:8px}
+.skill-tag{background:#EDE9FF;color:var(--brand);font-size:13px;font-weight:600;padding:5px 12px;border-radius:8px}
+
+/* NEXT COURSES */
+.next-section{background:#fff;border:1px solid var(--border);border-radius:16px;padding:28px}
+.next-section h3{font-family:var(--ff);font-size:16px;font-weight:800;color:var(--ink);margin-bottom:16px}
+.next-list{display:flex;flex-direction:column;gap:10px}
+.next-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;background:var(--bg);border:1px solid var(--border);text-decoration:none;transition:.12s}
+.next-item:hover{border-color:var(--brand);background:#F0EEFF}
+.next-emoji{font-size:28px}
+.next-info{flex:1}
+.next-title{font-family:var(--ff);font-size:13.5px;font-weight:700;color:var(--ink)}
+.next-meta{font-size:12px;color:var(--muted);margin-top:2px}
+.next-arrow{color:var(--muted);font-size:16px}
+
+/* NOT FOUND */
+.not-found{text-align:center;padding:80px 24px}
+.not-found-emoji{font-size:64px;margin-bottom:16px}
+.not-found h2{font-family:var(--ff);font-size:22px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.not-found p{font-size:15px;color:var(--muted);margin-bottom:24px}
+.btn-explore{display:inline-block;padding:13px 28px;border-radius:12px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-family:var(--ff);font-size:14.5px;font-weight:700;text-decoration:none}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0D0D1A;color:#fff;padding:11px 22px;border-radius:100px;font-size:13.5px;font-weight:500;z-index:9999;transition:.3s;pointer-events:none;box-shadow:0 8px 28px rgba(0,0,0,.25)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media(max-width:640px){
+  .cert-body{padding:28px 24px}
+  .cert-footer{padding:16px 24px}
+  .cert-meta{gap:20px}
+  .actions{flex-direction:column}
 }
 </style>
 </head>
 <body>
-<div class="top-bar">
-  <a href="courses.html" class="logo">Belong<span>ix</span></a>
-  <a href="courses.html" class="back-btn">← All Courses</a>
-</div>
-<div class="center" id="main">
-  <div class="search-box">
-    <div class="search-title">🔍 Verify a Certificate</div>
-    <div class="search-sub">Enter a Belongix Certificate ID (e.g. BX-2026-ABC123) to verify its authenticity</div>
-    <div class="search-row">
-      <input type="text" class="search-input" id="cert-input" placeholder="BX-2026-XXXXXX" oninput="this.value=this.value.toUpperCase()">
-      <button class="search-btn" onclick="verifyCert()">Verify →</button>
-    </div>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
+  <div class="nav-r">
+    <a href="courses.html" class="btn-back">← Browse Courses</a>
+    <a href="dashboard.html" class="btn-dash">Dashboard</a>
   </div>
-  <div id="result"></div>
+</nav>
+
+<div class="page">
+  <div id="cert-container">
+    <!-- Loaded by JS -->
+  </div>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-var SB_URL = 'https://efhcfuaxgbzuqlmhlsxc.supabase.co';
-var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb=supabase.createClient(SB_URL,SB_KEY);
 
-/* On load — check URL params */
-window.addEventListener('load', function() {
-  var params = new URLSearchParams(window.location.search);
-  var certId = params.get('id');
-  if (certId) {
-    document.getElementById('cert-input').value = certId.toUpperCase();
-    verifyCert(certId);
-  }
+var _user=null,_course=null,_certName='';
+
+// Related courses per domain
+var RELATED={
+  'Full Stack':     [{e:'⚡',t:'JavaScript Essentials',m:'Beginner · 12h',s:'javascript-essentials'},{e:'🔋',t:'React Fundamentals',m:'Beginner · 14h',s:'react-fundamentals'},{e:'🖥',t:'Node.js Complete',m:'Intermediate · 18h',s:'nodejs-complete'}],
+  'Python':         [{e:'🐍',t:'Python Intermediate',m:'Intermediate · 14h',s:'python-intermediate'},{e:'🤖',t:'Python for Data Science',m:'Beginner · 12h',s:'python-for-data-science'},{e:'⚡',t:'FastAPI Complete',m:'Intermediate · 10h',s:'fastapi-complete'}],
+  'AI / ML':        [{e:'🧠',t:'Deep Learning with PyTorch',m:'Intermediate · 20h',s:'deep-learning-pytorch'},{e:'🤗',t:'Transformers & HuggingFace',m:'Advanced · 16h',s:'transformers-huggingface'},{e:'🔗',t:'LangChain Complete',m:'Intermediate · 12h',s:'langchain-complete'}],
+  'Data Science':   [{e:'📊',t:'Pandas & NumPy',m:'Intermediate · 14h',s:'data-wrangling-pandas'},{e:'📈',t:'Data Visualization',m:'Beginner · 10h',s:'data-visualization-complete'},{e:'🤖',t:'Machine Learning Fundamentals',m:'Beginner · 16h',s:'machine-learning-fundamentals'}],
+  'Cloud & DevOps': [{e:'☁️',t:'Docker Complete',m:'Beginner · 12h',s:'docker-complete'},{e:'⚙️',t:'Kubernetes Complete',m:'Intermediate · 18h',s:'kubernetes-complete'},{e:'🏗',t:'Terraform Complete',m:'Intermediate · 14h',s:'terraform-complete'}],
+  'DSA':            [{e:'🧩',t:'DSA Patterns',m:'Intermediate · 20h',s:'dsa-patterns'},{e:'🌳',t:'Trees & Binary Trees',m:'Intermediate · 16h',s:'trees-binary-complete'},{e:'📐',t:'Dynamic Programming',m:'Advanced · 22h',s:'dynamic-programming-complete'}],
+  'Cybersecurity':  [{e:'🔐',t:'Web Application Security',m:'Intermediate · 14h',s:'web-application-security'},{e:'🛡',t:'Network Security',m:'Beginner · 12h',s:'network-security-complete'},{e:'🔑',t:'Cryptography Complete',m:'Intermediate · 16h',s:'cryptography-complete'}],
+  'Backend':        [{e:'🐘',t:'PostgreSQL Complete',m:'Intermediate · 16h',s:'postgresql-complete'},{e:'⚡',t:'Redis Complete',m:'Intermediate · 12h',s:'redis-backend'},{e:'🐳',t:'Docker for Developers',m:'Beginner · 10h',s:'docker-for-devs'}],
+  'Java':           [{e:'☕',t:'Spring Boot Complete',m:'Intermediate · 20h',s:'spring-boot-complete'},{e:'🔄',t:'Java Multithreading',m:'Advanced · 14h',s:'java-multithreading'},{e:'🧩',t:'Java DSA Interview',m:'Intermediate · 18h',s:'java-core-complete'}],
+  'default':        [{e:'🚀',t:'Career Skills',m:'Beginner · 8h',s:'resume-building-tech-india'},{e:'🎯',t:'System Design Beginner',m:'Beginner · 12h',s:'system-design-beginner'},{e:'📊',t:'Dashboard',m:'Track your progress',s:'dashboard.html'}]
+};
+
+window.addEventListener('load',async function(){
+  try{var s=await sb.auth.getSession();if(s.data&&s.data.session)_user=s.data.session.user;}catch(e){}
+  var slug=new URLSearchParams(location.search).get('course');
+  if(!slug){showNotFound();return;}
+  loadCert(slug);
 });
 
-async function verifyCert(id) {
-  var certId = (id || document.getElementById('cert-input').value || '').trim().toUpperCase();
-  if (!certId) { alert('Please enter a Certificate ID'); return; }
-
-  var result = document.getElementById('result');
-  result.innerHTML = '<div style="text-align:center;padding:40px;color:#888">Verifying...</div>';
-
-  var cert = null;
-
-  /* 1. Check Supabase */
-  try {
-    var r = await fetch(SB_URL + '/rest/v1/certificates?cert_id=eq.' + encodeURIComponent(certId) + '&select=*&limit=1', {
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Accept': 'application/json' }
-    });
-    if (r.ok) {
-      var rows = await r.json();
-      if (rows && rows.length) cert = rows[0];
-    }
-  } catch(e) {}
-
-  /* 2. Check ALL localStorage keys for this cert ID */
-  if (!cert) {
-    for (var i = 0; i < localStorage.length; i++) {
-      var key = localStorage.key(i);
-      if (key && key.startsWith('bx_cert_')) {
-        try {
-          var stored = JSON.parse(localStorage.getItem(key) || 'null');
-          if (stored && stored.cert_id === certId) { cert = stored; break; }
-        } catch(ex) {}
-      }
-    }
-  }
-
-  if (cert) {
-    renderCert(cert);
-  } else {
-    result.innerHTML = renderNotFound(certId);
-  }
+function loadCert(slug){
+  // Try sessionStorage
+  try{var c=sessionStorage.getItem('bx_course_'+slug);if(c){var p=JSON.parse(c);if(p&&p.title){_course=p;renderCert();return;}}}catch(e){}
+  // Check localStorage for enrollment
+  var enrolled=localStorage.getItem('bx_enrolled_'+slug);
+  if(!enrolled){showNotEnrolled(slug);return;}
+  // Try to get course name from progress key
+  _course={slug:slug,title:formatSlug(slug),domain:'Full Stack',category:'',level:'',hours:0,modules:0,skills:'',cert:'Belongix Certificate',emoji:'📚',bg:'linear-gradient(135deg,#2D1B69,#4C2FAA)',rating:4.8,students:0};
+  renderCert();
 }
 
-function renderCert(cert) {
-  var issueDate = cert.issued_at
-    ? new Date(cert.issued_at).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' })
-    : new Date().toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' });
-  var userName = cert.user_name || cert.user_email || 'Professional';
-  var certTitle = cert.cert_title || cert.course_title || 'Course Completion';
-  var certId = cert.cert_id || 'BX-2026-XXXXXX';
-  var scoreText = cert.score ? ('Scored ' + cert.score + '%') : 'Passed';
-
-  window._shareUrl = encodeURIComponent('https://www.belongix.in/certificate.html?id=' + certId);
-  window._shareText = encodeURIComponent('I earned the ' + certTitle + ' certificate from Belongix! #Belongix #CareerGrowth #India');
-
-  document.getElementById('result').innerHTML =
-    '<div class="verify-badge">'
-    + '<div class="verify-icon">✅</div>'
-    + '<div><div class="verify-title">Certificate Verified — Authentic</div>'
-    + '<div class="verify-sub">This is a genuine Belongix certificate issued to ' + esc(userName) + ' on ' + issueDate + '</div></div>'
-    + '</div>'
-    + '<div class="actions">'
-    + '<button class="btn btn-primary" onclick="window.print()">🖨️ Download PDF</button>'
-    + '<button class="btn btn-linkedin" onclick="shareLinkedIn()">💼 Share on LinkedIn</button>'
-    + '</div>'
-    + '<div class="cert-wrap">'
-    + '<div class="cert-top-bar"></div>'
-    + '<div class="cert-body">'
-    + '<div class="cert-seal"><div class="cert-seal-icon">🏆</div><div class="cert-seal-text">BELONGIX<br>VERIFIED</div></div>'
-    + '<div class="cert-logo-txt">Belong<span>ix</span></div>'
-    + '<div class="cert-tagline">India&#39;s Career Platform</div>'
-    + '<div class="cert-presents">This certifies that</div>'
-    + '<div class="cert-name">' + esc(userName) + '</div>'
-    + '<div class="cert-of">has successfully completed</div>'
-    + '<div class="cert-course">' + esc(certTitle) + '</div>'
-    + '<div class="cert-score">' + scoreText + '</div>'
-    + '<div class="cert-divider"><div class="cert-divider-line"></div><span style="color:#6C3CE1;font-size:18px">✦</span><div class="cert-divider-line"></div></div>'
-    + '<div class="cert-desc">Demonstrated comprehensive knowledge and practical skills through rigorous assessment on the Belongix learning platform, built specifically for Indian professionals.</div>'
-    + '<div class="cert-footer">'
-    + '<div class="cert-sig"><div class="cert-sig-line"></div><div class="cert-sig-name">Team Belongix</div><div class="cert-sig-role">Issuing Authority</div></div>'
-    + '<div class="cert-id-block"><div class="cert-id">' + esc(certId) + '</div><div class="cert-id-label">Certificate ID</div></div>'
-    + '<div class="cert-date-block"><div class="cert-date">' + issueDate + '</div><div class="cert-date-label">Date of Issue</div></div>'
-    + '</div>'
-    + '</div>'
-    + '</div>';
+function formatSlug(s){
+  return s.split('-').map(function(w){return w.charAt(0).toUpperCase()+w.slice(1);}).join(' ');
 }
 
-function shareLinkedIn() {
-  var url = window._shareUrl || '';
-  var text = window._shareText || '';
-  window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + url + '&summary=' + text, '_blank');
+function renderCert(){
+  var c=_course;
+  var userName=(_user&&_user.user_metadata&&_user.user_metadata.full_name)||'Belongix Learner';
+  var certName=c.cert||('Certified '+c.title+' Developer');
+  _certName=certName;
+  var date=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  var certId='BX-'+slug2id(c.slug)+'-2026';
+  var skills=c.skills?c.skills.split(',').map(function(s){return s.trim();}).filter(Boolean):['Technical Skills','Best Practices','Project Building'];
+  var related=RELATED[c.domain]||RELATED['default'];
+
+  // Update page title and meta
+  document.title=certName+' — Belongix Certificate';
+  el('doc-title').textContent=certName+' — Belongix';
+  el('og-title').setAttribute('content',userName+' earned: '+certName);
+  el('og-desc').setAttribute('content','Verified course completion from Belongix — India\'s career learning platform.');
+
+  el('cert-container').innerHTML=
+    '<div class="page-title">Your Certificate</div>'+
+    '<div class="page-sub">Congratulations on completing '+escH(c.title)+'! Download or share your certificate.</div>'+
+
+    // CERT
+    '<div class="cert-wrap">'+
+      '<div class="cert-topbar">'+
+        '<div class="cert-topbar-logo">Belong<span>ix</span></div>'+
+        '<div class="cert-topbar-tagline">India\'s Career Learning Platform</div>'+
+      '</div>'+
+      '<div class="cert-body">'+
+        '<div class="cert-label">Certificate of Completion</div>'+
+        '<div class="cert-presents">This is to certify that</div>'+
+        '<div class="cert-name">'+escH(userName)+'</div>'+
+        '<div class="cert-completed">has successfully completed the course</div>'+
+        '<div class="cert-course">'+escH(c.title)+'</div>'+
+        '<div class="cert-divider"></div>'+
+        '<div class="cert-meta">'+
+          (c.domain?'<div class="cert-meta-item"><div class="cert-meta-label">Domain</div><div class="cert-meta-val">'+escH(c.domain)+'</div></div>':'')+
+          (c.level?'<div class="cert-meta-item"><div class="cert-meta-label">Level</div><div class="cert-meta-val">'+escH(c.level)+'</div></div>':'')+
+          (c.hours?'<div class="cert-meta-item"><div class="cert-meta-label">Duration</div><div class="cert-meta-val">'+c.hours+' hours</div></div>':'')+
+          '<div class="cert-meta-item"><div class="cert-meta-label">Issued</div><div class="cert-meta-val">'+date+'</div></div>'+
+        '</div>'+
+        '<div class="cert-badge-row">'+
+          '<span class="cert-badge badge-verified">✓ Verified by Belongix</span>'+
+          (c.domain?'<span class="cert-badge badge-domain">'+escH(c.domain)+'</span>':'')+
+          (c.level?'<span class="cert-badge badge-level">'+escH(c.level)+'</span>':'')+
+        '</div>'+
+      '</div>'+
+      '<div class="cert-footer">'+
+        '<div class="cert-footer-left">'+
+          '<strong>'+escH(certName)+'</strong>'+
+          'Issued by Belongix · belongix.in'+
+          '<div class="cert-id">ID: '+certId+'</div>'+
+        '</div>'+
+        '<div class="cert-seal"><div class="cert-seal-icon">🏆</div><div class="cert-seal-text">VERIFIED</div></div>'+
+      '</div>'+
+    '</div>'+
+
+    // ACTIONS
+    '<div class="actions">'+
+      '<button class="btn-download" onclick="downloadCert()">⬇ Download Certificate</button>'+
+      '<button class="btn-share-li" onclick="shareLinkedIn()">🔗 Share on LinkedIn</button>'+
+      '<button class="btn-share-tw" onclick="shareTwitter()">𝕏 Share on X</button>'+
+    '</div>'+
+
+    // SKILLS
+    (skills.length?
+    '<div class="skills-section">'+
+      '<h3>Skills you demonstrated</h3>'+
+      '<div class="skill-tags">'+skills.map(function(s){return '<span class="skill-tag">'+escH(s)+'</span>';}).join('')+'</div>'+
+    '</div>':'')+
+
+    // NEXT COURSES
+    '<div class="next-section">'+
+      '<h3>What to learn next</h3>'+
+      '<div class="next-list">'+related.map(function(r){
+        var href=r.s.includes('.html')?r.s:'course.html?slug='+r.s;
+        return '<a href="'+href+'" class="next-item">'+
+          '<div class="next-emoji">'+r.e+'</div>'+
+          '<div class="next-info"><div class="next-title">'+escH(r.t)+'</div><div class="next-meta">'+escH(r.m)+'</div></div>'+
+          '<div class="next-arrow">→</div>'+
+        '</a>';
+      }).join('')+
+      '</div>'+
+    '</div>';
 }
 
-function renderNotFound(certId) {
-  return '<div class="verify-badge fail-badge">'
-    + '<div class="verify-icon">❌</div>'
-    + '<div><div class="verify-title fail-title">Certificate Not Found</div>'
-    + '<div class="fail-sub">No certificate found with ID: ' + esc(certId) + '. If you just earned this certificate, try downloading it directly from the course page.</div></div>'
-    + '</div>';
+function slug2id(slug){
+  var h=0;
+  for(var i=0;i<slug.length;i++){h=((h<<5)-h+slug.charCodeAt(i))|0;}
+  return Math.abs(h).toString(36).toUpperCase().padStart(8,'0');
 }
 
-function esc(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function showNotFound(){
+  el('cert-container').innerHTML=
+    '<div class="not-found">'+
+    '<div class="not-found-emoji">🎓</div>'+
+    '<h2>No certificate found</h2>'+
+    '<p>The certificate you\'re looking for doesn\'t exist or hasn\'t been earned yet. Complete a course to earn your verified Belongix certificate.</p>'+
+    '<a href="courses.html" class="btn-explore">Browse Courses →</a>'+
+    '</div>';
 }
+
+function showNotEnrolled(slug){
+  el('cert-container').innerHTML=
+    '<div class="not-found">'+
+    '<div class="not-found-emoji">🔒</div>'+
+    '<h2>Certificate not yet earned</h2>'+
+    '<p>Complete all lessons in this course to unlock your verified certificate. Upgrade to Pro to access full course content.</p>'+
+    '<a href="course.html?slug='+encodeURIComponent(slug)+'" class="btn-explore">Go to Course →</a>'+
+    '</div>';
+}
+
+function downloadCert(){
+  showToast('📥 Downloading certificate… (PDF coming soon)');
+  // TODO: Generate real PDF with jsPDF
+}
+
+function shareLinkedIn(){
+  var url='https://www.linkedin.com/sharing/share-offsite/?url='+encodeURIComponent(location.href);
+  window.open(url,'_blank','width=600,height=500');
+  showToast('Opening LinkedIn…');
+}
+
+function shareTwitter(){
+  var text=encodeURIComponent('Just earned my '+_certName+' certificate on @Belongix — India\'s career learning platform! 🎓 #Belongix #LearnAndGrow');
+  var url=encodeURIComponent(location.href);
+  window.open('https://twitter.com/intent/tweet?text='+text+'&url='+url,'_blank','width=550,height=420');
+}
+
+function el(id){return document.getElementById(id);}
+function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+var _tt;
+function showToast(msg){var t=el('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_tt);_tt=setTimeout(function(){t.classList.remove('show');},3500);}
 </script>
 </body>
 </html>
