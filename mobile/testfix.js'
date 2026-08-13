@@ -1,9 +1,0 @@
-const fs=require('fs');
-let c=fs.readFileSync('screens/DashboardScreen.tsx','utf8');
-c=c.replace("label:'Salary',    bg:'#ECFDF5', ic:'#059669', tab:null","label:'Salary',    bg:'#ECFDF5', ic:'#059669', tab:'Salary'");
-c=c.replace("label:'Mentors',   bg:'#FFF1F2', ic:'#E11D48', tab:null","label:'Mentors',   bg:'#FFF1F2', ic:'#E11D48', tab:'Mentors'");
-c=c.replace("label:'Community', bg:'#F0F9FF', ic:'#0284C7', tab:null","label:'Community', bg:'#F0F9FF', ic:'#0284C7', tab:'Community'");
-c=c.replace("label:'Resume',    bg:'#FEF2F2', ic:'#DC2626', tab:null","label:'Resume',    bg:'#FEF2F2', ic:'#DC2626', tab:'Resume'");
-c=c.replace("label:'Score',     bg:'#FFFBEB', ic:'#B45309', tab:null","label:'Score',     bg:'#FFFBEB', ic:'#B45309', tab:'Score'");
-fs.writeFileSync('screens/DashboardScreen.tsx',c,'utf8');
-console.log('Done');
