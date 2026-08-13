@@ -3,625 +3,495 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Belongix — Learn. Build. Get Certified. | Pro from ₹499/month</title>
-<meta name="description" content="Browse expert courses across Full Stack, AI/ML, DevOps, Cybersecurity and 21 domains. Earn verified Belongix certificates. Pro from ₹499/month."/>
+<title>Belongix Courses — Learn, Get Certified, Get Hired</title>
+<meta name="description" content="50+ free courses across Development, Coding and AI. Earn verified Belongix certificates. Built for Indian professionals."/>
 <link rel="icon" href="icons/icon-32.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-
-:root{--brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;--accent2:#FF8A50;--green:#10B981;--amber:#F59E0B;--ink:#0D0D1A;--muted:#5A5A7A;--subtle:#94A3B8;--border:#E4E4F0;--bg:#F7F7FC;--card:#fff;--ff:'Sora',sans-serif;--fb:'DM Sans',sans-serif;}
+:root{
+  --brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;
+  --green:#10B981;--amber:#F59E0B;--blue:#3B82F6;
+  --ink:#0D0D1A;--muted:#5A5A7A;--subtle:#94A3B8;
+  --border:#E4E4F0;--bg:#F7F7FC;--card:#fff;
+  --ff:'Sora',sans-serif;--fb:'DM Sans',sans-serif;
+  --sh:0 2px 16px rgba(45,27,105,.08);
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:var(--fb);color:var(--ink);background:#fff;line-height:1.55}
-a{text-decoration:none;color:inherit}
-.nav{position:sticky;top:0;z-index:200;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:60px;display:flex;align-items:center;padding:0 24px;gap:24px;}
-.nav-logo{font-family:var(--ff);font-size:19px;font-weight:800;color:var(--ink);flex-shrink:0}
+body{font-family:var(--fb);background:var(--bg);color:var(--ink);min-height:100vh}
+
+/* NAV */
+.nav{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:58px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;gap:16px}
+.nav-logo{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--brand);text-decoration:none;flex-shrink:0}
 .nav-logo span{color:var(--accent)}
-.nav-center{display:flex;align-items:center;gap:4px;flex:1;justify-content:center}
-.nav-link{padding:7px 12px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);transition:.12s;white-space:nowrap;cursor:pointer;background:none;border:none;font-family:var(--fb);}
-.nav-link:hover,.nav-link.active{color:var(--brand);background:#F0EEFF}
-.nav-link.active{font-weight:600}
-.nav-dd-wrap{position:relative}
-.nav-dd{display:none;position:absolute;top:calc(100% + 8px);left:0;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(13,13,26,.1);min-width:200px;padding:6px;z-index:300;}
-.nav-dd.open{display:block}
-.nav-dd a{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:9px;font-size:13.5px;color:var(--ink);font-weight:500;transition:.12s;}
-.nav-dd a:hover{background:#F0EEFF;color:var(--brand)}
-.nav-dd-arrow{font-size:11px;margin-left:2px;transition:.15s}
+.nav-links{display:flex;gap:2px}
+.nl{padding:6px 11px;border-radius:7px;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;transition:.15s;white-space:nowrap}
+.nl:hover,.nl.on{color:var(--brand);background:#F0EEFF}
 .nav-r{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.btn-ghost-sm{padding:7px 16px;border-radius:9px;border:1.5px solid var(--border);background:#fff;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--fb);transition:.12s;}
-.btn-ghost-sm:hover{border-color:var(--brand);color:var(--brand)}
-.btn-cta-sm{padding:8px 18px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));font-size:13.5px;font-weight:700;color:#fff;cursor:pointer;font-family:var(--ff);transition:.15s;}
-.btn-cta-sm:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,92,53,.35)}
-.nav-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--brand),var(--brand2));display:flex;align-items:center;justify-content:center;font-family:var(--ff);font-size:13px;font-weight:800;color:#fff;cursor:pointer;position:relative;}
-.nav-user-dd{display:none;position:absolute;top:42px;right:0;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 32px rgba(13,13,26,.1);min-width:176px;padding:6px;}
-.nav-user-dd.open{display:block}
-.nav-user-dd a,.nav-user-dd button{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--ink);background:none;border:none;cursor:pointer;font-family:var(--fb);transition:.12s;text-decoration:none;}
-.nav-user-dd a:hover,.nav-user-dd button:hover{background:#F0EEFF;color:var(--brand)}
-.nav-user-dd hr{border:none;border-top:1px solid var(--border);margin:4px 0}
-#nav-guest{display:flex;align-items:center;gap:8px}
-#nav-user{display:none;align-items:center;gap:8px}
-.hamburger{display:none;background:none;border:none;cursor:pointer;padding:6px;color:var(--ink)}
-.hamburger svg{display:block;width:22px;height:22px;stroke:currentColor}
-.mobile-menu{display:none;position:fixed;inset:0;z-index:300;background:#fff;flex-direction:column;padding:20px 24px;overflow-y:auto;}
-.mobile-menu.open{display:flex}
-.mobile-menu-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px}
-.mobile-close{background:none;border:none;cursor:pointer;font-size:24px;color:var(--muted)}
-.mobile-link{display:block;padding:14px 0;font-size:16px;font-weight:600;color:var(--ink);border-bottom:1px solid var(--border);}
-.mobile-link:last-child{border-bottom:none}
-.mobile-btns{margin-top:24px;display:flex;flex-direction:column;gap:10px}
-.footer{background:#0D0D1A;padding:64px 24px 0;color:rgba(255,255,255,.55)}
-.footer-inner{max-width:1100px;margin:0 auto}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
-.footer-brand-name{font-family:var(--ff);font-size:20px;font-weight:800;color:#fff;margin-bottom:10px}
-.footer-brand-name span{color:var(--accent)}
-.footer-tagline{font-size:13.5px;line-height:1.65;margin-bottom:20px;color:rgba(255,255,255,.45)}
-.footer-socials{display:flex;gap:10px}
-.footer-social{width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.55);transition:.15s;text-decoration:none;}
-.footer-social:hover{background:rgba(255,255,255,.08);color:#fff;border-color:rgba(255,255,255,.2)}
-.footer-col-title{font-family:var(--ff);font-size:12px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
-.footer-col a{display:block;font-size:13.5px;color:rgba(255,255,255,.45);margin-bottom:9px;text-decoration:none;transition:.12s;}
-.footer-col a:hover{color:#fff}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.07);padding:20px 0;display:flex;align-items:center;justify-content:space-between;font-size:13px;color:rgba(255,255,255,.3);flex-wrap:wrap;gap:10px;}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;padding:20px;}
-.modal-overlay.open{display:flex}
-.modal-box{background:#fff;border-radius:20px;padding:32px;width:100%;max-width:400px;position:relative}
-.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted);line-height:1}
-.modal-title{font-family:var(--ff);font-size:22px;font-weight:900;color:var(--ink);margin-bottom:4px}
-.modal-sub{font-size:13.5px;color:var(--muted);margin-bottom:22px}
-.modal-tabs{display:flex;background:#F0EEFF;border-radius:10px;padding:3px;margin-bottom:20px}
-.modal-tab{flex:1;padding:9px;border-radius:8px;border:none;background:transparent;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;font-family:var(--fb);transition:.12s;}
-.modal-tab.active{background:#fff;color:var(--brand);box-shadow:0 1px 4px rgba(0,0,0,.08)}
-.modal-field{margin-bottom:12px}
-.modal-input{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--fb);outline:none;transition:.15s;color:var(--ink);}
-.modal-input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(45,27,105,.07)}
-.modal-err{background:#FEE2E2;color:#991B1B;font-size:13px;padding:9px 13px;border-radius:9px;margin-bottom:12px;display:none;}
-.btn-modal-submit{width:100%;padding:13px;border-radius:10px;border:none;margin-bottom:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-family:var(--ff);font-size:15px;font-weight:700;cursor:pointer;transition:.15s;}
-.btn-modal-submit:hover{opacity:.92}
-.modal-or{text-align:center;font-size:13px;color:var(--muted);margin:8px 0;position:relative}
-.modal-or::before,.modal-or::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
-.modal-or::before{left:0}.modal-or::after{right:0}
-.btn-google{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-size:14px;font-weight:600;color:var(--ink);cursor:pointer;font-family:var(--fb);display:flex;align-items:center;justify-content:center;gap:8px;transition:.12s;}
-.btn-google:hover{border-color:var(--brand);color:var(--brand)}
-.modal-note{font-size:12px;color:var(--subtle);text-align:center;margin-top:14px;line-height:1.5}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#0D0D1A;color:#fff;padding:11px 22px;border-radius:100px;font-size:13.5px;font-weight:500;z-index:9999;transition:.3s;box-shadow:0 8px 32px rgba(0,0,0,.25);pointer-events:none;white-space:nowrap;}
-.toast.show{transform:translateX(-50%) translateY(0)}
-@media(max-width:960px){.footer-grid{grid-template-columns:1fr 1fr;gap:32px}.nav-center{display:none}}
-@media(max-width:768px){.footer-grid{grid-template-columns:1fr 1fr}#nav-guest .btn-ghost-sm{display:none}.hamburger{display:flex}}
-@media(max-width:480px){.footer-grid{grid-template-columns:1fr}}
+.nbtn{padding:7px 15px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--fb);text-decoration:none;display:inline-flex;align-items:center;border:none;transition:.15s}
+.nbtn.ghost{border:1.5px solid var(--border);background:none;color:var(--ink)}
+.nbtn.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.nbtn.fill{background:var(--brand);color:#fff}
+.nbtn.fill:hover{background:var(--brand2)}
+#nav-guest,#nav-user{display:none;align-items:center;gap:8px}
 
+/* HERO */
+.hero{background:linear-gradient(135deg,#0F0527 0%,#2D1B69 45%,#1A3A5C 100%);padding:56px 24px 64px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 50% 100%,rgba(255,92,53,.15),transparent)}
+.hero-inner{position:relative;z-index:1;max-width:760px;margin:0 auto}
+.hero-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:rgba(255,255,255,.9);margin-bottom:22px;letter-spacing:.2px}
+.hero h1{font-family:var(--ff);font-size:44px;font-weight:800;color:#fff;line-height:1.12;margin-bottom:14px;letter-spacing:-.5px}
+.hero h1 em{color:#FCD34D;font-style:normal}
+.hero-sub{font-size:16px;color:rgba(255,255,255,.72);line-height:1.65;margin-bottom:36px;max-width:520px;margin-left:auto;margin-right:auto}
+.hero-stats{display:flex;justify-content:center;gap:36px;flex-wrap:wrap;margin-bottom:36px}
+.hstat{text-align:center}
+.hstat-v{font-family:var(--ff);font-size:30px;font-weight:800;color:#FCD34D}
+.hstat-l{font-size:12px;color:rgba(255,255,255,.55);margin-top:3px}
+.hero-cta{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:14px 30px;border-radius:12px;font-size:15px;font-weight:700;text-decoration:none;font-family:var(--ff);transition:.2s;box-shadow:0 6px 24px rgba(255,92,53,.4)}
+.hero-cta:hover{background:#e04d2a;transform:translateY(-2px)}
 
-/* ── PAGE HEADER ─────────────────────────────── */
-.page-header{background:linear-gradient(150deg,#08011F 0%,#130836 45%,#1A0A4A 100%);padding:52px 24px 48px;text-align:center;position:relative;overflow:hidden;}
-.page-header::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px;}
-.ph-inner{position:relative;z-index:1;max-width:760px;margin:0 auto}
-.ph-h1{font-family:var(--ff);font-size:clamp(26px,4vw,46px);font-weight:900;color:#fff;letter-spacing:-1.5px;margin-bottom:10px}
-.ph-sub{font-size:15px;color:rgba(255,255,255,.62);margin-bottom:28px}
-.ph-stats{display:flex;justify-content:center;flex-wrap:wrap;gap:0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 24px;max-width:460px;margin:0 auto}
-.phstat{text-align:center;padding:0 20px;flex:1}
-.phstat:not(:last-child){border-right:1px solid rgba(255,255,255,.12)}
-.phstat-n{font-family:var(--ff);font-size:22px;font-weight:900;color:#fff}
-.phstat-l{font-size:11px;color:rgba(255,255,255,.45);margin-top:2px}
+/* DOMAIN TABS */
+.domain-bar{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:58px;z-index:90}
+.domain-inner{max-width:1280px;margin:0 auto;padding:0 24px;display:flex;gap:2px}
+.dtab{padding:14px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--muted);border-bottom:3px solid transparent;transition:.15s;font-family:var(--fb);display:flex;align-items:center;gap:7px;white-space:nowrap}
+.dtab:hover{color:var(--brand)}
+.dtab.on{color:var(--brand);border-bottom-color:var(--brand)}
+.dtab-count{background:var(--border);color:var(--muted);border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;transition:.15s}
+.dtab.on .dtab-count{background:#EDE9FE;color:var(--brand)}
 
-/* ── STICKY CONTROLS ─────────────────────────── */
-.controls{background:#fff;border-bottom:1px solid var(--border);padding:14px 24px;position:sticky;top:60px;z-index:100;}
-.controls-inner{max-width:1280px;margin:0 auto;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.search-wrap{flex:1;min-width:220px;position:relative}
-.search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--subtle);pointer-events:none;width:16px;height:16px}
-.search-input{width:100%;padding:10px 14px 10px 38px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;font-family:var(--fb);outline:none;background:var(--bg);color:var(--ink);transition:.15s;}
-.search-input:focus{border-color:var(--brand);background:#fff;box-shadow:0 0 0 3px rgba(45,27,105,.06)}
-.filter-sel{padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13.5px;font-family:var(--fb);color:var(--ink);background:#fff;cursor:pointer;outline:none;}
-.filter-sel:focus{border-color:var(--brand)}
-.results-count{font-size:13px;color:var(--muted);white-space:nowrap}
-.results-count strong{color:var(--brand);font-weight:700}
+/* FILTER BAR */
+.filter-bar{background:var(--bg);border-bottom:1px solid var(--border);padding:12px 24px}
+.filter-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.fchip{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);background:#fff;color:var(--muted);transition:.15s;font-family:var(--fb);white-space:nowrap}
+.fchip:hover{border-color:var(--brand);color:var(--brand)}
+.fchip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.filter-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.search-box{display:flex;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--border);border-radius:9px;padding:7px 12px;transition:.15s}
+.search-box:focus-within{border-color:var(--brand)}
+.search-box input{border:none;outline:none;font-size:13px;font-family:var(--fb);width:180px;background:none;color:var(--ink)}
+.result-count{font-size:13px;color:var(--muted);white-space:nowrap}
 
-/* ── DOMAIN TABS ─────────────────────────────── */
-.dtabs-wrap{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;overflow-x:auto;scrollbar-width:none;position:sticky;top:calc(60px + 57px);z-index:99;}
-.dtabs-wrap::-webkit-scrollbar{display:none}
-.dtabs{display:flex;gap:2px;min-width:max-content;padding:8px 0}
-.dtab{padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;color:var(--muted);background:transparent;border:none;cursor:pointer;font-family:var(--fb);transition:.12s;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;}
-.dtab:hover{color:var(--brand);background:#F0EEFF}
-.dtab.active{color:#fff;background:var(--brand);font-weight:600}
-.dtab-count{font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:10px;background:rgba(0,0,0,.12);}
-.dtab.active .dtab-count{background:rgba(255,255,255,.25)}
+/* MAIN */
+.main{max-width:1280px;margin:0 auto;padding:28px 24px 60px}
 
-/* ── GRID ────────────────────────────────────── */
-.courses-main{max-width:1280px;margin:0 auto;padding:24px 24px 64px}
-.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(276px,1fr));gap:18px}
+/* MY CERTS BANNER */
+.my-certs{background:linear-gradient(135deg,#1A0B4B,#2D1B69);border-radius:16px;padding:20px 24px;margin-bottom:28px;display:none;align-items:center;gap:16px;flex-wrap:wrap}
+.my-certs.show{display:flex}
+.my-certs-icon{font-size:32px;flex-shrink:0}
+.my-certs-text h3{font-family:var(--ff);font-size:15px;font-weight:700;color:#fff;margin-bottom:2px}
+.my-certs-text p{font-size:13px;color:rgba(255,255,255,.65)}
+.my-certs-list{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.cert-chip{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 12px;cursor:pointer;transition:.15s}
+.cert-chip:hover{background:rgba(255,255,255,.2)}
+.cert-chip-name{font-size:12px;font-weight:600;color:#fff;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cert-chip-id{font-size:10px;color:rgba(255,255,255,.6)}
 
-/* ── CARD ────────────────────────────────────── */
-.ccard{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:.2s;display:flex;flex-direction:column;}
-.ccard:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(45,27,105,.14);border-color:rgba(45,27,105,.2)}
-.ccard-banner{height:118px;display:flex;align-items:center;justify-content:center;position:relative;flex-shrink:0}
-.ccard-emoji{font-size:44px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.25))}
-.ccard-badges{position:absolute;top:10px;left:10px;display:flex;gap:5px}
-.badge-hot{background:var(--accent);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
-.badge-new{background:var(--green);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px}
-.badge-free{background:rgba(255,255,255,.22);color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;border:1px solid rgba(255,255,255,.3)}
-.ccard-body{padding:15px;flex:1;display:flex;flex-direction:column}
-.ccard-domain{font-size:10.5px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;opacity:.8}
-.ccard-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);line-height:1.35;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.ccard-subtitle{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1}
-.ccard-meta{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
-.cmeta{font-size:11.5px;color:var(--subtle)}
-.clevel{font-size:11px;font-weight:700;padding:2px 8px;border-radius:5px;margin-left:auto}
-.clevel-Beginner{background:#DCFCE7;color:#166534}
-.clevel-Intermediate{background:#FEF9C3;color:#854D0E}
-.clevel-Advanced{background:#FEE2E2;color:#991B1B}
-.ccard-footer{display:flex;align-items:center;justify-content:space-between;padding-top:11px;border-top:1px solid var(--border)}
-.ccard-rating{display:flex;align-items:center;gap:3px;font-size:12.5px;font-weight:600;color:var(--amber)}
-.ccard-students{font-size:11px;color:var(--subtle)}
-.btn-enroll{padding:7px 14px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--ff);transition:.12s;white-space:nowrap;}
-.btn-enroll:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(45,27,105,.3)}
+/* SECTION HEADER */
+.section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-title{font-family:var(--ff);font-size:18px;font-weight:700;color:var(--ink)}
+.section-sub{font-size:13px;color:var(--muted)}
 
-/* ── PAGINATION ──────────────────────────────── */
-.pagination{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:40px;flex-wrap:wrap}
-.page-btn{width:36px;height:36px;border-radius:9px;border:1.5px solid var(--border);background:#fff;color:var(--ink);font-size:13.5px;font-weight:500;cursor:pointer;font-family:var(--fb);transition:.12s;display:flex;align-items:center;justify-content:center;}
-.page-btn:hover,.page-btn.active{border-color:var(--brand);color:var(--brand)}
-.page-btn.active{background:var(--brand);color:#fff;font-weight:700}
-.page-btn:disabled{opacity:.35;cursor:not-allowed}
-.page-info{font-size:13px;color:var(--muted);padding:0 6px}
+/* COURSE GRID */
+.courses-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:18px;margin-bottom:40px}
+.course-card{background:#fff;border:1.5px solid var(--border);border-radius:16px;overflow:hidden;transition:.2s;cursor:pointer;display:flex;flex-direction:column;position:relative}
+.course-card:hover{border-color:var(--brand);box-shadow:0 8px 28px rgba(45,27,105,.14);transform:translateY(-3px)}
 
-/* ── EMPTY ───────────────────────────────────── */
-.no-results{text-align:center;padding:80px 24px;grid-column:1/-1}
-.no-results-emoji{font-size:52px;margin-bottom:16px}
-.no-results h3{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--ink);margin-bottom:8px}
-.no-results p{font-size:14px;color:var(--muted);margin-bottom:20px}
+.cc-thumb{height:140px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative;flex-shrink:0}
+.cc-badges{position:absolute;top:10px;left:10px;display:flex;gap:5px;flex-wrap:wrap}
+.cc-badge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.2px}
+.b-free{background:#DCFCE7;color:#15803D}
+.b-cert{background:#FEF9C3;color:#92400E}
+.b-hot{background:#FEE2E2;color:#B91C1C}
+.b-new{background:#EDE9FE;color:#5B21B6}
+.b-done{background:#2D1B69;color:#fff}
+.b-prog{background:rgba(45,27,105,.8);color:#fff}
+.cc-domain{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.35);color:#fff;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.2px}
 
-/* ── DETAIL MODAL ────────────────────────────── */
-.cd-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:500;align-items:center;justify-content:center;padding:20px;}
-.cd-overlay.open{display:flex}
-.cd-box{background:#fff;border-radius:20px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative;}
-.cd-banner{height:140px;display:flex;align-items:center;justify-content:center;font-size:60px;border-radius:20px 20px 0 0;position:relative;}
-.cd-close{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,.3);border:none;color:#fff;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;}
-.cd-body{padding:22px}
-.cd-breadcrumb{font-size:11.5px;color:var(--muted);font-weight:600;margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px}
-.cd-title{font-family:var(--ff);font-size:20px;font-weight:900;color:var(--ink);margin-bottom:7px;line-height:1.2}
-.cd-sub{font-size:14px;color:var(--muted);margin-bottom:18px;line-height:1.6}
-.cd-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
-.cdstat{text-align:center;background:var(--bg);border-radius:10px;padding:11px}
-.cdstat-n{font-family:var(--ff);font-size:18px;font-weight:800;color:var(--brand)}
-.cdstat-l{font-size:11px;color:var(--muted);margin-top:2px}
-.cd-skills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
-.cd-skill{background:#EDE9FF;color:var(--brand);font-size:12px;font-weight:600;padding:4px 10px;border-radius:6px}
-.cd-cert{background:linear-gradient(135deg,#FFF8E7,#FDE68A);border:1px solid var(--amber);border-radius:10px;padding:13px;margin-bottom:18px;display:flex;align-items:center;gap:10px;}
-.cd-cert-icon{font-size:22px;flex-shrink:0}
-.cd-cert-text{font-size:13px;color:#78350F;font-weight:500;line-height:1.4}
-.cd-cert-name{font-weight:700}
-.cd-actions{display:flex;gap:10px}
-.btn-start-course{flex:1;padding:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:11px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:var(--ff);transition:.15s;}
-.btn-start-course:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(255,92,53,.4)}
-.btn-wishlist{padding:13px 16px;background:var(--bg);border:1.5px solid var(--border);border-radius:11px;font-size:14px;cursor:pointer;transition:.12s;}
-.btn-wishlist:hover{background:#EDE9FF;border-color:var(--brand)}
+.cc-body{padding:16px;flex:1;display:flex;flex-direction:column}
+.cc-category{font-size:10px;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.cc-title{font-family:var(--ff);font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px;line-height:1.35}
+.cc-sub{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:12px;flex:1}
+.cc-meta{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--subtle);margin-bottom:12px}
+.cc-meta span{display:flex;align-items:center;gap:2px}
+.cc-prog-bar{height:3px;background:var(--border);border-radius:2px;overflow:hidden;margin-bottom:5px}
+.cc-prog-fill{height:100%;background:linear-gradient(90deg,var(--brand),#06B6D4);border-radius:2px;transition:width .5s}
+.cc-prog-txt{font-size:11px;color:var(--muted);margin-bottom:10px}
+.cc-btn{width:100%;padding:9px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer;font-family:var(--ff);border:none;transition:.15s;text-align:center}
+.cc-btn.prim{background:var(--brand);color:#fff}
+.cc-btn.prim:hover{background:var(--brand2)}
+.cc-btn.sec{background:#F0EEFF;color:var(--brand)}
+.cc-btn.sec:hover{background:var(--brand);color:#fff}
+.cc-btn.done{background:#DCFCE7;color:#15803D;cursor:default}
 
-@media(max-width:768px){.courses-grid{grid-template-columns:repeat(2,1fr)}.controls-inner{flex-direction:column;align-items:stretch}.dtabs-wrap{top:calc(60px+113px)}}
-@media(max-width:480px){.courses-grid{grid-template-columns:1fr}.ph-stats{flex-direction:column;gap:12px}.phstat{border-right:none!important;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.1)}}
+/* EMPTY STATE */
+.empty{text-align:center;padding:64px 24px;color:var(--muted)}
+.empty-icon{font-size:48px;margin-bottom:12px}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(60px);background:#0D0D1A;color:#fff;padding:10px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:768px){
+  .hero h1{font-size:28px}
+  .courses-grid{grid-template-columns:1fr}
+  .nav-links,.filter-right{display:none}
+  .domain-inner{overflow-x:auto;scrollbar-width:none;padding:0 16px}
+}
 </style>
 </head>
 <body>
 
 <nav class="nav">
-  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
-  <div class="nav-center">
-    <a href="courses.html" class="nav-link active">Courses</a>
-    <div class="nav-dd-wrap" id="domains-dd-wrap">
-      <button class="nav-link" onclick="toggleDD('domains-dd','domains-dd-wrap')">Domains <span class="nav-dd-arrow">▾</span></button>
-      <div class="nav-dd" id="domains-dd">
-        <a href="courses.html?domain=AI+%2F+ML">🧠 AI / ML</a>
-        <a href="courses.html?domain=Full+Stack">🔋 Full Stack</a>
-        <a href="courses.html?domain=DSA">🧩 DSA</a>
-        <a href="courses.html?domain=Cloud+%26+DevOps">☁️ Cloud & DevOps</a>
-        <a href="courses.html?domain=Cybersecurity">🔐 Cybersecurity</a>
-        <a href="courses.html?domain=Python">🐍 Python</a>
-      </div>
-    </div>
-    <a href="about.html" class="nav-link">About</a>
-    <a href="contact.html" class="nav-link">Contact</a>
+  <a href="index.html" class="nav-logo">Belong<span>ix</span><span style="font-size:9px;background:var(--accent);color:#fff;border-radius:10px;padding:2px 7px;margin-left:6px;vertical-align:middle;letter-spacing:.3px">BETA</span></a>
+  <div class="nav-links">
+    <a href="dashboard.html?page=jobs" class="nl">Jobs</a>
+    <a href="courses.html" class="nl on">Courses</a>
+    <a href="mentors.html" class="nl">Mentors</a>
+    <a href="community.html" class="nl">Community</a>
   </div>
   <div class="nav-r">
-    <div id="nav-guest"><button class="btn-ghost-sm" onclick="openModal('signin')">Sign In</button><button class="btn-cta-sm" onclick="openModal('signup')">Get Started Free</button></div>
-    <div id="nav-user" style="display:none;align-items:center;gap:8px">
-      <a href="dashboard.html" class="btn-ghost-sm" style="text-decoration:none">Dashboard</a>
-      <div style="position:relative">
-        <div class="nav-av" id="nav-av" onclick="toggleDD('nav-user-dd',null)"><span id="nav-initials">?</span></div>
-        <div class="nav-user-dd" id="nav-user-dd">
-          <a href="dashboard.html">📊 Dashboard</a>
-          <a href="dashboard.html#profile">👤 My Profile</a>
-          <hr/><button onclick="doSignOut()">🚪 Sign Out</button>
-        </div>
-      </div>
-    </div>
-    <button class="hamburger" onclick="toggleMobileMenu()"><svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 12h18M3 6h18M3 18h18"/></svg></button>
+    <div id="nav-guest"><a href="index.html" class="nbtn ghost">Sign In</a><a href="index.html" class="nbtn fill">Join Free →</a></div>
+    <div id="nav-user"><a href="dashboard.html" class="nbtn ghost">Dashboard</a><button id="nav-av" onclick="toggleDD()" style="width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;border:none;cursor:pointer;font-weight:700;font-size:12px;font-family:var(--ff)">?</button></div>
   </div>
 </nav>
-<div class="mobile-menu" id="mobile-menu">
-  <div class="mobile-menu-top"><span class="nav-logo">Belong<span style="color:var(--accent)">ix</span></span><button class="mobile-close" onclick="toggleMobileMenu()">✕</button></div>
-  <a href="courses.html" class="mobile-link">All Courses</a>
-  <a href="courses.html?domain=AI+%2F+ML" class="mobile-link">🧠 AI / ML</a>
-  <a href="courses.html?domain=Full+Stack" class="mobile-link">🔋 Full Stack</a>
-  <a href="courses.html?domain=DSA" class="mobile-link">🧩 DSA</a>
-  <a href="courses.html?domain=Cloud+%26+DevOps" class="mobile-link">☁️ DevOps</a>
-  <a href="about.html" class="mobile-link">About</a>
-  <a href="contact.html" class="mobile-link">Contact</a>
-  <div class="mobile-btns">
-    <button class="btn-ghost-sm" style="width:100%;padding:13px" onclick="openModal('signin');toggleMobileMenu()">Sign In</button>
-    <button class="btn-cta-sm" style="width:100%;padding:13px;font-size:15px" onclick="openModal('signup');toggleMobileMenu()">Get Started Free →</button>
-  </div>
-</div>
 
-<div class="page-header">
-  <div class="ph-inner">
-    <h1 class="ph-h1">Learn Skills That Actually Get You Hired.</h1>
-    <p class="ph-sub">Hand-picked full courses — not fragments. Learn a skill completely, earn a verified certificate, move forward.</p>
-    <div class="ph-stats">
-      <div class="phstat"><div class="phstat-n">🎓</div><div class="phstat-l">Courses</div></div>
-      <div class="phstat"><div class="phstat-n">21</div><div class="phstat-l">Career Tracks</div></div>
-      <div class="phstat"><div class="phstat-n">Verified</div><div class="phstat-l">Certificates</div></div>
-      <div class="phstat"><div class="phstat-n">Pro</div><div class="phstat-l">₹499/month</div></div>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-pill">🏆 Free · Verified Certificates · India-Specific</div>
+    <h1>Learn Anything.<br/><em>Get Certified by Belongix.</em></h1>
+    <p class="hero-sub">50 courses across Development, Coding and AI — built specifically for Indian professionals. Complete a course, pass the quiz, earn a verified certificate you can share on LinkedIn.</p>
+    <div class="hero-stats">
+      <div class="hstat"><div class="hstat-v" id="h-courses">50</div><div class="hstat-l">Courses</div></div>
+      <div class="hstat"><div class="hstat-v">Free</div><div class="hstat-l">Always</div></div>
+      <div class="hstat"><div class="hstat-v">3</div><div class="hstat-l">Domains</div></div>
+      <div class="hstat"><div class="hstat-v">Verified</div><div class="hstat-l">Certificates</div></div>
     </div>
+    <a href="#courses" class="hero-cta">Browse All Courses →</a>
   </div>
 </div>
 
-<div class="controls">
-  <div class="controls-inner">
-    <div class="search-wrap">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input class="search-input" id="search-input" type="text" placeholder="Search courses — Python, React, AWS, System Design, DSA…" oninput="onSearch(this.value)"/>
-    </div>
-    <select class="filter-sel" id="filter-level" onchange="onFilter()">
-      <option value="all">All Levels</option>
-      <option value="Beginner">Beginner</option>
-      <option value="Intermediate">Intermediate</option>
-      <option value="Advanced">Advanced</option>
-    </select>
-    <select class="filter-sel" id="filter-sort" onchange="onFilter()">
-      <option value="popular">Most Popular</option>
-      <option value="new">Newest</option>
-      <option value="rating">Highest Rated</option>
-      <option value="az">A → Z</option>
-      <option value="shortest">Shortest</option>
-      <option value="longest">Longest</option>
-    </select>
-    <select class="filter-sel" id="filter-badge" onchange="onFilter()">
-      <option value="all">All Courses</option>
-      <option value="hot">🔥 Trending</option>
-      <option value="new">🆕 New</option>
-    </select>
-    <div class="results-count"><strong id="results-n">courses</strong></div>
+<!-- DOMAIN TABS -->
+<div class="domain-bar">
+  <div class="domain-inner">
+    <button class="dtab on" data-domain="all" onclick="setDomain('all',this)">🌐 All <span class="dtab-count" id="cnt-all">50</span></button>
+    <button class="dtab" data-domain="Development" onclick="setDomain('Development',this)">💻 Development <span class="dtab-count" id="cnt-dev">0</span></button>
+    <button class="dtab" data-domain="Coding" onclick="setDomain('Coding',this)">👨‍💻 Coding <span class="dtab-count" id="cnt-cod">0</span></button>
+    <button class="dtab" data-domain="AI" onclick="setDomain('AI',this)">🤖 AI <span class="dtab-count" id="cnt-ai">0</span></button>
   </div>
 </div>
 
-<div class="dtabs-wrap">
-  <div class="dtabs" id="dtabs">
-<button class="dtab active" data-domain="all" onclick="setDomain('all',this)">🌟 All</button>
-<button class="dtab" data-domain="Cloud & DevOps" onclick="setDomain('Cloud & DevOps',this)">☁️ Cloud & DevOps <span class="dtab-count">20</span></button>
-<button class="dtab" data-domain="Full Stack" onclick="setDomain('Full Stack',this)">🔋 Full Stack <span class="dtab-count">28</span></button>
-<button class="dtab" data-domain="JavaScript" onclick="setDomain('JavaScript',this)">⚡ JavaScript <span class="dtab-count">67</span></button>
-<button class="dtab" data-domain="AI / ML" onclick="setDomain('AI / ML',this)">🧠 AI / ML <span class="dtab-count">22</span></button>
-<button class="dtab" data-domain="Backend" onclick="setDomain('Backend',this)">⚙️ Backend <span class="dtab-count">12</span></button>
-<button class="dtab" data-domain="DSA" onclick="setDomain('DSA',this)">🧩 DSA <span class="dtab-count">14</span></button>
-<button class="dtab" data-domain="Data Science" onclick="setDomain('Data Science',this)">📊 Data Science <span class="dtab-count">14</span></button>
-<button class="dtab" data-domain="Cybersecurity" onclick="setDomain('Cybersecurity',this)">🔐 Cybersecurity <span class="dtab-count">14</span></button>
-<button class="dtab" data-domain="Career Skills" onclick="setDomain('Career Skills',this)">🚀 Career Skills <span class="dtab-count">10</span></button>
-<button class="dtab" data-domain="UI/UX" onclick="setDomain('UI/UX',this)">🎨 UI/UX <span class="dtab-count">12</span></button>
-<button class="dtab" data-domain="Python" onclick="setDomain('Python',this)">🐍 Python <span class="dtab-count">18</span></button>
-<button class="dtab" data-domain="Product Management" onclick="setDomain('Product Management',this)">🎯 Product Management <span class="dtab-count">10</span></button>
-<button class="dtab" data-domain="System Design" onclick="setDomain('System Design',this)">🏗️ System Design <span class="dtab-count">12</span></button>
-<button class="dtab" data-domain="Data Engineering" onclick="setDomain('Data Engineering',this)">🔧 Data Engineering <span class="dtab-count">10</span></button>
-<button class="dtab" data-domain="Blockchain" onclick="setDomain('Blockchain',this)">⛓️ Blockchain <span class="dtab-count">10</span></button>
-<button class="dtab" data-domain="Business Analytics" onclick="setDomain('Business Analytics',this)">📈 Business Analytics <span class="dtab-count">10</span></button>
-<button class="dtab" data-domain="C++" onclick="setDomain('C++',this)">⚙️ C++ <span class="dtab-count">10</span></button>
-<button class="dtab" data-domain="Java" onclick="setDomain('Java',this)">☕ Java <span class="dtab-count">12</span></button>
-<button class="dtab" data-domain="AI Tools" onclick="setDomain('AI Tools',this)">🤖 AI Tools <span class="dtab-count">8</span></button>
-<button class="dtab" data-domain="Android" onclick="setDomain('Android',this)">📱 Android <span class="dtab-count">8</span></button>
-<button class="dtab" data-domain="Mobile" onclick="setDomain('Mobile',this)">📲 Mobile <span class="dtab-count">7</span></button>
-<button class="dtab" data-domain="iOS" onclick="setDomain('iOS',this)">🍎 iOS <span class="dtab-count">7</span></button>
-  </div>
-</div>
-
-<div class="courses-main">
-  <div class="courses-grid" id="courses-grid"></div>
-  <div class="pagination" id="pagination"></div>
-</div>
-
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand-name">Belong<span>ix</span></div>
-        <div class="footer-tagline">India's career learning platform — Full-course learning, verified certificates, built for Indian professionals.</div>
-        <div class="footer-socials">
-          <a href="https://linkedin.com/company/belongix" class="footer-social" target="_blank" rel="noopener"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg></a>
-          <a href="https://instagram.com/belongix" class="footer-social" target="_blank" rel="noopener"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".5" fill="currentColor"/></svg></a>
-          <a href="https://twitter.com/belongix" class="footer-social" target="_blank" rel="noopener"><svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
-        </div>
+<!-- FILTER BAR -->
+<div class="filter-bar" id="courses">
+  <div class="filter-inner">
+    <button class="fchip on" data-diff="all" onclick="setDiff('all',this)">All Levels</button>
+    <button class="fchip" data-diff="Beginner" onclick="setDiff('Beginner',this)">🟢 Beginner</button>
+    <button class="fchip" data-diff="Intermediate" onclick="setDiff('Intermediate',this)">🟡 Intermediate</button>
+    <button class="fchip" data-diff="Advanced" onclick="setDiff('Advanced',this)">🔴 Advanced</button>
+    <div class="filter-right">
+      <div class="search-box">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#94A3B8" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input id="search-inp" placeholder="Search courses..." oninput="render()"/>
       </div>
-      <div class="footer-col"><div class="footer-col-title">Learn</div><a href="courses.html">All Courses</a><a href="courses.html?domain=AI+%2F+ML">AI &amp; ML</a><a href="courses.html?domain=Full+Stack">Full Stack</a><a href="courses.html?domain=DSA">DSA</a><a href="courses.html?domain=Cloud+%26+DevOps">DevOps</a></div>
-      <div class="footer-col"><div class="footer-col-title">Platform</div><a href="dashboard.html">Dashboard</a><a href="dashboard.html#overview">Career Score</a><a href="dashboard.html#mycourses">Certificates</a></div>
-      <div class="footer-col"><div class="footer-col-title">Company</div><a href="about.html">About Us</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms of Service</a></div>
+      <span class="result-count" id="result-count">50 courses</span>
     </div>
-    <div class="footer-bottom"><span>© 2026 Belongix · Built with ❤️ in India 🇮🇳</span><span><a href="privacy.html" style="color:inherit;text-decoration:none">Privacy</a> · <a href="terms.html" style="color:inherit;text-decoration:none">Terms</a></span></div>
-  </div>
-</footer>
-<div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)closeModal()">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">✕</button>
-    <div class="modal-title" id="modal-title">Create your free account</div>
-    <div class="modal-sub">Join 12,000+ professionals learning on Belongix</div>
-    <div class="modal-tabs">
-      <button class="modal-tab active" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
-      <button class="modal-tab" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
-    </div>
-    <div class="modal-err" id="modal-err"></div>
-    <div class="modal-field" id="name-field"><input class="modal-input" id="auth-name" type="text" placeholder="Full name"/></div>
-    <div class="modal-field"><input class="modal-input" id="auth-email" type="email" placeholder="you@email.com"/></div>
-    <div class="modal-field"><input class="modal-input" id="auth-pass" type="password" placeholder="Password"/></div>
-    <button class="btn-modal-submit" id="auth-btn" onclick="doAuth()">Create Account →</button>
-    <div class="modal-or">or</div>
-    <button class="btn-google" onclick="doGoogle()"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Continue with Google</button>
-    <div class="modal-note">Browse free · Pro ₹499/mo for full access</div>
   </div>
 </div>
 
-<div class="cd-overlay" id="cd-overlay" onclick="if(event.target===this)closeCDetail()">
-  <div class="cd-box" id="cd-box"></div>
+<!-- MAIN -->
+<div class="main">
+  <!-- MY CERTIFICATES -->
+  <div class="my-certs" id="my-certs">
+    <div class="my-certs-icon">🏆</div>
+    <div class="my-certs-text"><h3>Your Certificates</h3><p>Click to download or share on LinkedIn</p></div>
+    <div class="my-certs-list" id="my-certs-list"></div>
+  </div>
+
+  <!-- GRID -->
+  <div class="section-hdr">
+    <div><div class="section-title" id="grid-title">All Courses</div><div class="section-sub" id="grid-sub">Earn a verified Belongix certificate on completion</div></div>
+  </div>
+  <div class="courses-grid" id="grid">
+    <div style="grid-column:1/-1;text-align:center;padding:60px">
+      <div style="width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px"></div>
+      <div style="font-size:14px;color:var(--muted)">Loading courses...</div>
+    </div>
+  </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div id="toast"></div>
 
 <script>
-
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
 var sb=supabase.createClient(SB_URL,SB_KEY);
+async function dbGet(table,qs){
+  try{
+    var r=await fetch(SB_URL+'/rest/v1/'+table+'?'+qs,{
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Accept':'application/json'}
+    });
+    var d=await r.json();
+    return Array.isArray(d)?d:[];
+  }catch(e){console.warn('dbGet',table,e.message);return[];}
+}
 
-async function initAuth(){
+var _user=null,_courses=[],_enroll={},_certs=[],_progress={};
+var _domain='all',_diff='all',_search='';
+
+/* ── STATIC COURSE DATA (50 courses) — shows instantly without DB ── */
+var COURSES=[
+  /* DEVELOPMENT */
+  {slug:'web-development-fundamentals',title:'Web Development Fundamentals',subtitle:'Build websites from scratch — HTML, CSS, JavaScript',category:'Web Development',domain:'Development',difficulty:'Beginner',duration_mins:90,module_count:6,skills:'HTML5,CSS3,JavaScript,Responsive Design',certificate_title:'Certified Web Developer — Fundamentals',emoji:'🌐',bg:'linear-gradient(135deg,#0F4C81,#1E6FAD)',hot:true},
+  {slug:'full-stack-development',title:'Full Stack Development',subtitle:'Master frontend + backend — build complete web apps',category:'Full Stack',domain:'Development',difficulty:'Intermediate',duration_mins:180,module_count:8,skills:'React,Node.js,MongoDB,REST APIs',certificate_title:'Certified Full Stack Developer',emoji:'⚡',bg:'linear-gradient(135deg,#134E4A,#0D9488)'},
+  {slug:'frontend-development',title:'Frontend Development with React',subtitle:'Build modern UIs with React, Tailwind and TypeScript',category:'Frontend',domain:'Development',difficulty:'Intermediate',duration_mins:120,module_count:7,skills:'React,TypeScript,Tailwind CSS,Redux',certificate_title:'Certified Frontend Developer',emoji:'🎨',bg:'linear-gradient(135deg,#1D4ED8,#3B82F6)'},
+  {slug:'backend-development',title:'Backend Development with Node.js',subtitle:'Build scalable APIs and server-side applications',category:'Backend',domain:'Development',difficulty:'Intermediate',duration_mins:150,module_count:7,skills:'Node.js,Express,PostgreSQL,Redis',certificate_title:'Certified Backend Developer',emoji:'⚙️',bg:'linear-gradient(135deg,#374151,#6B7280)'},
+  {slug:'dsa-fundamentals',title:'Data Structures & Algorithms',subtitle:'Crack any coding interview — arrays to dynamic programming',category:'DSA',domain:'Development',difficulty:'Intermediate',duration_mins:200,module_count:10,skills:'Arrays,Trees,Graphs,Dynamic Programming',certificate_title:'Certified DSA Engineer',emoji:'🧠',bg:'linear-gradient(135deg,#92400E,#D97706)',hot:true},
+  {slug:'cloud-computing-aws',title:'Cloud Computing with AWS',subtitle:'Get AWS certified — EC2, S3, Lambda, and beyond',category:'Cloud Computing',domain:'Development',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'AWS,EC2,S3,Lambda,RDS',certificate_title:'Certified AWS Cloud Practitioner — Belongix',emoji:'☁️',bg:'linear-gradient(135deg,#FF9900,#FFB347)'},
+  {slug:'devops-engineering',title:'DevOps Engineering',subtitle:'CI/CD, Docker, Kubernetes, Terraform — all in one',category:'DevOps',domain:'Development',difficulty:'Intermediate',duration_mins:180,module_count:8,skills:'Docker,Kubernetes,GitHub Actions,Terraform',certificate_title:'Certified DevOps Engineer',emoji:'🔧',bg:'linear-gradient(135deg,#1A1A2E,#16213E)'},
+  {slug:'cybersecurity-fundamentals',title:'Cybersecurity Fundamentals',subtitle:'Protect systems and become an ethical hacker',category:'Cybersecurity',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'Network Security,Ethical Hacking,Penetration Testing,OWASP',certificate_title:'Certified Cybersecurity Analyst',emoji:'🔒',bg:'linear-gradient(135deg,#1F2937,#374151)'},
+  {slug:'artificial-intelligence-fundamentals',title:'Artificial Intelligence Fundamentals',subtitle:'Understand and build AI systems from scratch',category:'AI Fundamentals',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'AI Algorithms,Search,Knowledge Representation,Python',certificate_title:'Certified AI Fundamentals Professional',emoji:'🤖',bg:'linear-gradient(135deg,#4C1D95,#7C3AED)'},
+  {slug:'machine-learning-complete',title:'Machine Learning — Complete Course',subtitle:'From linear regression to neural networks',category:'Machine Learning',domain:'Development',difficulty:'Intermediate',duration_mins:200,module_count:10,skills:'Python,scikit-learn,pandas,Supervised Learning',certificate_title:'Certified Machine Learning Engineer',emoji:'📊',bg:'linear-gradient(135deg,#065F46,#059669)',hot:true},
+  {slug:'data-science-india',title:'Data Science for Indian Professionals',subtitle:'Analyze real Indian datasets — finance, e-commerce, healthcare',category:'Data Science',domain:'Development',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'Python,pandas,Statistics,Visualization',certificate_title:'Certified Data Scientist — Belongix',emoji:'📈',bg:'linear-gradient(135deg,#1E3A5F,#2563EB)'},
+  {slug:'data-analytics',title:'Data Analytics with Python & SQL',subtitle:'Turn raw data into business decisions',category:'Data Analytics',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'SQL,Python,Tableau,Power BI',certificate_title:'Certified Data Analyst',emoji:'📉',bg:'linear-gradient(135deg,#BE185D,#DB2777)'},
+  {slug:'business-analytics',title:'Business Analytics & Intelligence',subtitle:'Use data to drive business strategy',category:'Business Analytics',domain:'Development',difficulty:'Beginner',duration_mins:100,module_count:6,skills:'Power BI,Excel,SQL,Business Strategy',certificate_title:'Certified Business Analyst',emoji:'💹',bg:'linear-gradient(135deg,#0C4A6E,#0369A1)'},
+  {slug:'mobile-app-development',title:'Mobile App Development with Flutter',subtitle:'Build iOS and Android apps with one codebase',category:'Mobile Development',domain:'Development',difficulty:'Beginner',duration_mins:180,module_count:9,skills:'Flutter,Dart,Firebase,App Store',certificate_title:'Certified Mobile App Developer',emoji:'📱',bg:'linear-gradient(135deg,#0284C7,#38BDF8)'},
+  {slug:'android-development',title:'Android Development with Kotlin',subtitle:"Build native Android apps for India's 600M Android users",category:'Android',domain:'Development',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'Kotlin,Android SDK,MVVM,Jetpack Compose',certificate_title:'Certified Android Developer',emoji:'🤖',bg:'linear-gradient(135deg,#166534,#22C55E)'},
+  {slug:'ios-development',title:'iOS Development with Swift',subtitle:'Build apps for iPhone and iPad',category:'iOS',domain:'Development',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'Swift,SwiftUI,UIKit,CoreData',certificate_title:'Certified iOS Developer',emoji:'🍎',bg:'linear-gradient(135deg,#374151,#9CA3AF)'},
+  {slug:'ui-ux-design',title:'UI/UX Design with Figma',subtitle:'Design apps and websites users love',category:'UI/UX Design',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'Figma,Design Thinking,Wireframing,User Research',certificate_title:'Certified UI/UX Designer',emoji:'🎨',bg:'linear-gradient(135deg,#9333EA,#C084FC)'},
+  {slug:'database-administration',title:'Database Administration with PostgreSQL',subtitle:'Design, optimize, and manage production databases',category:'Database',domain:'Development',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'PostgreSQL,SQL,Indexing,Query Optimization',certificate_title:'Certified Database Administrator',emoji:'🗄️',bg:'linear-gradient(135deg,#1C3A5E,#336791)'},
+  {slug:'networking-fundamentals',title:'Computer Networking Fundamentals',subtitle:'OSI model to cloud networking',category:'Networking',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'TCP/IP,DNS,HTTP,VPN,Firewall,OSI Model',certificate_title:'Certified Network Engineer',emoji:'🌐',bg:'linear-gradient(135deg,#164E63,#0891B2)'},
+  {slug:'software-testing-qa',title:'Software Testing & QA',subtitle:'Test like a pro — manual and automated testing',category:'Software Testing',domain:'Development',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'Manual Testing,Postman,JIRA,Agile Testing',certificate_title:'Certified QA Engineer',emoji:'🧪',bg:'linear-gradient(135deg,#713F12,#CA8A04)'},
+
+  /* CODING */
+  {slug:'python-development',title:'Python Development — Complete Course',subtitle:'From beginner to backend developer with Python',category:'Python',domain:'Coding',difficulty:'Beginner',duration_mins:180,module_count:7,skills:'Python,OOP,APIs,Django,Flask',certificate_title:'Certified Python Developer',emoji:'🐍',bg:'linear-gradient(135deg,#234F1E,#3776AB)',hot:true},
+  {slug:'java-development',title:'Java Development — Core to Advanced',subtitle:'Master Java for enterprise and product companies',category:'Java',domain:'Coding',difficulty:'Beginner',duration_mins:200,module_count:10,skills:'Java,OOP,Collections,Spring Boot,REST APIs',certificate_title:'Certified Java Developer',emoji:'☕',bg:'linear-gradient(135deg,#B31B1B,#F89820)'},
+  {slug:'javascript-development',title:'JavaScript — Complete Modern Course',subtitle:'ES6+ to async/await and beyond',category:'JavaScript',domain:'Coding',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'JavaScript,ES6+,Promises,Async/Await,DOM',certificate_title:'Certified JavaScript Developer',emoji:'⚡',bg:'linear-gradient(135deg,#854D0E,#EAB308)',hot:true},
+  {slug:'typescript-development',title:'TypeScript Development',subtitle:'Write safer JavaScript for production apps',category:'TypeScript',domain:'Coding',difficulty:'Intermediate',duration_mins:120,module_count:7,skills:'TypeScript,Types,Interfaces,Generics,React+TS',certificate_title:'Certified TypeScript Developer',emoji:'📘',bg:'linear-gradient(135deg,#1B3A6B,#3178C6)'},
+  {slug:'react-development',title:'React Development — Hooks to Production',subtitle:'Build modern React apps used by millions',category:'React',domain:'Coding',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'React,Hooks,Redux Toolkit,React Query,Jest',certificate_title:'Certified React Developer',emoji:'⚛️',bg:'linear-gradient(135deg,#0B3D6E,#61DAFB)'},
+  {slug:'nodejs-development',title:'Node.js Development — APIs to Microservices',subtitle:'Build scalable backend systems with Node.js',category:'Node.js',domain:'Coding',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'Node.js,Express,REST APIs,JWT,Redis,Docker',certificate_title:'Certified Node.js Developer',emoji:'🟢',bg:'linear-gradient(135deg,#1B5E20,#4CAF50)'},
+  {slug:'mern-stack',title:'MERN Stack Development',subtitle:'MongoDB, Express, React, Node — the complete stack',category:'MERN Stack',domain:'Coding',difficulty:'Intermediate',duration_mins:200,module_count:10,skills:'MongoDB,Express,React,Node.js,JWT',certificate_title:'Certified MERN Stack Developer',emoji:'🔋',bg:'linear-gradient(135deg,#0A2540,#00D4AA)'},
+  {slug:'django-development',title:'Django Development — Python Web Framework',subtitle:'Build powerful web apps with Django',category:'Django',domain:'Coding',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'Django,Python,ORM,REST Framework',certificate_title:'Certified Django Developer',emoji:'🎸',bg:'linear-gradient(135deg,#0C4B33,#092E20)'},
+  {slug:'spring-boot-development',title:'Spring Boot Development',subtitle:'Java microservices for enterprise applications',category:'Spring Boot',domain:'Coding',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'Spring Boot,Java,REST APIs,Spring Security,JPA',certificate_title:'Certified Spring Boot Developer',emoji:'🌱',bg:'linear-gradient(135deg,#234E13,#6DB33F)'},
+  {slug:'sql-development',title:'SQL & Database Development',subtitle:'Query mastery from basics to advanced analytics',category:'SQL',domain:'Coding',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'SQL,Joins,Window Functions,PostgreSQL,MySQL',certificate_title:'Certified SQL Developer',emoji:'🗃️',bg:'linear-gradient(135deg,#1E3A5F,#4169E1)'},
+  {slug:'competitive-programming',title:'Competitive Programming',subtitle:'Win hackathons and crack FAANG interviews',category:'Competitive Programming',domain:'Coding',difficulty:'Advanced',duration_mins:200,module_count:10,skills:'Algorithms,Graph Theory,Dynamic Programming',certificate_title:'Certified Competitive Programmer',emoji:'🏆',bg:'linear-gradient(135deg,#7C2D12,#DC2626)'},
+  {slug:'c-programming',title:'C Programming — Systems Foundation',subtitle:'Master the language that powers everything',category:'C Programming',domain:'Coding',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'C,Pointers,Memory Management,File I/O',certificate_title:'Certified C Programmer',emoji:'🔵',bg:'linear-gradient(135deg,#1A237E,#283593)'},
+  {slug:'cpp-development',title:'C++ Development — OOP to Competitive',subtitle:'C++ for software engineering and competitive programming',category:'C++',domain:'Coding',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'C++,OOP,STL,Templates,Algorithms',certificate_title:'Certified C++ Developer',emoji:'⬣',bg:'linear-gradient(135deg,#0D47A1,#1565C0)'},
+  {slug:'automation-testing',title:'Automation Testing with Selenium & Cypress',subtitle:'Automate testing — save hours every release',category:'Automation Testing',domain:'Coding',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'Selenium,Cypress,TestNG,Page Object Model',certificate_title:'Certified Automation Test Engineer',emoji:'🤖',bg:'linear-gradient(135deg,#1B5E20,#388E3C)'},
+  {slug:'php-development',title:'PHP Development & Laravel',subtitle:'Build dynamic websites with PHP and Laravel',category:'PHP',domain:'Coding',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'PHP,Laravel,MySQL,Eloquent ORM',certificate_title:'Certified PHP Laravel Developer',emoji:'🐘',bg:'linear-gradient(135deg,#4A154B,#7B2D8B)'},
+
+  /* AI */
+  {slug:'generative-ai-complete',title:'Generative AI — Complete Course',subtitle:'ChatGPT, Claude, Gemini, Midjourney — master AI tools',category:'Generative AI',domain:'AI',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'LLMs,Prompt Engineering,RAG,LangChain',certificate_title:'Certified Generative AI Professional',emoji:'✨',bg:'linear-gradient(135deg,#312E81,#7C3AED)',hot:true},
+  {slug:'prompt-engineering',title:'Prompt Engineering Mastery',subtitle:'Get 10x better outputs from AI — every time',category:'Prompt Engineering',domain:'AI',difficulty:'Beginner',duration_mins:90,module_count:6,skills:'Prompt Engineering,Chain-of-Thought,Few-Shot,ChatGPT',certificate_title:'Certified Prompt Engineer',emoji:'💬',bg:'linear-gradient(135deg,#064E3B,#10B981)'},
+  {slug:'deep-learning',title:'Deep Learning with PyTorch',subtitle:'Neural networks from basics to transformers',category:'Deep Learning',domain:'AI',difficulty:'Advanced',duration_mins:200,module_count:10,skills:'PyTorch,Neural Networks,CNN,RNN,Transformers',certificate_title:'Certified Deep Learning Engineer',emoji:'🧬',bg:'linear-gradient(135deg,#1A1A2E,#E94560)'},
+  {slug:'nlp-fundamentals',title:'Natural Language Processing (NLP)',subtitle:'Teach computers to understand human language',category:'NLP',domain:'AI',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'NLP,BERT,Transformers,spaCy,Hugging Face',certificate_title:'Certified NLP Engineer',emoji:'💬',bg:'linear-gradient(135deg,#134E4A,#0D9488)'},
+  {slug:'computer-vision',title:'Computer Vision with OpenCV & YOLO',subtitle:'See the world through AI eyes',category:'Computer Vision',domain:'AI',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'OpenCV,YOLO,CNN,Object Detection',certificate_title:'Certified Computer Vision Engineer',emoji:'👁️',bg:'linear-gradient(135deg,#1C1C1E,#3A3A3C)'},
+  {slug:'llm-engineering',title:'Large Language Models (LLM) Engineering',subtitle:'Build production LLM applications',category:'LLM Engineering',domain:'AI',difficulty:'Advanced',duration_mins:200,module_count:10,skills:'LLMs,Fine-tuning,RAG,LangChain,LlamaIndex',certificate_title:'Certified LLM Engineer',emoji:'🔬',bg:'linear-gradient(135deg,#4C1D95,#6D28D9)',hot:true},
+  {slug:'mlops',title:'MLOps — ML in Production',subtitle:'Deploy, monitor, and scale machine learning models',category:'MLOps',domain:'AI',difficulty:'Advanced',duration_mins:180,module_count:9,skills:'MLflow,Docker,Kubernetes,Model Serving',certificate_title:'Certified MLOps Engineer',emoji:'🚀',bg:'linear-gradient(135deg,#1E3A5F,#1D4ED8)'},
+  {slug:'ai-engineering',title:'AI Engineering — Build AI Products',subtitle:'Product-focused AI engineering for modern teams',category:'AI Engineering',domain:'AI',difficulty:'Intermediate',duration_mins:180,module_count:9,skills:'RAG,Vector Databases,AI Agents,LangGraph',certificate_title:'Certified AI Engineer',emoji:'⚡',bg:'linear-gradient(135deg,#0C4A6E,#06B6D4)'},
+  {slug:'data-science-ai',title:'Data Science with AI Tools',subtitle:'Use AI to supercharge your data science workflow',category:'Data Science',domain:'AI',difficulty:'Beginner',duration_mins:150,module_count:8,skills:'Python,pandas,scikit-learn,AI Tools',certificate_title:'Certified AI-Powered Data Scientist',emoji:'📊',bg:'linear-gradient(135deg,#065F46,#34D399)'},
+  {slug:'reinforcement-learning',title:'Reinforcement Learning Fundamentals',subtitle:'Train AI agents to solve complex problems',category:'Reinforcement Learning',domain:'AI',difficulty:'Advanced',duration_mins:180,module_count:9,skills:'RL,Q-Learning,DQN,Policy Gradients,OpenAI Gym',certificate_title:'Certified Reinforcement Learning Engineer',emoji:'🎮',bg:'linear-gradient(135deg,#7C2D12,#F97316)'},
+  {slug:'responsible-ai',title:'Responsible & Ethical AI',subtitle:'Build AI that is fair, transparent, and safe',category:'Responsible AI',domain:'AI',difficulty:'Intermediate',duration_mins:120,module_count:7,skills:'AI Ethics,Bias Detection,SHAP,LIME,Fairness',certificate_title:'Certified Responsible AI Practitioner',emoji:'⚖️',bg:'linear-gradient(135deg,#1E3A5F,#3B82F6)'},
+  {slug:'ai-automation',title:'AI Automation — No Code to Pro Code',subtitle:'Automate your work with AI tools and agents',category:'AI Automation',domain:'AI',difficulty:'Beginner',duration_mins:120,module_count:7,skills:'n8n,Make.com,LangChain,AI Agents,Python',certificate_title:'Certified AI Automation Specialist',emoji:'🔄',bg:'linear-gradient(135deg,#134E4A,#0F766E)'},
+  {slug:'ai-product-development',title:'AI Product Development',subtitle:'Build and launch AI-powered products',category:'AI Product',domain:'AI',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'AI Product Strategy,LLM APIs,Evaluation,GTM',certificate_title:'Certified AI Product Developer',emoji:'🛠️',bg:'linear-gradient(135deg,#3B0764,#7E22CE)'},
+  {slug:'predictive-analytics',title:'Predictive Analytics with ML',subtitle:'Forecast the future using data and machine learning',category:'Predictive Analytics',domain:'AI',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'Time Series,Regression,Forecasting,Python',certificate_title:'Certified Predictive Analytics Engineer',emoji:'🔮',bg:'linear-gradient(135deg,#0F172A,#1E3A5F)'},
+  {slug:'ai-chatbot-development',title:'AI Chatbot Development',subtitle:'Build intelligent chatbots for businesses',category:'AI Chatbot',domain:'AI',difficulty:'Intermediate',duration_mins:150,module_count:8,skills:'LLMs,RAG,LangChain,FastAPI,Deployment',certificate_title:'Certified AI Chatbot Developer',emoji:'💭',bg:'linear-gradient(135deg,#1A0B4B,#4C2FAA)'}
+];
+
+/* ── INIT ── */
+window.addEventListener('load',async function(){
+  document.addEventListener('click',function(e){
+    if(!e.target.closest('#nav-av'))document.getElementById('nav-dd')&&(document.getElementById('nav-dd').style.display='none');
+  });
+
+  /* Count domains */
+  updateCounts();
+
+  /* Auth check */
   try{
     var s=await sb.auth.getSession();
-    if(s.data&&s.data.session&&s.data.session.user){showUserNav(s.data.session.user);}
-    else{showGuestNav();}
+    if(s.data&&s.data.session&&s.data.session.user){
+      _user=s.data.session.user;
+      showUserNav();
+      await Promise.all([loadEnrollments(),loadCerts()]);
+    }else showGuestNav();
   }catch(e){showGuestNav();}
-}
-function showUserNav(user){
-  document.getElementById('nav-guest').style.display='none';
-  var nu=document.getElementById('nav-user');nu.style.display='flex';
-  if(user){var n=(user.user_metadata&&user.user_metadata.full_name)||user.email||'U';document.getElementById('nav-initials').textContent=n[0].toUpperCase();}
-}
-function showGuestNav(){document.getElementById('nav-guest').style.display='flex';document.getElementById('nav-user').style.display='none';}
-async function doSignOut(){await sb.auth.signOut();showGuestNav();showToast('Signed out.');}
 
-var _modalTab='signup';
-function openModal(tab){switchTab(tab||'signup');document.getElementById('auth-modal').classList.add('open');document.body.style.overflow='hidden';setTimeout(function(){document.getElementById('auth-email').focus();},100);}
-function closeModal(){document.getElementById('auth-modal').classList.remove('open');document.body.style.overflow='';}
-function switchTab(t){
-  _modalTab=t;
-  document.getElementById('tab-signup').classList.toggle('active',t==='signup');
-  document.getElementById('tab-signin').classList.toggle('active',t==='signin');
-  document.getElementById('modal-title').textContent=t==='signup'?'Create your free account':'Welcome back';
-  document.getElementById('name-field').style.display=t==='signup'?'block':'none';
-  document.getElementById('auth-btn').textContent=t==='signup'?'Create Account →':'Sign In →';
-  document.getElementById('modal-err').style.display='none';
-}
-async function doAuth(){
-  var email=document.getElementById('auth-email').value.trim();
-  var pass=document.getElementById('auth-pass').value;
-  var name=document.getElementById('auth-name').value.trim();
-  var err=document.getElementById('modal-err');err.style.display='none';
-  if(!email||!pass){err.textContent='Please enter email and password.';err.style.display='block';return;}
-  var btn=document.getElementById('auth-btn');btn.textContent='Please wait…';btn.disabled=true;
-  try{
-    var r=_modalTab==='signup'?await sb.auth.signUp({email:email,password:pass,options:{data:{full_name:name||email.split('@')[0]}}}):await sb.auth.signInWithPassword({email:email,password:pass});
-    if(r.error)throw r.error;
-    showToast('Success! Redirecting…');setTimeout(function(){window.location.href='dashboard.html';},700);
-  }catch(e){err.textContent=e.message||'Something went wrong.';err.style.display='block';}
-  btn.textContent=_modalTab==='signup'?'Create Account →':'Sign In →';btn.disabled=false;
-}
-async function doGoogle(){try{await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/dashboard.html'}});}catch(e){showToast('Google sign-in unavailable.');}}
-
-function toggleDD(ddId,wrapId){
-  var dd=document.getElementById(ddId);var isOpen=dd.classList.contains('open');
-  document.querySelectorAll('.nav-dd,.nav-user-dd').forEach(function(d){d.classList.remove('open');});
-  if(!isOpen){dd.classList.add('open');if(wrapId){var w=document.getElementById(wrapId);if(w)w.classList.add('open');}}
-}
-function toggleMobileMenu(){var m=document.getElementById('mobile-menu');m.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':'';}
-
-var _toastTimer;
-function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(_toastTimer);_toastTimer=setTimeout(function(){t.classList.remove('show');},3000);}
-function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
-var COURSES=[{"title":"HTML & CSS \u2014 Complete Course","slug":"html-css-complete","domain":"Full Stack","level":"Beginner","hours":9,"rating":4.8,"skills":"HTML5,CSS3,Flexbox,Grid,Responsive Design,Semantic HTML","students":0,"price":499},{"title":"JavaScript \u2014 Complete Course","slug":"javascript-complete","domain":"Full Stack","level":"Beginner","hours":8,"rating":4.8,"skills":"JavaScript,Variables,DOM,Events,Functions,ES6,Async,OOP","students":0,"price":499},{"title":"TypeScript \u2014 Complete Course","slug":"typescript-complete","domain":"Full Stack","level":"Intermediate","hours":5,"rating":4.7,"skills":"TypeScript,Types,Interfaces,Generics,Decorators,tsconfig","students":0,"price":499},{"title":"React \u2014 Complete Course","slug":"react-complete","domain":"Full Stack","level":"Intermediate","hours":8,"rating":4.9,"skills":"React,JSX,Props,State,Hooks,Context,Components,React Router","students":0,"price":499},{"title":"Next.js \u2014 Complete Course","slug":"nextjs-complete","domain":"Full Stack","level":"Intermediate","hours":7,"rating":4.8,"skills":"Next.js,SSR,SSG,App Router,Server Components,API Routes,Vercel","students":0,"price":499},{"title":"Node.js \u2014 Complete Course","slug":"nodejs-complete","domain":"Full Stack","level":"Intermediate","hours":8,"rating":4.7,"skills":"Node.js,npm,Modules,File System,HTTP,Streams,Buffers,Events","students":0,"price":499},{"title":"Express.js \u2014 Build REST APIs","slug":"expressjs-rest-apis","domain":"Full Stack","level":"Intermediate","hours":4,"rating":4.7,"skills":"Express,REST,Routing,Middleware,JWT,Error Handling,CORS","students":0,"price":499},{"title":"MongoDB \u2014 Complete Course","slug":"mongodb-complete","domain":"Full Stack","level":"Intermediate","hours":5,"rating":4.7,"skills":"MongoDB,Mongoose,CRUD,Aggregation,Indexing,Atlas","students":0,"price":499},{"title":"MERN Stack \u2014 Full Bootcamp","slug":"mern-stack-bootcamp","domain":"Full Stack","level":"Intermediate","hours":12,"rating":4.8,"skills":"MongoDB,Express,React,Node.js,JWT,Redux,Deployment","students":0,"price":499},{"title":"Next.js \u2014 App Router & Server Components","slug":"nextjs-app-router","domain":"Full Stack","level":"Advanced","hours":6,"rating":4.8,"skills":"App Router,Server Components,Server Actions,Streaming,PPR,Vercel","students":0,"price":499},{"title":"TypeScript \u2014 Generics & Advanced Types","slug":"typescript-advanced","domain":"Full Stack","level":"Advanced","hours":4,"rating":4.7,"skills":"Generics,Conditional Types,Mapped Types,Utility Types,infer,Template Literals","students":0,"price":499},{"title":"GraphQL \u2014 Complete Course","slug":"graphql-complete","domain":"Full Stack","level":"Intermediate","hours":5,"rating":4.6,"skills":"GraphQL,Schema,Queries,Mutations,Resolvers,Apollo,Subscriptions,Federation","students":0,"price":499},{"title":"Vue.js 3 \u2014 Complete Course","slug":"vuejs-complete","domain":"Full Stack","level":"Intermediate","hours":6,"rating":4.6,"skills":"Vue 3,Composition API,Pinia,Vue Router,Nuxt,Reactivity","students":0,"price":499},{"title":"Angular \u2014 Complete Course","slug":"angular-complete","domain":"Full Stack","level":"Intermediate","hours":7,"rating":4.5,"skills":"Angular,TypeScript,Components,RxJS,NgRx,HttpClient,DI","students":0,"price":499},{"title":"Svelte & SvelteKit \u2014 Complete Course","slug":"svelte-complete","domain":"Full Stack","level":"Intermediate","hours":4,"rating":4.5,"skills":"Svelte,SvelteKit,Stores,SSR,Transitions,Deployment","students":0,"price":499},{"title":"Tailwind CSS \u2014 Complete Guide","slug":"tailwind-complete","domain":"Full Stack","level":"Beginner","hours":3,"rating":4.7,"skills":"Tailwind CSS,Utility Classes,Responsive,Dark Mode,JIT,Custom Config","students":0,"price":499},{"title":"Git & GitHub \u2014 Complete Guide","slug":"git-github-complete","domain":"Full Stack","level":"Beginner","hours":4,"rating":4.8,"skills":"Git,GitHub,Branching,Merging,Pull Requests,Rebase,GitHub Actions","students":0,"price":499},{"title":"Docker \u2014 Complete Course","slug":"docker-complete","domain":"Full Stack","level":"Intermediate","hours":6,"rating":4.8,"skills":"Docker,Images,Containers,Volumes,Networks,Docker Compose,Registry","students":0,"price":499},{"title":"Firebase \u2014 Complete Developer Guide","slug":"firebase-complete","domain":"Full Stack","level":"Intermediate","hours":5,"rating":4.6,"skills":"Firebase,Firestore,Auth,Hosting,Cloud Functions,FCM,Realtime DB","students":0,"price":499},{"title":"Supabase \u2014 Build Full-Stack Apps","slug":"supabase-complete","domain":"Full Stack","level":"Intermediate","hours":4,"rating":4.6,"skills":"Supabase,PostgreSQL,Auth,Realtime,Storage,RLS,Edge Functions","students":0,"price":499},{"title":"React Native \u2014 Complete Course","slug":"react-native-complete","domain":"Full Stack","level":"Intermediate","hours":7,"rating":4.6,"skills":"React Native,Expo,Navigation,AsyncStorage,Camera,Push Notifications","students":0,"price":499},{"title":"Progressive Web Apps \u2014 Complete Guide","slug":"pwa-complete","domain":"Full Stack","level":"Intermediate","hours":3,"rating":4.4,"skills":"PWA,Service Workers,Cache API,Manifest,Push Notifications,Offline","students":0,"price":499},{"title":"Web Security \u2014 Complete Guide","slug":"web-security-complete","domain":"Full Stack","level":"Intermediate","hours":4,"rating":4.6,"skills":"XSS,CSRF,SQL Injection,OWASP Top 10,HTTPS,Auth Security,CSP","students":0,"price":499},{"title":"Sass & SCSS \u2014 Complete Guide","slug":"sass-complete","domain":"Full Stack","level":"Beginner","hours":2,"rating":4.5,"skills":"Sass,SCSS,Variables,Mixins,Nesting,Functions,Partials,Modules","students":0,"price":499},{"title":"Redux Toolkit \u2014 Complete Course","slug":"redux-toolkit-complete","domain":"Full Stack","level":"Intermediate","hours":4,"rating":4.6,"skills":"Redux,Redux Toolkit,RTK Query,Thunk,Immer,DevTools,Async Actions","students":0,"price":499},{"title":"Testing JavaScript \u2014 Jest & Cypress","slug":"testing-javascript-complete","domain":"Full Stack","level":"Intermediate","hours":5,"rating":4.5,"skills":"Jest,React Testing Library,Cypress,TDD,Mocking,E2E,Coverage","students":0,"price":499},{"title":"WebSockets & Real-Time Apps","slug":"websockets-realtime","domain":"Full Stack","level":"Intermediate","hours":3,"rating":4.5,"skills":"WebSockets,Socket.io,Real-Time,Chat,Pub/Sub,Server-Sent Events","students":0,"price":499},{"title":"Microservices with Node.js","slug":"microservices-nodejs","domain":"Full Stack","level":"Advanced","hours":6,"rating":4.5,"skills":"Microservices,RabbitMQ,API Gateway,Docker,gRPC,Service Discovery","students":0,"price":499},{"title":"Python \u2014 Complete Beginner Course","slug":"python-beginner-complete","domain":"Python","level":"Beginner","hours":8,"rating":4.9,"skills":"Python,Variables,Data Types,Control Flow,Functions,Modules,File I/O","students":0,"price":499},{"title":"Python OOP & Intermediate Concepts","slug":"python-oop-intermediate","domain":"Python","level":"Intermediate","hours":6,"rating":4.7,"skills":"OOP,Classes,Inheritance,Decorators,Generators,Context Managers,Comprehensions","students":0,"price":499},{"title":"Python Async & Concurrency","slug":"python-async-concurrency","domain":"Python","level":"Intermediate","hours":3,"rating":4.5,"skills":"asyncio,async/await,aiohttp,Threading,Multiprocessing,GIL,Futures","students":0,"price":499},{"title":"FastAPI \u2014 Build Production APIs","slug":"fastapi-complete","domain":"Python","level":"Intermediate","hours":5,"rating":4.7,"skills":"FastAPI,Pydantic,Async,JWT,SQLAlchemy,OpenAPI,Docker,Testing","students":0,"price":499},{"title":"Django \u2014 Complete Web Framework","slug":"django-complete","domain":"Python","level":"Intermediate","hours":7,"rating":4.6,"skills":"Django,ORM,Views,Templates,DRF,Serializers,Auth,Celery,Deployment","students":0,"price":499},{"title":"Flask \u2014 Build REST APIs","slug":"flask-complete","domain":"Python","level":"Intermediate","hours":4,"rating":4.5,"skills":"Flask,Blueprints,SQLAlchemy,JWT,marshmallow,Testing,Deployment","students":0,"price":499},{"title":"Python Testing \u2014 pytest Mastery","slug":"python-pytest-complete","domain":"Python","level":"Intermediate","hours":3,"rating":4.5,"skills":"pytest,Fixtures,Parametrize,Mock,Coverage,TDD,CI Integration","students":0,"price":499},{"title":"Web Scraping with Python","slug":"python-web-scraping","domain":"Python","level":"Intermediate","hours":4,"rating":4.5,"skills":"requests,BeautifulSoup,Scrapy,Playwright,Proxies,Anti-Bot,APIs","students":0,"price":499},{"title":"Python Automation \u2014 Scripts & Bots","slug":"python-automation-complete","domain":"Python","level":"Intermediate","hours":4,"rating":4.5,"skills":"Automation,Selenium,PyAutoGUI,Scheduler,Email,Slack API,Reporting","students":0,"price":499},{"title":"Python Data Analysis \u2014 NumPy & Pandas","slug":"python-numpy-pandas","domain":"Python","level":"Intermediate","hours":6,"rating":4.7,"skills":"NumPy,Pandas,DataFrames,GroupBy,Merge,Pivot,Time Series,Plotting","students":0,"price":499},{"title":"Python CLI Tools & Packaging","slug":"python-cli-packaging","domain":"Python","level":"Intermediate","hours":3,"rating":4.4,"skills":"argparse,click,typer,rich,pyproject.toml,PyPI,Versioning,Distribution","students":0,"price":499},{"title":"Python Type Hints & Static Analysis","slug":"python-type-hints","domain":"Python","level":"Intermediate","hours":2,"rating":4.4,"skills":"Type Hints,mypy,pyright,Generics,Protocol,TypedDict,NewType,Pydantic","students":0,"price":499},{"title":"Python Regular Expressions","slug":"python-regex","domain":"Python","level":"Intermediate","hours":2,"rating":4.4,"skills":"Regex,re module,Groups,Lookahead,Lookbehind,Named Groups,Performance","students":0,"price":499},{"title":"Python for Financial Automation \u2014 India","slug":"python-finance-india","domain":"Python","level":"Intermediate","hours":4,"rating":4.5,"skills":"Python File I/O,Office Automation,openpyxl,PDF Processing,Scheduling,India","students":0,"price":499},{"title":"LangChain & LLM Apps with Python","slug":"langchain-llm-python","domain":"Python","level":"Advanced","hours":5,"rating":4.6,"skills":"LangChain,RAG,Agents,Memory,Tools,LangGraph,ChromaDB,Streamlit","students":0,"price":499},{"title":"Plotly & Dash \u2014 Interactive Dashboards","slug":"plotly-dash-complete","domain":"Python","level":"Intermediate","hours":4,"rating":4.4,"skills":"Plotly,Dash,Callbacks,Graphs,Layout,Components,Deployment","students":0,"price":499},{"title":"Python Decorators \u2014 Complete Mastery","slug":"python-decorators-mastery","domain":"Python","level":"Intermediate","hours":2,"rating":4.5,"skills":"Decorators,functools,wraps,Class Decorators,Parametrised,Stacking,Caching","students":0,"price":499},{"title":"Celery & Redis \u2014 Task Queues","slug":"celery-redis-tasks","domain":"Python","level":"Intermediate","hours":3,"rating":4.4,"skills":"Celery,Redis,Tasks,Queues,Beat Scheduler,Flower,Retry,Priority,Monitoring","students":0,"price":499},{"title":"Machine Learning \u2014 Complete Course","slug":"machine-learning-complete","domain":"AI / ML","level":"Intermediate","hours":10,"rating":4.8,"skills":"scikit-learn,Regression,Classification,Clustering,Model Evaluation,Pipelines","students":0,"price":499},{"title":"Deep Learning with PyTorch","slug":"deep-learning-pytorch","domain":"AI / ML","level":"Advanced","hours":8,"rating":4.8,"skills":"PyTorch,Tensors,Autograd,CNNs,RNNs,Transfer Learning,CUDA,Training Loop","students":0,"price":499},{"title":"Deep Learning with TensorFlow & Keras","slug":"deep-learning-tensorflow","domain":"AI / ML","level":"Advanced","hours":8,"rating":4.7,"skills":"TensorFlow,Keras,Layers,Custom Models,TF Hub,TFLite,Deployment","students":0,"price":499},{"title":"Neural Networks \u2014 Mathematical Foundation","slug":"neural-networks-math","domain":"AI / ML","level":"Intermediate","hours":4,"rating":4.9,"skills":"Neural Networks,Backpropagation,Gradient Descent,Activation Functions,Architecture","students":0,"price":499},{"title":"Transformers & Attention Mechanism","slug":"transformers-attention","domain":"AI / ML","level":"Advanced","hours":5,"rating":4.8,"skills":"Transformers,Attention,BERT,GPT,T5,ViT,Positional Encoding,Multi-Head","students":0,"price":499},{"title":"HuggingFace \u2014 Complete Platform Guide","slug":"huggingface-complete","domain":"AI / ML","level":"Advanced","hours":5,"rating":4.7,"skills":"HuggingFace,Transformers,Datasets,Spaces,AutoTrain,PEFT,Evaluate","students":0,"price":499},{"title":"LLM Fine-Tuning \u2014 Complete Guide","slug":"llm-fine-tuning","domain":"AI / ML","level":"Advanced","hours":6,"rating":4.7,"skills":"LoRA,QLoRA,PEFT,Instruction Tuning,DPO,RLHF,Quantization,Merging","students":0,"price":499},{"title":"RAG \u2014 Retrieval-Augmented Generation","slug":"rag-complete","domain":"AI / ML","level":"Advanced","hours":5,"rating":4.7,"skills":"RAG,Vector Stores,Chunking,Reranking,LlamaIndex,LangChain,Evaluation","students":0,"price":499},{"title":"Computer Vision \u2014 Complete Course","slug":"computer-vision-complete","domain":"AI / ML","level":"Advanced","hours":6,"rating":4.6,"skills":"OpenCV,CNNs,Object Detection,YOLO,Image Segmentation,Transfer Learning","students":0,"price":499},{"title":"NLP \u2014 Complete Course","slug":"nlp-complete","domain":"AI / ML","level":"Advanced","hours":7,"rating":4.7,"skills":"NLP,NLTK,spaCy,TF-IDF,Sentiment,NER,Text Classification,BERT,Transformers","students":0,"price":499},{"title":"Reinforcement Learning \u2014 Complete Course","slug":"reinforcement-learning-complete","domain":"AI / ML","level":"Advanced","hours":5,"rating":4.5,"skills":"MDP,Q-Learning,DQN,PPO,A3C,Gymnasium,Stable-Baselines3,Policy Gradients","students":0,"price":499},{"title":"Diffusion Models & Stable Diffusion","slug":"diffusion-models-complete","domain":"AI / ML","level":"Advanced","hours":4,"rating":4.6,"skills":"Diffusion Models,Stable Diffusion,DDPM,ControlNet,LoRA,SDXL,ComfyUI","students":0,"price":499},{"title":"MLOps \u2014 Production ML Systems","slug":"mlops-complete","domain":"AI / ML","level":"Advanced","hours":6,"rating":4.6,"skills":"MLflow,DVC,Feast,Evidently,GitHub Actions,Docker,Monitoring,Model Registry","students":0,"price":499},{"title":"Prompt Engineering \u2014 Complete Guide","slug":"prompt-engineering-complete","domain":"AI / ML","level":"Intermediate","hours":4,"rating":4.7,"skills":"Prompt Engineering,Zero-Shot,Few-Shot,CoT,ReAct,DSPy,JSON Mode,System Prompt","students":0,"price":499},{"title":"OpenAI API \u2014 Complete Integration","slug":"openai-api-complete","domain":"AI / ML","level":"Intermediate","hours":4,"rating":4.6,"skills":"OpenAI API,GPT-4o,Assistants,Function Calling,Vision,Structured Outputs","students":0,"price":499},{"title":"Ollama \u2014 Run LLMs Locally","slug":"ollama-local-llms","domain":"AI / ML","level":"Intermediate","hours":3,"rating":4.5,"skills":"Ollama,Llama 3,Mistral,Gemma,Local LLMs,API,Modelfile,Embedding","students":0,"price":499},{"title":"AI Agents \u2014 AutoGen & CrewAI","slug":"ai-agents-complete","domain":"AI / ML","level":"Advanced","hours":5,"rating":4.6,"skills":"AI Agents,AutoGen,CrewAI,Multi-Agent,Tool Use,Planning,Memory,Reflection","students":0,"price":499},{"title":"Feature Engineering & EDA","slug":"feature-engineering-eda","domain":"AI / ML","level":"Intermediate","hours":4,"rating":4.5,"skills":"Feature Engineering,EDA,Encoding,Scaling,Feature Selection,Dimensionality Reduction","students":0,"price":499},{"title":"XGBoost & LightGBM \u2014 Complete Guide","slug":"xgboost-lightgbm-complete","domain":"AI / ML","level":"Advanced","hours":4,"rating":4.6,"skills":"XGBoost,LightGBM,CatBoost,SHAP,Hyperparameter Tuning,Cross-Validation,Optuna","students":0,"price":499},{"title":"Graph Neural Networks \u2014 PyTorch Geometric","slug":"gnn-pytorch-geometric","domain":"AI / ML","level":"Advanced","hours":4,"rating":4.5,"skills":"GNN,PyTorch Geometric,GCN,GAT,GraphSAGE,Link Prediction,Node Classification","students":0,"price":499},{"title":"MLflow \u2014 Experiment Tracking to Serving","slug":"mlflow-complete","domain":"AI / ML","level":"Advanced","hours":3,"rating":4.5,"skills":"MLflow,Runs,Experiments,Artifacts,Model Registry,Serving,REST API,Docker","students":0,"price":499},{"title":"Speech AI \u2014 Whisper & Voice Apps","slug":"speech-ai-whisper","domain":"AI / ML","level":"Advanced","hours":3,"rating":4.5,"skills":"Whisper,Transcription,Diarisation,TTS,Voice Cloning,Real-Time Audio,Speaker","students":0,"price":499},{"title":"Python for Data Science","slug":"python-data-science","domain":"Data Science","level":"Beginner","hours":6,"rating":4.7,"skills":"Python,NumPy,Pandas,Matplotlib,Jupyter,SciPy,Seaborn","students":0,"price":499},{"title":"Statistics for Data Science","slug":"statistics-data-science","domain":"Data Science","level":"Intermediate","hours":8,"rating":4.7,"skills":"Probability,Distributions,Hypothesis Testing,Bayesian,Regression,ANOVA","students":0,"price":499},{"title":"Data Visualisation with Python","slug":"data-visualisation-python","domain":"Data Science","level":"Intermediate","hours":4,"rating":4.5,"skills":"Matplotlib,Seaborn,Plotly,Bokeh,Altair,Chart Selection,Storytelling","students":0,"price":499},{"title":"SQL for Data Science","slug":"sql-data-science","domain":"Data Science","level":"Intermediate","hours":6,"rating":4.7,"skills":"SQL,Window Functions,CTEs,Joins,Subqueries,Analytics,Optimisation","students":0,"price":499},{"title":"Pandas \u2014 Complete Mastery","slug":"pandas-complete","domain":"Data Science","level":"Intermediate","hours":5,"rating":4.7,"skills":"Pandas,DataFrames,GroupBy,Merge,Reshape,Time Series,Missing Data,Performance","students":0,"price":499},{"title":"Time Series Analysis & Forecasting","slug":"time-series-forecasting","domain":"Data Science","level":"Advanced","hours":5,"rating":4.5,"skills":"ARIMA,SARIMA,Prophet,LSTM,Fourier,Stationarity,Trend,Seasonality","students":0,"price":499},{"title":"A/B Testing & Causal Inference","slug":"ab-testing-causal-inference","domain":"Data Science","level":"Advanced","hours":4,"rating":4.5,"skills":"A/B Testing,Hypothesis Testing,p-values,Sample Size,Causal Inference,DoWhy,DID","students":0,"price":499},{"title":"Tableau \u2014 Complete Data Visualisation","slug":"tableau-complete","domain":"Data Science","level":"Intermediate","hours":5,"rating":4.5,"skills":"Tableau,Dashboards,LOD,Calculated Fields,Set Actions,Storytelling,Prep Builder","students":0,"price":499},{"title":"Power BI \u2014 Complete Guide","slug":"power-bi-complete","domain":"Data Science","level":"Intermediate","hours":5,"rating":4.5,"skills":"Power BI,DAX,Power Query,Data Models,Reports,Row-Level Security,Fabric","students":0,"price":499},{"title":"R for Data Science","slug":"r-data-science","domain":"Data Science","level":"Intermediate","hours":6,"rating":4.5,"skills":"R,tidyverse,ggplot2,dplyr,R Markdown,Shiny,Statistical Modelling","students":0,"price":499},{"title":"Recommendation Systems \u2014 Complete Guide","slug":"recommendation-systems","domain":"Data Science","level":"Advanced","hours":4,"rating":4.5,"skills":"Collaborative Filtering,Content-Based,SVD,Matrix Factorization,Cold Start,A/B","students":0,"price":499},{"title":"Data Science Career in India","slug":"data-science-career-india","domain":"Data Science","level":"Beginner","hours":3,"rating":4.6,"skills":"Data Science Career,Portfolio,Resume,Interview,Salary India,Roadmap,Companies","students":0,"price":499},{"title":"Bayesian Statistics with Python","slug":"bayesian-statistics-python","domain":"Data Science","level":"Advanced","hours":4,"rating":4.5,"skills":"PyMC,MCMC,Bayesian Regression,Prior,Posterior,Credible Intervals,Stan","students":0,"price":499},{"title":"Geospatial Data Analysis","slug":"geospatial-data-analysis","domain":"Data Science","level":"Intermediate","hours":3,"rating":4.4,"skills":"GeoPandas,Folium,PostGIS,Shapefile,Coordinate Systems,Mapping,Spatial Join","students":0,"price":499},{"title":"AWS \u2014 Cloud Practitioner","slug":"aws-cloud-practitioner","domain":"Cloud & DevOps","level":"Beginner","hours":8,"rating":4.8,"skills":"AWS,EC2,S3,IAM,VPC,CloudFormation,Lambda,RDS,Cost Management","students":0,"price":499},{"title":"AWS \u2014 Solutions Architect Associate","slug":"aws-solutions-architect","domain":"Cloud & DevOps","level":"Intermediate","hours":10,"rating":4.8,"skills":"AWS,EC2,RDS,Lambda,Route53,VPC,CloudFront,S3,EKS,High Availability","students":0,"price":499},{"title":"Azure \u2014 AZ-900 Fundamentals","slug":"azure-fundamentals","domain":"Cloud & DevOps","level":"Beginner","hours":6,"rating":4.6,"skills":"Azure,VMs,Storage,Networking,Identity,Compliance,Security,Cost Management","students":0,"price":499},{"title":"GCP \u2014 Associate Cloud Engineer","slug":"gcp-cloud-engineer","domain":"Cloud & DevOps","level":"Intermediate","hours":8,"rating":4.6,"skills":"GCP,GKE,BigQuery,Cloud Storage,IAM,VPC,Cloud Run,Pub/Sub,Monitoring","students":0,"price":499},{"title":"Kubernetes \u2014 Complete Guide","slug":"kubernetes-complete","domain":"Cloud & DevOps","level":"Intermediate","hours":8,"rating":4.8,"skills":"Kubernetes,Pods,Deployments,Services,Ingress,Helm,RBAC,StatefulSets","students":0,"price":499},{"title":"Terraform \u2014 Infrastructure as Code","slug":"terraform-complete","domain":"Cloud & DevOps","level":"Intermediate","hours":5,"rating":4.7,"skills":"Terraform,HCL,State,Modules,Providers,Workspaces,Terragrunt,Remote Backend","students":0,"price":499},{"title":"GitHub Actions \u2014 CI/CD Complete","slug":"github-actions-complete","domain":"Cloud & DevOps","level":"Intermediate","hours":4,"rating":4.7,"skills":"GitHub Actions,Workflows,Jobs,Secrets,Matrix,OIDC,Environments,Reusable","students":0,"price":499},{"title":"Linux System Administration","slug":"linux-sysadmin-complete","domain":"Cloud & DevOps","level":"Beginner","hours":7,"rating":4.7,"skills":"Linux,Bash,File System,Processes,Networking,SSH,Cron,Permissions,Scripting","students":0,"price":499},{"title":"Ansible \u2014 IT Automation","slug":"ansible-complete","domain":"Cloud & DevOps","level":"Intermediate","hours":4,"rating":4.6,"skills":"Ansible,Playbooks,Roles,Inventory,Vault,AWX,Modules,Templates","students":0,"price":499},{"title":"Prometheus & Grafana \u2014 Monitoring","slug":"prometheus-grafana-complete","domain":"Cloud & DevOps","level":"Intermediate","hours":4,"rating":4.6,"skills":"Prometheus,Grafana,PromQL,Alertmanager,Loki,Tempo,Dashboards,SLOs","students":0,"price":499},{"title":"Apache Kafka \u2014 Event Streaming","slug":"kafka-complete","domain":"Cloud & DevOps","level":"Intermediate","hours":5,"rating":4.7,"skills":"Kafka,Topics,Partitions,Producers,Consumers,Kafka Streams,Schema Registry","students":0,"price":499},{"title":"AWS Lambda & Serverless","slug":"aws-lambda-serverless","domain":"Cloud & DevOps","level":"Intermediate","hours":4,"rating":4.6,"skills":"Lambda,API Gateway,SQS,S3 Events,SAM,Step Functions,EventBridge,Cost","students":0,"price":499},{"title":"ArgoCD & GitOps","slug":"argocd-gitops","domain":"Cloud & DevOps","level":"Intermediate","hours":3,"rating":4.5,"skills":"ArgoCD,GitOps,Sync,App of Apps,Rollback,Kustomize,ApplicationSet","students":0,"price":499},{"title":"Istio Service Mesh","slug":"istio-service-mesh","domain":"Cloud & DevOps","level":"Advanced","hours":3,"rating":4.4,"skills":"Istio,mTLS,Traffic Management,Envoy,Observability,Canary,Circuit Breaking","students":0,"price":499},{"title":"DevSecOps \u2014 Security in CI/CD","slug":"devsecops-complete","domain":"Cloud & DevOps","level":"Advanced","hours":4,"rating":4.5,"skills":"DevSecOps,SAST,DAST,Trivy,Snyk,OPA,Checkov,GitLeaks,Supply Chain","students":0,"price":499},{"title":"Site Reliability Engineering","slug":"sre-complete","domain":"Cloud & DevOps","level":"Advanced","hours":4,"rating":4.5,"skills":"SRE,SLOs,Error Budgets,Toil,Incident Response,Chaos Engineering,On-Call","students":0,"price":499},{"title":"Nginx \u2014 Web Server & Load Balancer","slug":"nginx-complete","domain":"Cloud & DevOps","level":"Intermediate","hours":3,"rating":4.6,"skills":"Nginx,SSL,Reverse Proxy,Caching,Load Balancing,Security Headers,Rate Limiting","students":0,"price":499},{"title":"Jenkins \u2014 CI/CD Pipelines","slug":"jenkins-complete","domain":"Cloud & DevOps","level":"Intermediate","hours":4,"rating":4.4,"skills":"Jenkins,Pipelines,Jenkinsfile,Plugins,Docker,Blue Ocean,Shared Libraries","students":0,"price":499},{"title":"ELK Stack \u2014 Elasticsearch Logstash Kibana","slug":"elk-stack-complete","domain":"Cloud & DevOps","level":"Intermediate","hours":4,"rating":4.5,"skills":"Elasticsearch,Logstash,Kibana,Beats,OpenSearch,Filebeat,SIEM,Dashboards","students":0,"price":499},{"title":"DevOps Career Guide \u2014 India 2024","slug":"devops-career-india","domain":"Cloud & DevOps","level":"Beginner","hours":3,"rating":4.6,"skills":"DevOps Career,Resume,Interview,Salary India,Certifications,Roadmap,Companies","students":0,"price":499},{"title":"Ethical Hacking \u2014 Complete Course","slug":"ethical-hacking-complete","domain":"Cybersecurity","level":"Intermediate","hours":10,"rating":4.8,"skills":"Kali Linux,Nmap,Metasploit,Burp Suite,Recon,Exploitation,Post-Exploitation","students":0,"price":499},{"title":"Web Application Security \u2014 OWASP Top 10","slug":"web-app-security-owasp","domain":"Cybersecurity","level":"Intermediate","hours":5,"rating":4.7,"skills":"OWASP,SQLi,XSS,IDOR,SSRF,XXE,CSRF,Burp Suite,DVWA,Secure Coding","students":0,"price":499},{"title":"Network Security \u2014 Complete Guide","slug":"network-security-complete","domain":"Cybersecurity","level":"Intermediate","hours":5,"rating":4.6,"skills":"Firewalls,IDS,IPS,VPN,Wireshark,TCP/IP,Packet Analysis,Protocols","students":0,"price":499},{"title":"SOC Analyst \u2014 Complete Training","slug":"soc-analyst-complete","domain":"Cybersecurity","level":"Intermediate","hours":6,"rating":4.6,"skills":"SIEM,Log Analysis,Incident Triage,Threat Hunting,Splunk,MITRE ATT&CK,IR","students":0,"price":499},{"title":"Penetration Testing \u2014 Advanced","slug":"penetration-testing-advanced","domain":"Cybersecurity","level":"Advanced","hours":6,"rating":4.7,"skills":"Web App Pentest,Active Directory,AWS Pentest,Red Team,Lateral Movement,Reporting","students":0,"price":499},{"title":"Malware Analysis & Digital Forensics","slug":"malware-analysis-forensics","domain":"Cybersecurity","level":"Advanced","hours":5,"rating":4.6,"skills":"Malware Analysis,PE Files,IDA Pro,Ghidra,Memory Forensics,Sandbox,YARA,DFIR","students":0,"price":499},{"title":"Practical Cryptography","slug":"practical-cryptography","domain":"Cybersecurity","level":"Intermediate","hours":4,"rating":4.6,"skills":"Cryptography,AES,RSA,PKI,TLS,Hashing,Digital Signatures,Key Management","students":0,"price":499},{"title":"Cloud Security on AWS","slug":"cloud-security-aws","domain":"Cybersecurity","level":"Advanced","hours":5,"rating":4.6,"skills":"AWS Security,IAM,GuardDuty,WAF,CloudTrail,Inspector,KMS,Security Hub","students":0,"price":499},{"title":"Bug Bounty Hunting \u2014 Start to Payout","slug":"bug-bounty-complete","domain":"Cybersecurity","level":"Intermediate","hours":4,"rating":4.5,"skills":"Bug Bounty,Recon,Subdomain Enum,Reporting,HackerOne,Bugcrowd,CVSS","students":0,"price":499},{"title":"OSINT \u2014 Open Source Intelligence","slug":"osint-complete","domain":"Cybersecurity","level":"Intermediate","hours":4,"rating":4.5,"skills":"OSINT,Google Dork,Shodan,Maltego,SpiderFoot,Dark Web,Recon-ng,Social Media","students":0,"price":499},{"title":"Active Directory Attacks & Defence","slug":"active-directory-complete","domain":"Cybersecurity","level":"Advanced","hours":5,"rating":4.7,"skills":"Active Directory,Kerberoasting,PTH,BloodHound,GPO,ACL Abuse,AD Hardening","students":0,"price":499},{"title":"GRC \u2014 Governance Risk & Compliance","slug":"grc-complete","domain":"Cybersecurity","level":"Intermediate","hours":4,"rating":4.4,"skills":"GRC,ISO 27001,SOC2,GDPR,DPDPA,Risk Assessment,Audit,Controls,India","students":0,"price":499},{"title":"Reverse Engineering \u2014 x86 & x64","slug":"reverse-engineering-complete","domain":"Cybersecurity","level":"Advanced","hours":5,"rating":4.5,"skills":"Assembly,IDA Pro,Ghidra,Patching,Dynamic Analysis,CTF,Buffer Overflow","students":0,"price":499},{"title":"CTF \u2014 Capture The Flag Masterclass","slug":"ctf-masterclass","domain":"Cybersecurity","level":"Intermediate","hours":4,"rating":4.5,"skills":"CTF,Web Exploitation,Binary,Crypto,Forensics,OSINT,HackTheBox,PicoCTF","students":0,"price":499},{"title":"DSA \u2014 Zero to Hero","slug":"dsa-zero-hero","domain":"DSA","level":"Beginner","hours":8,"rating":4.8,"skills":"Arrays,Strings,Sorting,Searching,Big O,Complexity,Python,Java,Foundations","students":0,"price":499},{"title":"Trees & Binary Trees \u2014 Complete Mastery","slug":"trees-binary-complete","domain":"DSA","level":"Intermediate","hours":5,"rating":4.7,"skills":"BST,AVL,Segment Tree,Fenwick,Trie,Traversal,LCA,Tree DP,Heavy-Light","students":0,"price":499},{"title":"Graphs \u2014 Complete Mastery","slug":"graphs-complete","domain":"DSA","level":"Intermediate","hours":6,"rating":4.7,"skills":"BFS,DFS,Dijkstra,Bellman-Ford,Floyd,Topological Sort,Kruskal,Prim,SCC","students":0,"price":499},{"title":"Dynamic Programming \u2014 Complete Course","slug":"dynamic-programming-complete","domain":"DSA","level":"Advanced","hours":7,"rating":4.8,"skills":"DP,Memoization,Tabulation,LCS,LIS,Knapsack,Matrix Chain,Tree DP,Bitmask","students":0,"price":499},{"title":"Sorting & Searching Algorithms","slug":"sorting-searching-complete","domain":"DSA","level":"Intermediate","hours":4,"rating":4.6,"skills":"Quicksort,Merge Sort,Heap Sort,Binary Search,Count Sort,Radix,Bucket","students":0,"price":499},{"title":"Linked Lists & Linear Structures","slug":"linked-lists-stacks-queues","domain":"DSA","level":"Intermediate","hours":4,"rating":4.6,"skills":"Linked List,Doubly Linked,Stack,Queue,Monotonic Stack,Deque,LRU Cache","students":0,"price":499},{"title":"Heaps & Priority Queues","slug":"heaps-priority-queues","domain":"DSA","level":"Intermediate","hours":3,"rating":4.5,"skills":"Heap,Priority Queue,Min Heap,Max Heap,Heapify,Top-K,Merge K Sorted","students":0,"price":499},{"title":"Hashing & Hash Maps","slug":"hashing-hashmaps-complete","domain":"DSA","level":"Intermediate","hours":3,"rating":4.5,"skills":"Hashing,HashMap,HashSet,Collision,Chaining,Robin Hood,Rolling Hash,Design","students":0,"price":499},{"title":"Tries & Advanced Trees","slug":"tries-advanced-trees","domain":"DSA","level":"Advanced","hours":3,"rating":4.5,"skills":"Trie,Insert,Search,Auto-Complete,Word Search,Suffix Array,Segment Tree","students":0,"price":499},{"title":"Bit Manipulation & Number Theory","slug":"bit-manipulation-maths","domain":"DSA","level":"Advanced","hours":3,"rating":4.5,"skills":"Bit Manipulation,XOR,AND,OR,Shifts,Bitmask,Primes,Sieve,Modular Arithmetic","students":0,"price":499},{"title":"Recursion & Backtracking","slug":"recursion-backtracking-complete","domain":"DSA","level":"Intermediate","hours":4,"rating":4.6,"skills":"Recursion,Backtracking,N-Queens,Sudoku,Permutations,Subsets,Word Search","students":0,"price":499},{"title":"Greedy Algorithms","slug":"greedy-algorithms-complete","domain":"DSA","level":"Intermediate","hours":3,"rating":4.5,"skills":"Greedy,Activity Selection,Huffman,Interval Scheduling,Knapsack,Job Sequencing","students":0,"price":499},{"title":"LeetCode \u2014 Blind 75 & Top 150","slug":"leetcode-blind75-top150","domain":"DSA","level":"Advanced","hours":10,"rating":4.8,"skills":"LeetCode,Two Pointers,BFS,DP,Trees,Graphs,Patterns,FAANG Interview","students":0,"price":499},{"title":"Competitive Programming \u2014 Complete","slug":"competitive-programming-complete","domain":"DSA","level":"Advanced","hours":6,"rating":4.5,"skills":"Codeforces,Implementation,Greedy,Graphs,DP,Math,ICPC,Contest Strategy","students":0,"price":499},{"title":"Java Core \u2014 Complete Course","slug":"java-core-complete","domain":"Java","level":"Beginner","hours":10,"rating":4.8,"skills":"Java,OOP,Collections,Exceptions,Generics,Threads,Streams,Lambdas","students":0,"price":499},{"title":"Java Modern Features \u2014 Java 8 to 21","slug":"java-modern-features","domain":"Java","level":"Intermediate","hours":5,"rating":4.7,"skills":"Lambdas,Streams,Optional,Records,Sealed Classes,Pattern Matching,Virtual Threads","students":0,"price":499},{"title":"Spring Boot \u2014 Complete Course","slug":"spring-boot-complete","domain":"Java","level":"Intermediate","hours":8,"rating":4.8,"skills":"Spring Boot,DI,REST,JPA,Security,Testing,Actuator,Docker,Deployment","students":0,"price":499},{"title":"Spring Security \u2014 Complete Guide","slug":"spring-security-complete","domain":"Java","level":"Advanced","hours":5,"rating":4.6,"skills":"Spring Security,OAuth2,JWT,LDAP,Method Security,CSRF,CORS,Authorization","students":0,"price":499},{"title":"Hibernate & JPA Masterclass","slug":"hibernate-jpa-complete","domain":"Java","level":"Intermediate","hours":5,"rating":4.5,"skills":"Hibernate,JPA,JPQL,Criteria API,L1/L2 Cache,N+1 Problem,Relationships","students":0,"price":499},{"title":"Java Concurrency & Reactive Programming","slug":"java-concurrency-reactive","domain":"Java","level":"Advanced","hours":5,"rating":4.6,"skills":"Threads,ExecutorService,CompletableFuture,Locks,Atomic,WebFlux,Reactor","students":0,"price":499},{"title":"Design Patterns in Java","slug":"design-patterns-java","domain":"Java","level":"Advanced","hours":4,"rating":4.7,"skills":"Design Patterns,Singleton,Factory,Observer,Strategy,Decorator,SOLID,DDD","students":0,"price":499},{"title":"JUnit 5 & Mockito \u2014 Java Testing","slug":"junit-mockito-complete","domain":"Java","level":"Intermediate","hours":4,"rating":4.5,"skills":"JUnit 5,Mockito,Parameterised Tests,Spring Test,TestContainers,TDD","students":0,"price":499},{"title":"Spring Cloud Microservices","slug":"spring-cloud-microservices","domain":"Java","level":"Advanced","hours":6,"rating":4.6,"skills":"Spring Cloud,Config Server,Eureka,Gateway,Resilience4j,Zipkin,Kafka","students":0,"price":499},{"title":"Kotlin \u2014 Complete Android Developer Guide","slug":"kotlin-complete","domain":"Java","level":"Intermediate","hours":6,"rating":4.7,"skills":"Kotlin,Coroutines,Flow,Android,Jetpack Compose,Hilt,Room,Retrofit","students":0,"price":499},{"title":"Java DSA & Interview Preparation","slug":"java-dsa-interview","domain":"Java","level":"Intermediate","hours":6,"rating":4.6,"skills":"Java,Arrays,Trees,Graphs,DP,Sorting,LeetCode,Collections,STL Equivalent","students":0,"price":499},{"title":"Quarkus \u2014 Cloud-Native Java","slug":"quarkus-cloud-native","domain":"Java","level":"Advanced","hours":4,"rating":4.4,"skills":"Quarkus,Native Image,GraalVM,Reactive,Panache,Health,Metrics,Kubernetes","students":0,"price":499},{"title":"C++ \u2014 Complete Course","slug":"cpp-complete","domain":"C++","level":"Beginner","hours":10,"rating":4.8,"skills":"C++,Pointers,References,Arrays,OOP,Classes,Templates,Exceptions","students":0,"price":499},{"title":"C++ STL \u2014 Complete Guide","slug":"cpp-stl-complete","domain":"C++","level":"Intermediate","hours":4,"rating":4.7,"skills":"STL,vector,map,set,unordered_map,Algorithms,Iterators,Complexity","students":0,"price":499},{"title":"Modern C++ \u2014 C++11 to C++23","slug":"modern-cpp-complete","domain":"C++","level":"Advanced","hours":5,"rating":4.7,"skills":"C++11,C++17,C++20,auto,Lambdas,Move Semantics,Ranges,Concepts,Coroutines","students":0,"price":499},{"title":"C++ Memory Management & Smart Pointers","slug":"cpp-memory-management","domain":"C++","level":"Advanced","hours":3,"rating":4.6,"skills":"RAII,unique_ptr,shared_ptr,weak_ptr,Custom Allocators,valgrind,ASan","students":0,"price":499},{"title":"C++ Competitive Programming","slug":"cpp-competitive-programming","domain":"C++","level":"Advanced","hours":5,"rating":4.7,"skills":"C++,CP Templates,Fast I/O,Bit Tricks,STL for CP,Competitive Programming","students":0,"price":499},{"title":"C++ Concurrency & Multithreading","slug":"cpp-concurrency","domain":"C++","level":"Advanced","hours":4,"rating":4.5,"skills":"std::thread,mutex,atomic,futures,coroutines,parallel STL,condition_variable","students":0,"price":499},{"title":"C++ Game Development \u2014 SFML & SDL","slug":"cpp-game-dev","domain":"C++","level":"Intermediate","hours":4,"rating":4.5,"skills":"SFML,SDL2,2D Game,Physics,Rendering,Audio,Input,Game Loop,Collision","students":0,"price":499},{"title":"C++ Performance Optimisation","slug":"cpp-performance","domain":"C++","level":"Advanced","hours":3,"rating":4.5,"skills":"Cache,SIMD,Branch Prediction,PGO,Benchmarking,perf,Flamegraph,Memory Layout","students":0,"price":499},{"title":"CMake \u2014 Modern Build System","slug":"cmake-complete","domain":"C++","level":"Intermediate","hours":3,"rating":4.4,"skills":"CMake,CMakeLists,Targets,find_package,Presets,CPack,CI,Testing","students":0,"price":499},{"title":"Rust \u2014 Systems Programming","slug":"rust-complete","domain":"C++","level":"Advanced","hours":7,"rating":4.7,"skills":"Rust,Ownership,Borrowing,Lifetimes,Async,Tokio,WebAssembly,CLI,Error Handling","students":0,"price":499},{"title":"Android Development \u2014 Complete Course","slug":"android-dev-complete","domain":"Android","level":"Beginner","hours":10,"rating":4.7,"skills":"Kotlin,Android,Activities,Fragments,Intents,Layouts,RecyclerView,Lifecycle","students":0,"price":499},{"title":"Jetpack Compose \u2014 Complete UI Guide","slug":"jetpack-compose-complete","domain":"Android","level":"Intermediate","hours":6,"rating":4.7,"skills":"Jetpack Compose,Composables,State,Animation,Navigation,Material 3,Custom Layout","students":0,"price":499},{"title":"Android Architecture \u2014 MVVM & Hilt","slug":"android-architecture-complete","domain":"Android","level":"Intermediate","hours":5,"rating":4.6,"skills":"MVVM,LiveData,ViewModel,Hilt,Room,Navigation,DataStore,WorkManager","students":0,"price":499},{"title":"Android with Firebase","slug":"android-firebase","domain":"Android","level":"Intermediate","hours":4,"rating":4.5,"skills":"Firebase,Firestore,Auth,Crashlytics,FCM,Analytics,Remote Config","students":0,"price":499},{"title":"Android Testing \u2014 Complete Guide","slug":"android-testing-complete","domain":"Android","level":"Intermediate","hours":4,"rating":4.4,"skills":"Unit Tests,Espresso,UI Automator,Robolectric,Screenshot Testing,Hilt Testing","students":0,"price":499},{"title":"Android CameraX & Bluetooth BLE","slug":"android-camerax-ble","domain":"Android","level":"Advanced","hours":4,"rating":4.4,"skills":"CameraX,Preview,Capture,Video,BLE,GATT,Bluetooth,Scanning,Pairing","students":0,"price":499},{"title":"Android ML Kit \u2014 On-Device AI","slug":"android-ml-kit","domain":"Android","level":"Advanced","hours":3,"rating":4.5,"skills":"ML Kit,Text Recognition,Face Detection,Barcode,Pose Estimation,Translation","students":0,"price":499},{"title":"Kotlin Multiplatform \u2014 KMP","slug":"kotlin-multiplatform","domain":"Android","level":"Advanced","hours":4,"rating":4.4,"skills":"KMP,Kotlin Multiplatform,Compose Multiplatform,iOS,Android,Shared Logic","students":0,"price":499},{"title":"iOS Development with Swift & UIKit","slug":"ios-swift-uikit","domain":"iOS","level":"Beginner","hours":8,"rating":4.7,"skills":"Swift,UIKit,Views,Controllers,Navigation,Networking,URLSession,Core Data","students":0,"price":499},{"title":"SwiftUI \u2014 Complete Guide","slug":"swiftui-complete","domain":"iOS","level":"Intermediate","hours":6,"rating":4.7,"skills":"SwiftUI,Views,State,Environment,Navigation,Animations,Combine,MVVM","students":0,"price":499},{"title":"Swift Concurrency \u2014 async/await & Actors","slug":"swift-concurrency","domain":"iOS","level":"Advanced","hours":4,"rating":4.6,"skills":"async/await,Tasks,Actors,Structured Concurrency,AsyncStream,Task Groups","students":0,"price":499},{"title":"Core Data & CloudKit","slug":"core-data-cloudkit","domain":"iOS","level":"Advanced","hours":4,"rating":4.5,"skills":"Core Data,NSManagedObject,Fetch,Migration,CloudKit,SQLite,Concurrency","students":0,"price":499},{"title":"ARKit & RealityKit \u2014 Augmented Reality","slug":"arkit-realitykit","domain":"iOS","level":"Advanced","hours":4,"rating":4.5,"skills":"ARKit,RealityKit,Plane Detection,Object Anchors,Occlusion,Reality Composer","students":0,"price":499},{"title":"iOS Testing \u2014 XCTest & Swift Testing","slug":"ios-testing-complete","domain":"iOS","level":"Intermediate","hours":3,"rating":4.4,"skills":"XCTest,Swift Testing,UI Tests,Performance Tests,Mock,Spy,CI Integration","students":0,"price":499},{"title":"iOS Push Notifications \u2014 APNs & FCM","slug":"ios-push-notifications","domain":"iOS","level":"Intermediate","hours":3,"rating":4.5,"skills":"APNs,FCM,Rich Notifications,Background Push,Notification Extension,Badge","students":0,"price":499},{"title":"Flutter & Dart \u2014 Complete Course","slug":"flutter-dart-complete","domain":"Mobile","level":"Beginner","hours":10,"rating":4.8,"skills":"Flutter,Dart,Widgets,BLoC,Provider,Firebase,Navigation,State Management","students":0,"price":499},{"title":"Flutter BLoC \u2014 State Management","slug":"flutter-bloc-complete","domain":"Mobile","level":"Intermediate","hours":5,"rating":4.6,"skills":"BLoC,Cubit,Events,States,Clean Architecture,Testing,Dependency Injection","students":0,"price":499},{"title":"React Native with Expo \u2014 Complete 2024","slug":"react-native-expo-complete","domain":"Mobile","level":"Intermediate","hours":7,"rating":4.7,"skills":"React Native,Expo,EAS,Expo Router,NativeWind,New Architecture,Navigation","students":0,"price":499},{"title":"Mobile UI/UX Design & Publishing","slug":"mobile-ux-publishing","domain":"Mobile","level":"Intermediate","hours":4,"rating":4.5,"skills":"Mobile UX,Gestures,Material Design,HIG,Accessibility,App Store,Play Store,ASO","students":0,"price":499},{"title":"Mobile Payments \u2014 UPI & Razorpay","slug":"mobile-payments-upi","domain":"Mobile","level":"Intermediate","hours":3,"rating":4.5,"skills":"UPI,Razorpay Mobile,Stripe,PhonePe SDK,Google Pay,India,Payment Integration","students":0,"price":499},{"title":"Mobile CI/CD \u2014 Fastlane & Bitrise","slug":"mobile-cicd-complete","domain":"Mobile","level":"Advanced","hours":3,"rating":4.4,"skills":"Fastlane,Bitrise,GitHub Actions,Code Signing,TestFlight,Firebase Distribution","students":0,"price":499},{"title":"Flutter Riverpod \u2014 State Management 2024","slug":"flutter-riverpod-complete","domain":"Mobile","level":"Intermediate","hours":4,"rating":4.6,"skills":"Riverpod,Providers,Notifiers,Async,Code Gen,Testing,Architecture","students":0,"price":499},{"title":"UX Design \u2014 Complete Course","slug":"ux-design-complete","domain":"UI/UX","level":"Beginner","hours":7,"rating":4.7,"skills":"Design Thinking,User Research,Wireframing,Usability,Journey Maps,Personas","students":0,"price":499},{"title":"Figma \u2014 Complete Design Guide","slug":"figma-complete","domain":"UI/UX","level":"Beginner","hours":6,"rating":4.8,"skills":"Figma,Auto Layout,Components,Variables,Prototyping,Dev Mode,Design Systems","students":0,"price":499},{"title":"UI Design Principles & Visual Design","slug":"ui-visual-design","domain":"UI/UX","level":"Beginner","hours":4,"rating":4.6,"skills":"Typography,Colour Theory,Spacing,Grids,Hierarchy,Visual Design,Brand","students":0,"price":499},{"title":"Design Systems \u2014 Build & Maintain","slug":"design-systems-complete","domain":"UI/UX","level":"Intermediate","hours":4,"rating":4.6,"skills":"Design System,Tokens,Components,Documentation,Storybook,Multi-Brand,Governance","students":0,"price":499},{"title":"Interaction Design & Motion","slug":"interaction-design-motion","domain":"UI/UX","level":"Intermediate","hours":3,"rating":4.5,"skills":"Interaction Design,Motion,Microinteractions,Framer Motion,Easing,Feedback","students":0,"price":499},{"title":"UX Research Methods","slug":"ux-research-complete","domain":"UI/UX","level":"Intermediate","hours":4,"rating":4.5,"skills":"UX Research,Qualitative,Quantitative,Interviews,Card Sorting,Usability Testing","students":0,"price":499},{"title":"UX Writing & Content Design","slug":"ux-writing-complete","domain":"UI/UX","level":"Intermediate","hours":3,"rating":4.4,"skills":"UX Writing,Voice,Tone,Error Messages,Onboarding,Conversational UI,Microcopy","students":0,"price":499},{"title":"Accessibility-First Design","slug":"accessibility-design-complete","domain":"UI/UX","level":"Intermediate","hours":3,"rating":4.5,"skills":"WCAG,Colour Contrast,Focus States,ARIA,Screen Reader,Keyboard,Testing","students":0,"price":499},{"title":"Design Portfolio \u2014 Case Studies","slug":"design-portfolio-complete","domain":"UI/UX","level":"Intermediate","hours":3,"rating":4.5,"skills":"Portfolio,Case Studies,Behance,Dribbble,Problem Framing,Impact,Metrics","students":0,"price":499},{"title":"No-Code Design with Webflow","slug":"webflow-complete","domain":"UI/UX","level":"Intermediate","hours":4,"rating":4.4,"skills":"Webflow,CMS,Interactions,Ecommerce,Responsive,SEO,Hosting,Animations","students":0,"price":499},{"title":"3D Design with Spline","slug":"spline-3d-design","domain":"UI/UX","level":"Intermediate","hours":3,"rating":4.4,"skills":"Spline,3D Design,Materials,Lighting,Animation,Export,Web 3D,React Integration","students":0,"price":499},{"title":"UX for India \u2014 Bharat Design Principles","slug":"ux-india-bharat","domain":"UI/UX","level":"Intermediate","hours":3,"rating":4.5,"skills":"India UX,Low-End Devices,Data-Lite,Vernacular,Trust,Bharat,Low Literacy","students":0,"price":499},{"title":"Blockchain Fundamentals","slug":"blockchain-fundamentals","domain":"Blockchain","level":"Beginner","hours":5,"rating":4.6,"skills":"Blockchain,Distributed Ledger,Consensus,Hashing,Merkle Tree,Bitcoin,Wallets","students":0,"price":499},{"title":"Solidity \u2014 Smart Contract Development","slug":"solidity-complete","domain":"Blockchain","level":"Intermediate","hours":7,"rating":4.7,"skills":"Solidity,Smart Contracts,Events,Inheritance,Gas,Error Handling,ERC Standards","students":0,"price":499},{"title":"Ethereum & DApp Development","slug":"ethereum-dapp-complete","domain":"Blockchain","level":"Intermediate","hours":6,"rating":4.6,"skills":"Ethereum,EVM,ethers.js,Hardhat,MetaMask,wagmi,Deployment,Testnets","students":0,"price":499},{"title":"DeFi \u2014 Decentralised Finance","slug":"defi-complete","domain":"Blockchain","level":"Advanced","hours":5,"rating":4.6,"skills":"DeFi,Uniswap,Aave,Compound,Yield Farming,Flash Loans,AMM,Liquidity Pools","students":0,"price":499},{"title":"NFT Development \u2014 ERC-721 & ERC-1155","slug":"nft-development","domain":"Blockchain","level":"Intermediate","hours":4,"rating":4.5,"skills":"NFT,ERC-721,ERC-1155,IPFS,Metadata,OpenSea,Royalties,Marketplaces","students":0,"price":499},{"title":"Hardhat & Foundry \u2014 Smart Contract Testing","slug":"hardhat-foundry-testing","domain":"Blockchain","level":"Advanced","hours":4,"rating":4.6,"skills":"Hardhat,Foundry,Testing,Coverage,Fuzzing,Mainnet Fork,Gas Reports,Deployment","students":0,"price":499},{"title":"Zero-Knowledge Proofs","slug":"zero-knowledge-proofs","domain":"Blockchain","level":"Advanced","hours":4,"rating":4.5,"skills":"ZK Proofs,SNARKs,STARKs,Circom,SnarkJS,Groth16,zkEVM,Layer 2","students":0,"price":499},{"title":"Solana \u2014 Rust & Anchor Development","slug":"solana-complete","domain":"Blockchain","level":"Advanced","hours":6,"rating":4.6,"skills":"Solana,Rust,Anchor,Programs,PDAs,SPL Tokens,Metaplex,Deployment","students":0,"price":499},{"title":"Web3 Frontend \u2014 DApps & Wallets","slug":"web3-frontend-complete","domain":"Blockchain","level":"Intermediate","hours":4,"rating":4.5,"skills":"wagmi,RainbowKit,ethers.js,MetaMask,ConnectKit,Alchemy,Next.js,Web3","students":0,"price":499},{"title":"Smart Contract Security & Auditing","slug":"smart-contract-security","domain":"Blockchain","level":"Advanced","hours":5,"rating":4.6,"skills":"Smart Contract Security,Reentrancy,Overflow,Oracle,Slither,Audit,Fuzzing","students":0,"price":499},{"title":"Apache Spark \u2014 Complete Data Engineer Guide","slug":"apache-spark-complete","domain":"Data Engineering","level":"Intermediate","hours":8,"rating":4.7,"skills":"Spark,RDD,DataFrame,SQL,Streaming,Delta Lake,PySpark,Performance Tuning","students":0,"price":499},{"title":"Apache Airflow \u2014 Workflow Orchestration","slug":"airflow-complete","domain":"Data Engineering","level":"Intermediate","hours":6,"rating":4.6,"skills":"Airflow,DAGs,Operators,Sensors,XComs,KubernetesPodOperator,Scheduling","students":0,"price":499},{"title":"dbt \u2014 Analytics Engineering Complete","slug":"dbt-complete","domain":"Data Engineering","level":"Intermediate","hours":5,"rating":4.6,"skills":"dbt,Models,Tests,Docs,Macros,Snapshots,Seeds,BigQuery,Snowflake,Incremental","students":0,"price":499},{"title":"Snowflake \u2014 Cloud Data Warehouse","slug":"snowflake-complete","domain":"Data Engineering","level":"Intermediate","hours":5,"rating":4.6,"skills":"Snowflake,Virtual Warehouse,Time Travel,Streams,Tasks,Snowpark,Data Sharing","students":0,"price":499},{"title":"Databricks \u2014 Complete Platform Guide","slug":"databricks-complete","domain":"Data Engineering","level":"Advanced","hours":6,"rating":4.6,"skills":"Databricks,Unity Catalog,Delta Live Tables,MLflow,SQL Warehouse,Lakehouse","students":0,"price":499},{"title":"Kafka for Data Engineers","slug":"kafka-data-engineers","domain":"Data Engineering","level":"Intermediate","hours":5,"rating":4.6,"skills":"Kafka Connect,Source,Sink,Schema Registry,KSQL,Avro,CDC,Debezium","students":0,"price":499},{"title":"Real-Time Streaming \u2014 Apache Flink","slug":"apache-flink-complete","domain":"Data Engineering","level":"Advanced","hours":5,"rating":4.5,"skills":"Flink,Stateful Processing,Windowing,Checkpointing,CEP,Flink SQL,Streaming","students":0,"price":499},{"title":"Data Governance & Observability","slug":"data-governance-observability","domain":"Data Engineering","level":"Intermediate","hours":4,"rating":4.4,"skills":"Data Governance,Catalog,DataHub,OpenMetadata,Lineage,Quality,Monte Carlo","students":0,"price":499},{"title":"AWS Data Engineering Stack","slug":"aws-data-engineering","domain":"Data Engineering","level":"Intermediate","hours":6,"rating":4.5,"skills":"AWS Glue,Athena,Redshift,Lake Formation,EMR,Kinesis,S3,Data Catalog","students":0,"price":499},{"title":"DuckDB & Modern SQL Analytics","slug":"duckdb-modern-sql","domain":"Data Engineering","level":"Intermediate","hours":3,"rating":4.5,"skills":"DuckDB,SQL,Parquet,Arrow,Spatial,Python,MotherDuck,Window Functions,Analytics","students":0,"price":499},{"title":"System Design \u2014 Fundamentals","slug":"system-design-fundamentals","domain":"System Design","level":"Intermediate","hours":6,"rating":4.8,"skills":"Scalability,Load Balancing,Caching,Sharding,CAP Theorem,SQL vs NoSQL,CDN","students":0,"price":499},{"title":"System Design \u2014 Advanced & Distributed","slug":"system-design-advanced","domain":"System Design","level":"Advanced","hours":6,"rating":4.7,"skills":"Distributed Systems,Consistent Hashing,CDC,CQRS,Saga,Event Sourcing,Raft","students":0,"price":499},{"title":"Design URL Shortener & Common Systems","slug":"design-url-shortener","domain":"System Design","level":"Intermediate","hours":4,"rating":4.6,"skills":"URL Shortener,Rate Limiter,ID Generator,Cache,Notification System,Search","students":0,"price":499},{"title":"Design Twitter/YouTube/Netflix","slug":"design-social-streaming","domain":"System Design","level":"Advanced","hours":5,"rating":4.7,"skills":"Social Feed,Fanout,CDN,Video Streaming,ABR,Transcoding,Recommendations","students":0,"price":499},{"title":"Design Uber/WhatsApp/Google Maps","slug":"design-realtime-systems","domain":"System Design","level":"Advanced","hours":5,"rating":4.7,"skills":"Geospatial,Ride Matching,Messaging,E2E Encryption,Maps,Real-Time,WebRTC","students":0,"price":499},{"title":"Design Swiggy/Flipkart/Razorpay \u2014 India","slug":"design-india-systems","domain":"System Design","level":"Advanced","hours":5,"rating":4.7,"skills":"Food Delivery,E-Commerce India,Payments,UPI,ACID,Reconciliation,India Scale","students":0,"price":499},{"title":"Design Google Drive/Instagram/Zoom","slug":"design-storage-media","domain":"System Design","level":"Advanced","hours":4,"rating":4.6,"skills":"File Storage,Chunking,CDN,Photo Sharing,Video Conferencing,WebRTC,Sync","students":0,"price":499},{"title":"Microservices Design Patterns","slug":"microservices-design-patterns","domain":"System Design","level":"Advanced","hours":5,"rating":4.6,"skills":"Saga,CQRS,Event Sourcing,API Composition,BFF,Strangler Fig,Outbox Pattern","students":0,"price":499},{"title":"ML System Design","slug":"ml-system-design","domain":"System Design","level":"Advanced","hours":5,"rating":4.6,"skills":"Feature Store,Training Pipeline,Serving,Monitoring,A/B,Two-Tower,Embeddings","students":0,"price":499},{"title":"Low-Level Design \u2014 Patterns & Practice","slug":"low-level-design-complete","domain":"System Design","level":"Advanced","hours":5,"rating":4.7,"skills":"LLD,Parking Lot,BookMyShow,Chess,ATM,Elevator,Vending Machine,SOLID","students":0,"price":499},{"title":"System Design Interview \u2014 India Guide","slug":"system-design-india-interview","domain":"System Design","level":"Advanced","hours":4,"rating":4.7,"skills":"System Design,India,Flipkart,CRED,Razorpay,Paytm,Swiggy,Interview Strategy","students":0,"price":499},{"title":"Consensus & Distributed Algorithms","slug":"consensus-distributed-algorithms","domain":"System Design","level":"Advanced","hours":4,"rating":4.5,"skills":"Paxos,Raft,Zookeeper,Leader Election,Consensus,2PC,Split-Brain,CAP","students":0,"price":499},{"title":"Business Analytics \u2014 Complete Course","slug":"business-analytics-complete","domain":"Business Analytics","level":"Beginner","hours":6,"rating":4.7,"skills":"KPIs,Dashboards,Excel,SQL,Storytelling,Business Analysis,Frameworks","students":0,"price":499},{"title":"Excel \u2014 Advanced for Business","slug":"excel-advanced-business","domain":"Business Analytics","level":"Intermediate","hours":5,"rating":4.6,"skills":"Power Pivot,Power Query,DAX,VBA,Solver,Scenario Analysis,Formulas","students":0,"price":499},{"title":"Financial Modelling \u2014 Excel & Python","slug":"financial-modelling-complete","domain":"Business Analytics","level":"Advanced","hours":5,"rating":4.6,"skills":"Financial Modelling,DCF,LBO,Three-Statement,Monte Carlo,Valuation,Excel","students":0,"price":499},{"title":"Marketing Analytics \u2014 India","slug":"marketing-analytics-india","domain":"Business Analytics","level":"Intermediate","hours":4,"rating":4.4,"skills":"Marketing Analytics,Attribution,CLV,Cohorts,ROI,GA4,India,Digital","students":0,"price":499},{"title":"Product Analytics \u2014 Mixpanel & Amplitude","slug":"product-analytics-complete","domain":"Business Analytics","level":"Intermediate","hours":4,"rating":4.5,"skills":"Mixpanel,Amplitude,Events,Funnels,Retention,A/B Testing,User Paths,Metrics","students":0,"price":499},{"title":"BI Tools \u2014 Looker & Metabase","slug":"bi-tools-complete","domain":"Business Analytics","level":"Intermediate","hours":3,"rating":4.4,"skills":"Looker Studio,Metabase,Dashboards,Embedding,SQL,Self-Host,Sharing,Alerts","students":0,"price":499},{"title":"Econometrics & Advanced Statistics","slug":"econometrics-advanced","domain":"Business Analytics","level":"Advanced","hours":5,"rating":4.5,"skills":"OLS,Panel Data,Diff-in-Diff,RDD,Synthetic Control,IV,statsmodels","students":0,"price":499},{"title":"Python for Business Analytics","slug":"python-business-analytics","domain":"Business Analytics","level":"Intermediate","hours":5,"rating":4.5,"skills":"Python,Pandas,Seaborn,Hypothesis Testing,Forecasting,Reports,Automation","students":0,"price":499},{"title":"Forecasting \u2014 Prophet & NeuralProphet","slug":"forecasting-prophet-complete","domain":"Business Analytics","level":"Advanced","hours":4,"rating":4.5,"skills":"Prophet,NeuralProphet,Forecasting,Seasonality,Holidays,Regressors,Evaluation","students":0,"price":499},{"title":"Operations & HR Analytics","slug":"operations-hr-analytics","domain":"Business Analytics","level":"Intermediate","hours":4,"rating":4.4,"skills":"Operations Analytics,Supply Chain,OEE,HR Analytics,Attrition,Workforce,KPIs","students":0,"price":499},{"title":"ChatGPT & AI Tools \u2014 Power User Guide","slug":"chatgpt-ai-tools-complete","domain":"AI Tools","level":"Beginner","hours":4,"rating":4.7,"skills":"ChatGPT,Custom GPTs,Plugins,API,Automation,Advanced Prompts,Claude,Gemini","students":0,"price":499},{"title":"Midjourney & AI Image Generation","slug":"midjourney-image-gen","domain":"AI Tools","level":"Beginner","hours":3,"rating":4.5,"skills":"Midjourney,DALL-E 3,Stable Diffusion,Prompting,Parameters,Inpainting,Style","students":0,"price":499},{"title":"n8n \u2014 Advanced Workflow Automation","slug":"n8n-automation-complete","domain":"AI Tools","level":"Intermediate","hours":4,"rating":4.6,"skills":"n8n,HTTP,AI Agent,Code Node,Self-Host,Templates,Workflows,Integrations","students":0,"price":499},{"title":"Cursor & GitHub Copilot \u2014 AI Coding","slug":"cursor-copilot-ai-coding","domain":"AI Tools","level":"Intermediate","hours":3,"rating":4.6,"skills":"Cursor,Composer,Chat,GitHub Copilot,AI Pair Programming,Code Review,Context","students":0,"price":499},{"title":"ElevenLabs & Voice AI Cloning","slug":"elevenlabs-voice-ai","domain":"AI Tools","level":"Intermediate","hours":3,"rating":4.5,"skills":"ElevenLabs,TTS,Voice Clone,Dubbing,Projects API,Whisper,Real-Time Voice","students":0,"price":499},{"title":"Notion AI \u2014 Knowledge Management","slug":"notion-ai-complete","domain":"AI Tools","level":"Beginner","hours":3,"rating":4.5,"skills":"Notion AI,Knowledge Base,Databases,Templates,Automations,Q&A,Second Brain","students":0,"price":499},{"title":"AI Tools for Developers \u2014 v0 & Bolt","slug":"ai-tools-developers","domain":"AI Tools","level":"Intermediate","hours":3,"rating":4.6,"skills":"v0,Bolt,Lovable,AI App Builder,UI Generation,Prompt-to-Code,Windsurf","students":0,"price":499},{"title":"Make.com & Zapier \u2014 Business Automation","slug":"make-zapier-automation","domain":"AI Tools","level":"Beginner","hours":3,"rating":4.4,"skills":"Make.com,Zapier,Scenarios,Zaps,Filters,Error Handling,Webhooks,Automation","students":0,"price":499},{"title":"Product Management \u2014 Complete Course","slug":"product-management-complete","domain":"Product Management","level":"Beginner","hours":6,"rating":4.7,"skills":"PRD,Roadmap,Prioritisation,Metrics,Stakeholders,Discovery,User Stories","students":0,"price":499},{"title":"Product Metrics & Analytics","slug":"product-metrics-analytics","domain":"Product Management","level":"Intermediate","hours":4,"rating":4.6,"skills":"Metrics,DAU,MAU,Retention,Funnel,A/B Testing,North Star,OKRs,Cohort","students":0,"price":499},{"title":"Product Strategy & Vision","slug":"product-strategy-vision","domain":"Product Management","level":"Intermediate","hours":4,"rating":4.5,"skills":"Vision,Strategy,OKRs,Competitive Analysis,Positioning,Moat,GTM,Pricing","students":0,"price":499},{"title":"PM Interview Preparation \u2014 India","slug":"pm-interview-india","domain":"Product Management","level":"Intermediate","hours":4,"rating":4.6,"skills":"PM Interview,Product Sense,Analytical,Behavioral,Estimation,India Companies","students":0,"price":499},{"title":"Building AI Products","slug":"building-ai-products","domain":"Product Management","level":"Advanced","hours":4,"rating":4.6,"skills":"AI Product,LLM Integration,Evals,AI Roadmap,Edge Cases,Ethics,User Trust","students":0,"price":499},{"title":"Growth Product Management","slug":"growth-product-management","domain":"Product Management","level":"Intermediate","hours":4,"rating":4.5,"skills":"Growth,PLG,Viral Loop,Activation,Retention,Referral,NPS,Churn,CAC","students":0,"price":499},{"title":"Agile & Scrum for Product Managers","slug":"agile-scrum-pm","domain":"Product Management","level":"Beginner","hours":3,"rating":4.5,"skills":"Agile,Scrum,Sprints,User Stories,Backlog,Velocity,Kanban,Retrospectives","students":0,"price":499},{"title":"Fintech Product Management \u2014 India","slug":"fintech-product-mgmt-india","domain":"Product Management","level":"Intermediate","hours":4,"rating":4.5,"skills":"Fintech,UPI,BNPL,Lending,RBI,NBFC,Payments,India,Regulatory","students":0,"price":499},{"title":"B2B SaaS Product Management","slug":"b2b-saas-product-mgmt","domain":"Product Management","level":"Advanced","hours":4,"rating":4.5,"skills":"B2B SaaS,Enterprise,Customer Success,Churn,NRR,PLG,Sales Alignment","students":0,"price":499},{"title":"User Research for Product Managers","slug":"user-research-pm","domain":"Product Management","level":"Intermediate","hours":3,"rating":4.5,"skills":"User Research,Interviews,Surveys,Usability,Affinity,Jobs-to-be-Done,Personas","students":0,"price":499},{"title":"Tech Resume & LinkedIn \u2014 India Guide","slug":"tech-resume-linkedin-india","domain":"Career Skills","level":"Beginner","hours":3,"rating":4.7,"skills":"Resume,ATS,LinkedIn,Projects,Impact,Quantify,Profile Optimisation,India 2024","students":0,"price":499},{"title":"Salary Negotiation \u2014 India Tech","slug":"salary-negotiation-india","domain":"Career Skills","level":"Intermediate","hours":2,"rating":4.7,"skills":"Salary Negotiation,Anchoring,Competing Offers,ESOPs,India,FAANG,Equity","students":0,"price":499},{"title":"Complete Interview Prep \u2014 India 2024","slug":"complete-interview-prep-india","domain":"Career Skills","level":"Intermediate","hours":5,"rating":4.8,"skills":"DSA,System Design,Behavioural,HR Round,Negotiation,India,Mock Interview","students":0,"price":499},{"title":"Freelancing & Remote Work \u2014 India","slug":"freelancing-remote-india","domain":"Career Skills","level":"Intermediate","hours":3,"rating":4.5,"skills":"Freelancing,Upwork,GST,Contracts,Rates,Portfolio,Remote Work,WFH,India","students":0,"price":499},{"title":"Personal Branding for Developers","slug":"personal-branding-developers","domain":"Career Skills","level":"Beginner","hours":3,"rating":4.5,"skills":"Personal Brand,Twitter,Blog,GitHub,Open Source,YouTube,LinkedIn,Creator","students":0,"price":499},{"title":"Open Source Contribution Guide","slug":"open-source-contribution","domain":"Career Skills","level":"Intermediate","hours":2,"rating":4.5,"skills":"Open Source,GitHub,PRs,Code Review,GSoC,Hacktoberfest,Maintainer,India","students":0,"price":499},{"title":"Financial Planning for Indian Tech Professionals","slug":"financial-planning-india-tech","domain":"Career Skills","level":"Intermediate","hours":3,"rating":4.6,"skills":"SIP,ELSS,NPS,ESOPs,Tax Saving,Salary Structure,Emergency Fund,India","students":0,"price":499},{"title":"Technical Leadership & Engineering Management","slug":"technical-leadership-em","domain":"Career Skills","level":"Advanced","hours":3,"rating":4.5,"skills":"Technical Leadership,Engineering Manager,1:1s,Performance Reviews,Hiring,India","students":0,"price":499},{"title":"Campus Placement \u2014 India Complete Guide","slug":"campus-placement-india","domain":"Career Skills","level":"Beginner","hours":3,"rating":4.6,"skills":"Campus Placement,Aptitude,Coding Test,Group Discussion,PI,India,Packages","students":0,"price":499},{"title":"Developer Productivity & Deep Work","slug":"developer-productivity","domain":"Career Skills","level":"Beginner","hours":2,"rating":4.4,"skills":"Productivity,Deep Work,Focus,Time Management,Burnout,VS Code,Tools,India","students":0,"price":499},{"title":"PostgreSQL \u2014 Complete Guide","slug":"postgresql-complete","domain":"Backend","level":"Intermediate","hours":7,"rating":4.7,"skills":"PostgreSQL,Indexes,Transactions,EXPLAIN,PL/pgSQL,Partitioning,Replication","students":0,"price":499},{"title":"MySQL \u2014 Complete Developer Guide","slug":"mysql-complete","domain":"Backend","level":"Intermediate","hours":6,"rating":4.6,"skills":"MySQL,Queries,Stored Procedures,Triggers,Replication,JSON,Performance","students":0,"price":499},{"title":"Redis \u2014 Complete Guide","slug":"redis-complete","domain":"Backend","level":"Intermediate","hours":5,"rating":4.7,"skills":"Redis,Caching,Pub/Sub,Streams,Cluster,Sentinel,Lua,RedisSearch,JSON","students":0,"price":499},{"title":"Go (Golang) \u2014 Complete Course","slug":"golang-complete","domain":"Backend","level":"Intermediate","hours":7,"rating":4.7,"skills":"Go,Goroutines,Channels,HTTP,gRPC,Testing,Modules,Interfaces,Concurrency","students":0,"price":499},{"title":"gRPC \u2014 High-Performance APIs","slug":"grpc-complete","domain":"Backend","level":"Intermediate","hours":4,"rating":4.5,"skills":"gRPC,Protocol Buffers,Streaming,Auth,Load Balancing,Python,Go,Deadlines","students":0,"price":499},{"title":"Elasticsearch \u2014 Complete Search Guide","slug":"elasticsearch-complete","domain":"Backend","level":"Intermediate","hours":4,"rating":4.5,"skills":"Elasticsearch,Query DSL,Aggregations,Mappings,Kibana,Full-Text Search,Index","students":0,"price":499},{"title":"Event-Driven Architecture & CQRS","slug":"event-driven-cqrs","domain":"Backend","level":"Advanced","hours":5,"rating":4.5,"skills":"Events,Commands,CQRS,Sagas,Outbox,Event Sourcing,Choreography,Orchestration","students":0,"price":499},{"title":"Prisma ORM \u2014 Complete Guide","slug":"prisma-orm-complete","domain":"Backend","level":"Intermediate","hours":4,"rating":4.5,"skills":"Prisma,Schema,Migrations,Relations,Transactions,Pulse,TypeScript,PostgreSQL","students":0,"price":499},{"title":"RabbitMQ \u2014 Message Queue Mastery","slug":"rabbitmq-complete","domain":"Backend","level":"Intermediate","hours":4,"rating":4.5,"skills":"RabbitMQ,Exchanges,Queues,Routing,Dead Letter,Clustering,AMQP,Reliability","students":0,"price":499},{"title":"Apache Cassandra \u2014 Distributed Database","slug":"cassandra-complete","domain":"Backend","level":"Advanced","hours":4,"rating":4.4,"skills":"Cassandra,CQL,Partitioning,Replication,Compaction,Tuning,Data Modelling","students":0,"price":499},{"title":"DynamoDB \u2014 Complete AWS NoSQL Guide","slug":"dynamodb-complete","domain":"Backend","level":"Intermediate","hours":4,"rating":4.5,"skills":"DynamoDB,Single-Table Design,GSI,LSI,Streams,DAX,Transactions,Patterns","students":0,"price":499},{"title":"SQLAlchemy \u2014 Python ORM Mastery","slug":"sqlalchemy-complete","domain":"Backend","level":"Intermediate","hours":3,"rating":4.4,"skills":"SQLAlchemy,ORM,Relationships,Alembic,Async,Core,PostgreSQL,Migrations","students":0,"price":499}];
-
-var _domain='all',_search='',_level='all',_sort='popular',_badge='all',_page=1;
-var _courseMap={};  // slug → course object lookup
-var PER=24,_filtered=[];
-
-window.addEventListener('load',function(){
-  initAuth();
-  document.addEventListener('click',function(e){
-    if(!e.target.closest('#domains-dd-wrap'))document.getElementById('domains-dd').classList.remove('open');
-    if(!e.target.closest('#nav-av')&&!e.target.closest('#nav-user-dd'))document.getElementById('nav-user-dd').classList.remove('open');
-  });
-  var p=new URLSearchParams(location.search);
-  var d=p.get('domain');var q=p.get('q');
-  if(d){setDomain(d,document.querySelector('[data-domain="'+d+'"]'));}
-  if(q){document.getElementById('search-input').value=q;_search=q.toLowerCase();}
-  filterAndRender();
+  /* Try loading from Supabase, fallback to static */
+  await loadCoursesFromDB();
+  render();
 });
 
+async function loadCoursesFromDB(){
+  var rows = await dbGet('belongix_courses','is_published=eq.true&select=slug,students_count,rating,module_count');
+  if(rows.length){
+    var map={};rows.forEach(function(c){map[c.slug]=c;});
+    _courses=COURSES.map(function(c){
+      var db=map[c.slug]||{};
+      return Object.assign({},c,{
+        students_count:db.students_count||0,
+        rating:db.rating||4.7,
+        module_count:db.module_count||c.modules||0
+      });
+    });
+  } else {
+    _courses=COURSES;
+  }
+}
+
+async function loadEnrollments(){
+  if(!_user)return;
+  try{
+    var enrRows = await dbGet('course_enrollments','user_id=eq.'+_user.id+'&select=*');
+    enrRows.forEach(function(e){_enroll[e.course_id]=e;});
+    var slugs = COURSES.map(function(c){return c.slug;}).join(',');
+    var cRows = await dbGet('belongix_courses','slug=in.('+slugs+')&select=id,slug');
+    var slugToId={};
+    cRows.forEach(function(c){slugToId[c.slug]=c.id;});
+    enrRows.forEach(function(e){
+      var course=COURSES.find(function(c){return slugToId[c.slug]===e.course_id;});
+      if(course)_enroll[course.slug]=e;
+    });
+  }catch(e){}
+}
+
+async function loadCerts(){
+  if(!_user)return;
+  try{
+    var certRows=await dbGet('certificates','user_id=eq.'+_user.id+'&select=*&order=issued_at.desc');
+    _certs=certRows;
+    renderCerts();
+  }catch(e){}
+}
+
+/* ── DOMAIN & FILTER ── */
+function updateCounts(){
+  var dev=COURSES.filter(function(c){return c.domain==='Development';}).length;
+  var cod=COURSES.filter(function(c){return c.domain==='Coding';}).length;
+  var ai=COURSES.filter(function(c){return c.domain==='AI';}).length;
+  var el=function(id){return document.getElementById(id);};
+  el('cnt-all')&&(el('cnt-all').textContent=COURSES.length);
+  el('cnt-dev')&&(el('cnt-dev').textContent=dev);
+  el('cnt-cod')&&(el('cnt-cod').textContent=cod);
+  el('cnt-ai')&&(el('cnt-ai').textContent=ai);
+}
+
 function setDomain(d,btn){
-  _domain=d;_page=1;
-  document.querySelectorAll('.dtab').forEach(function(b){b.classList.remove('active');});
-  if(btn)btn.classList.add('active');
-  else{var b=document.querySelector('[data-domain="'+d+'"]');if(b)b.classList.add('active');}
-  filterAndRender();
+  _domain=d;
+  document.querySelectorAll('.dtab').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  var t=document.getElementById('grid-title');
+  if(t)t.textContent=d==='all'?'All Courses':d+' Courses';
+  render();
 }
 
-var _searchTimer;
-function onSearch(v){clearTimeout(_searchTimer);_searchTimer=setTimeout(function(){_search=v.trim().toLowerCase();_page=1;filterAndRender();},180);}
-function onFilter(){
-  _level=document.getElementById('filter-level').value;
-  _sort=document.getElementById('filter-sort').value;
-  _badge=document.getElementById('filter-badge').value;
-  _page=1;filterAndRender();
+function setDiff(d,btn){
+  _diff=d;
+  document.querySelectorAll('.fchip').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');
+  render();
 }
 
-function filterAndRender(){
-  var list=COURSES.slice();
-  if(_domain!=='all')list=list.filter(function(c){return c.domain===_domain;});
-  if(_level!=='all')list=list.filter(function(c){return c.level===_level;});
-  if(_badge==='hot')list=list.filter(function(c){return c.hot;});
-  else if(_badge==='new')list=list.filter(function(c){return c['new'];});
-  if(_search)list=list.filter(function(c){return (c.title+' '+c.subtitle+' '+c.domain+' '+c.skills+' '+c.category).toLowerCase().indexOf(_search)>-1;});
-  if(_sort==='popular')list.sort(function(a,b){return b.students-a.students;});
-  else if(_sort==='new')list.sort(function(a,b){return (b['new']?1:0)-(a['new']?1:0)||(b.hot?1:0)-(a.hot?1:0);});
-  else if(_sort==='rating')list.sort(function(a,b){return b.rating-a.rating;});
-  else if(_sort==='az')list.sort(function(a,b){return a.title.localeCompare(b.title);});
-  else if(_sort==='shortest')list.sort(function(a,b){return a.hours-b.hours;});
-  else if(_sort==='longest')list.sort(function(a,b){return b.hours-a.hours;});
-  _filtered=list;
-  document.getElementById('results-n').textContent=list.length+' courses';
-  renderPage();renderPagination();
-}
+/* ── RENDER ── */
+function render(){
+  var q=((document.getElementById('search-inp')||{}).value||'').toLowerCase().trim();
+  _search=q;
 
-function renderPage(){
-  var grid=document.getElementById('courses-grid');
-  var start=(_page-1)*PER;
-  var page=_filtered.slice(start,start+PER);
-  if(!page.length){
-    grid.innerHTML='<div class="no-results"><div class="no-results-emoji">🔍</div><h3>No courses found</h3><p>Try a different search term or filter</p><button class="btn-enroll" style="padding:10px 22px;font-size:13px" onclick="clearFilters()">Clear filters</button></div>';
+  var filtered=(_courses.length?_courses:COURSES).filter(function(c){
+    if(_domain!=='all'&&c.domain!==_domain)return false;
+    if(_diff!=='all'&&c.difficulty!==_diff)return false;
+    if(q&&!c.title.toLowerCase().includes(q)&&!c.category.toLowerCase().includes(q)&&!(c.skills||'').toLowerCase().includes(q))return false;
+    return true;
+  });
+
+  var rc=document.getElementById('result-count');
+  if(rc)rc.textContent=filtered.length+' course'+(filtered.length!==1?'s':'');
+
+  var grid=document.getElementById('grid');
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty"><div class="empty-icon">📚</div><div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px">No courses found</div><div>Try a different search or filter</div></div>';
     return;
   }
-  grid.innerHTML=page.map(cardHTML).join('');
+
+  grid.innerHTML=filtered.map(function(c){return cardHtml(c);}).join('');
 }
 
-function cardHTML(c){
-  _courseMap[c.slug]=c;
-  var bNum=c.students>=1000?((c.students/1000).toFixed(c.students>=10000?0:1)+'k'):c.students;
-  var badges='';
-  if(c.hot)badges+='<span class="badge-hot">🔥 Hot</span>';
-  if(c['new'])badges+='<span class="badge-new">New</span>';
-  return '<div class="ccard" data-slug="'+escH(c.slug)+'" onclick="cardClick(this)">'
-    +'<div class="ccard-banner" style="'+c.bg+'">'
-      +'<span class="ccard-emoji">'+c.emoji+'</span>'
-      +'<div class="ccard-badges">'+badges+'</div>'
+function cardHtml(c){
+  var enr=_enroll[c.slug];
+  var cert=_certs.find(function(x){return x.course_title===c.title||x.cert_title===c.certificate_title;});
+  var prog=cert?100:enr&&enr.status==='completed'?90:enr?40:0;
+
+  var badges='<span class="cc-badge b-free">FREE</span><span class="cc-badge b-cert">CERT</span>';
+  if(c.hot)badges+='<span class="cc-badge b-hot">🔥 HOT</span>';
+  if(cert)badges='<span class="cc-badge b-done">✓ Certified</span>';
+  else if(enr)badges+='<span class="cc-badge b-prog">In Progress</span>';
+
+  var btnHtml=cert
+    ?'<button class="cc-btn done" onclick="event.stopPropagation();viewCert(\''+esc(cert.cert_id)+'\')">🏆 View Certificate</button>'
+    :enr
+      ?'<button class="cc-btn prim" onclick="event.stopPropagation();go(\''+c.slug+'\')">Continue →</button>'
+      :'<button class="cc-btn sec" onclick="event.stopPropagation();go(\''+c.slug+'\')">Enroll Free →</button>';
+
+  var progHtml=enr?'<div class="cc-prog-bar"><div class="cc-prog-fill" style="width:'+prog+'%"></div></div><div class="cc-prog-txt">'+prog+'% complete</div>':'';
+
+  return '<div class="course-card" onclick="go(\''+c.slug+'\',true)">'
+    +'<div class="cc-thumb" style="background:'+c.bg+'"><span>'+c.emoji+'</span>'
+    +'<div class="cc-badges">'+badges+'</div>'
+    +'<div class="cc-domain">'+c.domain+'</div>'
     +'</div>'
-    +'<div class="ccard-body">'
-      +'<div class="ccard-domain">'+escH(c.domain)+'</div>'
-      +'<div class="ccard-title">'+escH(c.title)+'</div>'
-      +'<div class="ccard-subtitle">'+escH(c.subtitle)+'</div>'
-      +'<div class="ccard-meta">'
-        +'<span class="cmeta">⏱ '+c.hours+'h</span>'
-        +'<span class="cmeta">·</span>'
-        +'<span class="cmeta">📦 1 module</span>'
-        +'<span class="clevel clevel-'+c.level+'">'+c.level+'</span>'
-      +'</div>'
-      +'<div class="ccard-footer">'
-        +'<div>'
-          +'<div class="ccard-rating">'+c.rating.toFixed(1)+' ★</div>'
-          +'<div class="ccard-students">'+bNum+' enrolled</div>'
-        +'</div>'
-        +'<button class="btn-enroll" data-slug="'+escH(c.slug)+'" onclick="enrollClick(event,this)">View Course →</button>'
-      +'</div>'
+    +'<div class="cc-body">'
+    +'<div class="cc-category">'+esc(c.category)+'</div>'
+    +'<div class="cc-title">'+esc(c.title)+'</div>'
+    +'<div class="cc-sub">'+esc(c.subtitle)+'</div>'
+    +'<div class="cc-meta">'
+    +'<span>📚 '+c.module_count+' modules</span>'
+    +'<span>⏱ '+c.duration_mins+' min</span>'
+    +'<span>📊 '+c.difficulty+'</span>'
     +'</div>'
-  +'</div>';
+    +progHtml
+    +btnHtml
+    +'</div></div>';
 }
 
-function cardClick(el){
-  var slug=el.dataset.slug;
-  openCDetail(slug);
+function renderCerts(){
+  if(!_certs.length)return;
+  var sec=document.getElementById('my-certs');
+  var list=document.getElementById('my-certs-list');
+  if(sec)sec.classList.add('show');
+  if(list)list.innerHTML=_certs.map(function(cert){
+    return '<div class="cert-chip" onclick="viewCert(\''+esc(cert.cert_id)+'\')">'
+      +'<div>🏆</div>'
+      +'<div><div class="cert-chip-name">'+esc(cert.course_title)+'</div>'
+      +'<div class="cert-chip-id">'+esc(cert.cert_id)+'</div></div>'
+      +'</div>';
+  }).join('');
 }
 
-function enrollClick(event,btn){
-  event.stopPropagation();
-  var slug=btn.dataset.slug;
-  goToCourse(slug);
+/* ── ACTIONS ── */
+function go(slug,preview){
+  window.location.href='course.html?slug='+slug;
 }
 
-
-function openCDetail(slug){
-  var c=_courseMap[slug];if(!c)return;
-  var tags=c.skills.split(',').map(function(s){return '<span class="cd-skill">'+escH(s.trim())+'</span>';}).join('');
-  var bNum=c.students>=1000?((c.students/1000).toFixed(1)+'k'):c.students;
-  document.getElementById('cd-box').innerHTML=
-    '<div class="cd-banner" style="'+c.bg+'">'
-      +'<span>'+c.emoji+'</span>'
-      +'<button class="cd-close" onclick="closeCDetail()">✕</button>'
-    +'</div>'
-    +'<div class="cd-body">'
-      +'<div class="cd-breadcrumb">'+escH(c.domain)+' · '+escH(c.category)+'</div>'
-      +'<div class="cd-title">'+escH(c.title)+'</div>'
-      +'<div class="cd-sub">'+escH(c.subtitle)+'</div>'
-      +'<div class="cd-stats">'
-        +'<div class="cdstat"><div class="cdstat-n">'+c.hours+'h</div><div class="cdstat-l">Duration</div></div>'
-        +'<div class="cdstat"><div class="cdstat-n">1</div><div class="cdstat-l">Module</div></div>'
-        +'<div class="cdstat"><div class="cdstat-n">'+bNum+'</div><div class="cdstat-l">Enrolled</div></div>'
-      +'</div>'
-      +'<div class="cd-skills">'+tags+'</div>'
-      +'<div class="cd-cert"><span class="cd-cert-icon">🏆</span><div class="cd-cert-text">Certificate included<br/><span class="cd-cert-name">'+escH(c.cert)+'</span></div></div>'
-      +'<div class="cd-actions">'
-        +'<button class="btn-start-course" data-slug="'+escH(slug)+'" onclick="modalEnroll(this)">Go to Course →</button>'
-        +'<button class="btn-wishlist" data-slug="'+escH(slug)+'" onclick="wishlistClick(this)">❤️</button>'
-      +'</div>'
-    +'</div>';
-  document.getElementById('cd-overlay').classList.add('open');
-  document.body.style.overflow='hidden';
+function viewCert(certId){
+  window.open('verify.html?id='+certId,'_blank');
 }
 
-function closeCDetail(){document.getElementById('cd-overlay').classList.remove('open');document.body.style.overflow='';}
-
-function modalEnroll(btn){
-  goToCourse(btn.dataset.slug);
+/* ── AUTH ── */
+function showUserNav(){
+  document.getElementById('nav-guest').style.display='none';
+  document.getElementById('nav-user').style.display='flex';
+  var nm=(_user.user_metadata&&_user.user_metadata.full_name)||_user.email.split('@')[0];
+  var av=document.getElementById('nav-av');
+  if(av)av.textContent=nm.substring(0,2).toUpperCase();
+}
+function showGuestNav(){
+  document.getElementById('nav-guest').style.display='flex';
+  document.getElementById('nav-user').style.display='none';
 }
 
-function goToCourse(slug){
-  var c=_courseMap[slug];
-  if(c){try{sessionStorage.setItem('bx_course_'+slug,JSON.stringify(c));}catch(e){}}
-  window.location.href='course.html?slug='+encodeURIComponent(slug);
-}
-
-function wishlistClick(btn){
-  saveWishlist(btn.dataset.slug);
-}
-
-function saveWishlist(slug){
-  var w=JSON.parse(localStorage.getItem('bx_wishlist')||'[]');
-  if(!w.includes(slug)){w.push(slug);localStorage.setItem('bx_wishlist',JSON.stringify(w));showToast('Saved to wishlist ❤️');}
-  else{showToast('Already in your wishlist');}
-}
-
-function clearFilters(){
-  _search='';_level='all';_sort='popular';_badge='all';_domain='all';_page=1;
-  document.getElementById('search-input').value='';
-  document.getElementById('filter-level').value='all';
-  document.getElementById('filter-sort').value='popular';
-  document.getElementById('filter-badge').value='all';
-  document.querySelectorAll('.dtab').forEach(function(b){b.classList.remove('active');});
-  document.querySelector('[data-domain="all"]').classList.add('active');
-  filterAndRender();
-}
-
-function renderPagination(){
-  var total=Math.ceil(_filtered.length/PER);
-  var el=document.getElementById('pagination');
-  if(total<=1){el.innerHTML='';return;}
-  var html='<button class="page-btn" onclick="goPage('+(_page-1)+')" '+(_page===1?'disabled':'')+'">‹</button>';
-  var pages=[];
-  for(var i=1;i<=total;i++){if(i===1||i===total||Math.abs(i-_page)<=1)pages.push(i);else if(pages[pages.length-1]!=='…')pages.push('…');}
-  pages.forEach(function(p){
-    if(p==='…')html+='<span class="page-info">…</span>';
-    else html+='<button class="page-btn'+(p===_page?' active':'')+'" onclick="goPage('+p+')">'+p+'</button>';
-  });
-  html+='<button class="page-btn" onclick="goPage('+(_page+1)+')" '+(_page===total?'disabled':'')+'">›</button>';
-  html+='<span class="page-info">Page '+_page+' of '+total+'</span>';
-  el.innerHTML=html;
-}
-
-function goPage(n){
-  var total=Math.ceil(_filtered.length/PER);
-  if(n<1||n>total)return;
-  _page=n;renderPage();renderPagination();
-  document.querySelector('.dtabs-wrap').scrollIntoView({behavior:'smooth',block:'start'});
-}
+/* ── HELPERS ── */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function showToast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
 </script>
 </body>
 </html>

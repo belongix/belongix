@@ -1,0 +1,3136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ATS Resume Builder — Belongix</title>
+<style>
+  /* ── DESIGN TOKENS ── */
+  :root {
+    --bg: #F8F9FB;
+    --surface: #FFFFFF;
+    --surface-2: #F2F4F8;
+    --border: #E4E8EF;
+    --border-strong: #C8D0DC;
+    --text: #111827;
+    --text-2: #4B5563;
+    --text-3: #9CA3AF;
+    --accent: #2563EB;
+    --accent-light: #EFF6FF;
+    --accent-dark: #1D4ED8;
+    --green: #10B981;
+    --green-light: #ECFDF5;
+    --orange: #F59E0B;
+    --orange-light: #FFFBEB;
+    --red: #EF4444;
+    --red-light: #FEF2F2;
+    --purple: #7C3AED;
+    --purple-light: #F5F3FF;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* ── LINK FONT ── */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  /* ── LANDING ── */
+  #landing { display: block; }
+  #app { display: none; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: rgba(255,255,255,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+    padding: 0 32px;
+    height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-weight: 700; font-size: 18px; color: var(--text);
+    display: flex; align-items: center; gap: 8px;
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; align-items: center; gap: 24px; }
+  .nav-links a { color: var(--text-2); text-decoration: none; font-size: 14px; font-weight: 500; }
+  .nav-links a:hover { color: var(--text); }
+  .nav-ctas { display: flex; gap: 10px; align-items: center; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 9px 18px; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    border: none; transition: all .15s; text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: var(--accent); color: #fff;
+  }
+  .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,.35); }
+  .btn-secondary {
+    background: var(--surface); color: var(--text);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-secondary:hover { background: var(--surface-2); }
+  .btn-ghost {
+    background: transparent; color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+  .btn-ghost:hover { background: var(--accent-light); }
+  .btn-green { background: var(--green); color: #fff; }
+  .btn-green:hover { background: #059669; transform: translateY(-1px); }
+  .btn-sm { padding: 6px 12px; font-size: 13px; }
+  .btn-lg { padding: 13px 28px; font-size: 15px; border-radius: var(--radius); }
+
+  /* HERO */
+  .hero {
+    padding: 130px 32px 80px;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--accent-light); color: var(--accent);
+    padding: 5px 14px; border-radius: 100px; font-size: 13px; font-weight: 600;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 60px);
+    font-weight: 800; line-height: 1.1;
+    letter-spacing: -1.5px; margin-bottom: 20px;
+  }
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero p {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: var(--text-2); max-width: 560px; margin: 0 auto 36px;
+  }
+  .hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 60px; }
+
+  /* SCORE PREVIEW CARD */
+  .score-preview {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-lg);
+    padding: 28px 32px;
+    max-width: 560px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  .score-preview-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;
+  }
+  .score-preview-title { font-weight: 700; font-size: 15px; color: var(--text); }
+  .big-score {
+    font-size: 52px; font-weight: 800; color: var(--green);
+    line-height: 1;
+  }
+  .big-score span { font-size: 22px; color: var(--text-3); }
+  .score-bars { display: flex; flex-direction: column; gap: 10px; }
+  .score-bar-row { display: flex; align-items: center; gap: 12px; }
+  .score-bar-label { font-size: 13px; color: var(--text-2); width: 130px; flex-shrink: 0; }
+  .score-bar-track {
+    flex: 1; height: 8px; background: var(--surface-2);
+    border-radius: 100px; overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%; border-radius: 100px;
+    background: var(--green);
+    transition: width 1s ease;
+  }
+  .score-bar-fill.orange { background: var(--orange); }
+  .score-bar-fill.blue { background: var(--accent); }
+  .score-bar-val { font-size: 13px; font-weight: 600; width: 36px; text-align: right; color: var(--text); }
+
+  /* SECTION WRAPPER */
+  .section { padding: 80px 32px; }
+  .section-inner { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+  }
+  .section-title { font-size: clamp(24px, 3.5vw, 40px); font-weight: 800; line-height: 1.15; margin-bottom: 14px; }
+  .section-sub { font-size: 17px; color: var(--text-2); max-width: 560px; }
+
+  /* FEATURE GRID */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px; margin-top: 48px;
+  }
+  .feature-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px;
+    transition: box-shadow .2s, transform .2s;
+  }
+  .feature-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+  .feature-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 14px;
+    background: var(--accent-light);
+  }
+  .feature-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .feature-desc { font-size: 14px; color: var(--text-2); line-height: 1.5; }
+
+  /* HOW IT WORKS */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px; margin-top: 48px;
+  }
+  .step {
+    text-align: center; padding: 24px 16px;
+  }
+  .step-num {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 15px; margin: 0 auto 14px;
+  }
+  .step-title { font-weight: 700; margin-bottom: 6px; }
+  .step-desc { font-size: 14px; color: var(--text-2); }
+
+  /* PRICING */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px; margin-top: 48px; max-width: 900px; margin-left: auto; margin-right: auto;
+  }
+  .pricing-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    position: relative;
+  }
+  .pricing-card.featured {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.12);
+  }
+  .pricing-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #fff;
+    padding: 3px 14px; border-radius: 100px; font-size: 12px; font-weight: 700;
+  }
+  .pricing-tier { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-2); margin-bottom: 8px; }
+  .pricing-price { font-size: 36px; font-weight: 800; margin-bottom: 4px; }
+  .pricing-price span { font-size: 15px; color: var(--text-3); font-weight: 400; }
+  .pricing-desc { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+  .pricing-features { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+  .pricing-features li { font-size: 14px; display: flex; align-items: center; gap: 8px; }
+  .pricing-features li::before { content: "✓"; color: var(--green); font-weight: 700; }
+
+  /* FOOTER */
+  footer {
+    background: var(--text); color: rgba(255,255,255,.7);
+    padding: 40px 32px; text-align: center; font-size: 14px;
+  }
+  footer a { color: rgba(255,255,255,.7); text-decoration: none; }
+  footer strong { color: #fff; }
+
+  /* ── APP ── */
+  .app-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 60px 1fr;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* APP TOPBAR */
+  .app-topbar {
+    grid-column: 1 / -1;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    gap: 16px;
+  }
+  .app-topbar-left { display: flex; align-items: center; gap: 16px; }
+  .app-topbar-right { display: flex; align-items: center; gap: 10px; }
+  .app-logo { font-weight: 800; font-size: 17px; color: var(--text); }
+  .app-logo span { color: var(--accent); }
+  .app-resume-name {
+    font-size: 14px; color: var(--text-2);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .autosave-indicator {
+    font-size: 12px; color: var(--green);
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  /* SCORE PILL */
+  .score-pill {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 100px; padding: 6px 14px;
+    cursor: pointer; transition: all .15s;
+  }
+  .score-pill:hover { box-shadow: var(--shadow); }
+  .score-pill-num {
+    font-size: 18px; font-weight: 800;
+    transition: color .3s;
+  }
+  .score-pill-num.high { color: var(--green); }
+  .score-pill-num.mid { color: var(--orange); }
+  .score-pill-num.low { color: var(--red); }
+  .score-pill-label { font-size: 12px; color: var(--text-2); }
+
+  /* SIDEBAR */
+  .app-sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    overflow-y: auto;
+    padding: 16px 0;
+  }
+  .sidebar-section { padding: 0 12px; margin-bottom: 8px; }
+  .sidebar-label {
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--text-3);
+    padding: 8px 8px 4px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: var(--radius-sm);
+    cursor: pointer; font-size: 14px; font-weight: 500;
+    color: var(--text-2); transition: all .12s;
+    margin-bottom: 2px;
+  }
+  .sidebar-item:hover { background: var(--surface-2); color: var(--text); }
+  .sidebar-item.active { background: var(--accent-light); color: var(--accent); }
+  .sidebar-item .si-icon { font-size: 16px; width: 20px; text-align: center; }
+  .sidebar-item .si-badge {
+    margin-left: auto; font-size: 11px; font-weight: 700;
+    background: var(--red); color: #fff;
+    padding: 2px 6px; border-radius: 100px;
+  }
+  .sidebar-divider { height: 1px; background: var(--border); margin: 8px 12px; }
+
+  /* MAIN CONTENT */
+  .app-main {
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  /* PANEL TABS */
+  .panel-tabs {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 0 24px;
+  }
+  .panel-tab {
+    padding: 14px 18px; font-size: 13px; font-weight: 600;
+    color: var(--text-2); cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: all .15s;
+    white-space: nowrap;
+  }
+  .panel-tab:hover { color: var(--text); }
+  .panel-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* PANEL CONTENT */
+  .panel-content {
+    flex: 1; display: flex; overflow: hidden;
+  }
+
+  /* EDITOR PANEL */
+  .editor-panel {
+    flex: 1; overflow-y: auto; padding: 24px;
+  }
+  .editor-panel::-webkit-scrollbar { width: 6px; }
+  .editor-panel::-webkit-scrollbar-track { background: transparent; }
+  .editor-panel::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+  /* AI PANEL */
+  .ai-panel {
+    width: 340px; border-left: 1px solid var(--border);
+    background: var(--surface); display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .ai-panel-header {
+    padding: 16px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .ai-panel-title {
+    font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ai-badge {
+    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    background: var(--purple-light); color: var(--purple);
+    padding: 2px 6px; border-radius: 4px;
+  }
+  .ai-chat-area {
+    flex: 1; overflow-y: auto; padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .ai-msg {
+    padding: 12px 14px; border-radius: var(--radius-sm);
+    font-size: 13px; line-height: 1.5;
+    max-width: 92%;
+  }
+  .ai-msg.ai {
+    background: var(--surface-2); color: var(--text);
+    align-self: flex-start;
+  }
+  .ai-msg.user {
+    background: var(--accent); color: #fff;
+    align-self: flex-end;
+  }
+  .ai-actions {
+    display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;
+  }
+  .ai-action-btn {
+    font-size: 12px; font-weight: 600; padding: 5px 10px;
+    border-radius: 6px; cursor: pointer; border: 1px solid var(--border);
+    background: var(--surface); color: var(--text-2);
+    transition: all .12s;
+  }
+  .ai-action-btn:hover { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+  .ai-input-area {
+    border-top: 1px solid var(--border); padding: 12px;
+    display: flex; gap: 8px;
+  }
+  .ai-input {
+    flex: 1; padding: 8px 12px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px; font-family: var(--font);
+    background: var(--surface-2); outline: none; resize: none;
+  }
+  .ai-input:focus { border-color: var(--accent); background: var(--surface); }
+  .ai-send-btn {
+    padding: 8px 12px; background: var(--accent); color: #fff;
+    border: none; border-radius: var(--radius-sm); cursor: pointer; font-size: 16px;
+    transition: background .15s;
+  }
+  .ai-send-btn:hover { background: var(--accent-dark); }
+
+  /* FORM ELEMENTS */
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block; font-size: 13px; font-weight: 600;
+    color: var(--text-2); margin-bottom: 6px;
+  }
+  .form-input, .form-textarea, .form-select {
+    width: 100%; padding: 9px 12px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 14px; font-family: var(--font); color: var(--text);
+    background: var(--surface); outline: none; transition: border-color .15s;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.08);
+  }
+  .form-textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+
+  /* SECTION CARD */
+  .section-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 16px; overflow: hidden;
+  }
+  .section-card-header {
+    padding: 14px 18px; display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; user-select: none;
+    transition: background .12s;
+  }
+  .section-card-header:hover { background: var(--surface-2); }
+  .section-card-title {
+    font-weight: 700; font-size: 14px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-card-icon { font-size: 16px; }
+  .section-card-body { padding: 16px 18px; border-top: 1px solid var(--border); }
+  .section-card-actions { display: flex; gap: 6px; }
+
+  /* EXPERIENCE ITEM */
+  .exp-item {
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 16px; margin-bottom: 12px;
+    background: var(--bg);
+  }
+  .exp-item-header {
+    display: flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 12px;
+  }
+  .exp-item-title { font-weight: 700; font-size: 14px; }
+  .exp-item-sub { font-size: 13px; color: var(--text-2); margin-top: 2px; }
+
+  /* BULLET */
+  .bullet-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    margin-bottom: 8px;
+  }
+  .bullet-text {
+    flex: 1; padding: 8px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px;
+    background: var(--surface); outline: none; font-family: var(--font);
+    line-height: 1.5; resize: none; min-height: 38px;
+  }
+  .bullet-text:focus { border-color: var(--accent); }
+  .bullet-ai-btn {
+    padding: 7px 10px; font-size: 12px; font-weight: 600;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    background: var(--surface); cursor: pointer; color: var(--purple);
+    white-space: nowrap; transition: all .12s;
+  }
+  .bullet-ai-btn:hover { background: var(--purple-light); border-color: var(--purple); }
+
+  /* SKILL TAG */
+  .skill-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 100px; font-size: 13px;
+    margin: 4px; cursor: pointer; transition: all .12s;
+    border: 1px solid transparent;
+  }
+  .skill-tag.matched { background: var(--green-light); color: var(--green); border-color: var(--green); }
+  .skill-tag.missing { background: var(--red-light); color: var(--red); border-color: var(--red); }
+  .skill-tag.added { background: var(--accent-light); color: var(--accent); border-color: var(--accent); }
+  .skill-tag .remove { font-size: 12px; opacity: .6; }
+  .skill-tag .remove:hover { opacity: 1; }
+
+  /* ATS SCORE PANEL */
+  .ats-score-panel {
+    padding: 24px;
+  }
+  .ats-main-score {
+    text-align: center; padding: 32px;
+    background: var(--surface); border-radius: var(--radius);
+    border: 1px solid var(--border); margin-bottom: 20px;
+  }
+  .ats-score-number {
+    font-size: 72px; font-weight: 900; line-height: 1;
+    margin-bottom: 4px;
+  }
+  .ats-score-number.excellent { color: var(--green); }
+  .ats-score-number.good { color: var(--orange); }
+  .ats-score-number.poor { color: var(--red); }
+  .ats-score-label { font-size: 14px; color: var(--text-2); font-weight: 600; }
+  .ats-score-sublabel { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+
+  .ats-categories { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+  .ats-cat {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px 16px;
+  }
+  .ats-cat-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px;
+  }
+  .ats-cat-name { font-weight: 700; font-size: 14px; }
+  .ats-cat-score { font-weight: 800; font-size: 14px; }
+  .ats-cat-score.full { color: var(--green); }
+  .ats-cat-score.partial { color: var(--orange); }
+  .ats-cat-score.low-score { color: var(--red); }
+  .ats-cat-bar {
+    height: 6px; background: var(--surface-2); border-radius: 100px; overflow: hidden;
+  }
+  .ats-cat-bar-fill {
+    height: 100%; border-radius: 100px;
+    background: var(--green); transition: width .6s ease;
+  }
+  .ats-cat-bar-fill.partial { background: var(--orange); }
+  .ats-cat-bar-fill.low-score { background: var(--red); }
+  .ats-cat-issues { margin-top: 8px; }
+  .ats-issue {
+    font-size: 12px; color: var(--text-2);
+    padding: 4px 0; display: flex; align-items: flex-start; gap: 6px;
+  }
+  .ats-issue::before { content: "•"; color: var(--orange); flex-shrink: 0; }
+
+  /* RECOMMENDATIONS */
+  .rec-list { display: flex; flex-direction: column; gap: 10px; }
+  .rec-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .rec-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .rec-body { flex: 1; }
+  .rec-title { font-weight: 700; font-size: 13px; margin-bottom: 3px; }
+  .rec-desc { font-size: 12px; color: var(--text-2); line-height: 1.4; }
+  .rec-actions { display: flex; gap: 6px; margin-top: 8px; }
+
+  /* KEYWORD PANEL */
+  .keyword-section { margin-bottom: 20px; }
+  .keyword-section-title {
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-3); margin-bottom: 10px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .keyword-count {
+    background: var(--surface-2); color: var(--text-2);
+    padding: 2px 8px; border-radius: 100px; font-size: 11px;
+  }
+
+  /* JD ANALYZER */
+  .jd-extract-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    margin-top: 16px;
+  }
+  .jd-extract-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px;
+  }
+  .jd-extract-title { font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-3); margin-bottom: 8px; }
+  .jd-keyword-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 5px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .jd-keyword-item:last-child { border-bottom: none; }
+  .jd-priority {
+    font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 100px;
+  }
+  .jd-priority.high { background: var(--red-light); color: var(--red); }
+  .jd-priority.medium { background: var(--orange-light); color: var(--orange); }
+  .jd-priority.low { background: var(--green-light); color: var(--green); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 200; padding: 20px;
+    opacity: 0; pointer-events: none; transition: opacity .2s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--surface); border-radius: 16px; box-shadow: var(--shadow-lg);
+    max-width: 640px; width: 100%; max-height: 90vh;
+    overflow-y: auto; transform: translateY(16px); transition: transform .2s;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-header {
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-title { font-weight: 800; font-size: 18px; }
+  .modal-close {
+    width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface-2); cursor: pointer; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-body { padding: 24px; }
+  .modal-footer {
+    padding: 16px 24px; border-top: 1px solid var(--border);
+    display: flex; gap: 10px; justify-content: flex-end;
+  }
+
+  /* ONBOARDING */
+  .onboarding-step { display: none; }
+  .onboarding-step.active { display: block; }
+  .onboarding-options {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px;
+  }
+  .onboarding-option {
+    padding: 14px; border: 2px solid var(--border); border-radius: var(--radius-sm);
+    cursor: pointer; text-align: center; transition: all .15s; font-weight: 600;
+    font-size: 14px;
+  }
+  .onboarding-option:hover { border-color: var(--accent); background: var(--accent-light); }
+  .onboarding-option.selected { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+  .onboarding-progress {
+    display: flex; gap: 8px; margin-bottom: 24px;
+  }
+  .onboarding-dot {
+    height: 4px; flex: 1; border-radius: 100px; background: var(--border);
+    transition: background .2s;
+  }
+  .onboarding-dot.done { background: var(--accent); }
+
+  /* RESUME TEMPLATES GRID */
+  .templates-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; padding: 24px;
+  }
+  .template-card {
+    border: 2px solid var(--border); border-radius: var(--radius-sm);
+    overflow: hidden; cursor: pointer; transition: all .15s;
+    position: relative;
+  }
+  .template-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow); }
+  .template-card.active { border-color: var(--accent); }
+  .template-preview {
+    height: 160px; background: var(--surface-2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+  }
+  .template-info { padding: 10px 12px; }
+  .template-name { font-weight: 700; font-size: 13px; }
+  .template-desc { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+  .ats-safe-badge {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--green); color: #fff;
+    font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px;
+  }
+
+  /* RESUME PREVIEW PANEL */
+  .preview-panel {
+    width: 420px; border-left: 1px solid var(--border);
+    background: var(--surface-2); overflow-y: auto;
+    display: flex; flex-direction: column;
+  }
+  .preview-header {
+    padding: 12px 16px; background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; font-weight: 600; color: var(--text-2);
+  }
+  .preview-body {
+    padding: 24px; flex: 1;
+  }
+  .resume-paper {
+    background: #fff; border-radius: 4px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.1);
+    padding: 32px 28px;
+    min-height: 700px;
+    font-family: 'Times New Roman', Georgia, serif;
+    font-size: 11px; line-height: 1.4;
+    color: #1a1a1a;
+  }
+  .resume-name { font-size: 22px; font-weight: 700; letter-spacing: -.3px; margin-bottom: 2px; }
+  .resume-title-line { font-size: 13px; color: #444; margin-bottom: 8px; }
+  .resume-contact { font-size: 10px; color: #555; display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .resume-contact span { display: flex; align-items: center; gap: 3px; }
+  .resume-section { margin-bottom: 14px; }
+  .resume-section-title {
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    border-bottom: 1px solid #1a1a1a; padding-bottom: 3px; margin-bottom: 8px;
+  }
+  .resume-exp { margin-bottom: 10px; }
+  .resume-exp-header { display: flex; justify-content: space-between; }
+  .resume-exp-title { font-weight: 700; font-size: 11px; }
+  .resume-exp-dates { font-size: 10px; color: #555; }
+  .resume-exp-company { font-size: 10px; color: #555; margin-bottom: 4px; }
+  .resume-bullets { padding-left: 14px; }
+  .resume-bullets li { margin-bottom: 2px; }
+  .resume-summary { font-size: 11px; line-height: 1.5; color: #333; }
+  .resume-skills-list { display: flex; flex-wrap: wrap; gap: 4px; }
+  .resume-skill { font-size: 10px; background: #f0f0f0; padding: 2px 8px; border-radius: 3px; }
+
+  /* CHECKLIST */
+  .checklist { display: flex; flex-direction: column; gap: 6px; }
+  .check-item {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 13px; padding: 6px 0;
+  }
+  .check-icon { font-size: 16px; }
+
+  /* TABS (secondary use) */
+  .tab-group { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+  .tab {
+    padding: 10px 16px; font-size: 13px; font-weight: 600;
+    color: var(--text-2); cursor: pointer; border-bottom: 2px solid transparent;
+    margin-bottom: -1px; transition: all .12s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* NOTIFICATION TOAST */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--text); color: #fff;
+    padding: 12px 18px; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    transform: translateY(80px); opacity: 0;
+    transition: all .3s; z-index: 300;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: var(--green); }
+  .toast.error { background: var(--red); }
+
+  /* UPLOAD ZONE */
+  .upload-zone {
+    border: 2px dashed var(--border-strong); border-radius: var(--radius);
+    padding: 40px 24px; text-align: center; cursor: pointer;
+    transition: all .15s; background: var(--bg);
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--accent); background: var(--accent-light);
+  }
+  .upload-zone-icon { font-size: 36px; margin-bottom: 12px; }
+  .upload-zone-title { font-weight: 700; margin-bottom: 4px; }
+  .upload-zone-sub { font-size: 13px; color: var(--text-2); }
+
+  /* COMPARISON */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .compare-col { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+  .compare-col-title { font-weight: 800; font-size: 22px; margin-bottom: 4px; }
+  .compare-col-sub { font-size: 13px; color: var(--text-2); margin-bottom: 16px; }
+  .compare-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-val { font-weight: 700; }
+  .compare-val.better { color: var(--green); }
+  .compare-val.worse { color: var(--red); }
+
+  /* LOADING */
+  .loading-spinner {
+    width: 20px; height: 20px; border: 2px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin .8s linear infinite; display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .ai-thinking {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--text-2); padding: 10px 14px;
+    background: var(--surface-2); border-radius: var(--radius-sm);
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar {
+    height: 8px; background: var(--surface-2); border-radius: 100px; overflow: hidden;
+    margin: 8px 0;
+  }
+  .progress-fill {
+    height: 100%; border-radius: 100px; background: var(--accent);
+    transition: width .5s ease;
+  }
+
+  /* DASHBOARD */
+  .dashboard-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px; padding: 24px;
+  }
+  .resume-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px;
+    transition: all .15s; cursor: pointer;
+  }
+  .resume-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+  .resume-card-score {
+    font-size: 28px; font-weight: 800; color: var(--green); margin-bottom: 4px;
+  }
+  .resume-card-title { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+  .resume-card-sub { font-size: 13px; color: var(--text-2); margin-bottom: 12px; }
+  .resume-card-meta { font-size: 12px; color: var(--text-3); margin-bottom: 14px; }
+  .resume-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* BG ACCENT */
+  .bg-accent { background: var(--accent-light); }
+  .bg-green { background: var(--green-light); }
+  .text-green { color: var(--green); }
+  .text-orange { color: var(--orange); }
+  .text-red { color: var(--red); }
+
+  /* SCROLLBAR HIDDEN */
+  .no-scroll::-webkit-scrollbar { display: none; }
+
+  /* HIDDEN */
+  .hidden { display: none !important; }
+
+  @media (max-width: 768px) {
+    .app-layout { grid-template-columns: 1fr; }
+    .app-sidebar { display: none; }
+    .ai-panel { width: 100%; border-left: none; border-top: 1px solid var(--border); }
+    .panel-content { flex-direction: column; }
+    .preview-panel { width: 100%; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 20px 60px; }
+    .form-row { grid-template-columns: 1fr; }
+    .onboarding-options { grid-template-columns: 1fr 1fr; }
+    .jd-extract-grid { grid-template-columns: 1fr; }
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════ LANDING PAGE ════════════════════ -->
+<div id="landing">
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">Belong<span style="color:var(--accent)">ix</span> <span style="color:var(--text-3)">· ResumeAI</span></a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How It Works</a>
+      <a href="#pricing">Pricing</a>
+    </div>
+    <div class="nav-ctas">
+      <button class="btn btn-secondary btn-sm" onclick="openApp('scan')">Check My Resume</button>
+      <button class="btn btn-primary btn-sm" onclick="startOnboarding()">Build My Resume</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">🤖 AI-Powered Resume Builder</div>
+    <h1>Build an ATS-Ready Resume<br>That Gets <em>Noticed</em></h1>
+    <p>Create, analyze, and optimize your resume with AI using the exact skills and keywords employers are looking for.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary btn-lg" onclick="startOnboarding()">✦ Build My Resume</button>
+      <button class="btn btn-secondary btn-lg" onclick="openApp('scan')">Check My Resume</button>
+    </div>
+
+    <!-- SCORE PREVIEW CARD -->
+    <div class="score-preview">
+      <div class="score-preview-header">
+        <div>
+          <div class="score-preview-title">ATS Readiness Score</div>
+          <div style="font-size:12px;color:var(--text-3);margin-top:2px">Updated in real-time</div>
+        </div>
+        <div class="big-score">94<span>/100</span></div>
+      </div>
+      <div class="score-bars">
+        <div class="score-bar-row">
+          <div class="score-bar-label">Keyword Match</div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:92%"></div></div>
+          <div class="score-bar-val">92%</div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label">ATS Compatibility</div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:100%"></div></div>
+          <div class="score-bar-val">100%</div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label">Experience Match</div>
+          <div class="score-bar-track"><div class="score-bar-fill orange" style="width:88%"></div></div>
+          <div class="score-bar-val">88%</div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label">Missing Keywords</div>
+          <div class="score-bar-track"><div class="score-bar-fill blue" style="width:82%"></div></div>
+          <div class="score-bar-val">3</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="section" id="how" style="background:var(--surface);">
+    <div class="section-inner" style="text-align:center;">
+      <div class="section-label">Process</div>
+      <div class="section-title">Land interviews in 3 steps</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-title">Upload or Build</div>
+          <div class="step-desc">Import your existing resume or start fresh with our guided builder.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-title">Paste Job Description</div>
+          <div class="step-desc">Paste the job description. AI extracts requirements, keywords, and skills.</div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-title">Optimize & Export</div>
+          <div class="step-desc">Apply AI recommendations until your ATS Readiness Score hits 90+, then download.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="section" id="features">
+    <div class="section-inner">
+      <div class="section-label">Features</div>
+      <div class="section-title">Everything you need to get hired</div>
+      <div class="section-sub">From building your first resume to optimizing for a senior role — all in one place.</div>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <div class="feature-title">ATS Readiness Score</div>
+          <div class="feature-desc">Transparent 0–100 score based on parsing compatibility, keyword match, structure, and content quality. Every point explained.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔍</div>
+          <div class="feature-title">Job Description Analyzer</div>
+          <div class="feature-desc">Paste any JD and AI extracts required skills, keywords, seniority, responsibilities, and priorities — instantly.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✍️</div>
+          <div class="feature-title">AI Bullet Rewriter</div>
+          <div class="feature-desc">Turn weak bullet points into powerful, ATS-friendly impact statements. AI never invents facts — it only works with your real experience.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔑</div>
+          <div class="feature-title">Keyword Match Engine</div>
+          <div class="feature-desc">See exactly which keywords match, which are related, and which are missing. Add missing keywords truthfully with AI guidance.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📄</div>
+          <div class="feature-title">10+ ATS Templates</div>
+          <div class="feature-desc">Choose from ATS-safe templates for every industry. Every template shows an ATS Safe badge and compatibility rating.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📤</div>
+          <div class="feature-title">PDF & DOCX Export</div>
+          <div class="feature-desc">Download your resume as a pixel-perfect PDF or editable DOCX. Final ATS check runs automatically before export.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📁</div>
+          <div class="feature-title">Multiple Versions</div>
+          <div class="feature-desc">Save tailored versions for different roles. Manage a Software Engineer resume, a Product Manager resume, and more.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title">One-Click Fixes</div>
+          <div class="feature-desc">Every recommendation has a "Fix Automatically" button. Apply changes, watch your score climb in real time.</div>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <div class="feature-title">Private & Secure</div>
+          <div class="feature-desc">Your resume data is private by default. Row-level security ensures no one else can access your information.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRICING -->
+  <div class="section" id="pricing" style="background:var(--surface);">
+    <div class="section-inner" style="text-align:center;">
+      <div class="section-label">Pricing</div>
+      <div class="section-title">Start free. Upgrade when ready.</div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-tier">Free</div>
+          <div class="pricing-price">₹0 <span>/ month</span></div>
+          <div class="pricing-desc">Perfect for trying out the platform.</div>
+          <ul class="pricing-features">
+            <li>1 resume</li>
+            <li>Basic ATS scan</li>
+            <li>3 AI suggestions</li>
+            <li>2 basic templates</li>
+            <li>PDF export</li>
+          </ul>
+          <button class="btn btn-secondary" style="width:100%" onclick="startOnboarding()">Get Started Free</button>
+        </div>
+        <div class="pricing-card featured">
+          <div class="pricing-badge">Most Popular</div>
+          <div class="pricing-tier">Pro</div>
+          <div class="pricing-price">₹599 <span>/ month</span></div>
+          <div class="pricing-desc">For serious job seekers.</div>
+          <ul class="pricing-features">
+            <li>Unlimited resumes</li>
+            <li>Full ATS scanner</li>
+            <li>Unlimited AI rewrites</li>
+            <li>Job-specific optimization</li>
+            <li>10+ premium templates</li>
+            <li>PDF + DOCX export</li>
+            <li>Keyword analysis</li>
+            <li>Resume versions</li>
+          </ul>
+          <button class="btn btn-primary" style="width:100%" onclick="startOnboarding()">Start Pro Trial</button>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-tier">Premium</div>
+          <div class="pricing-price">₹999 <span>/ month</span></div>
+          <div class="pricing-desc">For career professionals.</div>
+          <ul class="pricing-features">
+            <li>Everything in Pro</li>
+            <li>Cover letter generator</li>
+            <li>LinkedIn optimizer</li>
+            <li>Resume comparison</li>
+            <li>Advanced analytics</li>
+            <li>Priority AI processing</li>
+          </ul>
+          <button class="btn btn-ghost" style="width:100%" onclick="startOnboarding()">Go Premium</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <div class="section">
+    <div class="section-inner" style="max-width:640px">
+      <div class="section-label">FAQ</div>
+      <div class="section-title">Common questions</div>
+      <div style="margin-top:32px;display:flex;flex-direction:column;gap:14px">
+        <div class="section-card">
+          <div class="section-card-header" onclick="toggleFaq(this)">
+            <div class="section-card-title">Does a 100/100 score guarantee I'll get interviews?</div>
+            <span>+</span>
+          </div>
+          <div class="section-card-body hidden">
+            No. A 100/100 ATS Readiness Score means your resume passes all of our measurable optimization checks. Different employers use different ATS systems with different algorithms. Our score optimizes your resume against our checks — actual employer outcomes depend on many factors including the employer's ATS configuration, the role, and the competition pool.
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-card-header" onclick="toggleFaq(this)">
+            <div class="section-card-title">Will the AI invent things on my resume?</div>
+            <span>+</span>
+          </div>
+          <div class="section-card-body hidden">
+            Never. Our AI operates on a strict accuracy-first principle. It improves the phrasing of your real experience, suggests where metrics could be added (so you can fill in real numbers), and recommends keywords that are truthful to your background. It never fabricates jobs, companies, degrees, certifications, or achievements.
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-card-header" onclick="toggleFaq(this)">
+            <div class="section-card-title">Is my resume data private?</div>
+            <span>+</span>
+          </div>
+          <div class="section-card-body hidden">
+            Yes. Your resume is private by default, stored securely with row-level security. Only you can access your data. We never share your resume with employers or third parties.
+          </div>
+        </div>
+        <div class="section-card">
+          <div class="section-card-header" onclick="toggleFaq(this)">
+            <div class="section-card-title">Can I use this on mobile?</div>
+            <span>+</span>
+          </div>
+          <div class="section-card-body hidden">
+            Yes. The app is fully responsive. On mobile, you get a simplified section editor with the AI assistant at the bottom — optimized for thumb-friendly editing.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div style="margin-bottom:8px">
+      <strong>Belongix ResumeAI</strong> — Part of the Belongix platform for India's career learners.
+    </div>
+    <div>
+      <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="#">Contact</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ════════════════════ ONBOARDING MODAL ════════════════════ -->
+<div class="modal-overlay" id="onboardingModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Build Your Resume</div>
+      <button class="modal-close" onclick="closeModal('onboardingModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="onboarding-progress">
+        <div class="onboarding-dot done" id="ob-dot-1"></div>
+        <div class="onboarding-dot" id="ob-dot-2"></div>
+        <div class="onboarding-dot" id="ob-dot-3"></div>
+        <div class="onboarding-dot" id="ob-dot-4"></div>
+      </div>
+
+      <!-- Step 1: Career Level -->
+      <div class="onboarding-step active" id="ob-step-1">
+        <div style="font-weight:700;font-size:17px;margin-bottom:6px">What's your career level?</div>
+        <div style="font-size:14px;color:var(--text-2);margin-bottom:16px">This helps us tailor your resume format and AI suggestions.</div>
+        <div class="onboarding-options" id="career-level-options">
+          <div class="onboarding-option" onclick="selectOption(this,'career')">🎓 Student</div>
+          <div class="onboarding-option" onclick="selectOption(this,'career')">🌱 Entry Level</div>
+          <div class="onboarding-option" onclick="selectOption(this,'career')">💼 Mid Level</div>
+          <div class="onboarding-option" onclick="selectOption(this,'career')">⭐ Senior</div>
+          <div class="onboarding-option" onclick="selectOption(this,'career')">👔 Manager</div>
+          <div class="onboarding-option" onclick="selectOption(this,'career')">🏆 Executive</div>
+        </div>
+      </div>
+
+      <!-- Step 2: Target Job -->
+      <div class="onboarding-step" id="ob-step-2">
+        <div style="font-weight:700;font-size:17px;margin-bottom:6px">What job are you applying for?</div>
+        <div style="font-size:14px;color:var(--text-2);margin-bottom:16px">Enter the job title you're targeting.</div>
+        <div class="form-group">
+          <input class="form-input" id="target-job-input" placeholder="e.g. Software Engineer, Data Analyst, Product Manager..." style="font-size:16px;padding:12px">
+        </div>
+        <div style="font-size:13px;color:var(--text-3)">Popular: Software Engineer · Data Analyst · UI/UX Designer · Marketing Manager</div>
+      </div>
+
+      <!-- Step 3: Upload or Start Fresh -->
+      <div class="onboarding-step" id="ob-step-3">
+        <div style="font-weight:700;font-size:17px;margin-bottom:6px">Do you have an existing resume?</div>
+        <div style="font-size:14px;color:var(--text-2);margin-bottom:16px">Upload it and we'll extract your information automatically.</div>
+        <div class="upload-zone" onclick="triggerUpload('resume-upload')" id="resume-drop-zone">
+          <div class="upload-zone-icon">📄</div>
+          <div class="upload-zone-title">Upload PDF or DOCX</div>
+          <div class="upload-zone-sub">Drag & drop or click to select • Max 5MB</div>
+        </div>
+        <input type="file" id="resume-upload" accept=".pdf,.docx" class="hidden" onchange="handleResumeUpload(this)">
+        <div style="text-align:center;margin:16px 0;font-size:13px;color:var(--text-3)">or</div>
+        <button class="btn btn-secondary" style="width:100%" onclick="nextOnboardingStep()">✏️ Start From Scratch</button>
+      </div>
+
+      <!-- Step 4: Job Description -->
+      <div class="onboarding-step" id="ob-step-4">
+        <div style="font-weight:700;font-size:17px;margin-bottom:6px">Paste the job description</div>
+        <div style="font-size:14px;color:var(--text-2);margin-bottom:16px">AI will analyze it and tell you exactly what keywords and skills you need.</div>
+        <textarea class="form-textarea" id="jd-input-onboarding" rows="7" placeholder="Paste the full job description here..."></textarea>
+        <div style="font-size:13px;color:var(--text-3);margin-top:8px">Not applying to a specific job yet? You can skip this and add it later.</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="ob-back-btn" onclick="prevOnboardingStep()" style="display:none">← Back</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-primary" id="ob-next-btn" onclick="nextOnboardingStep()">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════ MAIN APP ════════════════════ -->
+<div id="app">
+  <div class="app-layout">
+
+    <!-- TOP BAR -->
+    <div class="app-topbar">
+      <div class="app-topbar-left">
+        <div class="app-logo">Belongix <span>·</span> ResumeAI</div>
+        <div class="app-resume-name">
+          <span>📄</span>
+          <span id="resume-title-display">My Resume — Software Engineer</span>
+        </div>
+        <div class="autosave-indicator" id="autosave-indicator">
+          <span>✓</span> Saved
+        </div>
+      </div>
+      <div class="app-topbar-right">
+        <div class="score-pill" onclick="switchTab('score')">
+          <div class="score-pill-num high" id="topbar-score">--</div>
+          <div class="score-pill-label">/100 ATS Score</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="runATSScan()">⚡ Scan Resume</button>
+        <button class="btn btn-primary btn-sm" onclick="showExportModal()">↓ Export</button>
+        <button class="btn btn-secondary btn-sm" onclick="showLanding()">← Belongix</button>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="app-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Resume Sections</div>
+        <div class="sidebar-item active" onclick="switchTab('editor');switchSection('contact')">
+          <span class="si-icon">👤</span> Contact Info
+        </div>
+        <div class="sidebar-item" onclick="switchTab('editor');switchSection('summary')">
+          <span class="si-icon">📝</span> Professional Summary
+        </div>
+        <div class="sidebar-item" onclick="switchTab('editor');switchSection('experience')">
+          <span class="si-icon">💼</span> Work Experience
+        </div>
+        <div class="sidebar-item" onclick="switchTab('editor');switchSection('education')">
+          <span class="si-icon">🎓</span> Education
+        </div>
+        <div class="sidebar-item" onclick="switchTab('editor');switchSection('skills')">
+          <span class="si-icon">⚡</span> Skills
+        </div>
+        <div class="sidebar-item" onclick="switchTab('editor');switchSection('projects')">
+          <span class="si-icon">🚀</span> Projects
+        </div>
+        <div class="sidebar-item" onclick="switchTab('editor');switchSection('certs')">
+          <span class="si-icon">🏆</span> Certifications
+        </div>
+        <div class="sidebar-item" onclick="switchTab('editor');switchSection('custom')">
+          <span class="si-icon">➕</span> Add Section
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Analysis</div>
+        <div class="sidebar-item" onclick="switchTab('score')">
+          <span class="si-icon">📊</span> ATS Score
+          <span class="si-badge" id="sidebar-issues-badge">7</span>
+        </div>
+        <div class="sidebar-item" onclick="switchTab('keywords')">
+          <span class="si-icon">🔑</span> Keywords
+        </div>
+        <div class="sidebar-item" onclick="switchTab('jd')">
+          <span class="si-icon">🔍</span> Job Description
+        </div>
+        <div class="sidebar-item" onclick="switchTab('templates')">
+          <span class="si-icon">🎨</span> Templates
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">My Resumes</div>
+        <div class="sidebar-item" onclick="switchTab('dashboard')">
+          <span class="si-icon">📁</span> Dashboard
+        </div>
+        <div class="sidebar-item" onclick="switchTab('compare')">
+          <span class="si-icon">⚖️</span> Compare
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN AREA -->
+    <div class="app-main">
+
+      <!-- TAB BAR -->
+      <div class="panel-tabs">
+        <div class="panel-tab active" onclick="switchTab('editor')" data-tab="editor">✏️ Editor</div>
+        <div class="panel-tab" onclick="switchTab('score')" data-tab="score">📊 ATS Score</div>
+        <div class="panel-tab" onclick="switchTab('keywords')" data-tab="keywords">🔑 Keywords</div>
+        <div class="panel-tab" onclick="switchTab('jd')" data-tab="jd">🔍 Job Description</div>
+        <div class="panel-tab" onclick="switchTab('templates')" data-tab="templates">🎨 Templates</div>
+        <div class="panel-tab" onclick="switchTab('dashboard')" data-tab="dashboard">📁 Dashboard</div>
+        <div class="panel-tab" onclick="switchTab('compare')" data-tab="compare">⚖️ Compare</div>
+      </div>
+
+      <!-- PANEL CONTENT -->
+      <div class="panel-content">
+
+        <!-- ── EDITOR TAB ── -->
+        <div class="editor-panel" id="tab-editor">
+
+          <!-- CONTACT SECTION -->
+          <div id="section-contact">
+            <div class="section-card">
+              <div class="section-card-header" onclick="toggleSection('contact-body')">
+                <div class="section-card-title"><span class="section-card-icon">👤</span> Contact Information</div>
+                <span style="color:var(--text-3)">▾</span>
+              </div>
+              <div class="section-card-body" id="contact-body">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input class="form-input" id="f-name" placeholder="Arjun Sharma" oninput="triggerAutosave()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Professional Title</label>
+                    <input class="form-input" id="f-title" placeholder="Software Engineer" oninput="triggerAutosave()">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Email *</label>
+                    <input class="form-input" id="f-email" type="email" placeholder="arjun@email.com" oninput="validateEmail(this)">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input class="form-input" id="f-phone" placeholder="+91 98765 43210" oninput="triggerAutosave()">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input class="form-input" id="f-city" placeholder="Bangalore" oninput="triggerAutosave()">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">State / Country</label>
+                    <input class="form-input" id="f-country" placeholder="Karnataka, India" oninput="triggerAutosave()">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">LinkedIn URL</label>
+                    <input class="form-input" id="f-linkedin" placeholder="linkedin.com/in/arjun-sharma" oninput="validateURL(this)">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">GitHub URL</label>
+                    <input class="form-input" id="f-github" placeholder="github.com/arjunsharma" oninput="validateURL(this)">
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label">Portfolio / Website</label>
+                    <input class="form-input" id="f-website" placeholder="arjunsharma.dev" oninput="validateURL(this)">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SUMMARY -->
+            <div class="section-card">
+              <div class="section-card-header" onclick="toggleSection('summary-body')">
+                <div class="section-card-title"><span class="section-card-icon">📝</span> Professional Summary</div>
+                <span style="color:var(--text-3)">▾</span>
+              </div>
+              <div class="section-card-body" id="summary-body">
+                <textarea class="form-textarea" id="f-summary" rows="4" placeholder="A results-driven software engineer with 4 years of experience..." oninput="triggerAutosave()"></textarea>
+                <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+                  <button class="btn btn-sm" style="background:var(--purple-light);color:var(--purple);border:1px solid var(--purple)" onclick="generateSummary()">✨ Generate Summary</button>
+                  <button class="btn btn-sm btn-secondary" onclick="generateSummaryVersions()">Generate 3 Versions</button>
+                  <div style="margin-left:auto;font-size:12px;color:var(--text-3);align-self:center" id="summary-char-count">0 chars</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- EXPERIENCE -->
+            <div class="section-card">
+              <div class="section-card-header" onclick="toggleSection('experience-body')">
+                <div class="section-card-title"><span class="section-card-icon">💼</span> Work Experience</div>
+                <span style="color:var(--text-3)">▾</span>
+              </div>
+              <div class="section-card-body" id="experience-body">
+                <div id="experience-items"></div>
+                <button class="btn btn-secondary btn-sm" onclick="addExperience()">+ Add Position</button>
+              </div>
+            </div>
+
+            <!-- EDUCATION -->
+            <div class="section-card">
+              <div class="section-card-header" onclick="toggleSection('education-body')">
+                <div class="section-card-title"><span class="section-card-icon">🎓</span> Education</div>
+                <span style="color:var(--text-3)">▾</span>
+              </div>
+              <div class="section-card-body" id="education-body">
+                <div id="education-items"></div>
+                <button class="btn btn-secondary btn-sm" onclick="addEducation()">+ Add Education</button>
+              </div>
+            </div>
+
+            <!-- SKILLS -->
+            <div class="section-card">
+              <div class="section-card-header" onclick="toggleSection('skills-body')">
+                <div class="section-card-title"><span class="section-card-icon">⚡</span> Skills</div>
+                <span style="color:var(--text-3)">▾</span>
+              </div>
+              <div class="section-card-body" id="skills-body">
+                <div class="tab-group">
+                  <div class="tab active" onclick="switchSkillTab('technical')">Technical</div>
+                  <div class="tab" onclick="switchSkillTab('soft')">Soft Skills</div>
+                  <div class="tab" onclick="switchSkillTab('domain')">Domain</div>
+                </div>
+                <div id="skills-technical">
+                  <div id="technical-skills-tags"></div>
+                  <div style="display:flex;gap:8px;margin-top:10px">
+                    <input class="form-input" id="skill-input-technical" placeholder="Add skill (e.g. React, Python, SQL...)" style="flex:1" onkeypress="if(event.key==='Enter')addSkill('technical')">
+                    <button class="btn btn-secondary btn-sm" onclick="addSkill('technical')">Add</button>
+                    <button class="btn btn-sm" style="background:var(--purple-light);color:var(--purple);border:1px solid var(--purple)" onclick="suggestSkills()">✨ Suggest from JD</button>
+                  </div>
+                </div>
+                <div id="skills-soft" class="hidden">
+                  <div id="soft-skills-tags"></div>
+                  <div style="display:flex;gap:8px;margin-top:10px">
+                    <input class="form-input" id="skill-input-soft" placeholder="Add soft skill (e.g. Leadership, Communication...)" style="flex:1" onkeypress="if(event.key==='Enter')addSkill('soft')">
+                    <button class="btn btn-secondary btn-sm" onclick="addSkill('soft')">Add</button>
+                  </div>
+                </div>
+                <div id="skills-domain" class="hidden">
+                  <div id="domain-skills-tags"></div>
+                  <div style="display:flex;gap:8px;margin-top:10px">
+                    <input class="form-input" id="skill-input-domain" placeholder="Add domain skill (e.g. Agile, Financial Modelling...)" style="flex:1" onkeypress="if(event.key==='Enter')addSkill('domain')">
+                    <button class="btn btn-secondary btn-sm" onclick="addSkill('domain')">Add</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- PROJECTS -->
+            <div class="section-card">
+              <div class="section-card-header" onclick="toggleSection('projects-body')">
+                <div class="section-card-title"><span class="section-card-icon">🚀</span> Projects</div>
+                <span style="color:var(--text-3)">▾</span>
+              </div>
+              <div class="section-card-body" id="projects-body">
+                <div id="project-items"></div>
+                <button class="btn btn-secondary btn-sm" onclick="addProject()">+ Add Project</button>
+              </div>
+            </div>
+
+            <!-- CERTIFICATIONS -->
+            <div class="section-card">
+              <div class="section-card-header" onclick="toggleSection('certs-body')">
+                <div class="section-card-title"><span class="section-card-icon">🏆</span> Certifications</div>
+                <span style="color:var(--text-3)">▾</span>
+              </div>
+              <div class="section-card-body" id="certs-body">
+                <div id="cert-items"></div>
+                <button class="btn btn-secondary btn-sm" onclick="addCert()">+ Add Certification</button>
+              </div>
+            </div>
+          </div>
+        </div><!-- end tab-editor -->
+
+        <!-- ── ATS SCORE TAB ── -->
+        <div class="editor-panel hidden" id="tab-score">
+          <div id="ats-score-content">
+            <div style="text-align:center;padding:60px 24px;">
+              <div style="font-size:48px;margin-bottom:16px">📊</div>
+              <div style="font-weight:700;font-size:18px;margin-bottom:8px">Run your ATS scan</div>
+              <div style="color:var(--text-2);font-size:14px;margin-bottom:24px">Analyze your resume against the job description to get your ATS Readiness Score.</div>
+              <button class="btn btn-primary btn-lg" onclick="runATSScan()">⚡ Scan My Resume</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── KEYWORDS TAB ── -->
+        <div class="editor-panel hidden" id="tab-keywords">
+          <div id="keywords-content">
+            <div style="padding:16px 0">
+              <div style="font-weight:700;font-size:16px;margin-bottom:4px">Keyword Match Analysis</div>
+              <div style="font-size:14px;color:var(--text-2);margin-bottom:20px">Compare your resume keywords against the job description.</div>
+
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
+                <div style="background:var(--green-light);border:1px solid var(--green);border-radius:var(--radius-sm);padding:16px;text-align:center">
+                  <div style="font-size:28px;font-weight:800;color:var(--green)" id="kw-matched-count">0</div>
+                  <div style="font-size:13px;color:var(--text-2)">Matched</div>
+                </div>
+                <div style="background:var(--red-light);border:1px solid var(--red);border-radius:var(--radius-sm);padding:16px;text-align:center">
+                  <div style="font-size:28px;font-weight:800;color:var(--red)" id="kw-missing-count">0</div>
+                  <div style="font-size:13px;color:var(--text-2)">Missing</div>
+                </div>
+                <div style="background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--radius-sm);padding:16px;text-align:center">
+                  <div style="font-size:28px;font-weight:800;color:var(--accent)" id="kw-rate">0%</div>
+                  <div style="font-size:13px;color:var(--text-2)">Match Rate</div>
+                </div>
+              </div>
+
+              <div class="keyword-section">
+                <div class="keyword-section-title">✅ Exact Matches <span class="keyword-count" id="matched-kw-count">0</span></div>
+                <div id="matched-keywords"></div>
+              </div>
+              <div class="keyword-section">
+                <div class="keyword-section-title">🔶 Related Matches <span class="keyword-count" id="related-kw-count">0</span></div>
+                <div id="related-keywords"></div>
+              </div>
+              <div class="keyword-section">
+                <div class="keyword-section-title">❌ Missing Keywords <span class="keyword-count" id="missing-kw-count">0</span></div>
+                <div id="missing-keywords"></div>
+                <div style="margin-top:10px;font-size:12px;color:var(--text-3)">⚠️ Only add keywords that truthfully describe your experience and skills.</div>
+              </div>
+
+              <div style="text-align:center;padding:20px;color:var(--text-3);font-size:14px" id="kw-empty-state">
+                Paste a job description in the "Job Description" tab to see keyword analysis.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── JOB DESCRIPTION TAB ── -->
+        <div class="editor-panel hidden" id="tab-jd">
+          <div style="font-weight:700;font-size:16px;margin-bottom:4px">Job Description Analyzer</div>
+          <div style="font-size:14px;color:var(--text-2);margin-bottom:16px">Paste the job description to extract requirements and keywords.</div>
+          <textarea class="form-textarea" id="jd-full-input" rows="8" placeholder="Paste the full job description here..." oninput="handleJDInput()"></textarea>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn btn-primary" onclick="analyzeJD()">🔍 Analyze Job Description</button>
+            <button class="btn btn-secondary" onclick="clearJD()">Clear</button>
+          </div>
+          <div id="jd-results" class="hidden" style="margin-top:24px">
+            <div style="font-weight:700;font-size:15px;margin-bottom:12px">Extracted Information</div>
+            <div id="jd-info-cards" class="jd-extract-grid"></div>
+            <div style="font-weight:700;font-size:15px;margin:20px 0 12px">Keyword Importance</div>
+            <div id="jd-keywords-list"></div>
+          </div>
+        </div>
+
+        <!-- ── TEMPLATES TAB ── -->
+        <div class="editor-panel hidden" id="tab-templates">
+          <div style="padding:0 0 16px">
+            <div style="font-weight:700;font-size:16px;margin-bottom:4px">Resume Templates</div>
+            <div style="font-size:14px;color:var(--text-2)">Choose a template. Templates with ✅ ATS Safe badge are optimized for ATS parsing.</div>
+          </div>
+          <div class="templates-grid" id="templates-grid" style="padding:0"></div>
+        </div>
+
+        <!-- ── DASHBOARD TAB ── -->
+        <div class="editor-panel hidden" id="tab-dashboard">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+            <div>
+              <div style="font-weight:700;font-size:18px">My Resumes</div>
+              <div style="font-size:14px;color:var(--text-2)">Manage all your resume versions</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('editor')">+ New Resume</button>
+              <button class="btn btn-primary btn-sm" onclick="switchTab('editor')">Upload Resume</button>
+            </div>
+          </div>
+          <div class="dashboard-grid" id="dashboard-grid"></div>
+        </div>
+
+        <!-- ── COMPARE TAB ── -->
+        <div class="editor-panel hidden" id="tab-compare">
+          <div style="font-weight:700;font-size:16px;margin-bottom:4px">Resume Comparison</div>
+          <div style="font-size:14px;color:var(--text-2);margin-bottom:20px">Compare two resume versions side by side.</div>
+          <div class="compare-grid" id="compare-grid">
+            <div class="compare-col">
+              <div class="compare-col-title" style="color:var(--text-2)">Resume A</div>
+              <div class="compare-col-sub">Current Resume</div>
+              <div id="compare-a-score" style="font-size:48px;font-weight:900;color:var(--orange);margin-bottom:16px">73<span style="font-size:20px;color:var(--text-3)">/100</span></div>
+              <div class="compare-row"><span>Keyword Match</span><span class="compare-val worse">68%</span></div>
+              <div class="compare-row"><span>ATS Parsing</span><span class="compare-val">15/20</span></div>
+              <div class="compare-row"><span>Experience</span><span class="compare-val">14/20</span></div>
+              <div class="compare-row"><span>Structure</span><span class="compare-val">12/15</span></div>
+              <div class="compare-row"><span>Content Quality</span><span class="compare-val worse">10/15</span></div>
+            </div>
+            <div class="compare-col" style="border-color:var(--green)">
+              <div class="compare-col-title" style="color:var(--green)">Resume B</div>
+              <div class="compare-col-sub">After Optimization</div>
+              <div style="font-size:48px;font-weight:900;color:var(--green);margin-bottom:16px">94<span style="font-size:20px;color:var(--text-3)">/100</span></div>
+              <div class="compare-row"><span>Keyword Match</span><span class="compare-val better">91%</span></div>
+              <div class="compare-row"><span>ATS Parsing</span><span class="compare-val better">20/20</span></div>
+              <div class="compare-row"><span>Experience</span><span class="compare-val better">18/20</span></div>
+              <div class="compare-row"><span>Structure</span><span class="compare-val better">15/15</span></div>
+              <div class="compare-row"><span>Content Quality</span><span class="compare-val better">14/15</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI PANEL (shared) -->
+        <div class="ai-panel" id="ai-panel">
+          <div class="ai-panel-header">
+            <div class="ai-panel-title">
+              <span>✨</span> AI Assistant
+              <span class="ai-badge">POWERED BY CLAUDE</span>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="clearChat()">Clear</button>
+          </div>
+          <div class="ai-chat-area" id="ai-chat">
+            <div class="ai-msg ai">
+              👋 Hi! I'm your resume AI. I can help you improve bullets, suggest keywords, rewrite your summary, and optimize for your target role.
+              <div class="ai-actions">
+                <div class="ai-action-btn" onclick="aiQuickAction('improve')">Improve My Resume</div>
+                <div class="ai-action-btn" onclick="aiQuickAction('keywords')">Show Missing Keywords</div>
+                <div class="ai-action-btn" onclick="aiQuickAction('summary')">Rewrite Summary</div>
+                <div class="ai-action-btn" onclick="aiQuickAction('optimize')">Optimize for Job</div>
+              </div>
+            </div>
+          </div>
+          <div class="ai-input-area">
+            <textarea class="ai-input" id="ai-user-input" placeholder="Ask anything about your resume..." rows="2" onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAIMessage()}"></textarea>
+            <button class="ai-send-btn" onclick="sendAIMessage()">↑</button>
+          </div>
+        </div>
+
+      </div><!-- end panel-content -->
+    </div><!-- end app-main -->
+  </div><!-- end app-layout -->
+</div><!-- end app -->
+
+<!-- EXPORT MODAL -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Export Resume</div>
+      <button class="modal-close" onclick="closeModal('exportModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <!-- Final ATS Check -->
+      <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:16px;margin-bottom:20px">
+        <div style="font-weight:700;margin-bottom:12px;font-size:14px">Final ATS Check</div>
+        <div class="checklist" id="export-checklist"></div>
+      </div>
+      <div style="font-weight:700;margin-bottom:12px">Choose format</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="border:2px solid var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;cursor:pointer;transition:all .15s" onclick="exportResume('pdf')" class="export-option">
+          <div style="font-size:32px;margin-bottom:8px">📄</div>
+          <div style="font-weight:700;margin-bottom:4px">Download PDF</div>
+          <div style="font-size:13px;color:var(--text-2)">Best for most applications. Preserves formatting.</div>
+        </div>
+        <div style="border:2px solid var(--border);border-radius:var(--radius-sm);padding:20px;text-align:center;cursor:pointer;transition:all .15s" onclick="exportResume('docx')" class="export-option">
+          <div style="font-size:32px;margin-bottom:8px">📝</div>
+          <div style="font-weight:700;margin-bottom:4px">Download DOCX</div>
+          <div style="font-size:13px;color:var(--text-2)">Editable Word document for further customization.</div>
+        </div>
+      </div>
+      <div style="margin-top:16px;font-size:12px;color:var(--text-3)">
+        ATS Readiness is an estimate based on our analysis and does not guarantee a specific employer's ATS outcome.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- BULLET IMPROVE MODAL -->
+<div class="modal-overlay" id="bulletModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✨ AI Bullet Improver</div>
+      <button class="modal-close" onclick="closeModal('bulletModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:16px">
+        <div class="form-label">Original Bullet</div>
+        <div id="bullet-original" style="background:var(--surface-2);padding:12px;border-radius:var(--radius-sm);font-size:14px;color:var(--text-2)"></div>
+      </div>
+      <div style="margin-bottom:16px">
+        <div class="form-label" style="color:var(--purple)">✨ AI Suggestions</div>
+        <div id="bullet-suggestions" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+      <div style="background:var(--orange-light);border:1px solid var(--orange);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--text-2)">
+        ⚠️ The AI rewrites use only your provided information. If a metric placeholder appears, fill in your real number before saving.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY VERSIONS MODAL -->
+<div class="modal-overlay" id="summaryModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✨ Professional Summary Versions</div>
+      <button class="modal-close" onclick="closeModal('summaryModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="summary-versions" style="display:flex;flex-direction:column;gap:14px"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════
+const state = {
+  currentTab: 'editor',
+  currentSection: 'contact',
+  careerLevel: '',
+  targetJob: '',
+  onboardingStep: 1,
+  score: null,
+  skills: { technical: [], soft: [], domain: [] },
+  experience: [],
+  education: [],
+  projects: [],
+  certs: [],
+  jdText: '',
+  jdKeywords: [],
+  currentTemplate: 'ats-classic',
+  autosaveTimeout: null,
+  currentBulletCallback: null,
+};
+
+// ════════════════════════════════════════════════
+// LANDING / APP TOGGLE
+// ════════════════════════════════════════════════
+function showLanding() {
+  // If we came from dashboard, go back there; else show landing
+  if (document.referrer && document.referrer.includes('dashboard.html')) {
+    window.location.href = 'dashboard.html';
+  } else {
+    document.getElementById('landing').style.display = 'block';
+    document.getElementById('app').style.display = 'none';
+  }
+}
+function openApp(tab) {
+  document.getElementById('landing').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  if (tab) switchTab(tab);
+  initApp();
+}
+
+// ════════════════════════════════════════════════
+// ONBOARDING
+// ════════════════════════════════════════════════
+function startOnboarding() {
+  state.onboardingStep = 1;
+  updateOnboardingDots();
+  document.querySelectorAll('.onboarding-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('ob-step-1').classList.add('active');
+  document.getElementById('ob-back-btn').style.display = 'none';
+  openModal('onboardingModal');
+}
+
+function nextOnboardingStep() {
+  if (state.onboardingStep === 1) {
+    const sel = document.querySelector('#career-level-options .onboarding-option.selected');
+    if (!sel) { showToast('Please select your career level', 'error'); return; }
+    state.careerLevel = sel.textContent.trim();
+  }
+  if (state.onboardingStep === 2) {
+    const val = document.getElementById('target-job-input').value.trim();
+    state.targetJob = val || 'General Position';
+    document.getElementById('resume-title-display').textContent = `My Resume — ${state.targetJob}`;
+  }
+  if (state.onboardingStep === 4) {
+    const jd = document.getElementById('jd-input-onboarding').value.trim();
+    if (jd) {
+      state.jdText = jd;
+      document.getElementById('jd-full-input').value = jd;
+    }
+    closeModal('onboardingModal');
+    openApp('editor');
+    if (state.jdText) setTimeout(() => analyzeJD(), 500);
+    return;
+  }
+
+  state.onboardingStep++;
+  document.querySelectorAll('.onboarding-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`ob-step-${state.onboardingStep}`).classList.add('active');
+  document.getElementById('ob-back-btn').style.display = state.onboardingStep > 1 ? '' : 'none';
+  document.getElementById('ob-next-btn').textContent = state.onboardingStep === 4 ? 'Launch Builder →' : 'Continue →';
+  updateOnboardingDots();
+}
+
+function prevOnboardingStep() {
+  if (state.onboardingStep <= 1) return;
+  state.onboardingStep--;
+  document.querySelectorAll('.onboarding-step').forEach(s => s.classList.remove('active'));
+  document.getElementById(`ob-step-${state.onboardingStep}`).classList.add('active');
+  document.getElementById('ob-back-btn').style.display = state.onboardingStep > 1 ? '' : 'none';
+  document.getElementById('ob-next-btn').textContent = 'Continue →';
+  updateOnboardingDots();
+}
+
+function updateOnboardingDots() {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById(`ob-dot-${i}`);
+    dot.classList.toggle('done', i <= state.onboardingStep);
+  }
+}
+
+function selectOption(el, group) {
+  el.closest('.onboarding-options').querySelectorAll('.onboarding-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ════════════════════════════════════════════════
+// APP INIT
+// ════════════════════════════════════════════════
+function initApp() {
+  renderTemplates();
+  renderDashboard();
+  initExperience();
+  initEducation();
+  updateScore(null);
+}
+
+function initExperience() {
+  if (state.experience.length === 0) addExperience(true);
+}
+function initEducation() {
+  if (state.education.length === 0) addEducation(true);
+}
+
+// ════════════════════════════════════════════════
+// TAB SWITCHING
+// ════════════════════════════════════════════════
+function switchTab(tab) {
+  state.currentTab = tab;
+  document.querySelectorAll('.panel-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  ['editor','score','keywords','jd','templates','dashboard','compare'].forEach(t => {
+    const el = document.getElementById(`tab-${t}`);
+    if (el) el.classList.toggle('hidden', t !== tab);
+  });
+  document.querySelectorAll('.sidebar-item').forEach(si => si.classList.remove('active'));
+}
+
+function switchSection(sec) {
+  state.currentSection = sec;
+  const target = document.getElementById(`section-${sec}`);
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('hidden');
+}
+
+// ════════════════════════════════════════════════
+// EXPERIENCE
+// ════════════════════════════════════════════════
+function addExperience(silent = false) {
+  const id = Date.now();
+  const exp = {
+    id, title: '', company: '', location: '',
+    startDate: '', endDate: '', current: false,
+    bullets: ['']
+  };
+  state.experience.push(exp);
+  renderExperience();
+  if (!silent) triggerAutosave();
+}
+
+function renderExperience() {
+  const container = document.getElementById('experience-items');
+  container.innerHTML = '';
+  state.experience.forEach((exp, idx) => {
+    const div = document.createElement('div');
+    div.className = 'exp-item';
+    div.innerHTML = `
+      <div class="exp-item-header">
+        <div>
+          <div class="exp-item-title">${exp.title || 'New Position'}</div>
+          <div class="exp-item-sub">${exp.company || ''}${exp.location ? ` · ${exp.location}` : ''}</div>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="removeExp(${idx})">Remove</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Job Title</label>
+          <input class="form-input" value="${exp.title}" placeholder="Software Engineer" oninput="updateExp(${idx},'title',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Company</label>
+          <input class="form-input" value="${exp.company}" placeholder="Acme Corp" oninput="updateExp(${idx},'company',this.value)">
+        </div>
+      </div>
+      <div class="form-row three">
+        <div class="form-group">
+          <label class="form-label">Location</label>
+          <input class="form-input" value="${exp.location}" placeholder="Bangalore, India" oninput="updateExp(${idx},'location',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Start Date</label>
+          <input class="form-input" value="${exp.startDate}" placeholder="Jan 2022" oninput="updateExp(${idx},'startDate',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Date</label>
+          <input class="form-input" value="${exp.current ? 'Present' : exp.endDate}" placeholder="Dec 2023 / Present" ${exp.current ? 'disabled' : ''} oninput="updateExp(${idx},'endDate',this.value)">
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <input type="checkbox" id="current-${idx}" ${exp.current ? 'checked' : ''} onchange="updateExp(${idx},'current',this.checked)">
+        <label for="current-${idx}" style="font-size:13px;color:var(--text-2)">I currently work here</label>
+      </div>
+      <div class="form-label" style="margin-bottom:8px">Responsibilities & Achievements</div>
+      <div id="bullets-${idx}"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick="addBullet(${idx})">+ Add Bullet</button>
+        <button class="btn btn-sm" style="background:var(--purple-light);color:var(--purple);border:1px solid var(--purple)" onclick="aiImproveBullets(${idx})">✨ Improve All Bullets</button>
+      </div>
+    `;
+    container.appendChild(div);
+    renderBullets(idx);
+  });
+}
+
+function renderBullets(expIdx) {
+  const container = document.getElementById(`bullets-${expIdx}`);
+  if (!container) return;
+  container.innerHTML = '';
+  const exp = state.experience[expIdx];
+  exp.bullets.forEach((bullet, bIdx) => {
+    const div = document.createElement('div');
+    div.className = 'bullet-item';
+    div.innerHTML = `
+      <textarea class="bullet-text" rows="2" placeholder="Led development of a customer-facing feature that..." oninput="updateBullet(${expIdx},${bIdx},this.value)">${bullet}</textarea>
+      <button class="bullet-ai-btn" onclick="improveSingleBullet(${expIdx},${bIdx})">✨ AI</button>
+      <button class="btn btn-secondary btn-sm" onclick="removeBullet(${expIdx},${bIdx})" style="padding:7px 8px;flex-shrink:0">✕</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function updateExp(idx, field, value) {
+  state.experience[idx][field] = value;
+  renderExperience();
+  triggerAutosave();
+}
+
+function removeExp(idx) {
+  state.experience.splice(idx, 1);
+  renderExperience();
+  triggerAutosave();
+}
+
+function addBullet(expIdx) {
+  state.experience[expIdx].bullets.push('');
+  renderBullets(expIdx);
+  triggerAutosave();
+}
+
+function removeBullet(expIdx, bIdx) {
+  state.experience[expIdx].bullets.splice(bIdx, 1);
+  renderBullets(expIdx);
+  triggerAutosave();
+}
+
+function updateBullet(expIdx, bIdx, value) {
+  state.experience[expIdx].bullets[bIdx] = value;
+  triggerAutosave();
+}
+
+// ════════════════════════════════════════════════
+// EDUCATION
+// ════════════════════════════════════════════════
+function addEducation(silent = false) {
+  const id = Date.now();
+  state.education.push({ id, degree: '', institution: '', year: '', gpa: '', field: '' });
+  renderEducation();
+  if (!silent) triggerAutosave();
+}
+
+function renderEducation() {
+  const container = document.getElementById('education-items');
+  container.innerHTML = '';
+  state.education.forEach((edu, idx) => {
+    const div = document.createElement('div');
+    div.className = 'exp-item';
+    div.innerHTML = `
+      <div class="exp-item-header">
+        <div>
+          <div class="exp-item-title">${edu.degree || 'Degree'} ${edu.field ? `in ${edu.field}` : ''}</div>
+          <div class="exp-item-sub">${edu.institution || ''}</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="removeEdu(${idx})">Remove</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Degree</label>
+          <input class="form-input" value="${edu.degree}" placeholder="B.Tech / MBA / B.Sc..." oninput="updateEdu(${idx},'degree',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Field of Study</label>
+          <input class="form-input" value="${edu.field}" placeholder="Computer Science" oninput="updateEdu(${idx},'field',this.value)">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Institution</label>
+          <input class="form-input" value="${edu.institution}" placeholder="IIT Bombay" oninput="updateEdu(${idx},'institution',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Year</label>
+          <input class="form-input" value="${edu.year}" placeholder="2020" oninput="updateEdu(${idx},'year',this.value)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">GPA / Score (optional)</label>
+        <input class="form-input" value="${edu.gpa}" placeholder="8.5/10 or 3.8/4.0" oninput="updateEdu(${idx},'gpa',this.value)">
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function updateEdu(idx, field, value) {
+  state.education[idx][field] = value;
+  renderEducation();
+  triggerAutosave();
+}
+
+function removeEdu(idx) {
+  state.education.splice(idx, 1);
+  renderEducation();
+  triggerAutosave();
+}
+
+// ════════════════════════════════════════════════
+// SKILLS
+// ════════════════════════════════════════════════
+function switchSkillTab(type) {
+  ['technical','soft','domain'].forEach(t => {
+    document.getElementById(`skills-${t}`).classList.toggle('hidden', t !== type);
+  });
+  document.querySelectorAll('#skills-body .tab').forEach((tab, i) => {
+    tab.classList.toggle('active', ['technical','soft','domain'][i] === type);
+  });
+}
+
+function addSkill(type) {
+  const input = document.getElementById(`skill-input-${type}`);
+  const val = input.value.trim();
+  if (!val) return;
+  if (!state.skills[type].includes(val)) {
+    state.skills[type].push(val);
+    renderSkills(type);
+    triggerAutosave();
+  }
+  input.value = '';
+}
+
+function removeSkill(type, skill) {
+  state.skills[type] = state.skills[type].filter(s => s !== skill);
+  renderSkills(type);
+  triggerAutosave();
+}
+
+function renderSkills(type) {
+  const container = document.getElementById(`${type}-skills-tags`);
+  if (!container) return;
+  container.innerHTML = '';
+  state.skills[type].forEach(skill => {
+    const tag = document.createElement('span');
+    tag.className = 'skill-tag added';
+    tag.innerHTML = `${skill} <span class="remove" onclick="removeSkill('${type}','${skill}')">✕</span>`;
+    container.appendChild(tag);
+  });
+}
+
+// ════════════════════════════════════════════════
+// PROJECTS & CERTS
+// ════════════════════════════════════════════════
+function addProject() {
+  const id = Date.now();
+  state.projects.push({ id, name: '', description: '', tech: '', link: '' });
+  renderProjects();
+}
+
+function renderProjects() {
+  const c = document.getElementById('project-items');
+  c.innerHTML = '';
+  state.projects.forEach((p, i) => {
+    const div = document.createElement('div');
+    div.className = 'exp-item';
+    div.innerHTML = `
+      <div class="exp-item-header">
+        <div class="exp-item-title">${p.name || 'New Project'}</div>
+        <button class="btn btn-secondary btn-sm" onclick="removeProject(${i})">Remove</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Project Name</label>
+          <input class="form-input" value="${p.name}" placeholder="E-commerce Platform" oninput="updateProject(${i},'name',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tech Stack</label>
+          <input class="form-input" value="${p.tech}" placeholder="React, Node.js, MongoDB" oninput="updateProject(${i},'tech',this.value)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" rows="2" placeholder="Built a full-stack e-commerce platform with..." oninput="updateProject(${i},'description',this.value)">${p.description}</textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Project Link (optional)</label>
+        <input class="form-input" value="${p.link}" placeholder="github.com/yourname/project" oninput="updateProject(${i},'link',this.value)">
+      </div>
+    `;
+    c.appendChild(div);
+  });
+}
+
+function updateProject(i, f, v) { state.projects[i][f] = v; renderProjects(); triggerAutosave(); }
+function removeProject(i) { state.projects.splice(i, 1); renderProjects(); }
+
+function addCert() {
+  state.certs.push({ name: '', issuer: '', year: '' });
+  renderCerts();
+}
+
+function renderCerts() {
+  const c = document.getElementById('cert-items');
+  c.innerHTML = '';
+  state.certs.forEach((cert, i) => {
+    const div = document.createElement('div');
+    div.className = 'exp-item';
+    div.innerHTML = `
+      <div class="exp-item-header">
+        <div class="exp-item-title">${cert.name || 'New Certification'}</div>
+        <button class="btn btn-secondary btn-sm" onclick="removeCert(${i})">Remove</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Certification Name</label>
+          <input class="form-input" value="${cert.name}" placeholder="AWS Solutions Architect" oninput="updateCert(${i},'name',this.value)">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Issuing Organization</label>
+          <input class="form-input" value="${cert.issuer}" placeholder="Amazon Web Services" oninput="updateCert(${i},'issuer',this.value)">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Year</label>
+        <input class="form-input" value="${cert.year}" placeholder="2023" oninput="updateCert(${i},'year',this.value)">
+      </div>
+    `;
+    c.appendChild(div);
+  });
+}
+
+function updateCert(i, f, v) { state.certs[i][f] = v; renderCerts(); triggerAutosave(); }
+function removeCert(i) { state.certs.splice(i, 1); renderCerts(); }
+
+// ════════════════════════════════════════════════
+// VALIDATION
+// ════════════════════════════════════════════════
+function validateEmail(input) {
+  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.value);
+  input.style.borderColor = input.value && !valid ? 'var(--red)' : '';
+  triggerAutosave();
+}
+function validateURL(input) {
+  const val = input.value.trim();
+  if (!val) { input.style.borderColor = ''; return; }
+  const valid = val.includes('.') && val.length > 4;
+  input.style.borderColor = !valid ? 'var(--red)' : '';
+  triggerAutosave();
+}
+
+// ════════════════════════════════════════════════
+// AUTOSAVE
+// ════════════════════════════════════════════════
+function triggerAutosave() {
+  const indicator = document.getElementById('autosave-indicator');
+  if (indicator) indicator.innerHTML = '<span class="loading-spinner"></span> Saving...';
+  clearTimeout(state.autosaveTimeout);
+  state.autosaveTimeout = setTimeout(() => {
+    if (indicator) indicator.innerHTML = '✓ Saved';
+    updateResumePreview();
+  }, 800);
+}
+
+// ════════════════════════════════════════════════
+// ATS SCORE ENGINE (rule-based + AI)
+// ════════════════════════════════════════════════
+function runATSScan() {
+  switchTab('score');
+  const content = document.getElementById('ats-score-content');
+  content.innerHTML = `
+    <div style="text-align:center;padding:60px 24px">
+      <div class="loading-spinner" style="width:40px;height:40px;margin:0 auto 16px"></div>
+      <div style="font-weight:700;font-size:16px;margin-bottom:8px">Analyzing your resume...</div>
+      <div style="font-size:13px;color:var(--text-2)">Running ATS compatibility checks</div>
+      <div class="progress-bar" style="max-width:280px;margin:20px auto">
+        <div class="progress-fill" id="scan-progress" style="width:0%"></div>
+      </div>
+    </div>
+  `;
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += Math.random() * 15;
+    if (progress >= 95) { clearInterval(interval); }
+    const bar = document.getElementById('scan-progress');
+    if (bar) bar.style.width = Math.min(progress, 95) + '%';
+  }, 200);
+  setTimeout(() => {
+    clearInterval(interval);
+    displayATSResults();
+  }, 2200);
+}
+
+function computeScore() {
+  // Rule-based scoring
+  const name = document.getElementById('f-name')?.value?.trim();
+  const email = document.getElementById('f-email')?.value?.trim();
+  const phone = document.getElementById('f-phone')?.value?.trim();
+  const linkedin = document.getElementById('f-linkedin')?.value?.trim();
+  const summary = document.getElementById('f-summary')?.value?.trim();
+  const allBullets = state.experience.flatMap(e => e.bullets.filter(b => b.trim()));
+
+  let parsing = 0;
+  let parsingIssues = [];
+  if (name) parsing += 5; else parsingIssues.push('Missing full name');
+  if (email) parsing += 4; else parsingIssues.push('Missing email address');
+  if (phone) parsing += 3; else parsingIssues.push('Missing phone number');
+  parsing += 4; // standard headings (always used)
+  parsing += 4; // clean structure
+  const parsingMax = 20;
+
+  let keywords = 0;
+  let keywordIssues = [];
+  const jdKws = state.jdKeywords;
+  const resumeText = getResumeText().toLowerCase();
+  if (jdKws.length > 0) {
+    const matched = jdKws.filter(k => resumeText.includes(k.toLowerCase()));
+    const kRate = matched.length / jdKws.length;
+    keywords = Math.round(kRate * 25);
+    if (kRate < 0.5) keywordIssues.push(`${jdKws.length - matched.length} high-priority keywords missing`);
+    if (summary) keywords += 5; else keywordIssues.push('No professional summary — key for keyword placement');
+  } else {
+    keywords = summary ? 18 : 12;
+    keywordIssues.push('Paste a job description for precise keyword matching');
+  }
+  const keywordsMax = 30;
+
+  let experience = 0;
+  let expIssues = [];
+  const hasExp = state.experience.length > 0 && state.experience.some(e => e.title || e.company);
+  if (hasExp) experience += 10; else expIssues.push('Add work experience');
+  if (allBullets.length >= 3) experience += 5; else expIssues.push('Add more detailed bullet points (aim for 3–5 per role)');
+  const strongVerbs = ['developed','led','managed','designed','implemented','optimized','delivered','launched','built','created','reduced','increased','improved','automated','coordinated'];
+  const hasStrongVerbs = allBullets.some(b => strongVerbs.some(v => b.toLowerCase().includes(v)));
+  if (hasStrongVerbs) experience += 5; else expIssues.push('Use stronger action verbs in your bullets');
+  const expMax = 20;
+
+  let structure = 0;
+  let structIssues = [];
+  if (hasExp) structure += 4; else structIssues.push('Add work experience section');
+  if (state.education.length > 0) structure += 4; else structIssues.push('Add education section');
+  if (state.skills.technical.length > 0 || state.skills.soft.length > 0) structure += 4; else structIssues.push('Add skills section');
+  structure += 3; // logical order always maintained
+  const structMax = 15;
+
+  let content = 0;
+  let contentIssues = [];
+  if (hasStrongVerbs) content += 5; else contentIssues.push('Weak verbs detected (e.g. "helped", "worked on") — use stronger alternatives');
+  if (summary && summary.length > 100) content += 5; else contentIssues.push('Professional summary missing or too short');
+  const hasQuantified = allBullets.some(b => /\d+/.test(b));
+  if (hasQuantified) content += 5; else contentIssues.push('Add quantifiable achievements (numbers, percentages, scale)');
+  const contentMax = 15;
+
+  const total = parsing + keywords + experience + structure + content;
+  return {
+    total,
+    parsing: { score: parsing, max: parsingMax, issues: parsingIssues },
+    keywords: { score: keywords, max: keywordsMax, issues: keywordIssues },
+    experience: { score: experience, max: expMax, issues: expIssues },
+    structure: { score: structure, max: structMax, issues: structIssues },
+    content: { score: content, max: contentMax, issues: contentIssues },
+  };
+}
+
+function getResumeText() {
+  const fields = ['f-name','f-title','f-email','f-summary'];
+  let text = fields.map(id => document.getElementById(id)?.value || '').join(' ');
+  text += ' ' + state.skills.technical.join(' ') + ' ' + state.skills.soft.join(' ');
+  text += ' ' + state.experience.flatMap(e => [e.title, e.company, ...e.bullets]).join(' ');
+  return text;
+}
+
+function displayATSResults() {
+  const results = computeScore();
+  state.score = results.total;
+
+  const topScore = document.getElementById('topbar-score');
+  if (topScore) {
+    topScore.textContent = results.total;
+    topScore.className = 'score-pill-num ' + (results.total >= 80 ? 'high' : results.total >= 60 ? 'mid' : 'low');
+  }
+
+  const issueBadge = document.getElementById('sidebar-issues-badge');
+  const totalIssues = [...results.parsing.issues, ...results.keywords.issues, ...results.experience.issues, ...results.structure.issues, ...results.content.issues];
+  if (issueBadge) {
+    issueBadge.textContent = totalIssues.length;
+    issueBadge.style.display = totalIssues.length > 0 ? '' : 'none';
+  }
+
+  const isExcellent = results.total >= 90;
+  const isGood = results.total >= 70;
+  const scoreClass = isExcellent ? 'excellent' : isGood ? 'good' : 'poor';
+
+  const content = document.getElementById('ats-score-content');
+  content.innerHTML = `
+    <div class="ats-score-panel">
+      <div class="ats-main-score">
+        ${isExcellent ? '<div style="font-size:28px;margin-bottom:8px">🏆</div>' : ''}
+        <div class="ats-score-number ${scoreClass}">${results.total}</div>
+        <div class="ats-score-label" style="font-size:22px;">/100 ATS READINESS SCORE</div>
+        <div class="ats-score-sublabel">
+          ${isExcellent ? '✅ Passes all ATS readiness checks' : isGood ? '⚡ Good — a few improvements will get you to 90+' : '⚠️ Needs improvement before applying'}
+        </div>
+        ${isExcellent ? `<div style="margin-top:12px;font-size:12px;color:var(--text-3)">ATS Readiness is an optimization estimate. Actual employer ATS results may vary.</div>` : ''}
+      </div>
+
+      <div class="ats-categories">
+        ${renderCatBar('ATS Parsing', results.parsing)}
+        ${renderCatBar('Keyword Match', results.keywords)}
+        ${renderCatBar('Experience Relevance', results.experience)}
+        ${renderCatBar('Resume Structure', results.structure)}
+        ${renderCatBar('Content Quality', results.content)}
+      </div>
+
+      ${totalIssues.length > 0 ? `
+        <div style="font-weight:700;font-size:15px;margin-bottom:12px">📋 Recommendations to improve your score</div>
+        <div class="rec-list" id="recommendations-list">
+          ${generateRecommendations(results).map(rec => `
+            <div class="rec-item">
+              <div class="rec-icon">${rec.icon}</div>
+              <div class="rec-body">
+                <div class="rec-title">${rec.title}</div>
+                <div class="rec-desc">${rec.desc}</div>
+                <div class="rec-actions">
+                  <button class="btn btn-sm btn-primary" onclick="${rec.action}">Fix Automatically</button>
+                  <button class="btn btn-sm btn-secondary" onclick="switchTab('editor')">Edit Manually</button>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      ` : `
+        <div style="background:var(--green-light);border:1px solid var(--green);border-radius:var(--radius);padding:20px;text-align:center">
+          <div style="font-size:24px;margin-bottom:8px">✅</div>
+          <div style="font-weight:700;color:var(--green);margin-bottom:4px">ATS READY</div>
+          <div style="font-size:13px;color:var(--text-2)">Your resume passes all measurable ATS readiness checks.</div>
+        </div>
+      `}
+    </div>
+  `;
+
+  updateKeywordPanel();
+}
+
+function renderCatBar(name, cat) {
+  const pct = (cat.score / cat.max) * 100;
+  const cls = pct >= 90 ? 'full' : pct >= 60 ? 'partial' : 'low-score';
+  return `
+    <div class="ats-cat">
+      <div class="ats-cat-header">
+        <div class="ats-cat-name">${name}</div>
+        <div class="ats-cat-score ${cls}">${cat.score}/${cat.max}</div>
+      </div>
+      <div class="ats-cat-bar">
+        <div class="ats-cat-bar-fill ${cls === 'full' ? '' : cls}" style="width:${pct}%"></div>
+      </div>
+      ${cat.issues.length > 0 ? `<div class="ats-cat-issues">${cat.issues.map(i => `<div class="ats-issue">${i}</div>`).join('')}</div>` : ''}
+    </div>
+  `;
+}
+
+function generateRecommendations(results) {
+  const recs = [];
+  if (!document.getElementById('f-summary')?.value?.trim()) {
+    recs.push({ icon: '📝', title: 'Add a professional summary', desc: 'A strong summary improves keyword placement and makes your resume ATS-readable from line 1.', action: "generateSummary();switchTab('editor')" });
+  }
+  if (results.experience.issues.some(i => i.includes('bullet'))) {
+    recs.push({ icon: '💼', title: 'Add more detail to experience bullets', desc: 'Aim for 3–5 specific bullet points per role with action verbs and real outcomes.', action: "switchTab('editor')" });
+  }
+  if (results.content.issues.some(i => i.includes('quantifiable'))) {
+    recs.push({ icon: '📊', title: 'Add measurable achievements', desc: 'Add numbers, percentages, scale, or impact to your bullets. These dramatically improve ATS scoring.', action: "switchTab('editor')" });
+  }
+  if (results.content.issues.some(i => i.includes('verb'))) {
+    recs.push({ icon: '✍️', title: 'Replace weak verbs', desc: 'Words like "helped", "worked on", "responsible for" reduce impact. Replace with: Led, Built, Optimized, Delivered.', action: "autoFixBullets()" });
+  }
+  if (results.keywords.issues.some(i => i.includes('keyword'))) {
+    recs.push({ icon: '🔑', title: 'Add missing keywords from the job description', desc: 'Paste a job description in the "Job Description" tab to see the exact keywords you need to add.', action: "switchTab('jd')" });
+  }
+  if (results.structure.issues.some(i => i.includes('education'))) {
+    recs.push({ icon: '🎓', title: 'Add your education details', desc: 'Education section is expected by most ATS systems.', action: "switchTab('editor')" });
+  }
+  if (results.structure.issues.some(i => i.includes('skills'))) {
+    recs.push({ icon: '⚡', title: 'Add your skills section', desc: 'A skills section is critical for keyword matching in ATS parsing.', action: "switchTab('editor')" });
+  }
+  return recs;
+}
+
+// ════════════════════════════════════════════════
+// JOB DESCRIPTION ANALYZER
+// ════════════════════════════════════════════════
+function handleJDInput() {
+  state.jdText = document.getElementById('jd-full-input').value;
+}
+
+function clearJD() {
+  document.getElementById('jd-full-input').value = '';
+  state.jdText = '';
+  state.jdKeywords = [];
+  document.getElementById('jd-results').classList.add('hidden');
+}
+
+function analyzeJD() {
+  const text = document.getElementById('jd-full-input')?.value || state.jdText;
+  if (!text.trim()) { showToast('Please paste a job description first', 'error'); return; }
+  state.jdText = text;
+
+  const jdResults = document.getElementById('jd-results');
+  if (jdResults) {
+    jdResults.classList.add('hidden');
+    jdResults.innerHTML = '<div style="text-align:center;padding:20px"><div class="loading-spinner"></div><div style="margin-top:8px;font-size:13px;color:var(--text-2)">Analyzing job description...</div></div>';
+    jdResults.classList.remove('hidden');
+  }
+
+  // Call Claude API
+  callClaudeAPI(`You are an expert ATS/resume analyst. Analyze this job description and extract structured information. Return ONLY valid JSON with this exact structure:
+{
+  "jobTitle": "...",
+  "company": "...(if mentioned, else 'Not specified')",
+  "seniority": "...(Junior/Mid/Senior/Lead/Director/etc)",
+  "location": "...(if mentioned, else 'Not specified')",
+  "experience": "...(required years if mentioned, else 'Not specified')",
+  "requiredSkills": ["skill1", "skill2", "skill3",...],
+  "preferredSkills": ["skill1", "skill2",...],
+  "tools": ["tool1", "tool2",...],
+  "responsibilities": ["responsibility1", "responsibility2",...],
+  "keywords": [
+    {"term": "keyword", "priority": "high/medium/low"},
+    ...
+  ],
+  "softSkills": ["skill1", "skill2",...],
+  "education": "...requirement if any",
+  "certifications": ["cert1","cert2",...] or []
+}
+
+Extract 10-20 keywords. Set priority: required skills=high, preferred skills=medium, nice-to-have=low.
+
+Job Description:
+${text.substring(0, 3000)}`, (result) => {
+    try {
+      let jsonStr = result;
+      const jsonMatch = result.match(/\{[\s\S]*\}/);
+      if (jsonMatch) jsonStr = jsonMatch[0];
+      const data = JSON.parse(jsonStr);
+      renderJDResults(data);
+      state.jdKeywords = (data.keywords || []).map(k => k.term);
+      if (document.getElementById('jd-input-onboarding')) {
+        document.getElementById('jd-input-onboarding').value = text;
+      }
+      updateKeywordPanel();
+    } catch(e) {
+      if (jdResults) jdResults.innerHTML = '<div style="padding:16px;color:var(--red)">Could not parse job description. Please try again.</div>';
+    }
+  });
+}
+
+function renderJDResults(data) {
+  const jdResults = document.getElementById('jd-results');
+  if (!jdResults) return;
+  jdResults.classList.remove('hidden');
+  jdResults.innerHTML = `
+    <div style="font-weight:700;font-size:15px;margin-bottom:12px">📋 Extracted Information</div>
+    <div class="jd-extract-grid">
+      <div class="jd-extract-card">
+        <div class="jd-extract-title">Job Details</div>
+        <div class="jd-keyword-item"><span>Title</span><strong>${data.jobTitle || '—'}</strong></div>
+        <div class="jd-keyword-item"><span>Company</span><strong>${data.company || '—'}</strong></div>
+        <div class="jd-keyword-item"><span>Level</span><strong>${data.seniority || '—'}</strong></div>
+        <div class="jd-keyword-item"><span>Location</span><strong>${data.location || '—'}</strong></div>
+        <div class="jd-keyword-item"><span>Experience</span><strong>${data.experience || '—'}</strong></div>
+        <div class="jd-keyword-item"><span>Education</span><strong>${data.education || '—'}</strong></div>
+      </div>
+      <div class="jd-extract-card">
+        <div class="jd-extract-title">Required Skills</div>
+        ${(data.requiredSkills || []).map(s => `<div class="jd-keyword-item"><span>${s}</span><span class="jd-priority high">Required</span></div>`).join('')}
+        ${(data.preferredSkills || []).map(s => `<div class="jd-keyword-item"><span>${s}</span><span class="jd-priority medium">Preferred</span></div>`).join('')}
+      </div>
+      <div class="jd-extract-card" style="grid-column:1/-1">
+        <div class="jd-extract-title">Tools & Technologies</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+          ${(data.tools || []).map(t => `<span style="background:var(--surface-2);padding:3px 10px;border-radius:100px;font-size:13px">${t}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div style="font-weight:700;font-size:15px;margin:20px 0 12px">🔑 Keyword Priority</div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      ${(data.keywords || []).map(k => `
+        <div class="jd-keyword-item">
+          <span>${k.term}</span>
+          <span class="jd-priority ${k.priority}">${k.priority === 'high' ? 'High Priority' : k.priority === 'medium' ? 'Medium Priority' : 'Nice to Have'}</span>
+        </div>
+      `).join('')}
+    </div>
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button class="btn btn-primary btn-sm" onclick="runATSScan()">⚡ Scan Resume Against This JD</button>
+      <button class="btn btn-secondary btn-sm" onclick="suggestSkills()">✨ Add Missing Skills</button>
+    </div>
+  `;
+}
+
+// ════════════════════════════════════════════════
+// KEYWORD PANEL
+// ════════════════════════════════════════════════
+function updateKeywordPanel() {
+  if (state.jdKeywords.length === 0) return;
+
+  const resumeText = getResumeText().toLowerCase();
+  const matched = state.jdKeywords.filter(k => resumeText.includes(k.toLowerCase()));
+  const missing = state.jdKeywords.filter(k => !resumeText.includes(k.toLowerCase()));
+  const related = [];
+
+  document.getElementById('kw-matched-count').textContent = matched.length;
+  document.getElementById('kw-missing-count').textContent = missing.length;
+  document.getElementById('kw-rate').textContent = Math.round((matched.length / state.jdKeywords.length) * 100) + '%';
+
+  const matchedContainer = document.getElementById('matched-keywords');
+  const missingContainer = document.getElementById('missing-keywords');
+  const matchedCount = document.getElementById('matched-kw-count');
+  const missingCount = document.getElementById('missing-kw-count');
+  const emptyState = document.getElementById('kw-empty-state');
+
+  if (matchedContainer) {
+    matchedContainer.innerHTML = matched.map(k => `<span class="skill-tag matched">✓ ${k}</span>`).join('');
+    matchedCount.textContent = matched.length;
+  }
+  if (missingContainer) {
+    missingContainer.innerHTML = missing.map(k => `<span class="skill-tag missing" onclick="addKeywordAsSkill('${k}')">+ ${k}</span>`).join('');
+    missingCount.textContent = missing.length;
+  }
+  if (emptyState) emptyState.style.display = 'none';
+}
+
+function addKeywordAsSkill(keyword) {
+  if (!state.skills.technical.includes(keyword) && !state.skills.soft.includes(keyword)) {
+    state.skills.technical.push(keyword);
+    renderSkills('technical');
+    showToast(`"${keyword}" added to Technical Skills. Make sure this is truthful!`, 'success');
+    triggerAutosave();
+    updateKeywordPanel();
+  }
+}
+
+// ════════════════════════════════════════════════
+// AI FUNCTIONS — CALLS CLAUDE API
+// ════════════════════════════════════════════════
+async function callClaudeAPI(prompt, callback) {
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content?.map(c => c.text || '').join('') || '';
+    callback(text);
+  } catch(e) {
+    callback('[AI temporarily unavailable. Please try again.]');
+  }
+}
+
+function generateSummary() {
+  const job = state.targetJob || document.getElementById('f-title')?.value || 'professional';
+  const level = state.careerLevel || 'mid-level';
+  const skills = [...state.skills.technical, ...state.skills.soft].slice(0, 8).join(', ');
+  const expList = state.experience.map(e => `${e.title} at ${e.company}`).filter(e => e.trim().length > 5).join('; ');
+
+  addAIMsg('ai', 'Generating your professional summary... ✨');
+
+  const prompt = `Write a professional ATS-optimized resume summary for a ${level} ${job}.
+
+Experience: ${expList || 'Entry-level candidate'}
+Skills: ${skills || 'Not specified'}
+Target role: ${job}
+
+Write ONE concise, professional summary (2–3 sentences, 40–60 words). 
+- Use the exact job title "${job}" 
+- Mention 2–3 specific technical skills if provided
+- Do NOT invent companies, years, or metrics not provided
+- Write in first-person implied voice (no "I")
+- ATS-friendly: avoid tables, special characters
+- Return ONLY the summary text, no labels or explanation`;
+
+  callClaudeAPI(prompt, (result) => {
+    const clean = result.replace(/^(Summary:|Professional Summary:|Here is.*?:)\s*/i, '').trim();
+    document.getElementById('f-summary').value = clean;
+    updateSummaryCount();
+    triggerAutosave();
+    addAIMsg('ai', `✅ Summary generated! Review it and make it sound more like you if needed.\n\n"${clean}"`);
+  });
+}
+
+function generateSummaryVersions() {
+  const job = state.targetJob || document.getElementById('f-title')?.value || 'professional';
+  const level = state.careerLevel || 'mid-level';
+  const skills = [...state.skills.technical, ...state.skills.soft].slice(0, 6).join(', ');
+
+  openModal('summaryModal');
+  document.getElementById('summary-versions').innerHTML = '<div class="ai-thinking"><span class="loading-spinner"></span> Generating 3 versions...</div>';
+
+  const prompt = `Generate 3 different professional resume summaries for a ${level} ${job}.
+Skills: ${skills || 'not specified'}
+
+Return ONLY JSON in this format:
+{
+  "professional": "...(formal, achievement-focused, ~50 words)",
+  "results": "...(emphasizes metrics/outcomes, ~50 words — use placeholders like [X%] if no real numbers provided)",
+  "executive": "...(strategic, leadership-oriented, ~55 words)"
+}
+
+Rules: Never invent real companies, degrees, or specific metrics. Keep each under 60 words.`;
+
+  callClaudeAPI(prompt, (result) => {
+    try {
+      const m = result.match(/\{[\s\S]*\}/);
+      const data = JSON.parse(m ? m[0] : result);
+      const versions = [
+        { key: 'professional', label: '💼 Professional', desc: 'Formal, achievement-focused' },
+        { key: 'results', label: '📊 Results-Focused', desc: 'Metric-driven approach' },
+        { key: 'executive', label: '🏆 Executive', desc: 'Strategic, leadership-oriented' },
+      ];
+      document.getElementById('summary-versions').innerHTML = versions.map(v => `
+        <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px">
+          <div style="font-weight:700;font-size:14px;margin-bottom:4px">${v.label}</div>
+          <div style="font-size:12px;color:var(--text-3);margin-bottom:10px">${v.desc}</div>
+          <div style="font-size:14px;color:var(--text);line-height:1.5;margin-bottom:12px">${data[v.key] || 'Not generated'}</div>
+          <button class="btn btn-primary btn-sm" onclick="useSummaryVersion('${v.key}', this, ${JSON.stringify(data).replace(/'/g,"&#39;")})">Use This Version</button>
+        </div>
+      `).join('');
+    } catch(e) {
+      document.getElementById('summary-versions').innerHTML = '<div style="color:var(--red)">Could not generate versions. Try again.</div>';
+    }
+  });
+}
+
+function useSummaryVersion(key, btn, data) {
+  if (data && data[key]) {
+    document.getElementById('f-summary').value = data[key];
+    updateSummaryCount();
+    triggerAutosave();
+    closeModal('summaryModal');
+    showToast('Summary applied!', 'success');
+  }
+}
+
+function updateSummaryCount() {
+  const el = document.getElementById('summary-char-count');
+  const val = document.getElementById('f-summary')?.value || '';
+  if (el) el.textContent = `${val.length} chars`;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const summaryTA = document.getElementById('f-summary');
+  if (summaryTA) summaryTA.addEventListener('input', updateSummaryCount);
+});
+
+function improveSingleBullet(expIdx, bIdx) {
+  const original = state.experience[expIdx].bullets[bIdx];
+  if (!original.trim()) { showToast('Please write a bullet point first', 'error'); return; }
+
+  openModal('bulletModal');
+  document.getElementById('bullet-original').textContent = original;
+  document.getElementById('bullet-suggestions').innerHTML = '<div class="ai-thinking"><span class="loading-spinner"></span> Analyzing bullet...</div>';
+
+  state.currentBulletCallback = (text) => {
+    state.experience[expIdx].bullets[bIdx] = text;
+    renderBullets(expIdx);
+    triggerAutosave();
+  };
+
+  const job = state.targetJob || 'professional role';
+  const jdContext = state.jdText ? `Job Description Context (first 500 chars): ${state.jdText.substring(0, 500)}` : '';
+
+  const prompt = `You are an expert resume writer. Improve this resume bullet point.
+
+Original: "${original}"
+Target Role: ${job}
+${jdContext}
+
+RULES (critical):
+1. Do NOT invent any metrics, numbers, companies, or facts not in the original
+2. If the original lacks a metric, suggest WHERE to add one with a placeholder like "[X%]" or "[N users]"
+3. Use strong action verbs: Developed, Led, Implemented, Optimized, Delivered, etc.
+4. Follow: Action Verb + Task + Method/Tools + Result
+5. Keep each bullet under 20 words ideally
+6. Avoid weak verbs: helped, worked, responsible for, assisted
+
+Return ONLY JSON:
+{
+  "improved": "Best improved version of the bullet",
+  "ats_friendly": "ATS-optimized version with keywords",
+  "concise": "Shorter punchy version (under 15 words)"
+}`;
+
+  callClaudeAPI(prompt, (result) => {
+    try {
+      const m = result.match(/\{[\s\S]*\}/);
+      const data = JSON.parse(m ? m[0] : result);
+      const versions = [
+        { key: 'improved', label: '⭐ Improved', desc: 'Stronger verbs, clearer structure' },
+        { key: 'ats_friendly', label: '🤖 ATS-Friendly', desc: 'Keyword-optimized for ATS' },
+        { key: 'concise', label: '✂️ Concise', desc: 'Shorter, punchier version' },
+      ];
+      document.getElementById('bullet-suggestions').innerHTML = versions.map(v => `
+        <div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <div style="font-weight:700;font-size:13px">${v.label}</div>
+            <div style="font-size:12px;color:var(--text-3)">${v.desc}</div>
+          </div>
+          <div style="font-size:14px;margin-bottom:10px;line-height:1.5">${data[v.key] || '—'}</div>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-primary btn-sm" onclick="acceptBullet('${(data[v.key]||'').replace(/'/g,"\\'")}')">✓ Accept</button>
+            <button class="btn btn-secondary btn-sm" onclick="editBulletInline(this, '${(data[v.key]||'').replace(/'/g,"\\'")}')">✎ Edit</button>
+          </div>
+        </div>
+      `).join('');
+    } catch(e) {
+      document.getElementById('bullet-suggestions').innerHTML = '<div style="color:var(--red);font-size:13px">Could not improve bullet. Please try again.</div>';
+    }
+  });
+}
+
+function acceptBullet(text) {
+  if (state.currentBulletCallback) state.currentBulletCallback(text);
+  closeModal('bulletModal');
+  showToast('Bullet updated!', 'success');
+}
+
+function aiImproveBullets(expIdx) {
+  const bullets = state.experience[expIdx].bullets;
+  if (!bullets.some(b => b.trim())) { showToast('Add some bullet points first', 'error'); return; }
+
+  addAIMsg('ai', `Analyzing all bullets for "${state.experience[expIdx].title || 'this position'}"...`);
+
+  const prompt = `Improve these resume bullet points for a ${state.targetJob || 'professional'} resume.
+
+Bullets:
+${bullets.filter(b => b.trim()).map((b, i) => `${i+1}. ${b}`).join('\n')}
+
+Rules:
+1. Do NOT invent metrics or facts not in the original bullets
+2. Use strong action verbs: Developed, Led, Implemented, Optimized, Delivered
+3. Follow: Action Verb + Task + Tools/Method + Result
+4. If a metric would help, use a placeholder: [X%], [N users], [target]
+5. Keep each bullet concise (under 20 words)
+
+Return ONLY a JSON array: ["improved bullet 1", "improved bullet 2", ...]`;
+
+  callClaudeAPI(prompt, (result) => {
+    try {
+      const m = result.match(/\[[\s\S]*\]/);
+      const improved = JSON.parse(m ? m[0] : result);
+      improved.forEach((b, i) => {
+        if (i < state.experience[expIdx].bullets.length) {
+          state.experience[expIdx].bullets[i] = b;
+        }
+      });
+      renderBullets(expIdx);
+      triggerAutosave();
+      addAIMsg('ai', `✅ Improved ${improved.length} bullets for "${state.experience[expIdx].title || 'this position'}". Review the changes — fill in any [placeholders] with your real numbers.`);
+    } catch(e) {
+      addAIMsg('ai', 'Could not improve bullets. Please try individual bullets using the ✨ AI button.');
+    }
+  });
+}
+
+function suggestSkills() {
+  if (!state.jdText) { showToast('Paste a job description first in the Job Description tab', 'error'); return; }
+
+  const currentSkills = [...state.skills.technical, ...state.skills.soft, ...state.skills.domain];
+  const prompt = `Given this job description and the candidate's current skills, suggest specific skills they should add if they genuinely have them.
+
+Job Description (excerpt): ${state.jdText.substring(0, 1000)}
+Current Skills: ${currentSkills.join(', ') || 'None listed yet'}
+
+Return ONLY JSON:
+{
+  "technical": ["skill1", "skill2"],
+  "soft": ["skill1", "skill2"],
+  "missing_critical": ["most important missing keyword"]
+}
+
+RULES: Only suggest skills commonly required for this role. Mark as suggestions only — the user must verify they actually have these skills.`;
+
+  addAIMsg('ai', 'Analyzing job description for skill suggestions...');
+
+  callClaudeAPI(prompt, (result) => {
+    try {
+      const m = result.match(/\{[\s\S]*\}/);
+      const data = JSON.parse(m ? m[0] : result);
+      const newTech = (data.technical || []).filter(s => !state.skills.technical.includes(s));
+      const newSoft = (data.soft || []).filter(s => !state.skills.soft.includes(s));
+
+      let msg = `Here are suggested skills based on the job description:\n\n`;
+      if (newTech.length) msg += `**Technical:** ${newTech.join(', ')}\n`;
+      if (newSoft.length) msg += `**Soft:** ${newSoft.join(', ')}\n`;
+      msg += `\n⚠️ Only add skills you genuinely have.`;
+
+      addAIMsg('ai', msg);
+      if (newTech.length) {
+        newTech.forEach(s => { if (!state.skills.technical.includes(s)) state.skills.technical.push(s); });
+        renderSkills('technical');
+      }
+      if (newSoft.length) {
+        newSoft.forEach(s => { if (!state.skills.soft.includes(s)) state.skills.soft.push(s); });
+        renderSkills('soft');
+      }
+      triggerAutosave();
+      showToast('Skills suggested! Review and remove any you don\'t have.', 'success');
+    } catch(e) {
+      addAIMsg('ai', 'Could not analyze skills. Please try again.');
+    }
+  });
+}
+
+function autoFixBullets() {
+  state.experience.forEach((exp, idx) => {
+    if (exp.bullets.some(b => b.trim())) aiImproveBullets(idx);
+  });
+}
+
+// ════════════════════════════════════════════════
+// AI CHAT
+// ════════════════════════════════════════════════
+function sendAIMessage() {
+  const input = document.getElementById('ai-user-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  addAIMsg('user', text);
+  input.value = '';
+  addAIMsg('ai', null, true); // thinking
+
+  const context = `
+User's resume context:
+- Target job: ${state.targetJob || 'Not specified'}
+- Career level: ${state.careerLevel || 'Not specified'}
+- Technical skills: ${state.skills.technical.join(', ') || 'None listed'}
+- Experience: ${state.experience.map(e => `${e.title} at ${e.company}`).filter(Boolean).join('; ') || 'None added'}
+- Education: ${state.education.map(e => `${e.degree} from ${e.institution}`).filter(Boolean).join('; ') || 'None added'}
+- Current ATS score: ${state.score || 'Not yet scanned'}
+
+User question: ${text}
+
+Answer as a helpful resume expert. Be specific, concise, and actionable. Maximum 4 sentences.`;
+
+  callClaudeAPI(context, (result) => {
+    const thinkingMsg = document.querySelector('.ai-msg.thinking');
+    if (thinkingMsg) thinkingMsg.remove();
+    addAIMsg('ai', result);
+  });
+}
+
+function addAIMsg(role, text, thinking = false) {
+  const chatArea = document.getElementById('ai-chat');
+  const div = document.createElement('div');
+  div.className = `ai-msg ${role}${thinking ? ' thinking' : ''}`;
+  if (thinking) {
+    div.innerHTML = '<div class="ai-thinking"><span class="loading-spinner"></span> Thinking...</div>';
+  } else {
+    div.textContent = text;
+  }
+  chatArea.appendChild(div);
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function clearChat() {
+  document.getElementById('ai-chat').innerHTML = '';
+  addAIMsg('ai', '👋 Chat cleared. How can I help with your resume?');
+}
+
+function aiQuickAction(action) {
+  const actions = {
+    improve: 'How can I make my resume more competitive for ' + (state.targetJob || 'my target role') + '?',
+    keywords: 'What keywords am I missing from my resume?',
+    summary: 'How can I improve my professional summary?',
+    optimize: 'Optimize my resume for ' + (state.targetJob || 'my target role'),
+  };
+  document.getElementById('ai-user-input').value = actions[action] || '';
+  sendAIMessage();
+}
+
+// ════════════════════════════════════════════════
+// TEMPLATES
+// ════════════════════════════════════════════════
+const templates = [
+  { id: 'ats-classic', name: 'ATS Classic', desc: 'One-column professional', icon: '📄', atsSafe: true },
+  { id: 'modern-pro', name: 'Modern Pro', desc: 'Clean modern design', icon: '✨', atsSafe: true },
+  { id: 'executive', name: 'Executive', desc: 'Premium executive layout', icon: '🏆', atsSafe: true },
+  { id: 'tech', name: 'Tech', desc: 'Developer-focused', icon: '💻', atsSafe: true },
+  { id: 'graduate', name: 'Graduate', desc: 'Student & fresher', icon: '🎓', atsSafe: true },
+  { id: 'finance', name: 'Finance', desc: 'Finance & business', icon: '💼', atsSafe: true },
+  { id: 'marketing', name: 'Marketing', desc: 'Marketing focused', icon: '📈', atsSafe: true },
+  { id: 'minimal', name: 'Minimal', desc: 'Ultra-clean layout', icon: '◻️', atsSafe: true },
+  { id: 'academic', name: 'Academic', desc: 'Research & academia', icon: '🔬', atsSafe: true },
+  { id: 'international', name: 'International', desc: 'Global format', icon: '🌍', atsSafe: false },
+];
+
+function renderTemplates() {
+  const grid = document.getElementById('templates-grid');
+  if (!grid) return;
+  grid.innerHTML = templates.map(t => `
+    <div class="template-card ${t.id === state.currentTemplate ? 'active' : ''}" onclick="selectTemplate('${t.id}')">
+      ${t.atsSafe ? '<div class="ats-safe-badge">✅ ATS Safe</div>' : '<div class="ats-safe-badge" style="background:var(--orange)">⚠️ Stylized</div>'}
+      <div class="template-preview">${t.icon}</div>
+      <div class="template-info">
+        <div class="template-name">${t.name}</div>
+        <div class="template-desc">${t.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectTemplate(id) {
+  state.currentTemplate = id;
+  renderTemplates();
+  showToast(`Template changed to "${templates.find(t => t.id === id)?.name}"`, 'success');
+  updateResumePreview();
+}
+
+// ════════════════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════════════════
+function renderDashboard() {
+  const grid = document.getElementById('dashboard-grid');
+  if (!grid) return;
+  const resumes = [
+    { name: 'Software Engineer Resume', job: 'Software Engineer @ Google-style', score: 94, match: '91%', edited: '2 hours ago' },
+    { name: 'Full Stack Developer', job: 'Full Stack Developer @ Startup', score: 78, match: '72%', edited: 'Yesterday' },
+    { name: 'Product Manager', job: 'Product Manager @ FinTech', score: 62, match: '58%', edited: '3 days ago' },
+  ];
+  const colorMap = { 94: 'var(--green)', 78: 'var(--orange)', 62: 'var(--red)' };
+  grid.innerHTML = resumes.map(r => `
+    <div class="resume-card" onclick="switchTab('editor')">
+      <div class="resume-card-score" style="color:${colorMap[r.score]}">${r.score}/100</div>
+      <div class="resume-card-title">${r.name}</div>
+      <div class="resume-card-sub">${r.job}</div>
+      <div class="resume-card-meta">Match: ${r.match} · Edited ${r.edited}</div>
+      <div class="resume-card-actions">
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();switchTab('editor')">Edit</button>
+        <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();runATSScan()">Analyze</button>
+        <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();showExportModal()">↓</button>
+      </div>
+    </div>
+  `).join('') + `
+    <div class="resume-card" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;min-height:180px" onclick="switchTab('editor')">
+      <div style="font-size:32px">+</div>
+      <div style="font-weight:700;font-size:14px">New Resume</div>
+      <div style="font-size:13px;color:var(--text-3)">Start from scratch or upload</div>
+    </div>
+  `;
+}
+
+function updateScore(score) {
+  const el = document.getElementById('topbar-score');
+  if (el) el.textContent = score !== null ? score : '--';
+}
+
+// ════════════════════════════════════════════════
+// RESUME PREVIEW
+// ════════════════════════════════════════════════
+function updateResumePreview() {
+  // Lightweight inline preview update (could render to a preview panel)
+  // For performance, we skip full re-render unless preview panel is open
+}
+
+// ════════════════════════════════════════════════
+// EXPORT
+// ════════════════════════════════════════════════
+function showExportModal() {
+  const checklist = document.getElementById('export-checklist');
+  if (!checklist) return;
+
+  const name = document.getElementById('f-name')?.value?.trim();
+  const email = document.getElementById('f-email')?.value?.trim();
+  const phone = document.getElementById('f-phone')?.value?.trim();
+  const linkedin = document.getElementById('f-linkedin')?.value?.trim();
+  const summary = document.getElementById('f-summary')?.value?.trim();
+  const hasExp = state.experience.some(e => e.title || e.company);
+  const hasEdu = state.education.some(e => e.degree || e.institution);
+  const hasSkills = state.skills.technical.length > 0 || state.skills.soft.length > 0;
+
+  const checks = [
+    { label: 'Full name', ok: !!name },
+    { label: 'Email address', ok: !!email },
+    { label: 'Phone number', ok: !!phone },
+    { label: 'LinkedIn profile', ok: !!linkedin },
+    { label: 'Professional summary', ok: !!summary },
+    { label: 'Work experience', ok: hasExp },
+    { label: 'Education', ok: hasEdu },
+    { label: 'Skills section', ok: hasSkills },
+    { label: 'Standard headings', ok: true },
+    { label: 'Clean, ATS-safe structure', ok: true },
+  ];
+
+  checklist.innerHTML = checks.map(c => `
+    <div class="check-item">
+      <span class="check-icon">${c.ok ? '✅' : '⚠️'}</span>
+      <span style="font-size:14px;color:${c.ok ? 'var(--text)' : 'var(--orange)'}">${c.label}</span>
+    </div>
+  `).join('');
+
+  openModal('exportModal');
+}
+
+function exportResume(format) {
+  showToast(`Preparing ${format.toUpperCase()} download...`);
+
+  // In production this would call a PDF/DOCX generation API
+  // For demo we generate a simple text download
+  setTimeout(() => {
+    if (format === 'pdf') {
+      generateAndDownloadPDF();
+    } else {
+      generateAndDownloadDOCX();
+    }
+    closeModal('exportModal');
+    showToast(`Resume downloaded as ${format.toUpperCase()}!`, 'success');
+  }, 1200);
+}
+
+function generateAndDownloadPDF() {
+  const name = document.getElementById('f-name')?.value || 'Resume';
+  const title = document.getElementById('f-title')?.value || '';
+  const email = document.getElementById('f-email')?.value || '';
+  const phone = document.getElementById('f-phone')?.value || '';
+  const summary = document.getElementById('f-summary')?.value || '';
+
+  // Build plain text resume for download
+  let content = `${name}\n${title}\n${email} | ${phone}\n\n`;
+  if (summary) content += `PROFESSIONAL SUMMARY\n${summary}\n\n`;
+  if (state.experience.length) {
+    content += `WORK EXPERIENCE\n`;
+    state.experience.forEach(e => {
+      content += `${e.title} | ${e.company} | ${e.startDate} – ${e.current ? 'Present' : e.endDate}\n`;
+      e.bullets.forEach(b => { if (b.trim()) content += `• ${b}\n`; });
+      content += '\n';
+    });
+  }
+  if (state.skills.technical.length) content += `SKILLS\n${state.skills.technical.join(' | ')}\n\n`;
+
+  const blob = new Blob([content], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${name.replace(/\s+/g, '_')}_Resume.txt`;
+  a.click();
+}
+
+function generateAndDownloadDOCX() {
+  generateAndDownloadPDF(); // Demo same — in production would call python-docx or similar
+}
+
+// ════════════════════════════════════════════════
+// MODAL HELPERS
+// ════════════════════════════════════════════════
+function openModal(id) {
+  document.getElementById(id)?.classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id)?.classList.remove('open');
+}
+document.addEventListener('click', (e) => {
+  if (e.target.classList.contains('modal-overlay')) {
+    e.target.classList.remove('open');
+  }
+});
+
+// ════════════════════════════════════════════════
+// TOAST
+// ════════════════════════════════════════════════
+function showToast(msg, type = '') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = `toast show ${type}`;
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+// ════════════════════════════════════════════════
+// FAQ TOGGLE
+// ════════════════════════════════════════════════
+function toggleFaq(header) {
+  const body = header.nextElementSibling;
+  const icon = header.querySelector('span:last-child');
+  body.classList.toggle('hidden');
+  icon.textContent = body.classList.contains('hidden') ? '+' : '−';
+}
+
+// ════════════════════════════════════════════════
+// FILE UPLOAD
+// ════════════════════════════════════════════════
+function triggerUpload(id) {
+  document.getElementById(id)?.click();
+}
+
+function handleResumeUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const zone = document.getElementById('resume-drop-zone');
+  if (zone) {
+    zone.innerHTML = `<div class="upload-zone-icon">✅</div><div class="upload-zone-title">${file.name}</div><div class="upload-zone-sub">Parsing your resume...</div>`;
+  }
+  setTimeout(() => {
+    showToast('Resume uploaded. AI is extracting your information...', 'success');
+    nextOnboardingStep();
+  }, 1500);
+}
+
+// ════════════════════════════════════════════════
+// SCORE DISPLAY HELPER
+// ════════════════════════════════════════════════
+function updateTopbarScore(score) {
+  const el = document.getElementById('topbar-score');
+  if (!el) return;
+  el.textContent = score;
+  el.className = 'score-pill-num ' + (score >= 80 ? 'high' : score >= 60 ? 'mid' : 'low');
+}
+
+// ════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  // Animate score bars on landing
+  setTimeout(() => {
+    document.querySelectorAll('.score-bar-fill').forEach(el => {
+      const w = el.style.width;
+      el.style.width = '0';
+      setTimeout(() => { el.style.width = w; }, 100);
+    });
+  }, 300);
+});
+</script>
+</body>
+</html>
