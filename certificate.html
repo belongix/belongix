@@ -4,9 +4,14 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title id="doc-title">Certificate — Belongix</title>
+<meta id="meta-desc" name="description" content="Verified course completion certificate from Belongix"/>
 <meta id="og-title" property="og:title" content="Belongix Certificate"/>
 <meta id="og-desc" property="og:description" content="Verified course completion certificate from Belongix"/>
+<meta property="og:type" content="profile"/>
 <meta property="og:image" content="https://www.belongix.in/icons/og-image.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta id="twitter-title" name="twitter:title" content="Belongix Certificate"/>
+<meta id="twitter-desc" name="twitter:description" content="Verified course completion certificate from Belongix"/>
 <link rel="icon" href="icons/icon-32.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -129,7 +134,7 @@ body{font-family:var(--fb);color:var(--ink);background:var(--bg);min-height:100v
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
@@ -152,6 +157,8 @@ var RELATED={
   'default':        [{e:'🚀',t:'Career Skills',m:'Beginner · 8h',s:'resume-building-tech-india'},{e:'🎯',t:'System Design Beginner',m:'Beginner · 12h',s:'system-design-beginner'},{e:'📊',t:'Dashboard',m:'Track your progress',s:'dashboard.html'}]
 };
 
+var _certNumber=null,_certIssuedAt=null,_certRecipient=null;
+
 window.addEventListener('load',async function(){
   try{var s=await sb.auth.getSession();if(s.data&&s.data.session)_user=s.data.session.user;}catch(e){}
   var slug=new URLSearchParams(location.search).get('course');
@@ -159,15 +166,59 @@ window.addEventListener('load',async function(){
   loadCert(slug);
 });
 
-function loadCert(slug){
-  // Try sessionStorage
-  try{var c=sessionStorage.getItem('bx_course_'+slug);if(c){var p=JSON.parse(c);if(p&&p.title){_course=p;renderCert();return;}}}catch(e){}
-  // Check localStorage for enrollment
+async function loadCert(slug){
+  if(!_user){showSignInRequired(slug);return;}
+
+  // KNOWN LIMITATION (same one documented in the certificates migration
+  // and the issue-certificate Edge Function): course completion has no
+  // server-side source of truth yet — course.html tracks lesson
+  // completion in localStorage only, and the frozen course files were
+  // not modified to add server-side tracking. This check is honest
+  // about that: it's still reading local completion state as the
+  // "did they finish it" signal, but everything AFTER that point
+  // (the certificate record, its number, its verification) is now
+  // real and server-issued, not fabricated in the browser.
   var enrolled=localStorage.getItem('bx_enrolled_'+slug);
   if(!enrolled){showNotEnrolled(slug);return;}
-  // Try to get course name from progress key
-  _course={slug:slug,title:formatSlug(slug),domain:'Full Stack',category:'',level:'',hours:0,modules:0,skills:'',cert:'Belongix Certificate',emoji:'📚',bg:'linear-gradient(135deg,#2D1B69,#4C2FAA)',rating:4.8,students:0};
-  renderCert();
+
+  // Try sessionStorage for course display metadata (title, domain, etc.)
+  // — this is just presentation data from the frozen course pages,
+  // not anything security-relevant.
+  try{var c=sessionStorage.getItem('bx_course_'+slug);if(c){var p=JSON.parse(c);if(p&&p.title)_course=p;}}catch(e){}
+  if(!_course)_course={slug:slug,title:formatSlug(slug),domain:'Full Stack',category:'',level:'',hours:0,modules:0,skills:'',cert:'Belongix Certificate',emoji:'📚',bg:'linear-gradient(135deg,#2D1B69,#4C2FAA)',rating:4.8,students:0};
+
+  try{
+    var session=await sb.auth.getSession();
+    var token=session.data.session.access_token;
+    var r=await fetch(SB_URL+'/functions/v1/issue-certificate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({course_slug:slug,course_title:_course.title})
+    });
+    var d=await r.json();
+    if(r.status===403&&d.eligible===false){
+      // Real server-side check, not a bug: course_progress has no
+      // completed record for this course yet.
+      el('cert-container').innerHTML='<div class="not-found"><div class="not-found-emoji">📋</div><h2>Not quite eligible yet</h2><p>Our records don\'t show this course as completed yet. If you believe this is a mistake, please contact support.</p><a href="course.html?slug='+encodeURIComponent(slug)+'" class="btn-explore">Back to Course →</a></div>';
+      return;
+    }
+    if(!r.ok)throw new Error(d.error||'Could not issue certificate');
+    _certNumber=d.certificate_number;_certIssuedAt=d.issued_at;_certRecipient=d.recipient_name;
+    renderCert();
+  }catch(e){
+    console.error('Certificate issuance failed:',e);
+    el('cert-container').innerHTML='<div class="not-found"><div class="not-found-emoji">⚠️</div><h2>Could not load your certificate</h2><p>Something went wrong verifying your certificate. Please try again in a moment.</p><a href="course.html?slug='+encodeURIComponent(slug)+'" class="btn-explore">Back to Course →</a></div>';
+  }
+}
+
+function showSignInRequired(slug){
+  el('cert-container').innerHTML=
+    '<div class="not-found">'+
+    '<div class="not-found-emoji">🔒</div>'+
+    '<h2>Sign in to view your certificate</h2>'+
+    '<p>Certificates are tied to your Belongix account. Please sign in to continue.</p>'+
+    '<a href="index.html" class="btn-explore">Sign In →</a>'+
+    '</div>';
 }
 
 function formatSlug(s){
@@ -176,11 +227,11 @@ function formatSlug(s){
 
 function renderCert(){
   var c=_course;
-  var userName=(_user&&_user.user_metadata&&_user.user_metadata.full_name)||'Belongix Learner';
+  var userName=_certRecipient||(_user&&_user.user_metadata&&_user.user_metadata.full_name)||'Belongix Learner';
   var certName=c.cert||('Certified '+c.title+' Developer');
   _certName=certName;
-  var date=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
-  var certId='BX-'+slug2id(c.slug)+'-2026';
+  var date=_certIssuedAt?new Date(_certIssuedAt).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'}):new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  var certId=_certNumber||'—'; // real, server-issued certificate number — never fabricated client-side
   var skills=c.skills?c.skills.split(',').map(function(s){return s.trim();}).filter(Boolean):['Technical Skills','Best Practices','Project Building'];
   var related=RELATED[c.domain]||RELATED['default'];
 
@@ -223,7 +274,7 @@ function renderCert(){
         '<div class="cert-footer-left">'+
           '<strong>'+escH(certName)+'</strong>'+
           'Issued by Belongix · belongix.in'+
-          '<div class="cert-id">ID: '+certId+'</div>'+
+          '<div class="cert-id">ID: '+certId+' · <a href="verify.html?id='+encodeURIComponent(certId)+'" style="color:inherit;text-decoration:underline">Verify →</a></div>'+
         '</div>'+
         '<div class="cert-seal"><div class="cert-seal-icon">🏆</div><div class="cert-seal-text">VERIFIED</div></div>'+
       '</div>'+

@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Contact Belongix — Get in Touch</title>
 <meta name="description" content="Got a question, feedback, or partnership idea? Reach out to the Belongix team. We're based in India and happy to help."/>
+<link rel="canonical" href="https://www.belongix.in/contact.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Contact Belongix"/>
+<meta property="og:description" content="Got a question, feedback, or partnership idea? Reach out to the Belongix team."/>
+<meta property="og:url" content="https://www.belongix.in/contact.html"/>
+<meta property="og:image" content="https://www.belongix.in/icons/og-image.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Contact Belongix"/>
+<meta name="twitter:description" content="Reach out to the Belongix team — we're based in India and happy to help."/>
 <link rel="icon" href="icons/icon-32.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -116,9 +125,11 @@ a{text-decoration:none;color:inherit}
 
 @media(max-width:900px){.contact-grid{grid-template-columns:1fr}.faq-grid{grid-template-columns:1fr}.nav-center{display:none}.hamburger{display:flex}}
 @media(max-width:600px){.form-row{grid-template-columns:1fr}}
+.skip-link{position:absolute;left:-9999px;top:0;background:#2D1B69;color:#fff;padding:10px 16px;border-radius:0 0 8px 0;z-index:9999;font-family:sans-serif;font-size:14px;text-decoration:none}.skip-link:focus{left:0}
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <nav class="nav">
   <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
@@ -163,7 +174,7 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <!-- HERO -->
-<div class="hero">
+<div class="hero" id="main-content" tabindex="-1">
   <div class="hero-inner">
     <div class="hero-pill"><div class="pill-dot"></div>We're here to help</div>
     <h1>Get in touch with Belongix</h1>
@@ -313,7 +324,7 @@ a{text-decoration:none;color:inherit}
   <div class="footer-copy">© 2026 Belongix · Built with ❤️ in India 🇮🇳</div>
 </footer>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
@@ -340,7 +351,7 @@ function toggleDD(){document.getElementById('nav-user-dd').classList.toggle('ope
 async function doSignOut(){await sb.auth.signOut();window.location.href='index.html';}
 function toggleMobileMenu(){var m=document.getElementById('mobile-menu');m.classList.toggle('open');document.body.style.overflow=m.classList.contains('open')?'hidden':'';}
 
-function sendMessage(){
+async function sendMessage(){
   var name=document.getElementById('c-name').value.trim();
   var email=document.getElementById('c-email').value.trim();
   var subject=document.getElementById('c-subject').value;
@@ -349,15 +360,29 @@ function sendMessage(){
   if(!email.includes('@')){showToast('Please enter a valid email');return;}
   var btn=document.getElementById('submit-btn');
   btn.textContent='Sending…';btn.disabled=true;
-  // Simulate send (replace with real endpoint if needed)
-  setTimeout(function(){
+  try{
+    var headers={'Content-Type':'application/json'};
+    try{
+      var s=await sb.auth.getSession();
+      if(s.data&&s.data.session)headers['Authorization']='Bearer '+s.data.session.access_token;
+    }catch(e){}
+    var r=await fetch(SB_URL+'/functions/v1/submit-contact',{
+      method:'POST',headers:headers,
+      body:JSON.stringify({name:name,email:email,subject:subject,message:message})
+    });
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Could not send your message');
     document.getElementById('form-success').style.display='block';
     btn.style.display='none';
     document.getElementById('c-name').value='';
     document.getElementById('c-email').value='';
     document.getElementById('c-subject').value='';
     document.getElementById('c-message').value='';
-  },1000);
+  }catch(e){
+    console.error('Contact submission failed:',e);
+    showToast('⚠️ '+(e.message||'Could not send your message. Please try again.'));
+    btn.textContent='Send Message';btn.disabled=false;
+  }
 }
 
 var _toastTimer;

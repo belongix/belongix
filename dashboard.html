@@ -4,9 +4,11 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Dashboard — Belongix</title>
+<meta name="robots" content="noindex, nofollow"/>
 <link rel="icon" href="icons/icon-32.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
 :root{
   --brand:#2D1B69;--brand2:#4C2FAA;--brand-lt:#EDE9FF;
@@ -335,6 +337,10 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);height:100%;dis
                 <div class="wc-stat-icon">📄</div>
                 <div><div class="wc-stat-n" id="stat-resume" style="font-size:14px">Build →</div><div class="wc-stat-l">ATS Resume</div></div>
               </div>
+              <div class="wc-stat" id="stat-pro-wrap">
+                <div class="wc-stat-icon">⚡</div>
+                <div><div class="wc-stat-n" id="stat-pro" style="font-size:13px">Checking…</div><div class="wc-stat-l">Plan</div></div>
+              </div>
             </div>
           </div>
 
@@ -456,7 +462,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);height:100%;dis
         <div class="pf-card">
           <div class="pf-card-av" id="pf-card-av" onclick="document.getElementById('pf-av-file').click()">
             <span id="pf-card-initials">?</span>
-            <img id="pf-card-img" src="" style="display:none"/>
+            <img id="pf-card-img" src="" alt="Profile photo" style="display:none"/>
           </div>
           <input type="file" class="pf-av-file" id="pf-av-file" accept="image/*" onchange="handleAvatarUpload(event)"/>
           <button class="pf-upload-btn" onclick="document.getElementById('pf-av-file').click()">Upload photo</button>
@@ -500,7 +506,7 @@ body{font-family:var(--fb);background:var(--bg);color:var(--ink);height:100%;dis
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
@@ -523,12 +529,11 @@ window.addEventListener('load',async function(){
     loadFromLocal();
     renderAll();
     loadProfileFromDB();
+    loadEntitlement();
     document.getElementById('settings-email').textContent=_user.email||'';
-    var av=localStorage.getItem('bx_avatar_'+_user.id);
-    if(av){
-      ['sb-av','tb-av'].forEach(function(id){var el=document.getElementById(id);if(el){var img=document.createElement('img');img.src=av;el.innerHTML='';el.appendChild(img);}});
-      document.getElementById('pf-card-img').src=av;document.getElementById('pf-card-img').style.display='block';document.getElementById('pf-card-initials').style.display='none';
-    }
+    // Avatar now renders once loadProfileFromDB() populates
+    // _profile.avatar_url from the real profiles table (see
+    // renderProfileCard()) — no more localStorage base64 lookup here.
     var hash=location.hash.replace('#','');
     if(hash&&document.getElementById('page-'+hash))showPage(hash,document.querySelector('[data-page="'+hash+'"]'));
   }catch(e){window.location.href='index.html';}
@@ -641,6 +646,15 @@ function renderProfileCard(){
   setEl('pf-card-city',_profile.city||'—');setEl('pf-card-exp',_profile.experience||'—');
   setEl('pf-card-initials',initials(n));setEl('sb-initials',initials(n));setEl('tb-initials',initials(n));
   setEl('sb-name',n.length>16?n.split(' ')[0]:n);setEl('sb-role',role||'Member');
+  if(_profile.avatar_url){
+    var cardImg=document.getElementById('pf-card-img');
+    if(cardImg){cardImg.src=_profile.avatar_url;cardImg.style.display='block';}
+    var cardIni=document.getElementById('pf-card-initials');if(cardIni)cardIni.style.display='none';
+    ['sb-av','tb-av'].forEach(function(id){
+      var av=document.getElementById(id);
+      if(av){var img=document.createElement('img');img.src=_profile.avatar_url;av.innerHTML='';av.appendChild(img);}
+    });
+  }
   var sc=document.getElementById('pf-card-skills');
   if(sc)sc.innerHTML=_skills.slice(0,5).map(function(s){return '<span class="pf-card-skill">'+esc(s)+'</span>';}).join('');
   setInput('pf-name',_profile.full_name||'');setInput('pf-city',_profile.city||'');setInput('pf-phone',_profile.phone||'');
@@ -655,7 +669,37 @@ function initials(name){var parts=(name||'').trim().split(' ').filter(Boolean);i
 function handleSkillKey(e){if(e.key==='Enter'||e.key===','){e.preventDefault();var inp=document.getElementById('pf-skills-input');var val=inp.value.replace(',','').trim();if(val&&!_skills.includes(val)){_skills.push(val);renderSkillTags();}inp.value='';}}
 function removeSkill(s){_skills=_skills.filter(function(x){return x!==s;});renderSkillTags();}
 function renderSkillTags(){var el=document.getElementById('skill-tags-display');if(!el)return;el.innerHTML=_skills.map(function(s){return '<span class="skill-tag">'+esc(s)+'<span class="skill-tag-remove" onclick="removeSkill(\''+esc(s)+'\')">×</span></span>';}).join('');var sc=document.getElementById('pf-card-skills');if(sc)sc.innerHTML=_skills.slice(0,5).map(function(s){return '<span class="pf-card-skill">'+esc(s)+'</span>';}).join('');}
-function handleAvatarUpload(event){var file=event.target.files[0];if(!file)return;var reader=new FileReader();reader.onload=function(e){var b64=e.target.result;localStorage.setItem('bx_avatar_'+(_user?_user.id:'x'),b64);document.getElementById('pf-card-img').src=b64;document.getElementById('pf-card-img').style.display='block';document.getElementById('pf-card-initials').style.display='none';['sb-av','tb-av'].forEach(function(id){var av=document.getElementById(id);if(av){var img=document.createElement('img');img.src=b64;av.innerHTML='';av.appendChild(img);}});showToast('Photo updated!');};reader.readAsDataURL(file);}
+async function handleAvatarUpload(event){
+  var file=event.target.files[0];if(!file)return;
+  if(!_user){showToast('Please sign in first');return;}
+  var validTypes=['image/jpeg','image/png','image/webp'];
+  if(validTypes.indexOf(file.type)===-1){showToast('⚠️ Please choose a JPG, PNG, or WEBP image');return;}
+  if(file.size>2*1024*1024){showToast('⚠️ Image must be under 2MB');return;}
+  showToast('Uploading photo…');
+  try{
+    var ext=file.name.split('.').pop().toLowerCase();
+    var path=_user.id+'/avatar.'+ext;
+    var up=await sb.storage.from('avatars').upload(path,file,{upsert:true,contentType:file.type});
+    if(up.error)throw up.error;
+    var pub=sb.storage.from('avatars').getPublicUrl(path);
+    var url=pub.data.publicUrl+'?t='+Date.now(); // cache-bust so a re-upload shows immediately
+    var dbUpd=await sb.from('profiles').update({avatar_url:url}).eq('id',_user.id);
+    if(dbUpd.error)throw dbUpd.error;
+    _profile.avatar_url=url;
+    localStorage.setItem('bx_profile',JSON.stringify(_profile)); // display cache only
+    document.getElementById('pf-card-img').src=url;
+    document.getElementById('pf-card-img').style.display='block';
+    document.getElementById('pf-card-initials').style.display='none';
+    ['sb-av','tb-av'].forEach(function(id){
+      var av=document.getElementById(id);
+      if(av){var img=document.createElement('img');img.src=url;av.innerHTML='';av.appendChild(img);}
+    });
+    showToast('Photo updated!');
+  }catch(e){
+    console.error('Avatar upload failed:',e);
+    showToast('⚠️ Could not upload photo — please try again');
+  }
+}
 async function saveProfile(){
   _profile.full_name=gv('pf-name');_profile.city=gv('pf-city');_profile.phone=gv('pf-phone');_profile.linkedin_url=gv('pf-linkedin');_profile.bio=gv('pf-bio');_profile.current_role=gv('pf-role');_profile.company=gv('pf-company');_profile.experience=gv('pf-exp');_profile.notice_period=gv('pf-notice');_profile.skills=_skills.join(',');
   localStorage.setItem('bx_profile',JSON.stringify(_profile));renderAll();
@@ -670,7 +714,91 @@ function shareProfile(){var url='https://www.belongix.in/profile.html?id='+(_use
 
 // Settings
 async function resetPassword(){if(!_user||!_user.email)return;try{await sb.auth.resetPasswordForEmail(_user.email,{redirectTo:window.location.origin+'/dashboard.html'});showToast('Password reset email sent!');}catch(e){showToast('Failed to send reset email');}}
-function deleteAccount(){if(!confirm('This will permanently delete your Belongix account. Are you sure?'))return;showToast('Contact support@belongix.in to delete your account');}
+// Pro/subscription status — the ONLY source of truth is the
+// entitlements table, which only razorpay-webhook can ever write to.
+// This function never sets Pro status itself, only reads it.
+async function loadEntitlement(){
+  if(!_user)return;
+  var el=document.getElementById('stat-pro');
+  try{
+    // is_pro() is computed live from subscriptions (including whether
+    // current_period_end has passed) on every call — this is the real
+    // authority, not a cache that could go stale between webhook events.
+    var r=await sb.rpc('is_pro');
+    if(r.error)throw r.error;
+    var isPro=!!r.data;
+    if(el){
+      if(isPro){
+        el.textContent='Pro ⚡';el.style.color='var(--accent)';
+        el.parentElement.parentElement.style.cursor='default';
+        el.parentElement.parentElement.onclick=null;
+      }else{
+        el.textContent='Free — Upgrade →';el.style.color='var(--brand)';
+        el.parentElement.parentElement.style.cursor='pointer';
+        el.parentElement.parentElement.onclick=upgradeToPro;
+      }
+    }
+  }catch(e){
+    console.error('Entitlement load failed:',e);
+    if(el)el.textContent='—';
+  }
+}
+
+async function upgradeToPro(){
+  if(!_user)return;
+  if(typeof Razorpay==='undefined'){showToast('⚠️ Payment system unavailable right now');return;}
+  try{
+    var session=await sb.auth.getSession();
+    var token=session.data.session.access_token;
+    // Real recurring Razorpay Subscription, not a one-off Order — this
+    // is what actually renews monthly instead of granting Pro once.
+    var r=await fetch(SB_URL+'/functions/v1/razorpay-create-subscription',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}
+    });
+    var sub=await r.json();
+    if(!r.ok)throw new Error(sub.error||'Could not start checkout');
+    var rzp=new Razorpay({
+      key:sub.key_id,subscription_id:sub.subscription_id,
+      name:'Belongix Pro',description:'₹499/month — cancel anytime',
+      prefill:{email:_user.email||''},
+      theme:{color:'#2D1B69'},
+      handler:function(response){
+        // Checkout succeeding here means Razorpay accepted the mandate,
+        // but Pro access is granted ONLY when razorpay-webhook receives
+        // and verifies subscription.activated/charged server-side. This
+        // handler gives honest interim feedback and re-checks the real,
+        // live entitlement — it never sets isPro=true itself.
+        showToast('Subscription started — activating Pro…');
+        setTimeout(loadEntitlement,3000);
+      },
+      modal:{ondismiss:function(){showToast('Checkout closed');}}
+    });
+    rzp.open();
+  }catch(e){
+    console.error('Upgrade to Pro failed:',e);
+    showToast('⚠️ '+(e.message||'Could not start checkout'));
+  }
+}
+
+async function deleteAccount(){
+  if(!confirm('This will permanently delete your Belongix account and profile data. Payment/billing records are retained for legal/accounting purposes as described in our Privacy Policy. This cannot be undone. Continue?'))return;
+  if(!_user)return;
+  try{
+    var session=await sb.auth.getSession();
+    var token=session.data.session.access_token;
+    var r=await fetch(SB_URL+'/functions/v1/delete-account',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}
+    });
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Could not delete account');
+    localStorage.removeItem('bx_profile');
+    showToast('Account deleted. Goodbye 👋');
+    setTimeout(function(){window.location.href='index.html';},1200);
+  }catch(e){
+    console.error('Account deletion failed:',e);
+    showToast('⚠️ '+(e.message||'Could not delete your account. Please contact support.'));
+  }
+}
 
 // Auth
 async function doSignOut(){try{await sb.auth.signOut();}catch(e){}localStorage.removeItem('bx_profile');window.location.href='index.html';}

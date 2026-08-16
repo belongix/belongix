@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>About Belongix — India's Career Learning Platform</title>
 <meta name="description" content="Belongix is built to give every Indian professional the career tools they deserve — 268 courses across 21 domains and an AI-powered ATS Resume Builder."/>
+<link rel="canonical" href="https://www.belongix.in/about.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="About Belongix"/>
+<meta property="og:description" content="Belongix is built to give every Indian professional the career tools they deserve — 268 courses across 21 domains and an AI-powered ATS Resume Builder."/>
+<meta property="og:url" content="https://www.belongix.in/about.html"/>
+<meta property="og:image" content="https://www.belongix.in/icons/og-image.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="About Belongix"/>
+<meta name="twitter:description" content="India's career learning platform — 268 courses, AI resume tools, verified certificates."/>
 <link rel="icon" href="icons/icon-32.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -133,9 +142,11 @@ a{text-decoration:none;color:inherit}
 
 @media(max-width:900px){.mission-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:repeat(2,1fr)}.values-grid{grid-template-columns:1fr 1fr}.nav-center{display:none}.hamburger{display:flex}}
 @media(max-width:600px){.offer-grid{grid-template-columns:1fr}.values-grid{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}}
+.skip-link{position:absolute;left:-9999px;top:0;background:#2D1B69;color:#fff;padding:10px 16px;border-radius:0 0 8px 0;z-index:9999;font-family:sans-serif;font-size:14px;text-decoration:none}.skip-link:focus{left:0}
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <nav class="nav">
   <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
@@ -180,7 +191,7 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <!-- HERO -->
-<div class="hero">
+<div class="hero" id="main-content" tabindex="-1">
   <div class="hero-inner">
     <div class="hero-pill"><div class="pill-dot"></div>Built for India 🇮🇳</div>
     <h1>We built Belongix for<br/><span>every Indian professional</span></h1>
@@ -327,7 +338,7 @@ a{text-decoration:none;color:inherit}
   <div class="footer-copy">© 2026 Belongix · Built with ❤️ in India 🇮🇳</div>
 </footer>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';

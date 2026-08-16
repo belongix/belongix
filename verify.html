@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Verify Certificate — Belongix</title>
+<meta name="description" content="Publicly verify a Belongix course completion certificate."/>
+<link rel="canonical" href="https://www.belongix.in/verify.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Verify a Belongix Certificate"/>
+<meta property="og:description" content="Publicly verify a Belongix course completion certificate."/>
+<meta property="og:url" content="https://www.belongix.in/verify.html"/>
+<meta property="og:image" content="https://www.belongix.in/icons/og-image.png"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Verify a Belongix Certificate"/>
+<meta name="twitter:description" content="Publicly verify a Belongix course completion certificate."/>
+<link rel="icon" href="icons/icon-32.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root{--brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;--ink:#0D0D1A;--muted:#5A5A7A;--border:#E4E4F0;--bg:#F7F7FC;--ff:'Sora',sans-serif;--fb:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);color:var(--ink);background:#fff;min-height:100vh;display:flex;flex-direction:column}
+a{color:var(--brand);text-decoration:none}
+.nav{height:60px;display:flex;align-items:center;padding:0 24px;border-bottom:1px solid var(--border)}
+.nav-logo{font-family:var(--ff);font-size:19px;font-weight:800;color:var(--ink);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.card{max-width:480px;width:100%;text-align:center}
+.icon{font-size:52px;margin-bottom:16px}
+h1{font-family:var(--ff);font-size:24px;font-weight:800;margin-bottom:8px}
+.sub{color:var(--muted);font-size:14px;margin-bottom:28px}
+.input-row{display:flex;gap:8px;margin-bottom:24px}
+.input-row input{flex:1;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border);font-size:14px;font-family:var(--fb)}
+.input-row button{padding:12px 20px;border-radius:10px;border:none;background:var(--brand);color:#fff;font-family:var(--ff);font-weight:700;font-size:13.5px;cursor:pointer}
+.input-row button:hover{background:var(--brand2)}
+.result{border-radius:14px;padding:24px;text-align:left;display:none}
+.result.valid{background:#ECFDF5;border:1.5px solid #A7F3D0}
+.result.invalid{background:#FEF2F2;border:1.5px solid #FECACA}
+.result-badge{font-family:var(--ff);font-weight:800;font-size:14px;margin-bottom:12px}
+.result.valid .result-badge{color:#065F46}
+.result.invalid .result-badge{color:#991B1B}
+.result-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13.5px;border-bottom:1px solid rgba(0,0,0,.06)}
+.result-row:last-child{border-bottom:none}
+.result-label{color:var(--muted)}
+.result-val{font-weight:600}
+.loading{color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
+</nav>
+
+<div class="wrap">
+  <div class="card">
+    <div class="icon">🎓</div>
+    <h1>Verify a Certificate</h1>
+    <div class="sub">Enter a Belongix certificate number to confirm it's genuine.</div>
+    <div class="input-row">
+      <input type="text" id="cert-input" placeholder="e.g. BX-2026-A1B2C3D4"/>
+      <button onclick="doVerify()">Verify</button>
+    </div>
+    <div id="result" class="result"></div>
+  </div>
+</div>
+
+<script>
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+
+window.addEventListener('load',function(){
+  var q=new URLSearchParams(location.search).get('id');
+  if(q){document.getElementById('cert-input').value=q;doVerify();}
+});
+
+async function doVerify(){
+  var num=document.getElementById('cert-input').value.trim();
+  var result=document.getElementById('result');
+  if(!num){return;}
+  result.style.display='block';
+  result.className='result';
+  result.innerHTML='<div class="loading">Checking…</div>';
+  try{
+    var r=await fetch(SB_URL+'/functions/v1/verify-certificate?certificate_number='+encodeURIComponent(num));
+    var d=await r.json();
+    if(!r.ok)throw new Error('Verification service unavailable');
+    if(!d.valid){
+      result.className='result invalid';
+      result.innerHTML='<div class="result-badge">✕ Not a valid certificate</div><div style="font-size:13.5px;color:var(--muted)">No active Belongix certificate matches this number. Double-check it and try again.</div>';
+      return;
+    }
+    result.className='result valid';
+    result.innerHTML=
+      '<div class="result-badge">✓ Verified — genuine Belongix certificate</div>'+
+      '<div class="result-row"><span class="result-label">Recipient</span><span class="result-val">'+esc(d.recipient_name)+'</span></div>'+
+      '<div class="result-row"><span class="result-label">Course</span><span class="result-val">'+esc(d.course_title)+'</span></div>'+
+      '<div class="result-row"><span class="result-label">Issued</span><span class="result-val">'+new Date(d.issued_at).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})+'</span></div>';
+  }catch(e){
+    result.className='result invalid';
+    result.innerHTML='<div class="result-badge">⚠️ Could not verify right now</div><div style="font-size:13.5px;color:var(--muted)">Please try again in a moment.</div>';
+  }
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+</script>
+</body>
+</html>

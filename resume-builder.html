@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>ATS Resume Builder — Belongix</title>
 <meta name="description" content="Build an ATS-ready resume with AI. Real-time ATS Readiness Score, keyword matching, AI bullet rewriter. Free on Belongix."/>
+<link rel="canonical" href="https://www.belongix.in/resume-builder.html"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="ATS Resume Builder — Belongix"/>
+<meta property="og:description" content="Build an ATS-ready resume with AI. Real-time ATS Readiness Score, keyword matching, AI bullet rewriter."/>
+<meta property="og:url" content="https://www.belongix.in/resume-builder.html"/>
+<meta property="og:image" content="https://www.belongix.in/icons/og-image.png"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="ATS Resume Builder — Belongix"/>
+<meta name="twitter:description" content="Build an ATS-ready resume with AI. Free on Belongix."/>
 <link rel="icon" href="icons/icon-32.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -468,9 +477,11 @@ a{text-decoration:none;color:inherit}
   .ob-opts{grid-template-columns:1fr 1fr}
   .kw-stats{grid-template-columns:1fr 1fr}
 }
+.skip-link{position:absolute;left:-9999px;top:0;background:#2D1B69;color:#fff;padding:10px 16px;border-radius:0 0 8px 0;z-index:9999;font-family:sans-serif;font-size:14px;text-decoration:none}.skip-link:focus{left:0}
 </style>
 </head>
 <body>
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <!-- NAV -->
 <nav class="nav">
@@ -507,7 +518,7 @@ a{text-decoration:none;color:inherit}
 
 <!-- ══════════════════ LANDING ══════════════════ -->
 <div id="landing-view">
-  <div class="hero">
+  <div class="hero" id="main-content" tabindex="-1">
     <div class="hero-inner">
       <div class="hero-pill"><div class="pill-dot"></div>AI-Powered · Free to Use</div>
       <h1>Build an ATS-Ready Resume<br/>That Gets <span class="h1-purple">Noticed</span></h1>
@@ -1000,7 +1011,7 @@ a{text-decoration:none;color:inherit}
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 // ── SUPABASE ──
@@ -1015,10 +1026,16 @@ var state={
   experience:[],education:[],projects:[],certs:[],
   score:null,currentTemplate:'ats-classic',
   currentBulletCb:null,autosaveTimer:null,obStep:1,
+  currentResumeId:null,  // null until a resume is created/loaded from Supabase
 };
+var _user=null; // set once we know the real Supabase session; null = logged out
 
 // ── INIT ──
-window.addEventListener('load',function(){
+window.addEventListener('load',async function(){
+  try{
+    var s=await sb.auth.getSession();
+    if(s.data&&s.data.session&&s.data.session.user)_user=s.data.session.user;
+  }catch(e){}
   initTemplates();
   initDashboard();
   addExp(true);addEdu(true);
@@ -1026,6 +1043,21 @@ window.addEventListener('load',function(){
     if(!e.target.closest('.nav-r')&&!e.target.closest('#mobile-menu')){}
   });
 });
+
+// Every save/load/AI action needs a real session. Rather than gating the
+// whole page (the landing/preview experience stays open to everyone),
+// we check at the point of action and prompt sign-in only when it
+// actually matters — matching how index.html's auth modal already works.
+async function requireAuth(){
+  if(_user)return _user;
+  try{
+    var s=await sb.auth.getSession();
+    if(s.data&&s.data.session&&s.data.session.user){_user=s.data.session.user;return _user;}
+  }catch(e){}
+  showToast('Please sign in to save your resume');
+  setTimeout(function(){window.location.href='index.html';},1200);
+  return null;
+}
 
 // ── MOBILE MENU ──
 function toggleMobileMenu(){
@@ -1239,11 +1271,94 @@ function renderSkillTags(type){
 }
 
 // ── AUTOSAVE ──
+function buildResumeContent(){
+  return {
+    careerLevel:state.careerLevel,targetJob:state.targetJob,
+    jdText:state.jdText,jdKeywords:state.jdKeywords,
+    skills:state.skills,experience:state.experience,
+    education:state.education,projects:state.projects,certs:state.certs,
+    template:state.currentTemplate,
+    fields:{
+      name:gvId('f-name'),title:gvId('f-title'),email:gvId('f-email'),
+      phone:gvId('f-phone'),summary:gvId('f-summary')
+    }
+  };
+}
+function gvId(id){var el=document.getElementById(id);return el?el.value:'';}
+
+// Real, debounced save to Supabase. States shown: Saving… / Saved ✓ / an
+// actual error — never a fake "Saved" if the write didn't happen.
 function autosave(){
   var ind=document.getElementById('autosave-status');
   if(ind)ind.innerHTML='<span class="spinner" style="width:12px;height:12px;border-width:1.5px"></span> Saving…';
   clearTimeout(state.autosaveTimer);
-  state.autosaveTimer=setTimeout(function(){if(ind)ind.textContent='✓ Saved';},600);
+  state.autosaveTimer=setTimeout(async function(){
+    var user=_user; // don't force a redirect mid-typing; only skip persistence if logged out
+    if(!user){try{var s=await sb.auth.getSession();if(s.data&&s.data.session)user=_user=s.data.session.user;}catch(e){}}
+    if(!user){if(ind)ind.textContent='Sign in to save';return;}
+    try{
+      var content=buildResumeContent();
+      var title=gvId('f-name')||state.targetJob||'Untitled Resume';
+      if(state.currentResumeId){
+        var r=await sb.from('resumes').update({title:title,content:content,target_job:state.targetJob,career_level:state.careerLevel,template:state.currentTemplate}).eq('id',state.currentResumeId);
+        if(r.error)throw r.error;
+      }else{
+        var ins=await sb.from('resumes').insert({user_id:user.id,title:title,content:content,target_job:state.targetJob,career_level:state.careerLevel,template:state.currentTemplate}).select('id').single();
+        if(ins.error)throw ins.error;
+        state.currentResumeId=ins.data.id;
+      }
+      if(ind)ind.textContent='✓ Saved';
+    }catch(e){
+      console.error('Resume save failed:',e);
+      if(ind)ind.textContent='⚠️ Save failed — check connection';
+    }
+  },800);
+}
+
+async function loadResumeFromDB(id){
+  var user=await requireAuth();if(!user)return;
+  try{
+    var r=await sb.from('resumes').select('*').eq('id',id).eq('user_id',user.id).single();
+    if(r.error)throw r.error;
+    var c=r.data.content||{};
+    state.currentResumeId=r.data.id;
+    state.careerLevel=c.careerLevel||'';state.targetJob=c.targetJob||'';
+    state.jdText=c.jdText||'';state.jdKeywords=c.jdKeywords||[];
+    state.skills=c.skills||{technical:[],soft:[],domain:[]};
+    state.experience=c.experience||[];state.education=c.education||[];
+    state.projects=c.projects||[];state.certs=c.certs||[];
+    if(c.template){state.currentTemplate=c.template;}
+    if(c.fields){
+      ['name','title','email','phone','summary'].forEach(function(k){
+        var el=document.getElementById('f-'+k);if(el&&c.fields[k]!==undefined)el.value=c.fields[k];
+      });
+    }
+    switchTab('editor');
+    showToast('Resume loaded');
+  }catch(e){
+    console.error('Resume load failed:',e);
+    showToast('⚠️ Could not load that resume');
+  }
+}
+
+async function deleteResumeFromDB(id){
+  var user=await requireAuth();if(!user)return;
+  if(!confirm('Delete this resume? This cannot be undone.'))return;
+  try{
+    var r=await sb.from('resumes').update({is_deleted:true}).eq('id',id).eq('user_id',user.id);
+    if(r.error)throw r.error;
+    if(state.currentResumeId===id)state.currentResumeId=null;
+    showToast('Resume deleted');
+    initDashboard();
+  }catch(e){
+    console.error('Resume delete failed:',e);
+    showToast('⚠️ Could not delete resume');
+  }
+}
+
+function startNewResume(){
+  state.currentResumeId=null;
+  switchTab('editor');
 }
 
 // ── ATS SCORE ENGINE (rule-based) ──
@@ -1440,38 +1555,57 @@ function selectTemplate(id){
 }
 
 // ── DASHBOARD ──
-function initDashboard(){
+async function initDashboard(){
   var g=document.getElementById('dash-grid');if(!g)return;
-  var items=[
-    {name:'Software Engineer Resume',job:'Software Engineer @ Google-style',score:94,match:'91%',edited:'2 hours ago',scoreColor:'var(--green)'},
-    {name:'Full Stack Developer',job:'Full Stack @ Startup',score:78,match:'72%',edited:'Yesterday',scoreColor:'var(--amber)'},
-  ];
-  g.innerHTML=items.map(function(r){
-    return '<div class="resume-card" onclick="switchTab(\'editor\')">'
-      +'<div class="resume-card-score" style="color:'+r.scoreColor+'">'+r.score+'/100</div>'
-      +'<div class="resume-card-title">'+esc(r.name)+'</div>'
-      +'<div class="resume-card-sub">'+esc(r.job)+'</div>'
-      +'<div class="resume-card-meta">Match: '+r.match+' · Edited '+r.edited+'</div>'
-      +'<div class="resume-card-btns"><button class="btn btn-primary btn-sm" onclick="event.stopPropagation();switchTab(\'editor\')">Edit</button><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();runScan()">Analyze</button></div>'
-      +'</div>';
-  }).join('')
-  +'<div class="resume-card" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;gap:8px" onclick="switchTab(\'editor\')">'
-  +'<div style="font-size:28px">+</div><div style="font-family:var(--ff);font-size:13.5px;font-weight:700">New Resume</div>'
-  +'<div style="font-size:12.5px;color:var(--muted)">Start from scratch or upload</div></div>';
+  var newCard='<div class="resume-card" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;gap:8px" onclick="startNewResume()">'
+    +'<div style="font-size:28px">+</div><div style="font-family:var(--ff);font-size:13.5px;font-weight:700">New Resume</div>'
+    +'<div style="font-size:12.5px;color:var(--muted)">Start from scratch</div></div>';
+
+  if(!_user){
+    // Not signed in yet — nothing fake to show. Real state, not a demo.
+    g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:13.5px">Sign in to see and save your resumes.</div>'+newCard;
+    return;
+  }
+  try{
+    var r=await sb.from('resumes').select('id,title,target_job,updated_at').eq('user_id',_user.id).eq('is_deleted',false).order('updated_at',{ascending:false});
+    if(r.error)throw r.error;
+    var items=r.data||[];
+    if(!items.length){
+      g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:13.5px">No resumes yet — create your first one.</div>'+newCard;
+      return;
+    }
+    g.innerHTML=items.map(function(row){
+      var edited=new Date(row.updated_at).toLocaleDateString();
+      return '<div class="resume-card" onclick="loadResumeFromDB(\''+row.id+'\')">'
+        +'<div class="resume-card-title">'+esc(row.title||'Untitled Resume')+'</div>'
+        +'<div class="resume-card-sub">'+esc(row.target_job||'')+'</div>'
+        +'<div class="resume-card-meta">Edited '+edited+'</div>'
+        +'<div class="resume-card-btns"><button class="btn btn-primary btn-sm" onclick="event.stopPropagation();loadResumeFromDB(\''+row.id+'\')">Edit</button><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();deleteResumeFromDB(\''+row.id+'\')">Delete</button></div>'
+        +'</div>';
+    }).join('')+newCard;
+  }catch(e){
+    console.error('Dashboard load failed:',e);
+    g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:13.5px">⚠️ Could not load your resumes. Please refresh.</div>'+newCard;
+  }
 }
 
 // ── AI FUNCTIONS ──
-async function callClaude(prompt,cb){
+async function callClaude(prompt,cb,feature){
+  var user=await requireAuth();
+  if(!user){cb('[Please sign in to use AI features.]');return;}
   try{
-    var r=await fetch('https://api.anthropic.com/v1/messages',{
+    var session=await sb.auth.getSession();
+    var token=session.data&&session.data.session?session.data.session.access_token:null;
+    if(!token){cb('[Session expired — please sign in again.]');return;}
+    var r=await fetch(SB_URL+'/functions/v1/ai-resume-assist',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,messages:[{role:'user',content:prompt}]})
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({feature:feature||'general',prompt:prompt,resume_id:state.currentResumeId})
     });
     var d=await r.json();
-    var text=(d.content||[]).map(function(c){return c.text||'';}).join('');
-    cb(text);
-  }catch(e){cb('[AI temporarily unavailable. Please try again.]');}
+    if(!r.ok){cb('['+(d.error||'AI temporarily unavailable. Please try again.')+']');return;}
+    cb(d.text||'');
+  }catch(e){console.error('AI call failed:',e);cb('[AI temporarily unavailable. Please try again.]');}
 }
 function aiGenSummary(){
   var job=state.targetJob||(document.getElementById('f-title')||{}).value||'professional';

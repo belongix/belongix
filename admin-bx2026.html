@@ -7,6 +7,7 @@
 <meta http-equiv="Pragma" content="no-cache"/>
 <meta http-equiv="Expires" content="0"/>
 <title>Belongix Admin</title>
+<meta name="robots" content="noindex, nofollow, noarchive"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -1717,12 +1718,13 @@ input:checked+.tog-slider::before{transform:translateX(19px)}
 </div>
 
 <!-- TOAST -->
-<div id="toast"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
 var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
 
+var sb=supabase.createClient(SB_URL,SB_KEY);
 function sbFetch(t,p){return fetch(SB_URL+'/rest/v1/'+t+'?'+(p||'select=*'),{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}}).then(function(r){if(!r.ok)throw new Error('HTTP '+r.status);return r.json();});}
 function sbInsert(t,rows){return fetch(SB_URL+'/rest/v1/'+t,{method:'POST',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify(rows)}).then(function(r){return r.json().then(function(j){if(!r.ok){throw new Error((j&&j.message)||'HTTP '+r.status+' on '+t);}return j;}).catch(function(e){if(e&&e.message)throw e;return[];});});}
 function sbUpdate(t,id,data){return fetch(SB_URL+'/rest/v1/'+t+'?id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(r){return r.json().catch(function(){return{};});});}
@@ -1777,56 +1779,98 @@ async function writeAudit(action,tType,tId,tName,details){
    Emergency fallback ONLY if network is down
 ══════════════════════════════════════════════ */
 
-/* Emergency fallback — used ONLY when Supabase is completely unreachable.
-   Never checked if Supabase responds, even with wrong password.
-   Update password in Settings to change the real password in Supabase. */
-/* Admin credentials - password read fresh from localStorage on every login attempt */
-var ADMIN_EMAIL='teambelongix@gmail.com';
-var DEFAULT_PASSWORD='belongix@admin2026';
+/* ============================================================
+   ADMIN AUTHENTICATION — REWRITTEN FOR SECURITY
+   ============================================================
+   What used to be here (removed, kept only in the offline backup
+   copy of this file, never deployed):
+     - A hardcoded fallback email/password pair.
+     - Client-side comparison of a password against admin_users.password_hash
+       fetched into the browser.
+     - Trusting sessionStorage.bx_admin as proof of admin access on
+       every page load, with zero server-side re-check.
+
+   What's here now:
+     - Real Supabase Auth (sb.auth.signInWithPassword) — the exact
+       same auth system regular users go through, no second password
+       system.
+     - Every page load (and every login) calls the admin-check-role
+       Edge Function, which independently verifies, server-side,
+       using the NEW admin_roles table, that this real authenticated
+       user actually has an active admin role. The browser's JS
+       object is a UI convenience AFTER that check succeeds — never
+       the check itself.
+     - sessionStorage is no longer read to grant access at all. It is
+       used, if at all, only after a server-verified check, purely to
+       avoid a re-render flicker — never as an authorization source.
+
+   IMPORTANT — WHAT THIS DOES NOT YET FIX: once someone IS confirmed
+   to be an admin, everything past this point (jobs, coupons, refunds,
+   users, revenue, etc.) still uses sbFetch/sbInsert/sbUpdate/sbDelete
+   against the original 24 pre-existing tables with the anon key,
+   exactly as before. That authorization layer is intentionally left
+   untouched in this pass — it requires the Phase 1 Supabase discovery
+   results (RLS/grants on those 24 tables) before it can be safely
+   redesigned without guessing your live schema. See the Master
+   Production Report for full detail. This fix closes the "anyone can
+   get into the admin panel at all" hole, not the deeper "what can an
+   admin actually touch, and how is that enforced" question.
+   ============================================================ */
+
+async function checkAdminRole(){
+  try{
+    var session=await sb.auth.getSession();
+    if(!session.data||!session.data.session)return null;
+    var token=session.data.session.access_token;
+    var r=await fetch(SB_URL+'/functions/v1/admin-check-role',{
+      method:'POST',headers:{'Authorization':'Bearer '+token}
+    });
+    var d=await r.json();
+    if(!r.ok||!d.is_admin)return null;
+    return d; // {is_admin:true, role, email}
+  }catch(e){console.error('Admin role check failed:',e);return null;}
+}
+
 async function doLogin(){
   var email=(gv('lf-email')||'').toLowerCase().trim();
   var pass=(document.getElementById('lf-pass')||{}).value||'';
   var btn=document.getElementById('lf-btn');
   if(!email||!pass){showLoginErr('Please enter email and password');return;}
   btn.disabled=true;btn.textContent='Signing in…';clearLoginErr();
-  /* Read current password fresh from localStorage every time */
-  var currentPassword=localStorage.getItem('bx_admin_pw')||DEFAULT_PASSWORD;
-  if(email===ADMIN_EMAIL){
-    if(pass===currentPassword){
-      adminSession={id:'local-001',name:'Keerthi',role:'super_admin',email:ADMIN_EMAIL,dept:'Founder',loginTime:Date.now(),isLocal:true};
-      sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-      writeAudit('LOGIN',null,null,'Keerthi','Signed in via local auth');
-      launchAdmin();return;
-    }
-    showLoginErr('Incorrect password');btn.disabled=false;btn.textContent='Sign In →';return;
-  }
   try{
-    var rows=await Promise.race([
-      sbFetch('admin_users','email=eq.'+encodeURIComponent(email)+'&is_active=eq.true&select=*'),
-      new Promise(function(_,rej){setTimeout(function(){rej(new Error('timeout'));},8000);})
-    ]);
-    var admin=rows&&rows[0];
-    if(!admin){showLoginErr('No admin account found');btn.disabled=false;btn.textContent='Sign In →';return;}
-    if(admin.locked_until&&new Date(admin.locked_until)>new Date()){showLoginErr('Account locked — try again later');btn.disabled=false;btn.textContent='Sign In →';return;}
-    var valid=(pass===admin.password_hash);
-    if(!valid){try{var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(pass)))).map(function(b){return b.toString(16).padStart(2,'0');}).join('');valid=(hash===admin.password_hash);}catch(he){}}
-    if(!valid){var att=(admin.failed_attempts||0)+1;var upd={failed_attempts:att};if(att>=5){upd.locked_until=new Date(Date.now()+30*60000).toISOString();showLoginErr('5 failed attempts — locked 30 minutes');}else{showLoginErr('Incorrect password — '+(5-att)+' attempts left');}sbUpdate('admin_users',admin.id,upd).catch(function(){});btn.disabled=false;btn.textContent='Sign In →';return;}
-    sbUpdate('admin_users',admin.id,{failed_attempts:0,last_login:new Date().toISOString()}).catch(function(){});
-    adminSession={id:admin.id,name:admin.name,role:admin.role,email:admin.email,dept:admin.department,loginTime:Date.now()};
-    sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));
-    writeAudit('LOGIN',null,null,admin.name,'Admin signed in').catch(function(){});
+    var authResult=await sb.auth.signInWithPassword({email:email,password:pass});
+    if(authResult.error){
+      showLoginErr(authResult.error.message||'Incorrect email or password');
+      btn.disabled=false;btn.textContent='Sign In →';return;
+    }
+    var roleCheck=await checkAdminRole();
+    if(!roleCheck){
+      // Authenticated successfully as a REGULAR Belongix user, but has
+      // no admin role — sign them back out of this page immediately.
+      // This is exactly the case a client-side-only check would have
+      // gotten wrong.
+      await sb.auth.signOut();
+      showLoginErr('This account does not have admin access.');
+      btn.disabled=false;btn.textContent='Sign In →';return;
+    }
+    adminSession={name:roleCheck.email,role:roleCheck.role,email:roleCheck.email,loginTime:Date.now()};
     launchAdmin();
   }catch(e){
-    var msg=String(e.message||e);
-    if(msg.includes('timeout'))showLoginErr('Connection timed out — check your internet');
-    else showLoginErr('Could not connect — check internet connection');
+    console.error('Admin login failed:',e);
+    showLoginErr('Could not connect — check internet connection');
     btn.disabled=false;btn.textContent='Sign In →';
   }
 }
 function showLoginErr(msg){var el=document.getElementById('lf-err');if(el){el.textContent=msg;el.classList.add('show');}var box=document.querySelector('.lr-box');if(box){box.classList.remove('shake');void box.offsetWidth;box.classList.add('shake');}}
 function clearLoginErr(){var el=document.getElementById('lf-err');if(el)el.classList.remove('show');}
 function togglePassEye(){var inp=document.getElementById('lf-pass');var eye=document.getElementById('lf-eye');if(!inp||!eye)return;inp.type=inp.type==='password'?'text':'password';eye.textContent=inp.type==='password'?'👁':'🙉';}
-function adminSignOut(){sessionStorage.removeItem('bx_admin');adminSession=null;if(_pollTimer)clearInterval(_pollTimer);document.getElementById('admin-layout').classList.remove('show');document.getElementById('login-page').style.display='flex';var lp=document.getElementById('lf-pass');if(lp)lp.value='';}
+async function adminSignOut(){
+  try{await sb.auth.signOut();}catch(e){}
+  adminSession=null;if(_pollTimer)clearInterval(_pollTimer);
+  document.getElementById('admin-layout').classList.remove('show');
+  document.getElementById('login-page').style.display='flex';
+  var lp=document.getElementById('lf-pass');if(lp)lp.value='';
+}
 function restartSession(){document.getElementById('session-overlay').classList.remove('show');adminSignOut();}
 function launchAdmin(){
   document.getElementById('login-page').style.display='none';
@@ -1834,7 +1878,7 @@ function launchAdmin(){
   var n=adminSession.name,ini=initials(n);
   setText('sb-admin-name',n);var sav=document.getElementById('sb-av');if(sav)sav.textContent=ini;
   setText('aab-name',n);var tav=document.getElementById('aab-av');if(tav)tav.textContent=ini;
-  var rmap={super_admin:{lbl:'Super Admin',cls:'role-super'},manager:{lbl:'Manager',cls:'role-manager'},support:{lbl:'Support',cls:'role-support'}};
+  var rmap={super_admin:{lbl:'Super Admin',cls:'role-super'},admin:{lbl:'Admin',cls:'role-manager'},content_manager:{lbl:'Content Manager',cls:'role-manager'},support:{lbl:'Support',cls:'role-support'},finance:{lbl:'Finance',cls:'role-support'}};
   var rv=rmap[adminSession.role]||{lbl:adminSession.role,cls:'role-support'};
   var rb=document.getElementById('sb-role-badge');if(rb){rb.textContent=rv.lbl;rb.className='sb-role '+rv.cls;}
   var pn=document.getElementById('my-name');if(pn)pn.value=adminSession.name;
@@ -1842,13 +1886,24 @@ function launchAdmin(){
   startSessionWatch();showSection('dashboard');buildNotifications();
   _pollTimer=setInterval(pollBadges,30000);
 }
-window.addEventListener('load',function(){
+window.addEventListener('load',async function(){
   if(localStorage.getItem('bx_dark')==='1'){document.body.classList.add('dark');var btn=document.getElementById('dark-btn');if(btn)btn.textContent='☀️';}
-  var stored=sessionStorage.getItem('bx_admin');
-  if(stored){try{adminSession=JSON.parse(stored);launchAdmin();return;}catch(e){}}
+  // Session restore now means: is there a REAL Supabase session, AND does
+  // a server-side check confirm this real user has an admin role — every
+  // single load, not "does a browser-stored object claim to be one."
+  var roleCheck=await checkAdminRole();
+  if(roleCheck){
+    adminSession={name:roleCheck.email,role:roleCheck.role,email:roleCheck.email,loginTime:Date.now()};
+    launchAdmin();return;
+  }
   setTimeout(function(){var el=document.getElementById('lf-email');if(el)el.focus();},100);
   var lp=document.getElementById('lf-pass');if(lp)lp.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
   var le=document.getElementById('lf-email');if(le)le.addEventListener('keydown',function(e){if(e.key==='Enter'){var p=document.getElementById('lf-pass');if(p)p.focus();}});
+  // Also re-verify if the underlying Supabase session itself changes
+  // (expiry, sign-out elsewhere) while this tab stays open.
+  sb.auth.onAuthStateChange(function(event,session){
+    if(!session)adminSignOut();
+  });
 });
 function startSessionWatch(){['mousemove','keydown','click','scroll'].forEach(function(ev){document.addEventListener(ev,function(){_lastActivity=Date.now();},{passive:true});});setInterval(function(){if(adminSession&&Date.now()-_lastActivity>SESSION_TIMEOUT){var ov=document.getElementById('session-overlay');if(ov)ov.classList.add('show');}},30000);}
 /* DARK MODE */
@@ -2335,7 +2390,7 @@ var EMAIL_TEMPLATES={
 function loadTemplate(){var key=gv('template-select');var ed=document.getElementById('template-editor');if(!key){if(ed)ed.style.display='none';return;}_currentTemplate=key;var tmpl=EMAIL_TEMPLATES[key];if(!tmpl){if(ed)ed.style.display='none';return;}if(ed)ed.style.display='block';var subj=document.getElementById('tmpl-subject');if(subj)subj.value=tmpl.subject||'';var body=document.getElementById('tmpl-body');if(body)body.value=tmpl.body||'';}
 async function saveTemplate(){if(!_currentTemplate)return;EMAIL_TEMPLATES[_currentTemplate]={subject:gv('tmpl-subject'),body:(document.getElementById('tmpl-body')||{}).value||''};try{await sbInsert('email_templates',[{key:_currentTemplate,subject:gv('tmpl-subject'),body:EMAIL_TEMPLATES[_currentTemplate].body,updated_by:adminSession.name}]);toast('Template saved','success');}catch(e){toast('Saved locally','warning');}}
 function sendTestTemplate(){if(adminSession&&adminSession.email)window.open('mailto:'+adminSession.email+'?subject='+encodeURIComponent('[TEST] '+(gv('tmpl-subject')||'Template Test'))+'&body='+encodeURIComponent((document.getElementById('tmpl-body')||{}).value||''),'_blank');toast('Test email opened','success');}
-async function saveAdminProfile(){var name=gv('my-name'),email=gv('my-email');if(!name){toast('Name required','warning');return;}try{await sbUpdate('admin_users',adminSession.id,{name:name,email:email});adminSession.name=name;adminSession.email=email;sessionStorage.setItem('bx_admin',JSON.stringify(adminSession));setText('sb-admin-name',name);setText('aab-name',name);var sav=document.getElementById('sb-av');if(sav)sav.textContent=initials(name);var tav=document.getElementById('aab-av');if(tav)tav.textContent=initials(name);toast('Profile updated','success');}catch(e){toast('Error','error');}}
+async function saveAdminProfile(){var name=gv('my-name');if(!name){toast('Name required','warning');return;}try{var r=await sb.auth.updateUser({data:{full_name:name}});if(r.error)throw r.error;adminSession.name=name;setText('sb-admin-name',name);setText('aab-name',name);var sav=document.getElementById('sb-av');if(sav)sav.textContent=initials(name);var tav=document.getElementById('aab-av');if(tav)tav.textContent=initials(name);toast('Profile updated','success');}catch(e){console.error('Admin profile update failed:',e);toast('Error updating profile','error');}}
 /* ── PASSWORD FIELD TOGGLE ── */
 /* Login password eye toggle */
 function togglePwField(inputId,btnId){
@@ -2377,23 +2432,23 @@ function checkPwStrength(pw){
   }
 }
 
-/* ── CHANGE PASSWORD — with current password verification ── */
+/* ── CHANGE PASSWORD — via real Supabase Auth, not admin_users.password_hash ──
+   The old version of this function fetched password_hash into the browser
+   and compared it client-side — the exact anti-pattern flagged in the
+   security audit. Supabase Auth's own updateUser() already requires a
+   valid current session to change a password, so there's no need to
+   re-implement "verify current password" by hand at all. */
 async function changePassword(){
-  var cur=(document.getElementById('cur-pw')||{}).value||'';
   var nw=(document.getElementById('new-pw')||{}).value||'';
   var conf=(document.getElementById('confirm-pw')||{}).value||'';
-  if(!cur){toast('Enter your current password','warning');return;}
   if(!nw){toast('Enter a new password','warning');return;}
   if(!conf){toast('Confirm your new password','warning');return;}
   if(nw!==conf){toast('Passwords do not match','error');return;}
   if(nw.length<8){toast('Password must be at least 8 characters','warning');return;}
-  if(cur===nw){toast('New password must be different from current','warning');return;}
 
   var btn=document.querySelector('#stab-profile .btn-danger');
   if(btn){btn.disabled=true;btn.textContent='Updating...';}
-
   function resetBtn(){if(btn){btn.disabled=false;btn.textContent='Update Password';}}
-
   function clearFields(){
     ['cur-pw','new-pw','confirm-pw'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
     var bar=document.getElementById('pw-strength-fill');if(bar)bar.style.width='0%';
@@ -2401,67 +2456,15 @@ async function changePassword(){
     var mm=document.getElementById('pw-match-msg');if(mm)mm.textContent='';
   }
 
-  function markWrongPw(){
-    var inp=document.getElementById('cur-pw');
-    if(inp){inp.style.borderColor='var(--danger)';setTimeout(function(){inp.style.borderColor='';},3000);}
-    toast('Current password is incorrect','error');
-    resetBtn();
-  }
-
-  /* Check if logged in as LOCAL admin */
-  var isLocalAdmin=!!(adminSession.isLocal||adminSession.source==='local'||String(adminSession.id||'').startsWith('local'));
-
-  if(isLocalAdmin){
-    /* Read current password fresh from localStorage */
-    var currentPw=localStorage.getItem('bx_admin_pw')||DEFAULT_PASSWORD;
-    if(cur!==currentPw){markWrongPw();return;}
-
-    /* Save new password to localStorage - persists across ALL reloads */
-    localStorage.setItem('bx_admin_pw',nw);
-
-    /* Save to Supabase in background */
-    sbFetch('admin_users','email=eq.'+encodeURIComponent(adminSession.email)+'&select=id').then(function(rows){
-      if(rows&&rows[0]){
-        sbUpdate('admin_users',rows[0].id,{password_hash:nw,password_updated_at:new Date().toISOString()}).catch(function(){});
-      } else {
-        sbInsert('admin_users',[{
-          name:adminSession.name,email:adminSession.email,password_hash:nw,
-          role:adminSession.role,department:adminSession.dept||'Founder',
-          is_active:true,created_at:new Date().toISOString()
-        }]).catch(function(){});
-      }
-    }).catch(function(){});
-
-    clearFields();
-    resetBtn();
-    toast('Password updated! Sign in with your new password next time.','success');
-    writeAudit('PASSWORD_CHANGE','admin',adminSession.id,adminSession.name,'Password changed').catch(function(){});
-    setTimeout(function(){adminSignOut();},2500);
-    return;
-  }
-
-  /* Supabase admin */
   try{
-    var rows=await sbFetch('admin_users','email=eq.'+encodeURIComponent(adminSession.email)+'&select=id,password_hash');
-    var admin=rows&&rows[0];
-    if(!admin){toast('Account not found in database. Sign out and try again.','error');resetBtn();return;}
-    var valid=(cur===admin.password_hash);
-    if(!valid){
-      try{
-        var hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(cur))))
-          .map(function(b){return b.toString(16).padStart(2,'0');}).join('');
-        valid=(hash===admin.password_hash);
-      }catch(he){}
-    }
-    if(!valid){markWrongPw();return;}
-    await sbUpdate('admin_users',admin.id,{password_hash:nw,must_change_password:false,password_updated_at:new Date().toISOString(),failed_attempts:0});
-    clearFields();
-    resetBtn();
-    writeAudit('PASSWORD_CHANGE','admin',admin.id,adminSession.name,'Password changed').catch(function(){});
+    var r=await sb.auth.updateUser({password:nw});
+    if(r.error)throw r.error;
+    clearFields();resetBtn();
     toast('Password updated! Signing out now — log in with your new password.','success');
     setTimeout(function(){adminSignOut();},2500);
   }catch(e){
-    toast('Failed to update — check your internet connection','error');
+    console.error('Password update failed:',e);
+    toast(e.message||'Failed to update password','error');
     resetBtn();
   }
 }
