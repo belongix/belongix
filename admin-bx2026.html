@@ -2031,17 +2031,103 @@ function dismissDailySummary(){var c=document.getElementById('daily-summary-card
 var _uPage=1,_uPer=20,_filteredU=[];
 var DISPOSABLE=['mailinator','guerrillamail','tempmail','throwaway','yopmail','sharklasers'];
 function isDisposable(e){return DISPOSABLE.some(function(d){return (e||'').includes(d);});}
-async function loadUsers(){try{_allUsers=await sbFetch('profiles','select=*&order=created_at.desc&limit=500');}catch(e){_allUsers=[];document.getElementById('users-tbody').innerHTML='<tr><td colspan="8">'+emptyState('⚠️','Could not load users','Run: ALTER TABLE profiles DISABLE ROW LEVEL SECURITY in Supabase')+'</td></tr>';return;}updateUserStats();filterUsers();}
+var _proStatusMap={};
+async function loadUsers(){
+  try{_allUsers=await sbFetch('profiles','select=*&order=created_at.desc&limit=500');}catch(e){_allUsers=[];document.getElementById('users-tbody').innerHTML='<tr><td colspan="8">'+emptyState('⚠️','Could not load users','Check your connection and try again, or contact a developer if this persists.')+'</td></tr>';return;}
+  try{
+    var r=await sb.rpc('admin_list_pro_status');
+    _proStatusMap={};
+    if(r.data)r.data.forEach(function(row){_proStatusMap[row.user_id]=row.status;});
+  }catch(e){console.error('Could not load entitlement status:',e);_proStatusMap={};}
+  updateUserStats();filterUsers();
+}
 function updateUserStats(){setText('uc-total',_allUsers.length);setText('uc-free',_allUsers.filter(function(u){return !u.plan||u.plan==='free';}).length);setText('uc-pro',_allUsers.filter(function(u){return u.plan==='pro';}).length);setText('uc-premium',_allUsers.filter(function(u){return u.plan==='premium';}).length);setText('uc-suspended',_allUsers.filter(function(u){return u.suspended;}).length);setText('uc-flagged',_allUsers.filter(function(u){return isDisposable(u.email);}).length);setText('users-sub',_allUsers.length+' total users');}
 function filterUsers(){var q=(gv('u-search')||'').toLowerCase();var pf=gv('u-plan-filter')||'all';var cf=gv('u-city-filter')||'all';var sf=gv('u-sort')||'newest';_filteredU=_allUsers.filter(function(u){var txt=((u.full_name||'')+(u.email||'')).toLowerCase();var mp=pf==='all'||(pf==='suspended'?u.suspended:u.plan===pf);var mc=cf==='all'||u.city===cf;return(!q||txt.includes(q))&&mp&&mc;});if(sf==='newest')_filteredU.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);});else if(sf==='score')_filteredU.sort(function(a,b){return(b.career_score||0)-(a.career_score||0);});_uPage=1;renderUsersTable();}
-function renderUsersTable(){var start=(_uPage-1)*_uPer,page=_filteredU.slice(start,start+_uPer);var tbody=document.getElementById('users-tbody');if(!tbody)return;if(!page.length){tbody.innerHTML='<tr><td colspan="8">'+emptyState('👥',_filteredU.length===0&&_allUsers.length>0?'No users match filters':'No users yet')+'</td></tr>';return;}tbody.innerHTML=page.map(function(u){var plan=u.plan||'free';var pb=plan==='premium'?'<span class="badge b-purple">👑 Premium</span>':plan==='pro'?'<span class="badge b-info">⚡ Pro</span>':'<span class="badge b-gray">Free</span>';var status=u.suspended?'<span class="badge b-danger">Suspended</span>':isDisposable(u.email||'')?'<span class="badge b-warn">⚠️ Flagged</span>':'<span class="badge b-success">Active</span>';return '<tr><td><input type="checkbox" class="u-chk" data-id="'+esc(u.id)+'"/></td><td><div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--primary));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+initials(u.full_name||u.email)+'</div><div><div style="font-weight:600;font-size:13px">'+esc(u.full_name||'No name')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(u.email||'')+'</div></div></div></td><td>'+pb+'</td><td style="font-size:12.5px">'+esc(u.city||'—')+'</td><td><strong style="color:var(--accent)">'+(u.career_score||'—')+'</strong></td><td style="font-size:12px;color:var(--muted)">'+fmtDate(u.created_at)+'</td><td>'+status+'</td><td><div class="action-wrap"><button class="btn btn-ghost btn-xs" onclick="toggleActionMenu(\'um-'+esc(u.id)+'\')">Actions ▾</button><div class="action-menu" id="um-'+esc(u.id)+'"><div class="am-item" onclick="openUserDrawer(\''+esc(u.id)+'\')">👁 View</div><div class="am-item" onclick="mailUser(\''+esc(u.email||'')+'\')">📧 Email</div><div class="am-item" onclick="changePlan(\''+esc(u.id)+'\')">⬆️ Change Plan</div><div class="am-item" onclick="givePro(\''+esc(u.id)+'\')">🎁 Free Pro</div><div class="am-div"></div>'+(u.suspended?'<div class="am-item" onclick="unsuspendUser(\''+esc(u.id)+'\')">✅ Unsuspend</div>':'<div class="am-item danger" onclick="suspendUser(\''+esc(u.id)+'\',\''+esc(u.email||'')+'\')">🚫 Suspend</div>')+'<div class="am-item danger" onclick="deleteUser(\''+esc(u.id)+'\')">🗑 Delete</div></div></div></td></tr>';}).join('');var total=_filteredU.length;setText('users-page-info','Showing '+(start+1)+'–'+Math.min(start+_uPer,total)+' of '+total);var pg=document.getElementById('users-pg');if(!pg)return;pg.innerHTML=Array.from({length:Math.min(Math.ceil(total/_uPer),8)},function(_,i){return '<button class="pg-btn'+(i+1===_uPage?' active':'')+'" onclick="_uPage='+(i+1)+';renderUsersTable()">'+(i+1)+'</button>';}).join('');}
-function openUserDrawer(id){var u=_allUsers.find(function(x){return x.id===id;});if(!u)return;var score=u.career_score||0;var c=2*Math.PI*18;var offset=c-(c*score/100);setText('drawer-title',u.full_name||'User');var db=document.getElementById('drawer-body');if(!db)return;db.innerHTML='<div style="text-align:center;padding-bottom:16px"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="18" fill="none" stroke="var(--border)" stroke-width="6"/><circle cx="40" cy="40" r="18" fill="none" stroke="var(--accent)" stroke-width="6" stroke-dasharray="'+c+'" stroke-dashoffset="'+offset+'" stroke-linecap="round" transform="rotate(-90 40 40)"/><text x="40" y="44" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text)">'+score+'</text></svg><div style="font-size:11.5px;color:var(--muted);margin-top:4px">Career Score</div></div>'+irow('Name',esc(u.full_name||'—'))+irow('Email','<a href="mailto:'+esc(u.email||'')+'" style="color:var(--accent)">'+esc(u.email||'—')+'</a>')+irow('Plan',u.plan||'free')+irow('City',u.city||'—')+irow('Role',u.role||'—')+irow('Company',u.company||'—')+irow('Joined',fmtDate(u.created_at))+'<div style="border-top:1px solid var(--border);margin:14px 0;padding-top:14px"><div class="form-label" style="margin-bottom:7px">Add Note</div><textarea id="dnote-'+u.id+'" class="form-textarea" style="min-height:70px" placeholder="Internal note…"></textarea><button class="btn btn-primary btn-sm" style="margin-top:8px;width:100%" onclick="saveNote(\''+esc(u.id)+'\',\'user\',\'dnote-'+esc(u.id)+'\')">Save Note</button></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="mailUser(\''+esc(u.email||'')+'\')">📧 Email</button><button class="btn btn-primary btn-sm" onclick="changePlan(\''+esc(u.id)+'\')">⬆️ Plan</button>'+(u.suspended?'<button class="btn btn-success btn-sm" onclick="unsuspendUser(\''+esc(u.id)+'\')">✅ Unsuspend</button>':'<button class="btn btn-danger btn-sm" onclick="suspendUser(\''+esc(u.id)+'\',\''+esc(u.email||'')+'\')">🚫 Suspend</button>')+'</div>';document.getElementById('user-drawer').classList.add('open');document.getElementById('user-drawer-overlay').classList.add('open');}
+function renderUsersTable(){var start=(_uPage-1)*_uPer,page=_filteredU.slice(start,start+_uPer);var tbody=document.getElementById('users-tbody');if(!tbody)return;if(!page.length){tbody.innerHTML='<tr><td colspan="8">'+emptyState('👥',_filteredU.length===0&&_allUsers.length>0?'No users match filters':'No users yet')+'</td></tr>';return;}tbody.innerHTML=page.map(function(u){var proStatus=_proStatusMap[u.id]||'free';var pb=proStatus==='subscription'?'<span class="badge b-info" title="Real, paid Razorpay subscription">⚡ Subscription</span>':proStatus==='admin_grant'?'<span class="badge b-purple" title="Complimentary access granted by an admin">🎁 Admin Grant</span>':'<span class="badge b-gray">Free</span>';var status=u.suspended?'<span class="badge b-danger">Suspended</span>':isDisposable(u.email||'')?'<span class="badge b-warn">⚠️ Flagged</span>':'<span class="badge b-success">Active</span>';return '<tr><td><input type="checkbox" class="u-chk" data-id="'+esc(u.id)+'"/></td><td><div style="display:flex;align-items:center;gap:9px"><div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--primary));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">'+initials(u.full_name||u.email)+'</div><div><div style="font-weight:600;font-size:13px">'+esc(u.full_name||'No name')+'</div><div style="font-size:11.5px;color:var(--muted)">'+esc(u.email||'')+'</div></div></div></td><td>'+pb+'</td><td style="font-size:12.5px">'+esc(u.city||'—')+'</td><td><strong style="color:var(--accent)">'+(u.career_score||'—')+'</strong></td><td style="font-size:12px;color:var(--muted)">'+fmtDate(u.created_at)+'</td><td>'+status+'</td><td><div class="action-wrap"><button class="btn btn-ghost btn-xs" onclick="toggleActionMenu(\'um-'+esc(u.id)+'\')">Actions ▾</button><div class="action-menu" id="um-'+esc(u.id)+'"><div class="am-item" onclick="openUserDrawer(\''+esc(u.id)+'\')">👁 View</div><div class="am-item" onclick="mailUser(\''+esc(u.email||'')+'\')">📧 Email</div><div class="am-item" onclick="changePlan(\''+esc(u.id)+'\')">🎁 Manage Pro Grants</div><div class="am-item" onclick="givePro(\''+esc(u.id)+'\')">🎁 Free Pro</div><div class="am-div"></div>'+(u.suspended?'<div class="am-item" onclick="unsuspendUser(\''+esc(u.id)+'\')">✅ Unsuspend</div>':'<div class="am-item danger" onclick="suspendUser(\''+esc(u.id)+'\',\''+esc(u.email||'')+'\')">🚫 Suspend</div>')+'<div class="am-item danger" onclick="deleteUser(\''+esc(u.id)+'\')">🗑 Delete</div></div></div></td></tr>';}).join('');var total=_filteredU.length;setText('users-page-info','Showing '+(start+1)+'–'+Math.min(start+_uPer,total)+' of '+total);var pg=document.getElementById('users-pg');if(!pg)return;pg.innerHTML=Array.from({length:Math.min(Math.ceil(total/_uPer),8)},function(_,i){return '<button class="pg-btn'+(i+1===_uPage?' active':'')+'" onclick="_uPage='+(i+1)+';renderUsersTable()">'+(i+1)+'</button>';}).join('');}
+function openUserDrawer(id){var u=_allUsers.find(function(x){return x.id===id;});if(!u)return;var score=u.career_score||0;var c=2*Math.PI*18;var offset=c-(c*score/100);var proStatus=_proStatusMap[u.id]||'free';var planLabel=proStatus==='subscription'?'⚡ Subscription':proStatus==='admin_grant'?'🎁 Admin Grant':'Free';setText('drawer-title',u.full_name||'User');var db=document.getElementById('drawer-body');if(!db)return;db.innerHTML='<div style="text-align:center;padding-bottom:16px"><svg width="80" height="80" viewBox="0 0 80 80"><circle cx="40" cy="40" r="18" fill="none" stroke="var(--border)" stroke-width="6"/><circle cx="40" cy="40" r="18" fill="none" stroke="var(--accent)" stroke-width="6" stroke-dasharray="'+c+'" stroke-dashoffset="'+offset+'" stroke-linecap="round" transform="rotate(-90 40 40)"/><text x="40" y="44" text-anchor="middle" font-size="14" font-weight="800" fill="var(--text)">'+score+'</text></svg><div style="font-size:11.5px;color:var(--muted);margin-top:4px">Career Score</div></div>'+irow('Name',esc(u.full_name||'—'))+irow('Email','<a href="mailto:'+esc(u.email||'')+'" style="color:var(--accent)">'+esc(u.email||'—')+'</a>')+irow('Pro Status',planLabel)+irow('City',u.city||'—')+irow('Role',u.role||'—')+irow('Company',u.company||'—')+irow('Joined',fmtDate(u.created_at))+'<div style="border-top:1px solid var(--border);margin:14px 0;padding-top:14px"><div class="form-label" style="margin-bottom:7px">Add Note</div><textarea id="dnote-'+u.id+'" class="form-textarea" style="min-height:70px" placeholder="Internal note…"></textarea><button class="btn btn-primary btn-sm" style="margin-top:8px;width:100%" onclick="saveNote(\''+esc(u.id)+'\',\'user\',\'dnote-'+esc(u.id)+'\')">Save Note</button></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn btn-ghost btn-sm" onclick="mailUser(\''+esc(u.email||'')+'\')">📧 Email</button><button class="btn btn-primary btn-sm" onclick="changePlan(\''+esc(u.id)+'\')">🎁 Pro Grants</button>'+(u.suspended?'<button class="btn btn-success btn-sm" onclick="unsuspendUser(\''+esc(u.id)+'\')">✅ Unsuspend</button>':'<button class="btn btn-danger btn-sm" onclick="suspendUser(\''+esc(u.id)+'\',\''+esc(u.email||'')+'\')">🚫 Suspend</button>')+'</div>';document.getElementById('user-drawer').classList.add('open');document.getElementById('user-drawer-overlay').classList.add('open');}
 async function saveNote(tId,tType,inputId){var txt=(document.getElementById(inputId)||{}).value||'';if(!txt.trim()){toast('Note cannot be empty','warning');return;}try{await sbInsert('admin_notes',[{admin_id:adminSession.id,admin_name:adminSession.name,target_type:tType,target_id:tId,note_text:txt}]);toast('Note saved','success');}catch(e){toast('Failed','error');}}
 async function suspendUser(id,email){openConfirm('🚫 Suspend','Suspend this user?',null,'Suspend','danger',async function(){try{await sbUpdate('profiles',id,{suspended:true});var u=_allUsers.find(function(x){return x.id===id;});if(u)u.suspended=true;filterUsers();closeUserDrawer();toast('Suspended','success');await writeAudit('SUSPEND','user',id,email,'Suspended');}catch(e){toast('Failed','error');}});}
 async function unsuspendUser(id){try{await sbUpdate('profiles',id,{suspended:false});var u=_allUsers.find(function(x){return x.id===id;});if(u)u.suspended=false;filterUsers();toast('Restored','success');}catch(e){toast('Failed','error');}}
 function mailUser(email){if(email&&email!=='—')window.open('mailto:'+email,'_blank');}
-async function changePlan(id){openConfirm('⬆️ Change Plan','Enter new plan:','free / pro / premium','Update','primary',async function(plan){plan=(plan||'').toLowerCase().trim();if(!['free','pro','premium'].includes(plan)){toast('Invalid plan','warning');return;}try{await sbUpdate('profiles',id,{plan:plan});var u=_allUsers.find(function(x){return x.id===id;});if(u)u.plan=plan;filterUsers();toast('Plan updated to '+plan,'success');}catch(e){toast('Failed','error');}});}
-async function givePro(id){try{await sbUpdate('profiles',id,{plan:'pro'});var u=_allUsers.find(function(x){return x.id===id;});if(u)u.plan='pro';filterUsers();toast('Free Pro gifted','success');}catch(e){toast('Failed','error');}}
+async function changePlan(id){
+  var u=_allUsers.find(function(x){return x.id===id;});
+  if(!u)return;
+  // Reuse the existing user drawer as the grants-management view —
+  // avoids introducing a whole new modal component for this.
+  document.getElementById('user-drawer').classList.add('open');
+  document.getElementById('user-drawer-overlay').classList.add('open');
+  setText('drawer-title',(u.full_name||'User')+' — Pro Grants');
+  var db=document.getElementById('drawer-body');
+  db.innerHTML='<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">Loading grants…</div>';
+  try{
+    var session=await sb.auth.getSession();
+    var token=session.data.session.access_token;
+    var r=await fetch(SB_URL+'/functions/v1/admin-grant-pro',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({action:'list_grants',target_user_id:id})
+    });
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Could not load grants');
+    var grants=d.grants||[];
+    var html='<button class="btn btn-primary btn-sm" style="width:100%;margin-bottom:16px" onclick="doGivePro(\''+esc(id)+'\')">🎁 Grant Free Pro</button>';
+    if(!grants.length){
+      html+='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px">No grants on record for this user.</div>';
+    }else{
+      html+=grants.map(function(g){
+        var statusBadge=g.revoked?'<span class="badge b-gray">Revoked</span>':(g.expires_at&&new Date(g.expires_at)<new Date())?'<span class="badge b-warn">Expired</span>':'<span class="badge b-success">Active</span>';
+        var revokeBtn=(!g.revoked)?'<button class="btn btn-danger btn-sm" style="margin-top:8px" onclick="doRevokeGrant(\''+esc(g.id)+'\',\''+esc(id)+'\')">Revoke</button>':'';
+        return '<div style="border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px">'
+          +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'+statusBadge+'<span style="font-size:11px;color:var(--muted)">'+fmtDate(g.created_at)+'</span></div>'
+          +'<div style="font-size:12.5px;color:var(--muted)">'+esc(g.reason||'No reason given')+'</div>'
+          +(g.expires_at?'<div style="font-size:11.5px;color:var(--muted);margin-top:4px">Expires: '+fmtDate(g.expires_at)+'</div>':'')
+          +revokeBtn+'</div>';
+      }).join('');
+    }
+    db.innerHTML=html;
+  }catch(e){
+    console.error('Loading grants failed:',e);
+    db.innerHTML='<div style="text-align:center;padding:20px;color:var(--danger);font-size:13px">⚠️ '+esc(e.message||'Could not load grants — you may not have super_admin role')+'</div>';
+  }
+}
+async function doGivePro(id){
+  var reason=prompt('Reason for this grant (shown in the audit log):')||'';
+  try{
+    var session=await sb.auth.getSession();
+    var token=session.data.session.access_token;
+    var r=await fetch(SB_URL+'/functions/v1/admin-grant-pro',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({action:'grant',target_user_id:id,reason:reason})
+    });
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Could not grant Pro');
+    toast('Pro granted','success');
+    changePlan(id); // refresh the grants list in place
+    loadUsers(); // refresh the badge in the table behind the drawer
+  }catch(e){
+    console.error('Pro grant failed:',e);
+    toast(e.message||'Failed — you may not have super_admin role','error');
+  }
+}
+async function doRevokeGrant(grantId,userId){
+  if(!confirm('Revoke this Pro grant?'))return;
+  try{
+    var session=await sb.auth.getSession();
+    var token=session.data.session.access_token;
+    var r=await fetch(SB_URL+'/functions/v1/admin-grant-pro',{
+      method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({action:'revoke',grant_id:grantId})
+    });
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Could not revoke grant');
+    toast('Grant revoked','success');
+    changePlan(userId); // refresh the grants list in place
+    loadUsers(); // refresh the badge in the table behind the drawer
+  }catch(e){
+    console.error('Revoke failed:',e);
+    toast(e.message||'Failed — you may not have super_admin role','error');
+  }
+}
+async function givePro(id){doGivePro(id);}
 async function deleteUser(id){openConfirm('🗑 Delete Account','Type DELETE to confirm permanently removing this account.','Type DELETE','Delete','danger',async function(inp){if(inp!=='DELETE'){toast('Must type DELETE to confirm','warning');return;}try{await sbDelete('profiles',id);_allUsers=_allUsers.filter(function(u){return u.id!==id;});filterUsers();toast('Account deleted','success');}catch(e){toast('Error','error');}});}
 function selectAllUsers(chk){document.querySelectorAll('.u-chk').forEach(function(c){c.checked=chk.checked;});}
 function exportUsersCSV(){var rows=[['Name','Email','Plan','City','Score','Joined']];_filteredU.forEach(function(u){rows.push([u.full_name||'',u.email||'',u.plan||'free',u.city||'',u.career_score||'',fmtDate(u.created_at)]);});var csv=rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"';}).join(',');}).join('\n');var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download='users_'+new Date().toISOString().split('T')[0]+'.csv';a.click();toast('CSV exported','success');}
