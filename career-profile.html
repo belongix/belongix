@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Career Profile — Belongix</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app-shell.js"></script>
+<style>
+.auth-shell{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg-secondary)}
+.auth-card{max-width:380px;width:100%;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-md)}
+.ob-shell{min-height:100vh;background:var(--bg-secondary);display:flex;align-items:center;justify-content:center;padding:24px}
+.ob-card{max-width:480px;width:100%;background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;box-shadow:var(--shadow-md)}
+</style>
+</head>
+<body>
+<div id="view-auth" class="auth-shell hidden">
+  <div class="auth-card">
+    <h2 style="margin-bottom:4px">Career Profile</h2>
+    <p style="color:var(--text-secondary);font-size:13px;margin-bottom:22px">Sign in to build your career profile.</p>
+    <div class="tabs">
+      <div class="tab active" id="tab-login" onclick="setAuthMode('login')">Sign In</div>
+      <div class="tab" id="tab-signup" onclick="setAuthMode('signup')">Sign Up</div>
+    </div>
+    <div class="field"><label>Email</label><input type="email" id="auth-email" placeholder="you@example.com"/></div>
+    <div class="field"><label>Password</label><input type="password" id="auth-password" placeholder="••••••••"/></div>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" id="auth-submit-btn" onclick="submitAuth()">Sign In</button>
+    <div id="auth-err" style="color:var(--error);font-size:13px;margin-top:12px;display:none"></div>
+  </div>
+</div>
+
+<div id="view-onboarding" class="ob-shell hidden">
+  <div class="ob-card">
+    <div style="display:flex;gap:6px;margin-bottom:20px" id="ob-progress"></div>
+    <div style="font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px" id="ob-step-label">Step 1 of 5</div>
+    <h2 style="margin-bottom:20px" id="ob-step-title"></h2>
+    <div id="ob-step-body"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:24px">
+      <button class="btn btn-secondary" id="ob-back-btn" onclick="obBack()">Back</button>
+      <button class="btn btn-primary" id="ob-next-btn" onclick="obNext()">Continue</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb=supabase.createClient(SB_URL,SB_KEY);
+
+var _user=null,_profile=null,_workExp=[],_education=[];
+var _authMode='login';
+var _editingWorkId=null,_editingEduId=null;
+
+function show(id){document.getElementById(id).classList.remove('hidden');}
+function hide(id){document.getElementById(id).classList.add('hidden');}
+function showOnlyPreShellView(id){['view-auth','view-onboarding'].forEach(function(v){hide(v);});show(id);}
+
+window.addEventListener('load',async function(){
+  try{
+    var s=await sb.auth.getSession();
+    if(s.data&&s.data.session){_user=s.data.session.user;await afterAuth();}
+    else{showOnlyPreShellView('view-auth');}
+  }catch(e){showOnlyPreShellView('view-auth');}
+});
+
+function setAuthMode(mode){
+  _authMode=mode;
+  document.getElementById('tab-login').classList.toggle('active',mode==='login');
+  document.getElementById('tab-signup').classList.toggle('active',mode==='signup');
+  document.getElementById('auth-submit-btn').textContent=mode==='login'?'Sign In':'Create Account';
+}
+async function submitAuth(){
+  var email=document.getElementById('auth-email').value.trim();
+  var pw=document.getElementById('auth-password').value;
+  var errEl=document.getElementById('auth-err');errEl.style.display='none';
+  if(!email||!pw){errEl.textContent='Enter an email and password.';errEl.style.display='block';return;}
+  try{
+    var res=_authMode==='login'
+      ? await sb.auth.signInWithPassword({email:email,password:pw})
+      : await sb.auth.signUp({email:email,password:pw});
+    if(res.error)throw res.error;
+    if(_authMode==='signup'&&!res.data.session){
+      errEl.style.color='var(--accent)';
+      errEl.textContent='Check your email to confirm your account, then sign in.';
+      errEl.style.display='block';
+      return;
+    }
+    _user=res.data.session.user;
+    await afterAuth();
+  }catch(e){
+    errEl.style.color='var(--error)';
+    errEl.textContent=e.message||'Something went wrong.';
+    errEl.style.display='block';
+  }
+}
+async function signOut(){await sb.auth.signOut();window.location.href='career-profile.html';}
+
+async function afterAuth(){
+  await loadProfile();
+  if(!_profile||!_profile.full_name){obStep=0;showOnboarding();}
+  else{enterProfileView();}
+}
+
+async function loadProfile(){
+  try{
+    var r=await sb.from('career_profiles').select('*').eq('user_id',_user.id).maybeSingle();
+    _profile=r.data||{user_id:_user.id};
+  }catch(e){console.error('Profile load failed:',e);_profile={user_id:_user.id};}
+  try{
+    var rw=await sb.from('career_work_experience').select('*').eq('user_id',_user.id).order('order_index');
+    _workExp=rw.data||[];
+  }catch(e){_workExp=[];}
+  try{
+    var re=await sb.from('career_education').select('*').eq('user_id',_user.id).order('order_index');
+    _education=re.data||[];
+  }catch(e){_education=[];}
+}
+
+var obStep=0;
+var OB_STEPS=['Personal Information','Career Objective','Location & Preferences','Compensation','Skills & Expertise'];
+
+function showOnboarding(jumpTo){
+  showOnlyPreShellView('view-onboarding');
+  if(typeof jumpTo==='number')obStep=jumpTo;
+  renderObStep();
+}
+function renderObProgress(){
+  document.getElementById('ob-progress').innerHTML=OB_STEPS.map(function(_,i){return '<div class="progress-bar" style="flex:1;height:3px"><div class="progress-fill" style="width:'+(i<=obStep?'100':'0')+'%"></div></div>';}).join('');
+  document.getElementById('ob-step-label').textContent='Step '+(obStep+1)+' of '+OB_STEPS.length;
+}
+function gv(id){var el=document.getElementById(id);return el?el.value.trim():'';}
+function setv(id,val){var el=document.getElementById(id);if(el)el.value=val||'';}
+
+function renderObStep(){
+  renderObProgress();
+  document.getElementById('ob-step-title').textContent=OB_STEPS[obStep];
+  document.getElementById('ob-back-btn').style.visibility=obStep===0?'hidden':'visible';
+  document.getElementById('ob-next-btn').textContent=obStep===OB_STEPS.length-1?'Finish':'Continue';
+  var body=document.getElementById('ob-step-body');
+  var p=_profile||{};
+
+  if(obStep===0){
+    body.innerHTML=
+      '<div class="field"><label>Full name *</label><input id="p-full_name"/></div>'
+      +'<div class="field-row"><div class="field"><label>Phone</label><input id="p-phone"/></div><div class="field"><label>LinkedIn URL</label><input id="p-linkedin_url" placeholder="linkedin.com/in/…"/></div></div>'
+      +'<div class="field-row"><div class="field"><label>City</label><input id="p-city"/></div><div class="field"><label>State</label><input id="p-state"/></div></div>'
+      +'<div class="field"><label>Country</label><input id="p-country"/></div>'
+      +'<div class="field"><label>Portfolio / personal website</label><input id="p-portfolio_url"/></div>'
+      +'<div class="field"><label>Professional summary</label><textarea id="p-professional_summary" rows="3" placeholder="A short summary of who you are professionally"></textarea></div>';
+    setv('p-full_name',p.full_name);setv('p-phone',p.phone);setv('p-linkedin_url',p.linkedin_url);
+    setv('p-city',p.city);setv('p-state',p.state);setv('p-country',p.country);
+    setv('p-portfolio_url',p.portfolio_url);setv('p-professional_summary',p.professional_summary);
+  }
+  if(obStep===1){
+    body.innerHTML=
+      '<div class="field"><label>Target role</label><input id="p-target_role" placeholder="e.g. Senior Product Manager"/></div>'
+      +'<div class="field"><label>Target industry</label><input id="p-target_industry"/></div>'
+      +'<div class="field-row"><div class="field"><label>Career level</label><select id="p-career_level"><option value="">Select…</option><option value="entry">Entry</option><option value="mid">Mid</option><option value="senior">Senior</option><option value="lead">Lead</option><option value="executive">Executive</option></select></div><div class="field"><label>Years of experience</label><input type="number" step="0.5" id="p-years_of_experience"/></div></div>'
+      +'<div class="field-row"><div class="field"><label>Current title</label><input id="p-current_title"/></div><div class="field"><label>Current company</label><input id="p-current_company"/></div></div>';
+    setv('p-target_role',p.target_role);setv('p-target_industry',p.target_industry);
+    setv('p-career_level',p.career_level||'');setv('p-years_of_experience',p.years_of_experience);
+    setv('p-current_title',p.current_title);setv('p-current_company',p.current_company);
+  }
+  if(obStep===2){
+    body.innerHTML=
+      '<div class="field"><label>Remote preference</label><select id="p-remote_preference"><option value="">Select…</option><option value="remote">Remote</option><option value="hybrid">Hybrid</option><option value="onsite">Onsite</option><option value="flexible">Flexible</option></select></div>'
+      +'<div class="field"><label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="p-willing_to_relocate" style="width:auto"/> Willing to relocate</label></div>'
+      +'<div class="field"><label>Employment type (comma separated: full-time, contract, freelance…)</label><input id="p-employment_type_preference"/></div>'
+      +'<div class="field"><label>Work authorization</label><input id="p-work_authorization" placeholder="e.g. Indian citizen, requires visa sponsorship…"/></div>';
+    setv('p-remote_preference',p.remote_preference||'');
+    document.getElementById('p-willing_to_relocate').checked=!!p.willing_to_relocate;
+    setv('p-employment_type_preference',(p.employment_type_preference||[]).join(', '));
+    setv('p-work_authorization',p.work_authorization);
+  }
+  if(obStep===3){
+    body.innerHTML=
+      '<div class="field-row"><div class="field"><label>Minimum expected salary</label><input type="number" id="p-salary_expectation_min"/></div><div class="field"><label>Maximum expected salary</label><input type="number" id="p-salary_expectation_max"/></div></div>'
+      +'<div class="field"><label>Currency</label><select id="p-salary_currency"><option value="INR">INR</option><option value="USD">USD</option><option value="EUR">EUR</option><option value="GBP">GBP</option></select></div>'
+      +'<p style="font-size:12.5px;color:var(--text-secondary)">Optional — helps tailor future job matching. Never shown publicly.</p>';
+    setv('p-salary_expectation_min',p.salary_expectation_min);setv('p-salary_expectation_max',p.salary_expectation_max);
+    setv('p-salary_currency',p.salary_currency||'INR');
+  }
+  if(obStep===4){
+    body.innerHTML=
+      chipSection('technical_skills','Technical skills',p.technical_skills)
+      +chipSection('soft_skills','Soft skills',p.soft_skills)
+      +chipSection('tools_and_platforms','Tools & platforms',p.tools_and_platforms);
+  }
+}
+function chipSection(field,label,values){
+  values=values||[];
+  return '<div class="field"><label>'+label+'</label>'
+    +'<div style="display:flex;gap:6px;margin-bottom:8px"><input id="chip-input-'+field+'" placeholder="Type and press Enter" onkeydown="if(event.key===\'Enter\'){event.preventDefault();addChip(\''+field+'\')}"/><button class="btn btn-secondary btn-sm" type="button" onclick="addChip(\''+field+'\')">Add</button></div>'
+    +'<div id="chips-'+field+'">'+renderChips(field,values)+'</div></div>';
+}
+function renderChips(field,values){
+  return (values||[]).map(function(v,i){return '<span class="chip">'+esc(v)+'<button type="button" onclick="removeChip(\''+field+'\','+i+')" aria-label="Remove">×</button></span>';}).join('');
+}
+function addChip(field){
+  var input=document.getElementById('chip-input-'+field);
+  var val=input.value.trim();if(!val)return;
+  _profile[field]=_profile[field]||[];
+  if(_profile[field].indexOf(val)===-1)_profile[field].push(val);
+  input.value='';
+  document.getElementById('chips-'+field).innerHTML=renderChips(field,_profile[field]);
+}
+function removeChip(field,idx){
+  _profile[field].splice(idx,1);
+  document.getElementById('chips-'+field).innerHTML=renderChips(field,_profile[field]);
+}
+
+function collectObStep(){
+  _profile=_profile||{};
+  if(obStep===0){['full_name','phone','linkedin_url','city','state','country','portfolio_url','professional_summary'].forEach(function(f){_profile[f]=gv('p-'+f);});}
+  if(obStep===1){
+    ['target_role','target_industry','current_title','current_company'].forEach(function(f){_profile[f]=gv('p-'+f);});
+    _profile.career_level=gv('p-career_level')||null;
+    _profile.years_of_experience=gv('p-years_of_experience')?parseFloat(gv('p-years_of_experience')):null;
+  }
+  if(obStep===2){
+    _profile.remote_preference=gv('p-remote_preference')||null;
+    _profile.willing_to_relocate=document.getElementById('p-willing_to_relocate').checked;
+    _profile.employment_type_preference=gv('p-employment_type_preference').split(',').map(function(s){return s.trim();}).filter(Boolean);
+    _profile.work_authorization=gv('p-work_authorization');
+  }
+  if(obStep===3){
+    _profile.salary_expectation_min=gv('p-salary_expectation_min')?parseFloat(gv('p-salary_expectation_min')):null;
+    _profile.salary_expectation_max=gv('p-salary_expectation_max')?parseFloat(gv('p-salary_expectation_max')):null;
+    _profile.salary_currency=gv('p-salary_currency')||'INR';
+  }
+}
+async function obNext(){
+  collectObStep();
+  if(obStep<OB_STEPS.length-1){obStep++;renderObStep();}
+  else{await saveProfile();enterProfileView();}
+}
+function obBack(){collectObStep();if(obStep>0){obStep--;renderObStep();}}
+
+async function saveProfile(){
+  try{
+    _profile.user_id=_user.id;
+    _profile.email=_profile.email||_user.email;
+    var r=await sb.from('career_profiles').upsert(_profile,{onConflict:'user_id'}).select().single();
+    if(r.error)throw r.error;
+    _profile=r.data;
+    showToast('Profile saved ✓');
+  }catch(e){
+    console.error('Profile save failed:',e);
+    showToast('⚠️ Could not save — check your connection and try again');
+  }
+}
+
+function calculateCompleteness(){
+  var p=_profile||{};var sections=[];
+  var personalFields=['full_name','phone','city','linkedin_url','professional_summary'];
+  var personalFilled=personalFields.filter(function(f){return p[f]&&String(p[f]).trim();}).length;
+  sections.push({label:'Personal Info',earned:Math.round(personalFilled/personalFields.length*25),max:25});
+  var objFields=['target_role','target_industry','career_level','years_of_experience'];
+  var objFilled=objFields.filter(function(f){return p[f]!==undefined&&p[f]!==null&&String(p[f]).trim()!=='';}).length;
+  sections.push({label:'Career Objective',earned:Math.round(objFilled/objFields.length*20),max:20});
+  sections.push({label:'Work Experience',earned:_workExp.length>0?25:0,max:25});
+  sections.push({label:'Education',earned:_education.length>0?15:0,max:15});
+  var techScore=Math.min((p.technical_skills||[]).length,3)/3*10;
+  var softScore=(p.soft_skills||[]).length>0?5:0;
+  sections.push({label:'Skills',earned:Math.round(techScore+softScore),max:15});
+  var total=sections.reduce(function(sum,s){return sum+s.earned;},0);
+  return {total:total,sections:sections};
+}
+
+// ── Enters the authenticated app shell (sidebar layout) ────
+function enterProfileView(){
+  var html =
+    '<div class="topbar"><div><h1>Career Profile</h1><p style="color:var(--text-secondary);font-size:13px;margin-top:2px">Your career profile powers every Belongix feature.</p></div></div>'
+    +'<div class="card" style="display:flex;align-items:center;gap:20px;margin-bottom:20px">'
+    +  '<div style="position:relative;width:60px;height:60px;flex-shrink:0">'
+    +    '<svg width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="var(--border)" stroke-width="6"/><circle id="score-arc" cx="30" cy="30" r="25" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" transform="rotate(-90 30 30)"/></svg>'
+    +    '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px" id="score-num">0%</div>'
+    +  '</div>'
+    +  '<div><div style="font-weight:700;font-size:14px">Profile completeness</div><div style="font-size:12px;color:var(--text-secondary)">Calculated live from your actual filled fields.</div><div style="font-size:11px;color:var(--text-secondary);margin-top:6px" id="score-breakdown"></div></div>'
+    +'</div>'
+
+    +'<div class="card" style="margin-bottom:16px"><div class="topbar" style="margin-bottom:0"><div class="card-title" style="margin-bottom:0">Personal &amp; Career Objective</div><button class="btn btn-secondary btn-sm" onclick="showOnboarding(0)">Edit</button></div><div id="personal-summary"></div></div>'
+    +'<div class="card" style="margin-bottom:16px"><div class="topbar" style="margin-bottom:0"><div class="card-title" style="margin-bottom:0">Work Experience</div><button class="btn btn-secondary btn-sm" onclick="openWorkForm()">+ Add</button></div><div id="work-list"></div></div>'
+    +'<div class="card" style="margin-bottom:16px"><div class="topbar" style="margin-bottom:0"><div class="card-title" style="margin-bottom:0">Education</div><button class="btn btn-secondary btn-sm" onclick="openEduForm()">+ Add</button></div><div id="edu-list"></div></div>'
+    +'<div class="card" style="margin-bottom:16px"><div class="topbar" style="margin-bottom:0"><div class="card-title" style="margin-bottom:0">Skills &amp; Expertise</div><button class="btn btn-secondary btn-sm" onclick="showOnboarding(4)">Edit</button></div><div id="skills-summary"></div></div>'
+    +'<div style="text-align:center;margin:24px 0"><button class="btn btn-ghost" onclick="signOut()">Sign out</button></div>'
+
+    +'<div id="work-form-wrap" class="modal-bg hidden"><div class="modal"><h3 style="margin-bottom:16px">Work Experience</h3>'
+    +'<div class="field"><label>Job title *</label><input id="we-title"/></div><div class="field"><label>Company *</label><input id="we-company"/></div>'
+    +'<div class="field-row"><div class="field"><label>Location</label><input id="we-location"/></div><div class="field"><label style="display:flex;align-items:center;gap:6px;margin-top:20px"><input type="checkbox" id="we-current" style="width:auto" onchange="toggleCurrentJob()"/> Current role</label></div></div>'
+    +'<div class="field-row"><div class="field"><label>Start date</label><input type="date" id="we-start"/></div><div class="field"><label>End date</label><input type="date" id="we-end"/></div></div>'
+    +'<div class="field"><label>Description</label><textarea id="we-desc" rows="3"></textarea></div>'
+    +'<div class="field"><label>Key achievements (one per line)</label><textarea id="we-achievements" rows="3" placeholder="Led migration reducing costs by 30%"></textarea></div>'
+    +'<div class="field"><label>Skills used (comma separated)</label><input id="we-skills"/></div>'
+    +'<div style="display:flex;gap:10px"><button class="btn btn-primary" onclick="saveWorkExperience()">Save</button><button class="btn btn-secondary" onclick="closeWorkForm()">Cancel</button></div></div></div>'
+
+    +'<div id="edu-form-wrap" class="modal-bg hidden"><div class="modal"><h3 style="margin-bottom:16px">Education</h3>'
+    +'<div class="field"><label>Institution *</label><input id="ed-institution"/></div>'
+    +'<div class="field-row"><div class="field"><label>Degree</label><input id="ed-degree" placeholder="B.Tech, MBA…"/></div><div class="field"><label>Field of study</label><input id="ed-field"/></div></div>'
+    +'<div class="field-row"><div class="field"><label>Start date</label><input type="date" id="ed-start"/></div><div class="field"><label>End date</label><input type="date" id="ed-end"/></div></div>'
+    +'<div class="field"><label>GPA / grade (optional)</label><input id="ed-gpa"/></div>'
+    +'<div style="display:flex;gap:10px"><button class="btn btn-primary" onclick="saveEducation()">Save</button><button class="btn btn-secondary" onclick="closeEduForm()">Cancel</button></div></div></div>';
+
+  renderAppShell('career-profile', html, _user.email);
+  renderProfileView();
+}
+
+function renderProfileView(){
+  var score=calculateCompleteness();
+  var scoreNumEl=document.getElementById('score-num');if(!scoreNumEl)return;
+  scoreNumEl.textContent=score.total+'%';
+  var c=2*Math.PI*25;
+  document.getElementById('score-arc').setAttribute('stroke-dasharray',c);
+  document.getElementById('score-arc').setAttribute('stroke-dashoffset',c-(c*score.total/100));
+  document.getElementById('score-breakdown').textContent=score.sections.map(function(s){return s.label+' '+s.earned+'/'+s.max;}).join('  ·  ');
+
+  var p=_profile||{};
+  var personalHtml='';
+  if(p.full_name)personalHtml+='<div style="font-weight:600;font-size:14px">'+esc(p.full_name)+'</div>';
+  var loc=[p.city,p.state,p.country].filter(Boolean).join(', ');
+  if(loc||p.current_title)personalHtml+='<div style="font-size:12.5px;color:var(--text-secondary);margin-top:2px">'+esc(p.current_title||'')+(p.current_title&&loc?' · ':'')+esc(loc)+'</div>';
+  if(p.target_role)personalHtml+='<div style="font-size:13px;margin-top:8px"><strong>Targeting:</strong> '+esc(p.target_role)+(p.target_industry?' in '+esc(p.target_industry):'')+(p.career_level?' · '+esc(p.career_level)+' level':'')+'</div>';
+  if(p.professional_summary)personalHtml+='<div style="font-size:13px;color:var(--text-secondary);margin-top:8px">'+esc(p.professional_summary)+'</div>';
+  document.getElementById('personal-summary').innerHTML=personalHtml||'<div class="empty-state"><div class="empty-state-desc">Not filled in yet.</div></div>';
+
+  document.getElementById('work-list').innerHTML=_workExp.length?_workExp.map(function(w){
+    var dates=(w.start_date||'')+' – '+(w.is_current?'Present':(w.end_date||''));
+    return '<div style="border-top:1px solid var(--border);padding:12px 0"><div style="font-weight:600;font-size:13.5px">'+esc(w.job_title)+' · '+esc(w.company_name)+'</div>'
+      +'<div style="font-size:12px;color:var(--text-secondary)">'+esc(dates)+(w.location?' · '+esc(w.location):'')+'</div>'
+      +(w.description?'<div style="font-size:12.5px;color:var(--text-secondary);margin-top:6px">'+esc(w.description)+'</div>':'')
+      +(w.achievements&&w.achievements.length?'<div style="font-size:12.5px;color:var(--text-secondary);margin-top:6px">'+w.achievements.map(function(a){return '• '+esc(a);}).join('<br/>')+'</div>':'')
+      +'<button class="btn btn-danger btn-sm" style="margin-top:8px" onclick="deleteWorkExperience(\''+w.id+'\')">Remove</button></div>';
+  }).join(''):'<div class="empty-state"><div class="empty-state-icon">💼</div><div class="empty-state-desc">No work experience added yet.</div></div>';
+
+  document.getElementById('edu-list').innerHTML=_education.length?_education.map(function(ed){
+    var dates=(ed.start_date||'')+' – '+(ed.is_current?'Present':(ed.end_date||''));
+    return '<div style="border-top:1px solid var(--border);padding:12px 0"><div style="font-weight:600;font-size:13.5px">'+esc(ed.degree||'')+(ed.field_of_study?' in '+esc(ed.field_of_study):'')+'</div>'
+      +'<div style="font-size:12px;color:var(--text-secondary)">'+esc(ed.institution_name)+' · '+esc(dates)+'</div>'
+      +'<button class="btn btn-danger btn-sm" style="margin-top:8px" onclick="deleteEducation(\''+ed.id+'\')">Remove</button></div>';
+  }).join(''):'<div class="empty-state"><div class="empty-state-icon">🎓</div><div class="empty-state-desc">No education added yet.</div></div>';
+
+  var skillsHtml='';
+  ['technical_skills','soft_skills','tools_and_platforms'].forEach(function(f){
+    if(p[f]&&p[f].length)skillsHtml+=p[f].map(function(s){return '<span class="chip">'+esc(s)+'</span>';}).join('');
+  });
+  document.getElementById('skills-summary').innerHTML=skillsHtml||'<div class="empty-state"><div class="empty-state-desc">No skills added yet.</div></div>';
+}
+
+function openWorkForm(){
+  _editingWorkId=null;
+  ['we-title','we-company','we-location','we-start','we-end','we-desc','we-achievements','we-skills'].forEach(function(id){setv(id,'');});
+  document.getElementById('we-current').checked=false;
+  show('work-form-wrap');
+}
+function closeWorkForm(){hide('work-form-wrap');}
+function toggleCurrentJob(){document.getElementById('we-end').disabled=document.getElementById('we-current').checked;}
+async function saveWorkExperience(){
+  var title=gv('we-title'),company=gv('we-company');
+  if(!title||!company){showToast('Job title and company are required');return;}
+  var row={
+    user_id:_user.id,job_title:title,company_name:company,location:gv('we-location'),
+    start_date:gv('we-start')||null,end_date:document.getElementById('we-current').checked?null:(gv('we-end')||null),
+    is_current:document.getElementById('we-current').checked,description:gv('we-desc'),
+    achievements:gv('we-achievements').split('\n').map(function(s){return s.trim();}).filter(Boolean),
+    skills_used:gv('we-skills').split(',').map(function(s){return s.trim();}).filter(Boolean),
+    order_index:_workExp.length
+  };
+  try{
+    var r=await sb.from('career_work_experience').insert(row);
+    if(r.error)throw r.error;
+    await loadProfile();renderProfileView();closeWorkForm();showToast('Work experience added ✓');
+  }catch(e){console.error(e);showToast('⚠️ Could not save work experience');}
+}
+async function deleteWorkExperience(id){
+  if(!confirm('Remove this work experience entry?'))return;
+  try{
+    var r=await sb.from('career_work_experience').delete().eq('id',id).eq('user_id',_user.id);
+    if(r.error)throw r.error;
+    await loadProfile();renderProfileView();showToast('Removed');
+  }catch(e){console.error(e);showToast('⚠️ Could not remove entry');}
+}
+function openEduForm(){
+  _editingEduId=null;
+  ['ed-institution','ed-degree','ed-field','ed-start','ed-end','ed-gpa'].forEach(function(id){setv(id,'');});
+  show('edu-form-wrap');
+}
+function closeEduForm(){hide('edu-form-wrap');}
+async function saveEducation(){
+  var inst=gv('ed-institution');
+  if(!inst){showToast('Institution is required');return;}
+  var row={
+    user_id:_user.id,institution_name:inst,degree:gv('ed-degree'),field_of_study:gv('ed-field'),
+    start_date:gv('ed-start')||null,end_date:gv('ed-end')||null,gpa:gv('ed-gpa'),
+    order_index:_education.length
+  };
+  try{
+    var r=await sb.from('career_education').insert(row);
+    if(r.error)throw r.error;
+    await loadProfile();renderProfileView();closeEduForm();showToast('Education added ✓');
+  }catch(e){console.error(e);showToast('⚠️ Could not save education');}
+}
+async function deleteEducation(id){
+  if(!confirm('Remove this education entry?'))return;
+  try{
+    var r=await sb.from('career_education').delete().eq('id',id).eq('user_id',_user.id);
+    if(r.error)throw r.error;
+    await loadProfile();renderProfileView();showToast('Removed');
+  }catch(e){console.error(e);showToast('⚠️ Could not remove entry');}
+}
+</script>
+</body>
+</html>

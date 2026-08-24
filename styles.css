@@ -1,0 +1,195 @@
+/* ============================================================
+   BELONGIX DESIGN SYSTEM
+   Single shared stylesheet — every page links this file rather than
+   embedding its own styles. This is what makes "no page looks like
+   it was built separately" actually true, not just a stated goal.
+   ============================================================ */
+
+:root{
+  /* Color system — exact values from the spec */
+  --bg: #FFFFFF;
+  --bg-secondary: #F8F9FB;
+  --card: #FFFFFF;
+  --text: #111827;
+  --text-secondary: #667085;
+  --border: #E5E7EB;
+
+  --accent: #4F46E5;       /* professional indigo, used sparingly */
+  --accent-hover: #4338CA;
+  --accent-light: #EEF2FF;
+
+  --success: #16A34A;
+  --success-light: #F0FDF4;
+  --warning: #D97706;
+  --warning-light: #FFFBEB;
+  --error: #DC2626;
+  --error-light: #FEF2F2;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --shadow-sm: 0 1px 2px rgba(16,24,40,.05);
+  --shadow-md: 0 4px 12px rgba(16,24,40,.08);
+
+  --ff: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{
+  font-family:var(--ff);
+  font-weight:400;
+  background:var(--bg-secondary);
+  color:var(--text);
+  line-height:1.55;
+  font-size:14px;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+h1,h2,h3{font-weight:700;letter-spacing:-.01em;color:var(--text)}
+h1{font-size:24px}
+h2{font-size:19px}
+h3{font-size:15px}
+label{font-size:12.5px;font-weight:500;color:var(--text-secondary);display:block;margin-bottom:6px}
+.hidden{display:none !important}
+
+/* ── App shell: sidebar + main content ───────────────────── */
+.app-shell{display:flex;min-height:100vh}
+.sidebar{
+  width:240px;flex-shrink:0;background:#fff;border-right:1px solid var(--border);
+  display:flex;flex-direction:column;padding:20px 14px;
+  position:sticky;top:0;height:100vh;overflow-y:auto;transition:width .18s ease;
+}
+.sidebar.collapsed{width:64px}
+.sidebar.collapsed .sb-label,.sidebar.collapsed .sb-link-text,.sidebar.collapsed .sb-group-title{display:none}
+.sb-brand{display:flex;align-items:center;gap:8px;padding:0 8px 20px;font-weight:700;font-size:16px}
+.sb-brand .dot{color:var(--accent)}
+.sb-toggle{margin-left:auto;background:none;border:none;color:var(--text-secondary);cursor:pointer;padding:4px;border-radius:6px}
+.sb-toggle:hover{background:var(--bg-secondary)}
+.sb-group-title{font-size:10.5px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.05em;padding:14px 10px 6px}
+.sb-link{
+  display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;
+  color:var(--text-secondary);font-size:13.5px;font-weight:500;margin-bottom:1px;position:relative;
+}
+.sb-link:hover{background:var(--bg-secondary);color:var(--text);text-decoration:none}
+.sb-link.active{background:var(--accent-light);color:var(--accent)}
+.sb-link-icon{width:18px;text-align:center;flex-shrink:0}
+.sb-user{margin-top:auto;padding:12px 10px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sb-user-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent-light);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12.5px;flex-shrink:0}
+.sb-user-email{font-size:12px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+.main{flex:1;min-width:0;padding:28px 32px;max-width:1100px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+
+@media (max-width:860px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;z-index:200;transform:translateX(-100%);width:240px}
+  .sidebar.mobile-open{transform:translateX(0)}
+  .main{padding:20px 16px 80px}
+  .mobile-bottom-nav{
+    position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);
+    display:flex;justify-content:space-around;padding:8px 4px;z-index:150;
+  }
+  .mobile-bottom-nav a{color:var(--text-secondary);font-size:10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .mobile-bottom-nav a.active{color:var(--accent)}
+  .mobile-menu-btn{display:block !important}
+}
+.mobile-menu-btn{display:none;background:none;border:1px solid var(--border);border-radius:8px;padding:8px 10px;cursor:pointer}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.3);z-index:190}
+.sidebar-overlay.show{display:block}
+
+/* ── Button ───────────────────────────────────────────────── */
+.btn{
+  font-family:var(--ff);font-weight:600;font-size:13.5px;border-radius:var(--radius-md);
+  padding:9px 16px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+  transition:.12s;
+}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover);text-decoration:none}
+.btn-secondary{background:#fff;color:var(--text);border-color:var(--border)}
+.btn-secondary:hover{border-color:var(--accent);text-decoration:none}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:none}
+.btn-ghost:hover{background:var(--bg-secondary);text-decoration:none}
+.btn-danger{background:#fff;color:var(--error);border-color:#FCA5A5}
+.btn-danger:hover{background:var(--error-light);text-decoration:none}
+.btn-sm{font-size:12px;padding:6px 12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ── Input / Select / Textarea ───────────────────────────────*/
+.input,input[type=text],input[type=email],input[type=password],input[type=date],input[type=number],select,textarea{
+  font-family:var(--ff);font-size:13.5px;background:#fff;border:1px solid var(--border);
+  color:var(--text);border-radius:var(--radius-sm);padding:9px 12px;width:100%;
+}
+.input:focus,input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
+.field{margin-bottom:14px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ── Card ─────────────────────────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-sm)}
+.card-title{font-weight:700;font-size:14px;margin-bottom:12px}
+
+/* ── ScoreCard ────────────────────────────────────────────── */
+.score-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px}
+.score-card-num{font-size:26px;font-weight:700;color:var(--accent)}
+.score-card-label{font-size:11.5px;color:var(--text-secondary);margin-top:3px}
+
+/* ── Badge ────────────────────────────────────────────────── */
+.badge{font-size:11px;font-weight:600;padding:3px 10px;border-radius:100px;display:inline-block}
+.badge-neutral{background:var(--bg-secondary);color:var(--text-secondary)}
+.badge-accent{background:var(--accent-light);color:var(--accent)}
+.badge-success{background:var(--success-light);color:var(--success)}
+.badge-warning{background:var(--warning-light);color:var(--warning)}
+.badge-error{background:var(--error-light);color:var(--error)}
+
+/* ── Progress ─────────────────────────────────────────────── */
+.progress-bar{height:6px;background:var(--bg-secondary);border-radius:100px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:100px;transition:width .3s}
+
+/* ── Toast ────────────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--text);color:#fff;padding:11px 18px;border-radius:var(--radius-md);
+  font-size:13.5px;z-index:999;transition:.25s;opacity:0;box-shadow:var(--shadow-md);
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* ── Modal ────────────────────────────────────────────────── */
+.modal-bg{position:fixed;inset:0;background:rgba(17,24,39,.5);display:flex;align-items:center;justify-content:center;z-index:300;padding:20px}
+.modal{background:#fff;border-radius:var(--radius-lg);padding:24px;max-width:440px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:var(--shadow-md)}
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+.tabs{display:flex;gap:4px;background:var(--bg-secondary);border-radius:var(--radius-sm);padding:3px;margin-bottom:16px}
+.tab{flex:1;text-align:center;padding:7px;font-size:12.5px;font-weight:600;border-radius:6px;cursor:pointer;color:var(--text-secondary)}
+.tab.active{background:#fff;color:var(--text);box-shadow:var(--shadow-sm)}
+
+/* ── EmptyState ───────────────────────────────────────────── */
+.empty-state{text-align:center;padding:48px 20px;color:var(--text-secondary)}
+.empty-state-icon{font-size:32px;margin-bottom:12px;opacity:.5}
+.empty-state-title{font-weight:600;color:var(--text);font-size:14px;margin-bottom:6px}
+.empty-state-desc{font-size:13px;margin-bottom:16px}
+
+/* ── Skeleton ─────────────────────────────────────────────── */
+.skeleton{background:linear-gradient(90deg,var(--bg-secondary) 25%,#EEF0F3 37%,var(--bg-secondary) 63%);background-size:400% 100%;animation:skeleton-loading 1.4s ease infinite;border-radius:var(--radius-sm)}
+@keyframes skeleton-loading{0%{background-position:100% 50%}100%{background-position:0 50%}}
+@media (prefers-reduced-motion: reduce){.skeleton{animation:none;background:var(--bg-secondary)}}
+
+/* ── AIAction (chip-style AI trigger buttons) ────────────────*/
+.ai-action{background:var(--accent-light);color:var(--accent);border:1px solid #C7D2FE;font-size:12px;padding:6px 13px;border-radius:100px;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:5px}
+.ai-action:hover{background:#E0E7FF}
+.ai-suggestion-box{background:var(--accent-light);border:1px solid #C7D2FE;border-radius:var(--radius-sm);padding:12px 14px;margin-top:8px;font-size:13px}
+.ai-suggestion-label{font-size:10.5px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin-bottom:6px}
+
+/* ── Chip ─────────────────────────────────────────────────── */
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:100px;padding:5px 11px;font-size:11.5px;margin:0 6px 6px 0}
+.chip button{background:none;border:none;color:var(--text-secondary);cursor:pointer;font-size:13px;padding:0}
+
+/* ── ConfirmDialog uses .modal ── */
+/* ── JobCard / ApplicationCard ────────────────────────────── */
+.job-card,.app-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;cursor:pointer;transition:.12s}
+.job-card:hover,.app-card:hover{border-color:var(--accent);box-shadow:var(--shadow-sm)}
+
+/* ── Table ────────────────────────────────────────────────── */
+table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:var(--radius-md);overflow:hidden}
+th{text-align:left;font-size:11px;color:var(--text-secondary);text-transform:uppercase;letter-spacing:.03em;padding:10px 14px;border-bottom:1px solid var(--border);background:var(--bg-secondary)}
+td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px}
+tr:last-child td{border-bottom:none}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Career Coach — Belongix</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app-shell.js"></script>
+<style>
+.chat-col{display:flex;flex-direction:column;height:calc(100vh - 56px)}
+.messages{flex:1;overflow-y:auto;padding:10px 0;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:80%;padding:11px 14px;border-radius:12px;font-size:13.5px;line-height:1.6}
+.msg-user{align-self:flex-end;background:var(--accent);color:#fff}
+.msg-assistant{align-self:flex-start;background:#fff;border:1px solid var(--border)}
+.msg-loading{align-self:flex-start;color:var(--text-secondary);font-size:12.5px}
+.suggestion-chip{display:inline-block;background:#fff;border:1px solid var(--border);border-radius:100px;padding:8px 14px;font-size:12px;margin:4px;cursor:pointer}
+.suggestion-chip:hover{border-color:var(--accent)}
+.input-row{display:flex;gap:10px;padding:14px 0 4px}
+</style>
+</head>
+<body>
+<script>
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb=supabase.createClient(SB_URL,SB_KEY);
+var _user=null;
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+window.addEventListener('load',async function(){
+  var s=await sb.auth.getSession();
+  if(!s.data||!s.data.session){window.location.href='career-profile.html';return;}
+  _user=s.data.session.user;
+
+  renderAppShell('career-coach', ''
+    +'<div class="chat-col">'
+    +'<h1 style="margin-bottom:12px">Career Coach</h1>'
+    +'<div class="messages" id="messages"></div>'
+    +'<div class="input-row"><input id="chat-input" placeholder="Ask about your resume, applications, or career…" onkeydown="if(event.key===\'Enter\')sendMessage()"/>'
+    +'<button class="btn btn-primary" id="send-btn" onclick="sendMessage()">Send</button></div>'
+    +'</div>'
+  , _user.email);
+
+  await loadHistory();
+});
+
+async function loadHistory(){
+  var r=await sb.from('ai_conversations').select('*').eq('user_id',_user.id).order('created_at',{ascending:true}).limit(50);
+  var msgs=r.data||[];
+  var container=document.getElementById('messages');
+  if(!msgs.length){
+    container.innerHTML='<div class="empty-state"><div class="empty-state-icon">💬</div><div class="empty-state-desc">Ask me anything about your real career data — resume quality, applications, skill gaps, or what to do next.</div>'
+      +suggestionChip('How can I improve my resume?')+suggestionChip('Why am I not getting interviews?')+suggestionChip('What should I learn next?')+'</div>';
+    return;
+  }
+  container.innerHTML=msgs.map(function(m){return '<div class="msg msg-'+m.role+'">'+esc(m.content)+'</div>';}).join('');
+  container.scrollTop=container.scrollHeight;
+}
+function suggestionChip(text){return '<span class="suggestion-chip" onclick="document.getElementById(\'chat-input\').value='+"'"+text.replace(/'/g,"\\'")+"'"+';sendMessage()">'+esc(text)+'</span>';}
+
+async function sendMessage(){
+  var input=document.getElementById('chat-input');
+  var text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  document.getElementById('send-btn').disabled=true;
+
+  var container=document.getElementById('messages');
+  container.innerHTML=container.innerHTML.replace(/<div class="empty-state">[\s\S]*?<\/div>/,'');
+  container.innerHTML+='<div class="msg msg-user">'+esc(text)+'</div><div class="msg-loading" id="loading-msg">Thinking, using your real profile and activity data…</div>';
+  container.scrollTop=container.scrollHeight;
+
+  try{
+    var session=await sb.auth.getSession();
+    var r=await fetch(SB_URL+'/functions/v1/career-ai-generate',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.data.session.access_token},
+      body:JSON.stringify({action:'career_coach_chat',payload:{message:text}})});
+    var d=await r.json();
+    document.getElementById('loading-msg').remove();
+    if(!r.ok)throw new Error(d.error||'Could not get a response');
+    container.innerHTML+='<div class="msg msg-assistant">'+esc(d.reply)+'</div>';
+  }catch(e){
+    console.error(e);
+    var lm=document.getElementById('loading-msg');if(lm)lm.remove();
+    container.innerHTML+='<div class="msg msg-assistant" style="color:var(--error)">⚠️ '+esc(e.message)+'</div>';
+  }
+  container.scrollTop=container.scrollHeight;
+  document.getElementById('send-btn').disabled=false;
+}
+</script>
+</body>
+</html>

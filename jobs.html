@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Job Intelligence — Belongix</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app-shell.js"></script>
+<style>
+.match-num{font-size:32px;font-weight:700;color:var(--accent)}
+.match-row{display:flex;align-items:center;gap:18px}
+.breakdown-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12.5px;border-top:1px solid var(--border)}
+.chip-missing{border-color:#FCA5A5;color:var(--error);background:var(--error-light)}
+.chip-strong{border-color:#C7D2FE;color:var(--accent);background:var(--accent-light)}
+</style>
+</head>
+<body>
+<script>
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb=supabase.createClient(SB_URL,SB_KEY);
+var _user=null,_jds=[],_currentJD=null,_resumes=[],_currentResumeText='',_currentResume=null;
+
+window.addEventListener('load',async function(){
+  var s=await sb.auth.getSession();
+  if(!s.data||!s.data.session){window.location.href='career-profile.html';return;}
+  _user=s.data.session.user;
+
+  renderAppShell('jobs', ''
+    +'<div class="topbar"><h1>Job Intelligence</h1></div>'
+    +'<div class="card" style="margin-bottom:20px"><div class="card-title">Analyze a Job Description</div>'
+    +'<div class="field"><label>Paste the full job description</label><textarea id="jd-input" rows="6" placeholder="Paste the complete job posting here…"></textarea></div>'
+    +'<button class="ai-action" onclick="analyzeJD()">✨ Analyze with AI</button>'
+    +'<div id="analyze-status"></div></div>'
+
+    +'<div class="card" style="margin-bottom:20px" id="saved-jds-panel"><div class="card-title">Your Analyzed Jobs</div><div id="jd-list"></div></div>'
+
+    +'<div class="card hidden" id="job-detail-panel"><div class="card-title" id="job-detail-title"></div><div id="job-detail-body"></div>'
+    +'<div style="margin-top:16px"><label>Compare against resume</label><select id="resume-select" onchange="computeMatch()"></select></div>'
+    +'<div id="match-result"></div>'
+    +'<div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap">'
+    +'<button class="ai-action" onclick="tailorResume()">✨ AI: Suggest resume tailoring</button>'
+    +'<button class="ai-action" onclick="generateCoverLetter()">✨ AI: Generate cover letter</button>'
+    +'<button class="btn btn-primary" onclick="saveAsApplication()">+ Track as Application</button></div>'
+    +'<div id="tailor-result"></div><div id="cover-letter-result"></div></div>'
+  , _user.email);
+
+  await loadJDs();await loadResumes();
+});
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+async function loadJDs(){
+  var r=await sb.from('job_descriptions').select('*').eq('user_id',_user.id).order('created_at',{ascending:false});
+  _jds=r.data||[];
+  document.getElementById('jd-list').innerHTML=_jds.length?_jds.map(function(j){
+    return '<div class="job-card" style="margin-bottom:8px" onclick="openJD(\''+j.id+'\')"><strong style="font-size:13.5px">'+esc(j.role_title||'Untitled role')+(j.company?' at '+esc(j.company):'')+'</strong><div style="font-size:11.5px;color:var(--text-secondary);margin-top:3px">'+new Date(j.created_at).toLocaleDateString()+'</div></div>';
+  }).join(''):'<div class="empty-state"><div class="empty-state-icon">🔍</div><div class="empty-state-title">No jobs analyzed yet</div><div class="empty-state-desc">Paste a job description above to get started.</div></div>';
+}
+async function loadResumes(){
+  var r=await sb.from('resumes').select('id,title,content').eq('user_id',_user.id);
+  _resumes=r.data||[];
+  document.getElementById('resume-select').innerHTML='<option value="">Select a resume…</option>'+_resumes.map(function(r){return '<option value="'+r.id+'">'+esc(r.title)+'</option>';}).join('');
+}
+
+function resumeText(content){
+  var parts=[content.summary||''];
+  var we=(content.sections||[]).find(function(s){return s.type==='work_experience';});
+  (we&&we.items||[]).forEach(function(w){parts.push(w.job_title,w.company_name);(w.bullets||[]).forEach(function(b){parts.push(b);});});
+  var sk=(content.sections||[]).find(function(s){return s.type==='skills';});
+  if(sk)parts=parts.concat(sk.items.technical||[],sk.items.tools||[],sk.items.soft||[]);
+  return parts.join(' ');
+}
+function resumeSkills(content){
+  var sk=(content.sections||[]).find(function(s){return s.type==='skills';});
+  return sk?[].concat(sk.items.technical||[],sk.items.tools||[]):[];
+}
+
+async function analyzeJD(){
+  var text=document.getElementById('jd-input').value.trim();
+  if(!text){showToast('Paste a job description first');return;}
+  var statusEl=document.getElementById('analyze-status');
+  statusEl.innerHTML='<p style="color:var(--text-secondary);margin-top:10px">Analyzing…</p>';
+  try{
+    var session=await sb.auth.getSession();
+    var r=await fetch(SB_URL+'/functions/v1/career-ai-generate',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.data.session.access_token},
+      body:JSON.stringify({action:'analyze_job_description',payload:{raw_text:text}})});
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Analysis failed');
+    statusEl.innerHTML='';document.getElementById('jd-input').value='';
+    await loadJDs();
+    openJD(d.job_description.id);
+    showToast('Job analyzed ✓');
+  }catch(e){console.error(e);statusEl.innerHTML='<p style="color:var(--error);margin-top:10px">⚠️ '+esc(e.message)+'</p>';}
+}
+
+function openJD(id){
+  _currentJD=_jds.find(function(j){return j.id===id;});
+  if(!_currentJD)return;
+  document.getElementById('job-detail-panel').classList.remove('hidden');
+  document.getElementById('job-detail-title').textContent=(_currentJD.role_title||'Untitled role')+(_currentJD.company?' at '+_currentJD.company:'');
+  var ex=_currentJD.extracted||{};
+  var html='<div style="font-size:12.5px;color:var(--text-secondary);margin-bottom:10px">'+esc(ex.seniority||'')+(ex.experience_years?' · '+esc(ex.experience_years)+' experience':'')+(ex.location?' · '+esc(ex.location):'')+'</div>';
+  if((ex.skills_required||[]).length)html+='<div style="margin-bottom:8px"><strong style="font-size:12px">Required skills:</strong> '+(ex.skills_required||[]).map(function(s){return '<span class="chip">'+esc(s)+'</span>';}).join('')+'</div>';
+  if((ex.skills_preferred||[]).length)html+='<div><strong style="font-size:12px">Preferred skills:</strong> '+(ex.skills_preferred||[]).map(function(s){return '<span class="chip">'+esc(s)+'</span>';}).join('')+'</div>';
+  document.getElementById('job-detail-body').innerHTML=html;
+  document.getElementById('match-result').innerHTML='';
+  document.getElementById('tailor-result').innerHTML='';
+  document.getElementById('cover-letter-result').innerHTML='';
+  document.getElementById('resume-select').value='';
+  window.scrollTo({top:document.getElementById('job-detail-panel').offsetTop-20,behavior:'smooth'});
+}
+
+function calculateJobMatch(resumeContent,jdExtracted){
+  var rText=resumeText(resumeContent).toLowerCase();
+  var rSkills=resumeSkills(resumeContent).map(function(s){return s.toLowerCase();});
+  var reqSkills=(jdExtracted.skills_required||[]).map(function(s){return s.toLowerCase();});
+  var prefSkills=(jdExtracted.skills_preferred||[]).map(function(s){return s.toLowerCase();});
+  var allJdSkills=reqSkills.concat(prefSkills);
+
+  var strong=[],missing=[];
+  allJdSkills.forEach(function(s){
+    var found=rSkills.some(function(rs){return rs.indexOf(s)!==-1||s.indexOf(rs)!==-1;})||rText.indexOf(s)!==-1;
+    if(found)strong.push(s);else missing.push(s);
+  });
+  var skillsEarned=allJdSkills.length?Math.round(strong.length/allJdSkills.length*40):20;
+
+  var kws=(jdExtracted.keywords||[]).map(function(k){return k.toLowerCase();});
+  var kwMatched=kws.filter(function(k){return rText.indexOf(k)!==-1;}).length;
+  var keywordEarned=kws.length?Math.round(kwMatched/kws.length*30):15;
+
+  var eduEarned=15;
+  var expEarned=15;
+
+  var breakdown={skills:{earned:skillsEarned,max:40},keywords:{earned:keywordEarned,max:30},education:{earned:eduEarned,max:15},experience:{earned:expEarned,max:15}};
+  var total=skillsEarned+keywordEarned+eduEarned+expEarned;
+  return {score:total,breakdown:breakdown,strong_matches:strong,missing_skills:missing};
+}
+
+async function computeMatch(){
+  var resumeId=document.getElementById('resume-select').value;
+  if(!resumeId||!_currentJD)return;
+  _currentResume=_resumes.find(function(r){return r.id===resumeId;});
+  _currentResumeText=resumeText(_currentResume.content);
+  var result=calculateJobMatch(_currentResume.content,_currentJD.extracted||{});
+  var html='<div class="match-row" style="margin-top:14px"><div class="match-num">'+result.score+'%</div><div style="font-size:12px;color:var(--text-secondary)">Match score<br/>Computed deterministically — never AI-generated or random.</div></div>';
+  Object.keys(result.breakdown).forEach(function(k){var b=result.breakdown[k];html+='<div class="breakdown-row"><span>'+k.charAt(0).toUpperCase()+k.slice(1)+'</span><span>'+b.earned+'/'+b.max+'</span></div>';});
+  if(result.strong_matches.length)html+='<div style="margin-top:10px"><strong style="font-size:12px">Strong matches:</strong><br/>'+result.strong_matches.map(function(s){return '<span class="chip chip-strong">'+esc(s)+'</span>';}).join('')+'</div>';
+  if(result.missing_skills.length)html+='<div style="margin-top:10px"><strong style="font-size:12px">Missing:</strong><br/>'+result.missing_skills.map(function(s){return '<span class="chip chip-missing">'+esc(s)+'</span>';}).join('')+'</div>';
+  document.getElementById('match-result').innerHTML=html;
+
+  try{await sb.from('job_matches').insert({user_id:_user.id,resume_id:resumeId,job_description_id:_currentJD.id,overall_score:result.score,breakdown:result.breakdown,strong_matches:result.strong_matches,missing_skills:result.missing_skills});}catch(e){console.error('Could not save match record:',e);}
+}
+
+async function tailorResume(){
+  if(!_currentResume){showToast('Select a resume first');return;}
+  var box=document.getElementById('tailor-result');
+  box.innerHTML='<div class="ai-suggestion-box">Generating tailoring suggestions…</div>';
+  try{
+    var session=await sb.auth.getSession();
+    var r=await fetch(SB_URL+'/functions/v1/career-ai-generate',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.data.session.access_token},
+      body:JSON.stringify({action:'tailor_resume',resume_id:_currentResume.id,payload:{resume_text:_currentResumeText,job_description_id:_currentJD.id,job_extracted:_currentJD.extracted}})});
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Tailoring failed');
+    var s=d.suggestions;
+    var html='<div class="ai-suggestion-box"><div class="ai-suggestion-label">AI Suggestion</div><strong style="font-size:12px">Suggested summary</strong><p style="margin-top:6px">'+esc(s.summary_suggestion||'—')+'</p>';
+    if((s.skills_to_add||[]).length)html+='<div style="margin-top:10px"><strong style="font-size:12px">Skills to make explicit</strong><br/>'+s.skills_to_add.map(function(sk){return '<span class="chip">'+esc(sk)+'</span>';}).join('')+'</div>';
+    if((s.keyword_suggestions||[]).length)html+='<div style="margin-top:10px"><strong style="font-size:12px">Keyword suggestions</strong><br/>'+s.keyword_suggestions.map(function(k){return '<span class="chip">'+esc(k)+'</span>';}).join('')+'</div>';
+    html+='<p style="font-size:11.5px;color:var(--text-secondary);margin-top:10px">Open your resume in the Resume Builder to apply any of these manually — nothing here has changed your saved resume.</p>';
+    html+='<div style="display:flex;gap:8px;margin-top:8px"><button class="btn btn-ghost btn-sm" onclick="markTailoring(\''+d.suggestion_id+'\',true)">Useful</button><button class="btn btn-ghost btn-sm" onclick="markTailoring(\''+d.suggestion_id+'\',false)">Not useful</button></div></div>';
+    box.innerHTML=html;
+  }catch(e){console.error(e);box.innerHTML='<div class="ai-suggestion-box" style="color:var(--error)">⚠️ '+esc(e.message)+'</div>';}
+}
+async function markTailoring(id,useful){await sb.from('tailoring_suggestions').update({accepted_summary:useful}).eq('id',id);showToast('Thanks — feedback recorded');}
+
+async function generateCoverLetter(){
+  if(!_currentResume){showToast('Select a resume first');return;}
+  var box=document.getElementById('cover-letter-result');
+  box.innerHTML='<div class="ai-suggestion-box">Generating cover letter…</div>';
+  try{
+    var session=await sb.auth.getSession();
+    var r=await fetch(SB_URL+'/functions/v1/career-ai-generate',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.data.session.access_token},
+      body:JSON.stringify({action:'generate_cover_letter',resume_id:_currentResume.id,payload:{resume_text:_currentResumeText,job_description:_currentJD.raw_text,company:_currentJD.company,role_title:_currentJD.role_title,style:'professional',job_description_id:_currentJD.id}})});
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Cover letter generation failed');
+    box.innerHTML='<div class="ai-suggestion-box"><div class="ai-suggestion-label">AI Suggestion</div><strong style="font-size:12px">Cover letter draft</strong><p style="margin-top:8px;white-space:pre-wrap">'+esc(d.cover_letter.content)+'</p></div>';
+  }catch(e){console.error(e);box.innerHTML='<div class="ai-suggestion-box" style="color:var(--error)">⚠️ '+esc(e.message)+'</div>';}
+}
+
+async function saveAsApplication(){
+  if(!_currentJD){showToast('Analyze a job first');return;}
+  try{
+    var r=await sb.from('applications').insert({user_id:_user.id,company:_currentJD.company||'Unknown company',role_title:_currentJD.role_title||'Unknown role',
+      resume_id:_currentResume?_currentResume.id:null,job_description_id:_currentJD.id,status:'saved'});
+    if(r.error)throw r.error;
+    showToast('Added to Application Tracker ✓');
+  }catch(e){console.error(e);showToast('⚠️ Could not save application');}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Career Roadmap — Belongix</title>
+<meta name="robots" content="noindex, nofollow"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="app-shell.js"></script>
+<style>
+.stage-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:14px}
+.stage-num{font-size:11px;color:var(--accent);text-transform:uppercase;letter-spacing:.05em;font-weight:700;margin-bottom:6px}
+.stage-title{font-weight:700;font-size:16px;margin-bottom:10px}
+.stage-connector{width:2px;height:14px;background:var(--border);margin:0 auto}
+.ai-note{font-size:11.5px;color:var(--text-secondary);margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<script>
+var SB_URL='https://efhcfuaxgbzuqlmhlsxc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmaGNmdWF4Z2J6dXFsbWhsc3hjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcxNDg1NzgsImV4cCI6MjA5MjcyNDU3OH0.vpFvBPnKkrMMONXo9z6FemJ2qIlRChRloQYRB0LMdjY';
+var sb=supabase.createClient(SB_URL,SB_KEY);
+var _user=null,_profile=null;
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+window.addEventListener('load',async function(){
+  var s=await sb.auth.getSession();
+  if(!s.data||!s.data.session){window.location.href='career-profile.html';return;}
+  _user=s.data.session.user;
+
+  renderAppShell('career-roadmap', ''
+    +'<h1 style="margin-bottom:4px">Career Roadmap</h1>'
+    +'<p style="color:var(--text-secondary);font-size:13px;margin-bottom:20px">AI-generated guidance based on your real current skills — a suggested path, not a guarantee.</p>'
+    +'<div class="card" style="margin-bottom:20px">'
+    +'<div class="field-row" style="grid-template-columns:1fr 1fr 1fr;gap:12px">'
+    +'<div class="field"><label>Current role</label><input id="r-current"/></div>'
+    +'<div class="field"><label>Target role</label><input id="r-target"/></div>'
+    +'<div class="field"><label>Timeframe</label><input id="r-timeframe" placeholder="e.g. 2 years"/></div>'
+    +'</div>'
+    +'<button class="btn btn-primary" onclick="generateRoadmap()">Generate Roadmap</button>'
+    +'</div>'
+    +'<div id="roadmap-content"></div>'
+  , _user.email);
+
+  var pr=await sb.from('career_profiles').select('*').eq('user_id',_user.id).maybeSingle();
+  _profile=pr.data||{};
+  document.getElementById('r-current').value=_profile.current_title||'';
+  document.getElementById('r-target').value=_profile.target_role||'';
+
+  var existing=await sb.from('career_roadmaps').select('*').eq('user_id',_user.id).maybeSingle();
+  if(existing.data)renderRoadmap(existing.data);
+});
+
+async function generateRoadmap(){
+  var current=document.getElementById('r-current').value.trim();
+  var target=document.getElementById('r-target').value.trim();
+  var timeframe=document.getElementById('r-timeframe').value.trim();
+  if(!target){showToast('Enter a target role first');return;}
+  document.getElementById('roadmap-content').innerHTML='<p style="color:var(--text-secondary)">Generating your personalized roadmap…</p>';
+  try{
+    var session=await sb.auth.getSession();
+    var r=await fetch(SB_URL+'/functions/v1/career-ai-generate',{method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.data.session.access_token},
+      body:JSON.stringify({action:'generate_roadmap',payload:{current_role:current,target_role:target,target_timeframe:timeframe,current_skills:(_profile.technical_skills||[]).concat(_profile.tools_and_platforms||[])}})});
+    var d=await r.json();
+    if(!r.ok)throw new Error(d.error||'Could not generate roadmap');
+    renderRoadmap(d.roadmap);
+  }catch(e){console.error(e);document.getElementById('roadmap-content').innerHTML='<p style="color:var(--error)">⚠️ '+esc(e.message)+'</p>';}
+}
+
+function renderRoadmap(roadmap){
+  var stages=roadmap.stages||[];
+  var html='<div class="card" style="margin-bottom:20px"><strong>'+esc(roadmap.current_role||'Current role')+'</strong> → <strong style="color:var(--accent)">'+esc(roadmap.target_role)+'</strong>'+(roadmap.target_timeframe?' <span style="color:var(--text-secondary)">('+esc(roadmap.target_timeframe)+')</span>':'')+'</div>';
+  stages.forEach(function(s,i){
+    html+='<div class="stage-card"><div class="stage-num">Stage '+(s.stage||i+1)+'</div><div class="stage-title">'+esc(s.title)+'</div>';
+    if(s.skills&&s.skills.length)html+='<div style="margin-bottom:8px"><strong style="font-size:12px">Skills to build:</strong><br/>'+s.skills.map(function(sk){return '<span class="chip">'+esc(sk)+'</span>';}).join('')+'</div>';
+    if(s.recommended_projects&&s.recommended_projects.length)html+='<div style="margin-bottom:8px"><strong style="font-size:12px">Recommended projects:</strong><br/>'+s.recommended_projects.map(function(p){return '<span class="chip">'+esc(p)+'</span>';}).join('')+'</div>';
+    if(s.experience_expectation)html+='<div style="font-size:12.5px;color:var(--text-secondary)">'+esc(s.experience_expectation)+'</div>';
+    html+='</div>';
+    if(i<stages.length-1)html+='<div class="stage-connector"></div>';
+  });
+  html+='<p class="ai-note">This roadmap is AI-generated guidance based on your stated current skills — it\'s a suggested path, not a verified or guaranteed progression. Regenerate it any time your target role or skills change.</p>';
+  document.getElementById('roadmap-content').innerHTML=html;
+}
+</script>
+</body>
+</html>
