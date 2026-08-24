@@ -4,48 +4,202 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Terms of Service — Belongix</title>
-<meta name="description" content="Belongix Terms of Service."/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
-<link rel="stylesheet" href="styles.css"/>
+<meta name="description" content="Belongix Terms of Service — the rules for using our platform, courses, and certificates."/>
+<link rel="icon" href="icons/icon-32.png"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
 <style>
-.wrap{max-width:720px;margin:0 auto;padding:40px 20px 80px}
-h1{font-size:28px;margin-bottom:8px}
-.updated{color:var(--text-secondary);font-size:13px;margin-bottom:32px}
-h2{font-size:17px;margin:28px 0 10px}
-p,li{font-size:14px;color:var(--text-secondary);margin-bottom:10px;line-height:1.7}
-ul{padding-left:20px}
-.back-link{display:inline-block;margin-bottom:20px;font-size:13px}
+:root{--brand:#2D1B69;--brand2:#4C2FAA;--accent:#FF5C35;--ink:#0D0D1A;--muted:#5A5A7A;--border:#E4E4F0;--bg:#F7F7FC;--card:#fff;--ff:'Sora',sans-serif;--fb:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--fb);color:var(--ink);background:#fff;line-height:1.7}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);height:60px;display:flex;align-items:center;padding:0 24px;gap:16px;}
+.nav-logo{font-family:var(--ff);font-size:19px;font-weight:800;color:var(--ink);text-decoration:none}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:4px;margin-left:auto}
+.nav-link{padding:7px 13px;border-radius:8px;font-size:13.5px;font-weight:500;color:var(--muted);text-decoration:none;transition:.12s;}
+.nav-link:hover{color:var(--brand);background:#F0EEFF;text-decoration:none}
+.hero{background:linear-gradient(135deg,#08011F,#130836,#1A0A4A);padding:56px 24px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.025) 1px,transparent 1px);background-size:32px 32px;}
+.hero-inner{position:relative;z-index:1;max-width:640px;margin:0 auto}
+.hero-tag{display:inline-block;background:rgba(124,77,255,.18);border:1px solid rgba(124,77,255,.35);border-radius:100px;padding:5px 16px;margin-bottom:16px;font-size:12px;font-weight:700;color:rgba(255,255,255,.85);letter-spacing:.4px;text-transform:uppercase}
+.hero h1{font-family:var(--ff);font-size:clamp(26px,4vw,42px);font-weight:900;color:#fff;margin-bottom:10px;letter-spacing:-1px}
+.hero p{font-size:15px;color:rgba(255,255,255,.55)}
+.content{max-width:740px;margin:0 auto;padding:56px 24px 80px}
+.section{margin-bottom:40px}
+.section h2{font-family:var(--ff);font-size:20px;font-weight:800;color:var(--ink);margin-bottom:12px;padding-top:8px;border-top:2px solid var(--border)}
+.section h3{font-family:var(--ff);font-size:16px;font-weight:700;color:var(--ink);margin:18px 0 8px}
+.section p{font-size:15px;color:var(--muted);margin-bottom:12px;line-height:1.75}
+.section ul{padding-left:20px;margin-bottom:12px;display:flex;flex-direction:column;gap:7px}
+.section li{font-size:15px;color:var(--muted);line-height:1.65}
+.section li strong{color:var(--ink);font-weight:600}
+.last-updated{font-size:13px;color:var(--muted);margin-bottom:36px;padding:12px 16px;background:var(--bg);border-radius:10px;border:1px solid var(--border)}
+.highlight-box{background:#FEF9C3;border:1px solid #F59E0B;border-radius:12px;padding:18px 20px;margin:20px 0;font-size:14.5px;color:#78350F;line-height:1.65}
+.contact-box{background:linear-gradient(135deg,#F0EEFF,#E8E0FF);border:1px solid rgba(45,27,105,.15);border-radius:14px;padding:24px;margin-top:40px;text-align:center}
+.contact-box h3{font-family:var(--ff);font-size:17px;font-weight:800;color:var(--brand);margin-bottom:8px}
+.contact-box p{font-size:14px;color:var(--muted);margin-bottom:12px}
+.footer{background:#0D0D1A;padding:40px 24px;text-align:center;color:rgba(255,255,255,.35);font-size:13px}
+.footer a{color:rgba(255,255,255,.45);text-decoration:none;margin:0 8px}
+.footer a:hover{color:#fff;text-decoration:none}
 </style>
 </head>
 <body>
-<div class="wrap"><a href="index.html" class="back-link">← Back to Belongix</a>
-<h1>Terms of Service</h1>
-<div class="updated">Last updated: this build, in active development.</div>
 
-<h2>What Belongix is</h2>
-<p>Belongix is an AI-assisted career tool — resume building, job analysis, application tracking, and related features. It is a productivity and intelligence aid, not an employment service.</p>
+<nav class="nav">
+  <a href="index.html" class="nav-logo">Belong<span>ix</span></a>
+  <div class="nav-links">
+    <a href="courses.html" class="nav-link">Courses</a>
+    <a href="about.html" class="nav-link">About</a>
+    <a href="contact.html" class="nav-link">Contact</a>
+  </div>
+</nav>
 
-<div class="callout">
-<p><strong>Belongix does not guarantee interviews, job offers, salary outcomes, or employment of any kind.</strong> Match scores, ATS scores, and skill gap analyses are computed from your own actual data using documented, disclosed methods — they are estimates intended to help you make informed decisions, not predictions or promises about real-world hiring outcomes, which depend on many factors outside this product's knowledge or control.</p>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Legal</div>
+    <h1>Terms of Service</h1>
+    <p>The rules for using Belongix — please read them</p>
+  </div>
 </div>
 
-<h2>AI-generated content</h2>
-<p>AI features (summary generation, bullet improvement, job analysis, resume tailoring suggestions, cover letters) are designed to work only from information you actually provide. They are not designed to invent work history, skills, employers, or credentials on your behalf. You are responsible for reviewing and verifying the accuracy of anything you choose to accept and use, including in any real job application.</p>
+<div class="content">
+  <div class="last-updated">📅 Last updated: July 2026 · Effective: July 1, 2026</div>
 
-<h2>Your account</h2>
-<p>You're responsible for keeping your account credentials secure. You must provide accurate information when creating your account. You may delete your account and data at any time through Settings.</p>
+  <div class="highlight-box">
+    <strong>Plain English summary:</strong> Use Belongix fairly, don't misuse or copy our platform, pay for Pro if you want Pro features, and we'll work hard to give you the best learning experience. Full details below.
+  </div>
 
-<h2>Acceptable use</h2>
-<p>Don't use Belongix to generate fraudulent application materials, misrepresent your qualifications, or attempt to circumvent the security or rate limits of this platform.</p>
+  <div class="section">
+    <h2>1. Acceptance of Terms</h2>
+    <p>By creating a Belongix account or using any part of our platform, you agree to these Terms of Service. If you do not agree, please do not use Belongix.</p>
+    <p>These terms govern your use of belongix.in and all associated services, courses, certificates, and features.</p>
+  </div>
 
-<h2>Availability</h2>
-<p>This is an actively developed product. Features may change, and some described capabilities may not yet be fully implemented — we aim never to present a feature as working when it isn't.</p>
+  <div class="section">
+    <h2>2. Eligibility</h2>
+    <ul>
+      <li>You must be at least 13 years old to use Belongix</li>
+      <li>If you are under 18, you confirm that a parent or guardian has reviewed and agreed to these terms</li>
+      <li>By registering, you confirm that the information you provide is accurate and complete</li>
+    </ul>
+  </div>
 
-<h2>Limitation of liability</h2>
-<p>Belongix is provided as a tool to assist your own career efforts. We are not liable for employment outcomes, decisions made based on AI suggestions you chose to accept, or the accuracy of third-party job description content you paste into the product.</p>
+  <div class="section">
+    <h2>3. Your Account</h2>
+    <ul>
+      <li>You are responsible for maintaining the security of your account password</li>
+      <li>You must not share your account with others or allow others to access your account</li>
+      <li>You must notify us immediately at <a href="mailto:teambelongix@gmail.com">teambelongix@gmail.com</a> if you suspect unauthorised access</li>
+      <li>We reserve the right to suspend or terminate accounts that violate these terms</li>
+    </ul>
+  </div>
 
-<h2>Changes</h2>
-<p>We may update these terms as the product evolves. Continued use after changes constitutes acceptance of the updated terms.</p>
+  <div class="section">
+    <h2>4. Free vs Pro Plans</h2>
+    <h3>Free Plan</h3>
+    <ul>
+      <li>Browse and preview all 1019 courses at no cost</li>
+      <li>Access to Dashboard and basic profile features</li>
+    </ul>
+    <h3>Pro Plan (₹499/month)</h3>
+    <ul>
+      <li>Full access to all course content, lessons, and projects</li>
+      <li>Verified Belongix certificates on course completion</li>
+      <li>Career Score tracking and boosting</li>
+      <li>Exclusive learning paths and early access to new courses</li>
+      <li>Priority support</li>
+    </ul>
+    <p>Pro subscriptions are billed monthly via Razorpay. You may cancel at any time — your access continues until the end of the billing period. Prices may change with 30 days' notice.</p>
+    <h3>Refunds</h3>
+    <p>We offer a <strong>7-day refund</strong> on your first Pro subscription if you are not satisfied. Contact us at <a href="mailto:teambelongix@gmail.com">teambelongix@gmail.com</a> within 7 days of purchase. Subsequent billing periods are non-refundable unless required by Indian consumer law.</p>
+  </div>
+
+  <div class="section">
+    <h2>5. Acceptable Use</h2>
+    <p>You agree not to:</p>
+    <ul>
+      <li>Copy, reproduce, or distribute Belongix course content, videos, or materials without permission</li>
+      <li>Share your Pro account credentials to give others free access</li>
+      <li>Use automated tools, bots, or scrapers on the platform</li>
+      <li>Attempt to hack, reverse-engineer, or disrupt Belongix services</li>
+      <li>Upload or share illegal, harmful, offensive, or misleading content</li>
+      <li>Impersonate Belongix, its team, or other users</li>
+      <li>Use Belongix for any unlawful purpose under Indian law</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>6. Certificates</h2>
+    <ul>
+      <li>Belongix certificates are issued upon completion of all lessons in a course</li>
+      <li>Certificates confirm course completion on the Belongix platform — they are not government-accredited qualifications</li>
+      <li>We do not guarantee that employers will recognise or value Belongix certificates</li>
+      <li>Certificates remain valid as long as your account is active</li>
+      <li>We reserve the right to revoke certificates if we find evidence of cheating or fraudulent completion</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>7. Intellectual Property</h2>
+    <p>All content on Belongix — including course curricula, platform design, logos, and text — is owned by Belongix or licensed from third parties.</p>
+    <p>Embedded YouTube videos remain the property of their respective creators. Belongix does not claim ownership of third-party video content.</p>
+    <p>You may not reproduce, redistribute, or commercially use any Belongix content without written permission.</p>
+  </div>
+
+  <div class="section">
+    <h2>8. Disclaimer of Warranties</h2>
+    <p>Belongix is provided "as is" without warranties of any kind. We do not guarantee:</p>
+    <ul>
+      <li>That the platform will be uninterrupted or error-free</li>
+      <li>That completing courses will result in employment or salary increases</li>
+      <li>That all course content is up-to-date with the latest industry standards</li>
+    </ul>
+    <p>We work hard to keep everything accurate and running, but we cannot make absolute guarantees.</p>
+  </div>
+
+  <div class="section">
+    <h2>9. Limitation of Liability</h2>
+    <p>To the maximum extent permitted by Indian law, Belongix and its team will not be liable for indirect, incidental, or consequential damages arising from your use of the platform.</p>
+    <p>Our total liability to you for any claim is limited to the amount you paid us in the last 3 months.</p>
+  </div>
+
+  <div class="section">
+    <h2>10. Governing Law</h2>
+    <p>These Terms are governed by and construed in accordance with the laws of India. Any disputes will be subject to the exclusive jurisdiction of the courts in India.</p>
+  </div>
+
+  <div class="section">
+    <h2>11. Changes to Terms</h2>
+    <p>We may update these Terms from time to time. We will notify registered users by email at least 7 days before material changes take effect. Continued use of Belongix after changes constitutes acceptance.</p>
+  </div>
+
+  <div class="section">
+    <h2>12. Termination</h2>
+    <p>You may delete your account at any time via Dashboard → Settings → Delete Account. We may suspend or terminate accounts that violate these Terms, with or without notice, at our discretion.</p>
+    <p>Upon termination, your access to Pro features and course progress ends. Your personal data will be deleted within 30 days per our Privacy Policy.</p>
+  </div>
+
+  <div class="section">
+    <h2>13. Contact</h2>
+    <p>For questions about these Terms:</p>
+    <ul>
+      <li><strong>Email:</strong> <a href="mailto:teambelongix@gmail.com">teambelongix@gmail.com</a></li>
+      <li><strong>Platform:</strong> belongix.in</li>
+    </ul>
+  </div>
+
+  <div class="contact-box">
+    <h3>Questions about our Terms?</h3>
+    <p>We read and respond to every message personally.</p>
+    <a href="mailto:teambelongix@gmail.com">teambelongix@gmail.com</a>
+  </div>
 </div>
+
+<footer class="footer">
+  © 2026 Belongix · Built with ❤️ in India 🇮🇳 &nbsp;·&nbsp;
+  <a href="privacy.html">Privacy</a>
+  <a href="terms.html">Terms</a>
+  <a href="contact.html">Contact</a>
+</footer>
 </body>
 </html>
