@@ -1,5 +1,0 @@
-Core UI: index.html dashboard.html career-profile.html resume-builder.html jobs.html applications.html interview-prep.html career-coach.html skills.html roadmap.html settings.html admin.html
-Shared: styles.css app.js config.js .env.example
-Database: sql/001_belongix_complete_schema.sql
-AI: edge-functions/resume-ai-generate/index.ts edge-functions/career-ai-generate/index.ts
-Legal: about.html contact.html privacy.html terms.html 404.html
