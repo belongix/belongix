@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Resume Builder — Belongix</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--ink:#15162b;--muted:#697089;--line:#e5e7ef;--soft:#f7f7fb;--brand:#5b50e6;--brand2:#4940c9;--white:#fff;--green:#159a67;--danger:#d64545;--shadow:0 12px 35px rgba(22,24,50,.08);--radius:14px}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif;color:var(--ink);background:#f5f6fa}button,input,textarea,select{font:inherit}button{cursor:pointer}
+.topbar{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:28px;position:sticky;top:0;z-index:50}.logo{font-size:21px;font-weight:800;text-decoration:none;color:#17192b}.logo span{color:var(--brand)}
+.nav{display:flex;gap:8px;align-items:center}.nav a{padding:11px 14px;color:#687089;text-decoration:none;font-weight:600;font-size:14px;border-radius:10px}.nav a.active{background:#efefff;color:var(--brand)}
+.actions{margin-left:auto;display:flex;gap:10px}.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 16px;font-weight:700;color:var(--ink)}.btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}.btn.primary:hover{background:var(--brand2)}.btn.small{padding:8px 11px;font-size:12px}.btn.ghost{background:transparent}
+.layout{display:grid;grid-template-columns:minmax(460px,56%) minmax(430px,44%);height:calc(100vh - 68px)}
+.editor{overflow:auto;padding:22px 24px 80px}.preview-wrap{background:#eef0f5;border-left:1px solid var(--line);overflow:auto;padding:28px;display:flex;justify-content:center}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}.card-head{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.card-head h2{font-size:15px;margin:0}.card-body{padding:18px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:13px}.field:last-child{margin-bottom:0}.field label{display:block;font-size:12px;font-weight:700;color:#536078;margin-bottom:6px}.field input,.field textarea,.field select{width:100%;border:1px solid #d8dce7;border-radius:9px;padding:11px 12px;color:var(--ink);background:#fff;outline:none}.field input:focus,.field textarea:focus,.field select:focus{border-color:#8179ef;box-shadow:0 0 0 3px rgba(91,80,230,.1)}textarea{min-height:100px;resize:vertical}
+.toolbar{display:flex;gap:7px;flex-wrap:wrap;padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:14px}.toolbar button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 11px;font-weight:700;font-size:12px}.toolbar button.active{background:#efefff;border-color:#d7d4ff;color:var(--brand)}
+.section-row{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;background:#fff}.row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.row-head strong{font-size:13px}.icon-btn{border:0;background:transparent;color:#737b91;font-size:18px}.danger{color:var(--danger)}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.chip{background:#f0f1f7;border:1px solid #e1e3eb;padding:6px 9px;border-radius:999px;font-size:12px}.chip button{border:0;background:transparent;padding:0 0 0 5px;color:#737b91}
+.templates{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.template-card{border:2px solid #e4e5ed;border-radius:12px;padding:8px;background:#fff;cursor:pointer;transition:.15s}.template-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.template-card.selected{border-color:var(--brand);box-shadow:0 0 0 3px rgba(91,80,230,.1)}.template-thumb{height:145px;border:1px solid #dddfe8;background:#fff;border-radius:7px;overflow:hidden;position:relative}.template-card h3{font-size:12px;margin:8px 2px 2px}.template-card p{font-size:10px;color:#858ca0;margin:0 2px 4px}.mini{padding:10px;font-size:5px;line-height:1.5;color:#222}.mini .mhead{font-weight:800;font-size:8px;border-bottom:1px solid #aaa;padding-bottom:4px;margin-bottom:6px}.mini .mline{height:3px;background:#ddd;margin:4px 0;width:75%}.mini.two{display:grid;grid-template-columns:28% 72%;padding:0}.mini.two .side{background:#222;color:#fff;padding:8px}.mini.two .main{padding:8px}.mini.modern .mhead{color:#5b50e6}.mini.exec .mhead{font-family:Georgia,serif;font-size:9px}.mini.tech .mhead{font-family:monospace;color:#16845d}.mini.creative .side{background:#5b50e6}.mini.grad .mhead{text-align:center}.mini.consult .mhead{border-bottom:2px solid #222}
+#resumePaper{width:794px;min-height:1123px;background:#fff;box-shadow:0 10px 35px rgba(0,0,0,.12);flex:none;color:#171717}.paper-inner{padding:58px 60px}.r-name{font-size:31px;font-weight:800;line-height:1.1}.r-title{font-size:14px;color:#5b50e6;font-weight:700;margin-top:6px}.r-contact{font-size:10px;color:#687089;margin-top:7px}.r-section{margin-top:24px}.r-section h4{font-size:10px;letter-spacing:1.5px;margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid #ddd;font-weight:800}.r-summary,.r-body,.r-item{font-size:10px;line-height:1.55}.r-item{margin-bottom:12px}.r-item-title{font-weight:800;font-size:11px}.r-item-sub{color:#687089;margin-top:2px}.r-bullets{margin:5px 0 0 14px;padding:0}.r-skills{display:flex;flex-wrap:wrap;gap:5px}.r-skill{font-size:9px;background:#f0f1f6;border-radius:4px;padding:4px 7px}
+.tpl-classic .paper-inner{font-family:Inter,sans-serif}.tpl-modern .r-name{color:#272252}.tpl-modern .r-section h4{color:#5b50e6;border-bottom:2px solid #5b50e6}.tpl-executive .paper-inner{font-family:Georgia,serif}.tpl-executive .r-title{color:#333}.tpl-executive .r-section h4{font-family:Inter,sans-serif}.tpl-minimal .paper-inner{padding:62px 68px}.tpl-minimal .r-section h4{border:0;padding:0}.tpl-tech .paper-inner{font-family:Inter,sans-serif}.tpl-tech .r-name{font-family:"DM Mono",monospace;font-size:25px}.tpl-tech .r-title{color:#159a67}.tpl-tech .r-section h4{color:#159a67}.tpl-creative .paper-inner{padding-left:72px}.tpl-creative .r-name{color:#5b50e6}.tpl-creative .r-section h4{color:#5b50e6}.tpl-graduate .r-name{text-align:center}.tpl-graduate .r-title,.tpl-graduate .r-contact{text-align:center}.tpl-graduate .r-section{margin-top:20px}.tpl-consult .r-name{font-size:28px}.tpl-consult .r-section h4{border-bottom:2px solid #222}
+
+.toast{position:fixed;right:22px;bottom:22px;background:#17192b;color:#fff;padding:12px 16px;border-radius:10px;box-shadow:var(--shadow);display:none;z-index:100}.toast.show{display:block}.empty{font-size:13px;color:#7b8398;padding:10px 0}.muted{font-size:12px;color:#7b8398}
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.preview-wrap{min-height:700px;border-left:0;border-top:1px solid var(--line)}.templates{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.topbar{padding:0 14px;gap:10px}.nav{display:none}.layout{height:auto}.editor{padding:14px}.grid2{grid-template-columns:1fr}.preview-wrap{padding:12px;overflow:auto}#resumePaper{transform-origin:top center;transform:scale(.55);margin-bottom:-480px}.templates{grid-template-columns:repeat(2,1fr)}}
+@media print{body{background:#fff}.topbar,.editor{display:none!important}.layout{display:block;height:auto}.preview-wrap{padding:0;border:0;display:block;background:#fff}.preview-wrap #resumePaper{box-shadow:none;margin:0;width:210mm;min-height:297mm}.toast{display:none}}
+</style>
+</head>
+<body>
+<header class="topbar">
+<a class="logo" href="index.html">Belong<span>ix</span></a>
+<nav class="nav"><a href="workspace.html">Workspace</a><a class="active" href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav>
+<div class="actions"><button class="btn" onclick="saveResume()">Save</button><button class="btn primary" onclick="window.print()">Export / Print</button></div>
+</header>
+
+<main class="layout">
+<section class="editor">
+<div class="toolbar" id="modebar">
+<button class="active" onclick="showPanel('content',this)">Content</button>
+<button onclick="showPanel('templates',this)">Templates</button>
+<button onclick="showPanel('style',this)">Style</button>
+</div>
+
+<div id="panel-content">
+<div class="card"><div class="card-head"><h2>Basics</h2><span class="muted" id="saveState">Not saved</span></div><div class="card-body">
+<div class="grid2">
+<div class="field"><label>Name</label><input id="name" placeholder="Your full name"></div>
+<div class="field"><label>Professional title</label><input id="title" placeholder="Software Engineer"></div>
+</div>
+<div class="field"><label>Contact line</label><input id="contact" placeholder="Bengaluru · email@example.com · +91 ... · linkedin.com/in/..."></div>
+<div class="field"><label>Professional summary</label><textarea id="summary" placeholder="Write a concise, achievement-focused professional summary."></textarea></div>
+</div></div>
+
+<div class="card"><div class="card-head"><h2>Experience</h2><button class="btn small" onclick="addExperience()">+ Add experience</button></div><div class="card-body" id="experience"></div></div>
+<div class="card"><div class="card-head"><h2>Education</h2><button class="btn small" onclick="addEducation()">+ Add education</button></div><div class="card-body" id="education"></div></div>
+<div class="card"><div class="card-head"><h2>Skills</h2><span class="muted">ATS-friendly keywords</span></div><div class="card-body">
+<div class="field"><label>Add skills</label><div class="grid2"><input id="skillInput" placeholder="Java, Spring Boot, SQL"><button class="btn" onclick="addSkills()">Add skills</button></div><div class="chips" id="skills"></div></div>
+</div></div>
+<div class="card"><div class="card-head"><h2>Projects</h2><button class="btn small" onclick="addProject()">+ Add project</button></div><div class="card-body" id="projects"></div></div>
+<div class="card"><div class="card-head"><h2>Certifications</h2><button class="btn small" onclick="addCertification()">+ Add certification</button></div><div class="card-body" id="certifications"></div></div>
+</div>
+
+<div id="panel-templates" style="display:none">
+<div class="card"><div class="card-head"><h2>Choose a template</h2><span class="muted">Your content stays unchanged</span></div><div class="card-body"><div class="templates" id="templates"></div></div></div>
+</div>
+
+<div id="panel-style" style="display:none">
+<div class="card"><div class="card-head"><h2>Customize</h2></div><div class="card-body">
+<div class="grid2">
+<div class="field"><label>Accent color</label><input type="color" id="accent" value="#5b50e6"></div>
+<div class="field"><label>Font scale</label><select id="fontScale"><option value="1">Normal</option><option value="0.92">Compact</option><option value="1.08">Large</option></select></div>
+</div>
+<p class="muted">Template layout controls spacing and hierarchy. These settings only change presentation.</p>
+</div></div>
+</div>
+</section>
+
+<aside class="preview-wrap"><div id="resumePaper"></div></aside>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+const TEMPLATES=[
+{id:'classic',name:'ATS Professional',desc:'Clean and highly ATS-friendly'},
+{id:'modern',name:'Modern',desc:'Contemporary professional layout'},
+{id:'executive',name:'Executive',desc:'Premium senior-professional style'},
+{id:'minimal',name:'Minimal',desc:'Simple, focused and elegant'},
+{id:'tech',name:'Tech',desc:'Developer and engineering focused'},
+{id:'creative',name:'Creative',desc:'Modern visual personality'},
+{id:'graduate',name:'Graduate',desc:'Excellent for students and freshers'},
+{id:'consult',name:'Consulting',desc:'Structured consulting style'}
+];
+let data={
+name:'',title:'',contact:'',summary:'',
+experience:[],education:[],skills:[],projects:[],certifications:[],
+template:'classic',accent:'#5b50e6',fontScale:'1'
+};
+const $=id=>document.getElementById(id);
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function toast(m){$('toast').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
+function syncBasics(){['name','title','contact','summary'].forEach(k=>data[k]=$(k).value)}
+function bindBasics(){['name','title','contact','summary'].forEach(k=>$(k).addEventListener('input',()=>{data[k]=$(k).value;render()}))}
+function addExperience(){data.experience.push({job:'',company:'',dates:'',description:'',bullets:[]});renderEditor()}
+function addEducation(){data.education.push({degree:'',school:'',dates:'',details:''});renderEditor()}
+function addProject(){data.projects.push({name:'',description:'',link:''});renderEditor()}
+function addCertification(){data.certifications.push({name:'',issuer:'',date:''});renderEditor()}
+function removeItem(type,i){data[type].splice(i,1);renderEditor();render()}
+function update(type,i,key,val){data[type][i][key]=val;render()}
+function renderEditor(){
+$('experience').innerHTML=data.experience.length?data.experience.map((x,i)=>`<div class="section-row">
+<div class="row-head"><strong>Experience ${i+1}</strong><button class="icon-btn danger" onclick="removeItem('experience',${i})">×</button></div>
+<div class="grid2"><div class="field"><label>Job title</label><input value="${esc(x.job)}" oninput="update('experience',${i},'job',this.value)"></div><div class="field"><label>Company</label><input value="${esc(x.company)}" oninput="update('experience',${i},'company',this.value)"></div></div>
+<div class="field"><label>Dates / location</label><input value="${esc(x.dates)}" oninput="update('experience',${i},'dates',this.value)"></div>
+<div class="field"><label>Description</label><textarea oninput="update('experience',${i},'description',this.value)">${esc(x.description)}</textarea></div>
+<div class="field"><label>Achievements — one per line</label><textarea oninput="update('experience',${i},'bullets',this.value.split('\\n').filter(Boolean))">${esc((x.bullets||[]).join('\\n'))}</textarea></div>
+</div>`).join(''):'<div class="empty">Add your work experience. Use measurable achievements where possible.</div>';
+$('education').innerHTML=data.education.length?data.education.map((x,i)=>`<div class="section-row">
+<div class="row-head"><strong>Education ${i+1}</strong><button class="icon-btn danger" onclick="removeItem('education',${i})">×</button></div>
+<div class="grid2"><div class="field"><label>Degree</label><input value="${esc(x.degree)}" oninput="update('education',${i},'degree',this.value)"></div><div class="field"><label>Institution</label><input value="${esc(x.school)}" oninput="update('education',${i},'school',this.value)"></div></div>
+<div class="field"><label>Dates</label><input value="${esc(x.dates)}" oninput="update('education',${i},'dates',this.value)"></div><div class="field"><label>Details</label><input value="${esc(x.details)}" oninput="update('education',${i},'details',this.value)"></div>
+</div>`).join(''):'<div class="empty">Add your education.</div>';
+$('projects').innerHTML=data.projects.length?data.projects.map((x,i)=>`<div class="section-row">
+<div class="row-head"><strong>Project ${i+1}</strong><button class="icon-btn danger" onclick="removeItem('projects',${i})">×</button></div>
+<div class="field"><label>Project name</label><input value="${esc(x.name)}" oninput="update('projects',${i},'name',this.value)"></div>
+<div class="field"><label>Description</label><textarea oninput="update('projects',${i},'description',this.value)">${esc(x.description)}</textarea></div>
+<div class="field"><label>Link</label><input value="${esc(x.link)}" oninput="update('projects',${i},'link',this.value)"></div>
+</div>`).join(''):'<div class="empty">Add relevant projects.</div>';
+$('certifications').innerHTML=data.certifications.length?data.certifications.map((x,i)=>`<div class="section-row">
+<div class="row-head"><strong>Certification ${i+1}</strong><button class="icon-btn danger" onclick="removeItem('certifications',${i})">×</button></div>
+<div class="grid2"><div class="field"><label>Name</label><input value="${esc(x.name)}" oninput="update('certifications',${i},'name',this.value)"></div><div class="field"><label>Issuer</label><input value="${esc(x.issuer)}" oninput="update('certifications',${i},'issuer',this.value)"></div></div>
+<div class="field"><label>Date</label><input value="${esc(x.date)}" oninput="update('certifications',${i},'date',this.value)"></div>
+</div>`).join(''):'<div class="empty">Add certifications if relevant.</div>';
+$('skills').innerHTML=data.skills.map((s,i)=>`<span class="chip">${esc(s)} <button onclick="data.skills.splice(${i},1);renderEditor();render()">×</button></span>`).join('');
+}
+function addSkills(){let v=$('skillInput').value.split(',').map(x=>x.trim()).filter(Boolean);v.forEach(s=>{if(!data.skills.includes(s))data.skills.push(s)});$('skillInput').value='';renderEditor();render()}
+function renderTemplates(){$('templates').innerHTML=TEMPLATES.map(t=>`<div class="template-card ${data.template===t.id?'selected':''}" onclick="selectTemplate('${t.id}')"><div class="template-thumb">${thumb(t.id)}</div><h3>${t.name}</h3><p>${t.desc}</p></div>`).join('')}
+function thumb(id){if(['creative'].includes(id))return `<div class="mini two"><div class="side"></div><div class="main"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div></div>`;if(id==='tech')return `<div class="mini tech"><div class="mhead">YOUR_NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`;return `<div class="mini ${id}"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`}
+function selectTemplate(id){data.template=id;renderTemplates();render();toast('Template changed')}
+function section(title,body){return body?`<div class="r-section"><h4>${title}</h4>${body}</div>`:''}
+function render(){
+syncBasics();
+let cls='tpl-'+data.template;
+let exp=data.experience.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.job||'Job Title')} · ${esc(x.company||'Company')}</div><div class="r-item-sub">${esc(x.dates)}</div>${x.description?`<div class="r-body">${esc(x.description)}</div>`:''}${(x.bullets||[]).length?`<ul class="r-bullets">${x.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`:''}</div>`).join('');
+let edu=data.education.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.degree||'Degree')} · ${esc(x.school||'Institution')}</div><div class="r-item-sub">${esc(x.dates)}</div>${x.details?`<div class="r-body">${esc(x.details)}</div>`:''}</div>`).join('');
+let proj=data.projects.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.name||'Project')}</div><div class="r-body">${esc(x.description)}</div>${x.link?`<div class="r-item-sub">${esc(x.link)}</div>`:''}</div>`).join('');
+let cert=data.certifications.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.name)}</div><div class="r-item-sub">${esc(x.issuer)}${x.date?' · '+esc(x.date):''}</div></div>`).join('');
+$('resumePaper').className=cls;
+$('resumePaper').style.setProperty('--accent',data.accent);
+$('resumePaper').style.fontSize=(data.fontScale||1)+'em';
+$('resumePaper').innerHTML=`<div class="paper-inner">
+<div class="r-name">${esc(data.name||'Your Name')}</div>
+<div class="r-title">${esc(data.title||'Professional Title')}</div>
+<div class="r-contact">${esc(data.contact||'email@example.com · Phone · Location')}</div>
+${section('PROFESSIONAL SUMMARY',`<div class="r-summary">${esc(data.summary||'Your professional summary will appear here.')}</div>`)}
+${section('EXPERIENCE',exp||`<div class="r-item"><div class="r-item-title">Job Title · Company</div><div class="r-item-sub">Dates · Location</div></div>`)}
+${section('EDUCATION',edu||`<div class="r-item"><div class="r-item-title">Degree · Institution</div></div>`)}
+${section('PROJECTS',proj)}
+${section('CERTIFICATIONS',cert)}
+${section('SKILLS',data.skills.length?`<div class="r-skills">${data.skills.map(s=>`<span class="r-skill">${esc(s)}</span>`).join('')}</div>`:'')}
+</div>`;
+}
+function showPanel(name,btn){document.querySelectorAll('#modebar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');['content','templates','style'].forEach(x=>$('panel-'+x).style.display=x===name?'block':'none');if(name==='templates')renderTemplates()}
+function saveResume(){
+try{localStorage.setItem('belongix_resume_builder',JSON.stringify(data));$('saveState').textContent='Saved just now';toast('Resume saved');}catch(e){toast('Could not save')}
+}
+function loadResume(){try{let x=JSON.parse(localStorage.getItem('belongix_resume_builder'));if(x)data=Object.assign(data,x)}catch(e){}}
+$('accent').addEventListener('input',e=>{data.accent=e.target.value;render()});
+$('fontScale').addEventListener('change',e=>{data.fontScale=e.target.value;render()});
+loadResume();bindBasics();$('accent').value=data.accent;$('fontScale').value=data.fontScale;renderEditor();renderTemplates();render();
+</script>
+</body>
+</html>
