@@ -6,33 +6,128 @@
 <title>Resume Builder — Belongix</title>
 <meta name="robots" content="noindex,nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@400;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Fraunces:ital,opsz,wght@1,9..144,500&family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--ink:#15162b;--muted:#697089;--line:#e5e7ef;--soft:#f7f7fb;--brand:#5b50e6;--brand2:#4940c9;--white:#fff;--green:#159a67;--danger:#d64545;--shadow:0 12px 35px rgba(22,24,50,.08);--radius:14px}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif;color:var(--ink);background:#f5f6fa}button,input,textarea,select{font:inherit}button{cursor:pointer}
-.topbar{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 28px;gap:28px;position:sticky;top:0;z-index:50}.logo{font-size:21px;font-weight:800;text-decoration:none;color:#17192b}.logo span{color:var(--brand)}
-.nav{display:flex;gap:8px;align-items:center}.nav a{padding:11px 14px;color:#687089;text-decoration:none;font-weight:600;font-size:14px;border-radius:10px}.nav a.active{background:#efefff;color:var(--brand)}
-.actions{margin-left:auto;display:flex;gap:10px}.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:11px 16px;font-weight:700;color:var(--ink)}.btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}.btn.primary:hover{background:var(--brand2)}.btn.small{padding:8px 11px;font-size:12px}.btn.ghost{background:transparent}
-.layout{display:grid;grid-template-columns:minmax(460px,56%) minmax(430px,44%);height:calc(100vh - 68px)}
-.editor{overflow:auto;padding:22px 24px 80px}.preview-wrap{background:#eef0f5;border-left:1px solid var(--line);overflow:auto;padding:28px;display:flex;justify-content:center}
-.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);margin-bottom:14px;overflow:hidden}.card-head{padding:17px 19px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.card-head h2{font-size:15px;margin:0}.card-body{padding:18px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{margin-bottom:13px}.field:last-child{margin-bottom:0}.field label{display:block;font-size:12px;font-weight:700;color:#536078;margin-bottom:6px}.field input,.field textarea,.field select{width:100%;border:1px solid #d8dce7;border-radius:9px;padding:11px 12px;color:var(--ink);background:#fff;outline:none}.field input:focus,.field textarea:focus,.field select:focus{border-color:#8179ef;box-shadow:0 0 0 3px rgba(91,80,230,.1)}textarea{min-height:100px;resize:vertical}
-.toolbar{display:flex;gap:7px;flex-wrap:wrap;padding:12px;background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:14px}.toolbar button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 11px;font-weight:700;font-size:12px}.toolbar button.active{background:#efefff;border-color:#d7d4ff;color:var(--brand)}
-.section-row{border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;background:#fff}.row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.row-head strong{font-size:13px}.icon-btn{border:0;background:transparent;color:#737b91;font-size:18px}.danger{color:var(--danger)}
-.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.chip{background:#f0f1f7;border:1px solid #e1e3eb;padding:6px 9px;border-radius:999px;font-size:12px}.chip button{border:0;background:transparent;padding:0 0 0 5px;color:#737b91}
-.templates{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.template-card{border:2px solid #e4e5ed;border-radius:12px;padding:8px;background:#fff;cursor:pointer;transition:.15s}.template-card:hover{transform:translateY(-2px);box-shadow:var(--shadow)}.template-card.selected{border-color:var(--brand);box-shadow:0 0 0 3px rgba(91,80,230,.1)}.template-thumb{height:145px;border:1px solid #dddfe8;background:#fff;border-radius:7px;overflow:hidden;position:relative}.template-card h3{font-size:12px;margin:8px 2px 2px}.template-card p{font-size:10px;color:#858ca0;margin:0 2px 4px}.mini{padding:10px;font-size:5px;line-height:1.5;color:#222}.mini .mhead{font-weight:800;font-size:8px;border-bottom:1px solid #aaa;padding-bottom:4px;margin-bottom:6px}.mini .mline{height:3px;background:#ddd;margin:4px 0;width:75%}.mini.two{display:grid;grid-template-columns:28% 72%;padding:0}.mini.two .side{background:#222;color:#fff;padding:8px}.mini.two .main{padding:8px}.mini.modern .mhead{color:#5b50e6}.mini.exec .mhead{font-family:Georgia,serif;font-size:9px}.mini.tech .mhead{font-family:monospace;color:#16845d}.mini.creative .side{background:#5b50e6}.mini.grad .mhead{text-align:center}.mini.consult .mhead{border-bottom:2px solid #222}
-#resumePaper{width:794px;min-height:1123px;background:#fff;box-shadow:0 10px 35px rgba(0,0,0,.12);flex:none;color:#171717}.paper-inner{padding:58px 60px}.r-name{font-size:31px;font-weight:800;line-height:1.1}.r-title{font-size:14px;color:#5b50e6;font-weight:700;margin-top:6px}.r-contact{font-size:10px;color:#687089;margin-top:7px}.r-section{margin-top:24px}.r-section h4{font-size:10px;letter-spacing:1.5px;margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid #ddd;font-weight:800}.r-summary,.r-body,.r-item{font-size:10px;line-height:1.55}.r-item{margin-bottom:12px}.r-item-title{font-weight:800;font-size:11px}.r-item-sub{color:#687089;margin-top:2px}.r-bullets{margin:5px 0 0 14px;padding:0}.r-skills{display:flex;flex-wrap:wrap;gap:5px}.r-skill{font-size:9px;background:#f0f1f6;border-radius:4px;padding:4px 7px}
-.tpl-classic .paper-inner{font-family:Inter,sans-serif}.tpl-modern .r-name{color:#272252}.tpl-modern .r-section h4{color:#5b50e6;border-bottom:2px solid #5b50e6}.tpl-executive .paper-inner{font-family:Georgia,serif}.tpl-executive .r-title{color:#333}.tpl-executive .r-section h4{font-family:Inter,sans-serif}.tpl-minimal .paper-inner{padding:62px 68px}.tpl-minimal .r-section h4{border:0;padding:0}.tpl-tech .paper-inner{font-family:Inter,sans-serif}.tpl-tech .r-name{font-family:"DM Mono",monospace;font-size:25px}.tpl-tech .r-title{color:#159a67}.tpl-tech .r-section h4{color:#159a67}.tpl-creative .paper-inner{padding-left:72px}.tpl-creative .r-name{color:#5b50e6}.tpl-creative .r-section h4{color:#5b50e6}.tpl-graduate .r-name{text-align:center}.tpl-graduate .r-title,.tpl-graduate .r-contact{text-align:center}.tpl-graduate .r-section{margin-top:20px}.tpl-consult .r-name{font-size:28px}.tpl-consult .r-section h4{border-bottom:2px solid #222}
+:root{--paper:#F7F6F1;--paper-raised:#FFFFFF;--paper-deep:#EDEAE1;--ink:#17160F;--ink-soft:#5B584C;--ink-faint:#8D897A;--line:#D9D4C6;--accent:#3B5D4E;--accent-deep:#28402F;--accent-soft:#E4E9DE;--gold:#A9813C;--danger:#17160F;--white:#fff;--shadow:none;--shadow-sm:none;--radius:3px;--serif:'Source Serif 4',Georgia,serif;--sans:'Source Serif 4',Georgia,serif;--mono:'Source Serif 4',Georgia,serif;--resume:'Source Serif 4',Georgia,serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:var(--sans);color:var(--ink);background:var(--paper)}button,input,textarea,select{font:inherit}button{cursor:pointer}:focus-visible{outline:1.5px solid var(--ink);outline-offset:2px}
 
-.toast{position:fixed;right:22px;bottom:22px;background:#17192b;color:#fff;padding:12px 16px;border-radius:10px;box-shadow:var(--shadow);display:none;z-index:100}.toast.show{display:block}.empty{font-size:13px;color:#7b8398;padding:10px 0}.muted{font-size:12px;color:#7b8398}
-@media(max-width:1050px){.layout{grid-template-columns:1fr}.preview-wrap{min-height:700px;border-left:0;border-top:1px solid var(--line)}.templates{grid-template-columns:repeat(2,1fr)}}@media(max-width:700px){.topbar{padding:0 14px;gap:10px}.nav{display:none}.layout{height:auto}.editor{padding:14px}.grid2{grid-template-columns:1fr}.preview-wrap{padding:12px;overflow:auto}#resumePaper{transform-origin:top center;transform:scale(.55);margin-bottom:-480px}.templates{grid-template-columns:repeat(2,1fr)}}
-@media print{body{background:#fff}.topbar,.editor{display:none!important}.layout{display:block;height:auto}.preview-wrap{padding:0;border:0;display:block;background:#fff}.preview-wrap #resumePaper{box-shadow:none;margin:0;width:210mm;min-height:297mm}.toast{display:none}}
+.seal{display:none}
+
+.topbar{min-height:72px;background:var(--paper);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 26px;gap:26px;position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:20px;font-weight:600;text-decoration:none;color:var(--ink)}.logo b{font-style:italic;font-weight:500}
+.nav{display:flex;gap:20px;align-items:center}.nav a{padding:4px 0;color:var(--ink-soft);text-decoration:none;font-size:14.5px;border-bottom:1px solid transparent}.nav a.active{color:var(--ink);border-bottom-color:var(--ink)}.nav a:hover:not(.active){color:var(--ink)}
+.actions{margin-left:auto;display:flex;gap:10px}
+.btn{border:1px solid var(--ink);background:transparent;border-radius:var(--radius);padding:10px 17px;color:var(--ink);font-size:13.5px}.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}.btn.primary:hover{background:transparent;color:var(--ink)}
+.btn.small{padding:7px 12px;font-size:12px}.btn.ghost{background:transparent;border-color:transparent}.btn.ghost:hover{background:transparent;text-decoration:underline}
+
+.layout{display:grid;grid-template-columns:minmax(460px,54%) minmax(430px,46%);height:calc(100vh - 72px)}
+.editor{overflow:auto;padding:24px 26px 90px}.preview-wrap{background:var(--paper-deep);border-left:1px solid var(--line);overflow:auto;padding:32px;display:flex;flex-direction:column;align-items:center;gap:16px}
+
+.card{background:transparent;border:1px solid var(--line);border-radius:0;margin-bottom:14px;overflow:hidden}
+.card-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.card-head h2{font-family:var(--serif);font-size:15px;font-weight:600;margin:0;letter-spacing:-.01em}
+.card-body{padding:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{margin-bottom:13px}.field:last-child{margin-bottom:0}
+.field label{display:block;font-size:11.5px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;letter-spacing:.02em}
+.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:9px;padding:11px 12px;color:var(--ink);background:var(--white);outline:none}
+.field input:focus,.field textarea:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+textarea{min-height:100px;resize:vertical}
+.checkline{display:flex;align-items:center;gap:8px;font-weight:600;font-size:12.5px;color:var(--ink-soft)}
+
+.toolbar{display:flex;gap:0;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:20px;width:fit-content}
+.toolbar button{border:0;background:transparent;padding:10px 16px;font-size:13.5px;color:var(--ink-soft);border-bottom:2px solid transparent;margin-bottom:-1px}.toolbar button.active{color:var(--ink);border-bottom-color:var(--ink)}
+
+.section-row{border:1px solid var(--line);border-radius:0;padding:14px;margin-bottom:10px;background:var(--white)}
+.row-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.row-head strong{font-size:13px;font-family:var(--serif);font-weight:600}
+.icon-btn{border:0;background:transparent;color:var(--ink-faint);font-size:15px;padding:4px 7px}.icon-btn:hover{color:var(--ink)}.danger{color:var(--ink)}
+
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.chip{background:transparent;border:1px solid var(--line);padding:6px 10px;border-radius:0;font-size:12px;color:var(--ink)}.chip button{border:0;background:transparent;padding:0 0 0 5px;color:var(--ink);font-weight:700}
+
+.templates{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.template-card{border:1px solid var(--line);border-radius:0;padding:8px;background:var(--white);cursor:pointer;transition:.15s}
+.template-card:hover{border-color:var(--ink-soft)}
+.template-card.selected{border-color:var(--ink);border-width:2px}
+.template-thumb{height:145px;border:1px solid var(--line);background:#fff;border-radius:7px;overflow:hidden;position:relative}
+.template-card h3{font-family:var(--serif);font-size:12.5px;margin:8px 2px 2px;font-weight:600}.template-card p{font-size:10px;color:var(--ink-faint);margin:0 2px 4px}
+.mini{padding:10px;font-size:5px;line-height:1.5;color:#222;height:100%}.mini .mhead{font-weight:800;font-size:8px;border-bottom:1px solid #aaa;padding-bottom:4px;margin-bottom:6px}.mini .mline{height:3px;background:#ddd;margin:4px 0;width:75%}
+.mini.two{display:grid;grid-template-columns:28% 72%;padding:0}.mini.two .side{background:#222;color:#fff;padding:8px}.mini.two .main{padding:8px}
+.mini.two.light{grid-template-columns:72% 28%}.mini.two.light .side{background:var(--accent-soft);order:2}.mini.two.light .main{order:1}
+.mini.modern .mhead{color:var(--accent)}.mini.executive .mhead{font-family:Georgia,serif;font-size:9px}.mini.tech .mhead{font-family:monospace;color:#16845d}
+.mini.stripe{border-left:4px solid var(--accent);padding-left:8px}
+.mini.graduate .mhead{text-align:center}.mini.consult .mhead{border-bottom:2px solid #222}
+.mini.elegant{text-align:center}.mini.elegant .mline{margin-left:auto;margin-right:auto}
+.mini.timeline .mline{margin-left:9px;position:relative}.mini.timeline .mline::before{content:'';position:absolute;left:-9px;top:1px;width:4px;height:4px;border-radius:50%;background:var(--accent)}
+.mini.compact{padding:6px;font-size:4.3px}
+.mini.banner{padding:0}.mini.banner .bhead{background:var(--accent);color:#fff;padding:9px;font-weight:800;font-size:8px}.mini.banner .bbody{padding:8px}
+
+#resumePaper{width:794px;min-height:1123px;background:#fff;box-shadow:var(--shadow);flex:none;color:#171717}
+.paper-inner{padding:58px 60px}
+.r-header{margin:0}
+.r-divider{border-top:1px solid #e5e7eb;margin-top:14px}
+.r-name{font-size:31px;font-weight:800;line-height:1.1;font-family:var(--resume-font,var(--resume))}.r-title{font-size:14px;color:var(--accent);font-weight:700;margin-top:6px}.r-contact{font-size:10px;color:#687089;margin-top:7px}
+.r-section{margin-top:24px}.r-section h4{font-size:10px;letter-spacing:1.5px;margin:0 0 8px;padding-bottom:6px;border-bottom:1px solid #ddd;font-weight:800;font-family:Inter,sans-serif}
+.r-summary,.r-body,.r-item{font-size:10px;line-height:1.55;font-family:var(--resume-font,var(--resume))}.r-item{margin-bottom:12px}.r-item-title{font-weight:800;font-size:11px}.r-item-sub{color:#687089;margin-top:2px}
+.r-bullets{margin:5px 0 0 14px;padding:0}.r-skills{display:flex;flex-wrap:wrap;gap:5px}.r-skill{font-size:9px;background:#f1f0e8;border-radius:4px;padding:4px 7px}
+
+.tpl-classic .paper-inner{font-family:var(--resume-font,var(--resume))}
+.tpl-modern .r-name{color:#272252}.tpl-modern .r-section h4{color:var(--accent);border-bottom:2px solid var(--accent)}
+.tpl-executive .paper-inner{font-family:Georgia,serif}.tpl-executive .r-title{color:#333}.tpl-executive .r-section h4{font-family:Inter,sans-serif}
+.tpl-minimal .paper-inner{padding:62px 68px}.tpl-minimal .r-section h4{border:0;padding:0}
+.tpl-tech .paper-inner{font-family:Inter,sans-serif}.tpl-tech .r-name{font-family:"DM Mono",monospace;font-size:25px}.tpl-tech .r-title{color:#159a67}.tpl-tech .r-section h4{color:#159a67}
+.tpl-creative .paper-inner{padding-left:72px}.tpl-creative .r-name{color:var(--accent)}.tpl-creative .r-section h4{color:var(--accent)}
+.tpl-graduate .r-name{text-align:center}.tpl-graduate .r-title,.tpl-graduate .r-contact{text-align:center}.tpl-graduate .r-section{margin-top:20px}
+.tpl-consult .r-name{font-size:28px}.tpl-consult .r-section h4{border-bottom:2px solid #222}
+
+.tpl-elegant .r-header{text-align:center}.tpl-elegant .r-contact{text-align:center}
+.tpl-elegant .r-section h4{border-bottom:0;font-style:italic;font-weight:500;letter-spacing:.09em;text-align:center;font-family:var(--resume-font,var(--resume));font-size:11px}
+.tpl-elegant .r-divider{width:64px;margin:16px auto 0}
+
+.tpl-timeline .r-item{position:relative;padding-left:16px}
+.tpl-timeline .r-item::before{content:'';position:absolute;left:0;top:4px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.tpl-timeline .r-item::after{content:'';position:absolute;left:2.5px;top:12px;bottom:-10px;width:1px;background:#ddd}
+
+.tpl-compact .paper-inner{padding:40px 46px}.tpl-compact .r-name{font-size:26px}
+.tpl-compact .r-section{margin-top:14px}.tpl-compact .r-item{margin-bottom:7px}
+.tpl-compact .r-summary,.tpl-compact .r-body,.tpl-compact .r-item{font-size:9.3px}
+
+.tpl-banner .r-header{background:var(--accent);color:#fff;padding:30px 60px;margin:-58px -60px 22px}
+.tpl-banner .r-title{color:rgba(255,255,255,.85)}.tpl-banner .r-contact{color:rgba(255,255,255,.75)}
+.tpl-banner .r-divider{display:none}
+
+.sidebar-inner{display:grid;grid-template-columns:.34fr .66fr;padding:0!important}
+.r-side{padding:44px 28px}.r-main{padding:44px 38px}
+.r-contact.side{font-size:10px;line-height:1.7;margin-bottom:18px}
+.r-avatar{width:80px;height:80px;border-radius:50%;background-size:cover;background-position:center;margin-bottom:16px;border:2px solid rgba(255,255,255,.35)}
+.tpl-sidebar-dark .r-side{background:#211F17;color:#EFE8D3}
+.tpl-sidebar-dark .r-side .r-section h4{color:inherit;border-bottom-color:rgba(255,255,255,.25)}
+.tpl-sidebar-dark .r-side .r-body,.tpl-sidebar-dark .r-side .r-item-sub{color:rgba(239,232,211,.75)}
+.tpl-sidebar-dark .r-side .r-skill{background:rgba(255,255,255,.12);color:#EFE8D3}
+.tpl-sidebar-light .r-side{background:var(--paper-deep);order:2}.tpl-sidebar-light .r-main{order:1}
+.tpl-sidebar-light .r-avatar{border-color:rgba(36,31,22,.2)}
+
+#resumePaper[data-bullet="dash"] .r-bullets,#resumePaper[data-bullet="arrow"] .r-bullets{list-style:none;padding-left:0}
+#resumePaper[data-bullet="dash"] .r-bullets li,#resumePaper[data-bullet="arrow"] .r-bullets li{position:relative;padding-left:13px}
+#resumePaper[data-bullet="dash"] .r-bullets li::before{content:'–';position:absolute;left:0;color:var(--accent)}
+#resumePaper[data-bullet="arrow"] .r-bullets li::before{content:'›';position:absolute;left:0;color:var(--accent);font-weight:700}
+#resumePaper[data-heading="chip"] .r-section h4{display:inline-block;border-bottom:0;background:var(--accent-soft,#eef1ea);color:var(--accent-deep,#28402F);padding:4px 10px;border-radius:5px}
+#resumePaper[data-divider="off"] .r-divider{display:none}
+
+.previewStamp{font-style:italic;font-size:13px;color:var(--ink-soft)}
+
+.toast{position:fixed;right:22px;bottom:22px;background:var(--ink);color:var(--paper);padding:12px 18px;border-radius:99px;box-shadow:var(--shadow);display:none;z-index:100;font-weight:600;font-size:13.5px}.toast.show{display:block}
+.empty{font-size:13px;color:var(--ink-faint);padding:10px 0}.muted{font-size:12px;color:var(--ink-soft)}
+
+@media(max-width:1050px){.layout{grid-template-columns:1fr}.preview-wrap{min-height:700px;border-left:0;border-top:1px solid var(--line)}.templates{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.topbar{padding:0 14px;gap:10px}.nav{display:none}.layout{height:auto}.editor{padding:14px}.grid2{grid-template-columns:1fr}.preview-wrap{padding:12px;overflow:auto}#resumePaper{transform-origin:top center;transform:scale(.55);margin-bottom:-480px}.templates{grid-template-columns:repeat(2,1fr)}}
+@media print{body{background:#fff}.topbar,.editor{display:none!important}.layout{display:block;height:auto}.preview-wrap{padding:0;border:0;display:block;background:#fff}.preview-wrap #resumePaper{box-shadow:none;margin:0;width:210mm;min-height:297mm}.previewStamp{display:none}.toast{display:none}}
 </style>
 </head>
 <body>
 <header class="topbar">
-<a class="logo" href="index.html">Belong<span>ix</span></a>
-<nav class="nav"><a href="workspace.html">Workspace</a><a class="active" href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav>
+<a class="logo" href="index.html">Belong<span style="font-style:italic;font-weight:500">ix</span></a>
+<nav class="nav"><a href="dashboard.html">Workspace</a><a class="active" href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav>
 <div class="actions"><button class="btn" onclick="saveResume()">Save</button><button class="btn primary" onclick="window.print()">Export / Print</button></div>
 </header>
 
@@ -40,6 +135,7 @@
 <section class="editor">
 <div class="toolbar" id="modebar">
 <button class="active" onclick="showPanel('content',this)">Content</button>
+<button onclick="showPanel('sections',this)">Sections</button>
 <button onclick="showPanel('templates',this)">Templates</button>
 <button onclick="showPanel('style',this)">Style</button>
 </div>
@@ -50,8 +146,12 @@
 <div class="field"><label>Name</label><input id="name" placeholder="Your full name"></div>
 <div class="field"><label>Professional title</label><input id="title" placeholder="Software Engineer"></div>
 </div>
-<div class="field"><label>Contact line</label><input id="contact" placeholder="Bengaluru · email@example.com · +91 ... · linkedin.com/in/..."></div>
+<div class="grid2">
+<div class="field"><label>Contact line</label><input id="contact" placeholder="Bengaluru · email@example.com · +91 ..."></div>
+<div class="field"><label>Website / portfolio (optional)</label><input id="website" placeholder="linkedin.com/in/you"></div>
+</div>
 <div class="field"><label>Professional summary</label><textarea id="summary" placeholder="Write a concise, achievement-focused professional summary."></textarea></div>
+<div class="field"><label>Profile photo <span class="muted">— used by sidebar templates only</span></label><input type="file" id="photoInput" accept="image/*"></div>
 </div></div>
 
 <div class="card"><div class="card-head"><h2>Experience</h2><button class="btn small" onclick="addExperience()">+ Add experience</button></div><div class="card-body" id="experience"></div></div>
@@ -63,6 +163,13 @@
 <div class="card"><div class="card-head"><h2>Certifications</h2><button class="btn small" onclick="addCertification()">+ Add certification</button></div><div class="card-body" id="certifications"></div></div>
 </div>
 
+<div id="panel-sections" style="display:none">
+<div class="card"><div class="card-head"><h2>Sections</h2><span class="muted">Reorder, hide, rename, or add your own</span></div><div class="card-body">
+<p class="muted" style="margin:0 0 12px">"Sidebar" only matters for the two Sidebar templates — it decides which column a section lands in. Built-in sections are edited under Content; custom sections are edited right here.</p>
+<div id="sectionsList"></div>
+</div></div>
+</div>
+
 <div id="panel-templates" style="display:none">
 <div class="card"><div class="card-head"><h2>Choose a template</h2><span class="muted">Your content stays unchanged</span></div><div class="card-body"><div class="templates" id="templates"></div></div></div>
 </div>
@@ -70,39 +177,69 @@
 <div id="panel-style" style="display:none">
 <div class="card"><div class="card-head"><h2>Customize</h2></div><div class="card-body">
 <div class="grid2">
-<div class="field"><label>Accent color</label><input type="color" id="accent" value="#5b50e6"></div>
+<div class="field"><label>Accent color</label><input type="color" id="accent" value="#3B5D4E"></div>
 <div class="field"><label>Font scale</label><select id="fontScale"><option value="1">Normal</option><option value="0.92">Compact</option><option value="1.08">Large</option></select></div>
+<div class="field"><label>Resume font</label><select id="fontPair"></select></div>
+<div class="field"><label>Bullet style</label><select id="bulletStyle"><option value="disc">Dot</option><option value="dash">Dash</option><option value="arrow">Arrow</option></select></div>
+<div class="field"><label>Section headings</label><select id="headingStyle"><option value="underline">Underline</option><option value="chip">Chip</option></select></div>
+<div class="field"><label>Density</label><select id="density"><option value="normal">Comfortable</option><option value="compact">Compact</option></select></div>
 </div>
-<p class="muted">Template layout controls spacing and hierarchy. These settings only change presentation.</p>
+<label class="checkline" style="margin-top:4px"><input type="checkbox" id="dividerToggle" checked> Divider under header</label>
+<p class="muted" style="margin-top:14px">Template layout controls structure. These settings change presentation on top of it.</p>
 </div></div>
 </div>
 </section>
 
-<aside class="preview-wrap"><div id="resumePaper"></div></aside>
+<aside class="preview-wrap">
+<div class="previewStamp">Live preview</div>
+<div id="resumePaper"></div>
+</aside>
 </main>
 <div class="toast" id="toast"></div>
 
 <script>
 const TEMPLATES=[
-{id:'classic',name:'ATS Professional',desc:'Clean and highly ATS-friendly'},
-{id:'modern',name:'Modern',desc:'Contemporary professional layout'},
-{id:'executive',name:'Executive',desc:'Premium senior-professional style'},
-{id:'minimal',name:'Minimal',desc:'Simple, focused and elegant'},
-{id:'tech',name:'Tech',desc:'Developer and engineering focused'},
-{id:'creative',name:'Creative',desc:'Modern visual personality'},
-{id:'graduate',name:'Graduate',desc:'Excellent for students and freshers'},
-{id:'consult',name:'Consulting',desc:'Structured consulting style'}
+{id:'classic',name:'ATS Professional',desc:'Clean and highly ATS-friendly',family:'standard'},
+{id:'modern',name:'Modern',desc:'Contemporary professional layout',family:'standard'},
+{id:'executive',name:'Executive',desc:'Premium senior-professional style',family:'standard'},
+{id:'minimal',name:'Minimal',desc:'Simple, focused and elegant',family:'standard'},
+{id:'tech',name:'Tech',desc:'Developer and engineering focused',family:'standard'},
+{id:'creative',name:'Creative',desc:'Modern visual personality',family:'standard'},
+{id:'graduate',name:'Graduate',desc:'Excellent for students and freshers',family:'standard'},
+{id:'consult',name:'Consulting',desc:'Structured consulting style',family:'standard'},
+{id:'elegant',name:'Elegant',desc:'Centered, editorial and refined',family:'standard'},
+{id:'timeline',name:'Timeline',desc:'Career history as a visual timeline',family:'standard'},
+{id:'compact',name:'Compact',desc:'Dense layout, one-page optimized',family:'standard'},
+{id:'banner',name:'Banner',desc:'Bold color header band',family:'standard'},
+{id:'sidebar-dark',name:'Sidebar Dark',desc:'Two-column with an ink sidebar',family:'sidebar'},
+{id:'sidebar-light',name:'Sidebar Light',desc:'Two-column with a warm sidebar',family:'sidebar'}
 ];
+const FONT_PAIRS=[
+{id:'serif',label:'Classic Serif',css:"'Source Serif 4',Georgia,serif"},
+{id:'sans',label:'Modern Sans',css:"'Inter',sans-serif"},
+{id:'mono',label:'Technical Mono',css:"'DM Mono',monospace"},
+{id:'elegant',label:'Elegant Serif',css:"'Fraunces',Georgia,serif"}
+];
+function defaultSections(){return [
+ {key:'summary',type:'summary',title:'PROFESSIONAL SUMMARY',visible:true,sidebar:false},
+ {key:'experience',type:'experience',title:'EXPERIENCE',visible:true,sidebar:false},
+ {key:'education',type:'education',title:'EDUCATION',visible:true,sidebar:true},
+ {key:'skills',type:'skills',title:'SKILLS',visible:true,sidebar:true},
+ {key:'projects',type:'projects',title:'PROJECTS',visible:true,sidebar:false},
+ {key:'certifications',type:'certifications',title:'CERTIFICATIONS',visible:true,sidebar:true}
+];}
 let data={
-name:'',title:'',contact:'',summary:'',
+name:'',title:'',contact:'',website:'',summary:'',photo:'',
 experience:[],education:[],skills:[],projects:[],certifications:[],
-template:'classic',accent:'#5b50e6',fontScale:'1'
+sections:defaultSections(),
+template:'classic',accent:'#3B5D4E',fontScale:'1',
+style:{font:'serif',bulletStyle:'disc',headingStyle:'underline',density:'normal',divider:true}
 };
 const $=id=>document.getElementById(id);
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
 function toast(m){$('toast').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
-function syncBasics(){['name','title','contact','summary'].forEach(k=>data[k]=$(k).value)}
-function bindBasics(){['name','title','contact','summary'].forEach(k=>$(k).addEventListener('input',()=>{data[k]=$(k).value;render()}))}
+function syncBasics(){['name','title','contact','website','summary'].forEach(k=>data[k]=$(k).value)}
+function bindBasics(){['name','title','contact','website','summary'].forEach(k=>$(k).addEventListener('input',()=>{data[k]=$(k).value;render()}))}
 function addExperience(){data.experience.push({job:'',company:'',dates:'',description:'',bullets:[]});renderEditor()}
 function addEducation(){data.education.push({degree:'',school:'',dates:'',details:''});renderEditor()}
 function addProject(){data.projects.push({name:'',description:'',link:''});renderEditor()}
@@ -136,40 +273,116 @@ $('certifications').innerHTML=data.certifications.length?data.certifications.map
 $('skills').innerHTML=data.skills.map((s,i)=>`<span class="chip">${esc(s)} <button onclick="data.skills.splice(${i},1);renderEditor();render()">×</button></span>`).join('');
 }
 function addSkills(){let v=$('skillInput').value.split(',').map(x=>x.trim()).filter(Boolean);v.forEach(s=>{if(!data.skills.includes(s))data.skills.push(s)});$('skillInput').value='';renderEditor();render()}
+
+/* ---- sections tab ---- */
+function moveSection(i,dir){let j=i+dir;if(j<0||j>=data.sections.length)return;[data.sections[i],data.sections[j]]=[data.sections[j],data.sections[i]];renderSections();render()}
+function toggleSectionVisible(i){data.sections[i].visible=!data.sections[i].visible;renderSections();render()}
+function toggleSectionSidebar(i){data.sections[i].sidebar=!data.sections[i].sidebar;renderSections();render()}
+function updateSectionTitle(i,v){data.sections[i].title=v;renderSections();render()}
+function updateSectionBody(i,v){data.sections[i].body=v;render()}
+function removeSection(i){data.sections.splice(i,1);renderSections();render()}
+function addCustomSection(){data.sections.push({key:'custom-'+Date.now(),type:'custom',title:'NEW SECTION',visible:true,sidebar:false,body:''});renderSections();render()}
+function renderSections(){
+$('sectionsList').innerHTML=data.sections.map((s,i)=>`<div class="section-row">
+<div class="row-head"><strong>${esc(s.title)||'Untitled section'}</strong>
+<div style="display:flex;gap:2px">
+<button class="icon-btn" onclick="moveSection(${i},-1)" title="Move up">↑</button>
+<button class="icon-btn" onclick="moveSection(${i},1)" title="Move down">↓</button>
+${s.type==='custom'?`<button class="icon-btn danger" onclick="removeSection(${i})" title="Delete">×</button>`:''}
+</div></div>
+<div class="grid2">
+<div class="field"><label>Section title</label><input value="${esc(s.title)}" oninput="updateSectionTitle(${i},this.value)"></div>
+<div class="field"><label>Options</label><div style="display:flex;gap:16px;padding-top:10px">
+<label class="checkline"><input type="checkbox" ${s.visible?'checked':''} onchange="toggleSectionVisible(${i})"> Visible</label>
+<label class="checkline"><input type="checkbox" ${s.sidebar?'checked':''} onchange="toggleSectionSidebar(${i})"> Sidebar</label>
+</div></div>
+</div>
+${s.type==='custom'?`<div class="field"><label>Content — one line per bullet, or a short paragraph</label><textarea oninput="updateSectionBody(${i},this.value)">${esc(s.body)}</textarea></div>`:`<p class="muted" style="margin:0">Edited in the ${s.type.charAt(0).toUpperCase()+s.type.slice(1)} card under Content.</p>`}
+</div>`).join('')+`<button class="btn" onclick="addCustomSection()">+ Add custom section</button>`;
+}
+
+/* ---- templates tab ---- */
 function renderTemplates(){$('templates').innerHTML=TEMPLATES.map(t=>`<div class="template-card ${data.template===t.id?'selected':''}" onclick="selectTemplate('${t.id}')"><div class="template-thumb">${thumb(t.id)}</div><h3>${t.name}</h3><p>${t.desc}</p></div>`).join('')}
-function thumb(id){if(['creative'].includes(id))return `<div class="mini two"><div class="side"></div><div class="main"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div></div>`;if(id==='tech')return `<div class="mini tech"><div class="mhead">YOUR_NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`;return `<div class="mini ${id}"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`}
+function thumb(id){
+if(id==='sidebar-dark')return `<div class="mini two"><div class="side"></div><div class="main"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div></div>`;
+if(id==='sidebar-light')return `<div class="mini two light"><div class="main"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div><div class="side"></div></div>`;
+if(id==='creative')return `<div class="mini stripe"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`;
+if(id==='tech')return `<div class="mini tech"><div class="mhead">YOUR_NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`;
+if(id==='banner')return `<div class="mini banner"><div class="bhead">YOUR NAME</div><div class="bbody"><div class="mline"></div><div class="mline"></div><div class="mline"></div></div></div>`;
+return `<div class="mini ${id}"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`;
+}
 function selectTemplate(id){data.template=id;renderTemplates();render();toast('Template changed')}
+
+/* ---- resume rendering ---- */
 function section(title,body){return body?`<div class="r-section"><h4>${title}</h4>${body}</div>`:''}
+function sectionBody(s){
+if(s.type==='summary')return `<div class="r-summary">${esc(data.summary||'Your professional summary will appear here.')}</div>`;
+if(s.type==='experience')return data.experience.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.job||'Job Title')} · ${esc(x.company||'Company')}</div><div class="r-item-sub">${esc(x.dates)}</div>${x.description?`<div class="r-body">${esc(x.description)}</div>`:''}${(x.bullets||[]).length?`<ul class="r-bullets">${x.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`:''}</div>`).join('')||`<div class="r-item"><div class="r-item-title">Job Title · Company</div><div class="r-item-sub">Dates · Location</div></div>`;
+if(s.type==='education')return data.education.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.degree||'Degree')} · ${esc(x.school||'Institution')}</div><div class="r-item-sub">${esc(x.dates)}</div>${x.details?`<div class="r-body">${esc(x.details)}</div>`:''}</div>`).join('')||`<div class="r-item"><div class="r-item-title">Degree · Institution</div></div>`;
+if(s.type==='skills')return data.skills.length?`<div class="r-skills">${data.skills.map(x=>`<span class="r-skill">${esc(x)}</span>`).join('')}</div>`:'';
+if(s.type==='projects')return data.projects.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.name||'Project')}</div><div class="r-body">${esc(x.description)}</div>${x.link?`<div class="r-item-sub">${esc(x.link)}</div>`:''}</div>`).join('');
+if(s.type==='certifications')return data.certifications.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.name)}</div><div class="r-item-sub">${esc(x.issuer)}${x.date?' · '+esc(x.date):''}</div></div>`).join('');
+if(s.type==='custom'){let lines=(s.body||'').split('\n').map(x=>x.trim()).filter(Boolean);if(!lines.length)return '';if(lines.length>1)return `<ul class="r-bullets">${lines.map(l=>`<li>${esc(l)}</li>`).join('')}</ul>`;return `<div class="r-body">${esc(lines[0])}</div>`;}
+return '';
+}
+function blocks(list){return list.filter(s=>s.visible).map(s=>section(esc(s.title),sectionBody(s))).join('')}
 function render(){
 syncBasics();
-let cls='tpl-'+data.template;
-let exp=data.experience.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.job||'Job Title')} · ${esc(x.company||'Company')}</div><div class="r-item-sub">${esc(x.dates)}</div>${x.description?`<div class="r-body">${esc(x.description)}</div>`:''}${(x.bullets||[]).length?`<ul class="r-bullets">${x.bullets.map(b=>`<li>${esc(b)}</li>`).join('')}</ul>`:''}</div>`).join('');
-let edu=data.education.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.degree||'Degree')} · ${esc(x.school||'Institution')}</div><div class="r-item-sub">${esc(x.dates)}</div>${x.details?`<div class="r-body">${esc(x.details)}</div>`:''}</div>`).join('');
-let proj=data.projects.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.name||'Project')}</div><div class="r-body">${esc(x.description)}</div>${x.link?`<div class="r-item-sub">${esc(x.link)}</div>`:''}</div>`).join('');
-let cert=data.certifications.map(x=>`<div class="r-item"><div class="r-item-title">${esc(x.name)}</div><div class="r-item-sub">${esc(x.issuer)}${x.date?' · '+esc(x.date):''}</div></div>`).join('');
-$('resumePaper').className=cls;
-$('resumePaper').style.setProperty('--accent',data.accent);
-$('resumePaper').style.fontSize=(data.fontScale||1)+'em';
-$('resumePaper').innerHTML=`<div class="paper-inner">
+let tpl=TEMPLATES.find(t=>t.id===data.template)||TEMPLATES[0];
+let cls='tpl-'+tpl.id;
+let paper=$('resumePaper');
+paper.className=cls;
+paper.dataset.bullet=data.style.bulletStyle;
+paper.dataset.heading=data.style.headingStyle;
+paper.dataset.divider=data.style.divider?'on':'off';
+paper.style.setProperty('--accent',data.accent);
+paper.style.setProperty('--resume-font',(FONT_PAIRS.find(f=>f.id===data.style.font)||FONT_PAIRS[0]).css);
+paper.style.fontSize=(data.fontScale||1)+'em';
+if(tpl.family==='sidebar'){
+let side=data.sections.filter(s=>s.sidebar);
+let main=data.sections.filter(s=>!s.sidebar);
+paper.innerHTML=`<div class="paper-inner sidebar-inner">
+<aside class="r-side">
+${data.photo?`<div class="r-avatar" style="background-image:url('${data.photo}')"></div>`:''}
+<div class="r-contact side">${esc(data.contact||'email@example.com · Phone · Location')}${data.website?`<div>${esc(data.website)}</div>`:''}</div>
+${blocks(side)}
+</aside>
+<div class="r-main">
+<div class="r-header"><div class="r-name">${esc(data.name||'Your Name')}</div><div class="r-title">${esc(data.title||'Professional Title')}</div></div>
+${blocks(main)}
+</div>
+</div>`;
+}else{
+paper.innerHTML=`<div class="paper-inner">
+<div class="r-header">
 <div class="r-name">${esc(data.name||'Your Name')}</div>
 <div class="r-title">${esc(data.title||'Professional Title')}</div>
-<div class="r-contact">${esc(data.contact||'email@example.com · Phone · Location')}</div>
-${section('PROFESSIONAL SUMMARY',`<div class="r-summary">${esc(data.summary||'Your professional summary will appear here.')}</div>`)}
-${section('EXPERIENCE',exp||`<div class="r-item"><div class="r-item-title">Job Title · Company</div><div class="r-item-sub">Dates · Location</div></div>`)}
-${section('EDUCATION',edu||`<div class="r-item"><div class="r-item-title">Degree · Institution</div></div>`)}
-${section('PROJECTS',proj)}
-${section('CERTIFICATIONS',cert)}
-${section('SKILLS',data.skills.length?`<div class="r-skills">${data.skills.map(s=>`<span class="r-skill">${esc(s)}</span>`).join('')}</div>`:'')}
+<div class="r-contact">${esc(data.contact||'email@example.com · Phone · Location')}${data.website?` · ${esc(data.website)}`:''}</div>
+</div>
+<div class="r-divider"></div>
+${blocks(data.sections)}
 </div>`;
 }
-function showPanel(name,btn){document.querySelectorAll('#modebar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');['content','templates','style'].forEach(x=>$('panel-'+x).style.display=x===name?'block':'none');if(name==='templates')renderTemplates()}
+}
+function showPanel(name,btn){document.querySelectorAll('#modebar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');['content','sections','templates','style'].forEach(x=>$('panel-'+x).style.display=x===name?'block':'none');if(name==='templates')renderTemplates();if(name==='sections')renderSections()}
 function saveResume(){
 try{localStorage.setItem('belongix_resume_builder',JSON.stringify(data));$('saveState').textContent='Saved just now';toast('Resume saved');}catch(e){toast('Could not save')}
 }
-function loadResume(){try{let x=JSON.parse(localStorage.getItem('belongix_resume_builder'));if(x)data=Object.assign(data,x)}catch(e){}}
+function loadResume(){try{let x=JSON.parse(localStorage.getItem('belongix_resume_builder'));if(x){data=Object.assign(data,x);if(!x.sections||!x.sections.length)data.sections=defaultSections();data.style=Object.assign({font:'serif',bulletStyle:'disc',headingStyle:'underline',density:'normal',divider:true},x.style||{});}}catch(e){}}
 $('accent').addEventListener('input',e=>{data.accent=e.target.value;render()});
 $('fontScale').addEventListener('change',e=>{data.fontScale=e.target.value;render()});
-loadResume();bindBasics();$('accent').value=data.accent;$('fontScale').value=data.fontScale;renderEditor();renderTemplates();render();
+$('fontPair').innerHTML=FONT_PAIRS.map(f=>`<option value="${f.id}">${f.label}</option>`).join('');
+$('fontPair').addEventListener('change',e=>{data.style.font=e.target.value;render()});
+$('bulletStyle').addEventListener('change',e=>{data.style.bulletStyle=e.target.value;render()});
+$('headingStyle').addEventListener('change',e=>{data.style.headingStyle=e.target.value;render()});
+$('density').addEventListener('change',e=>{data.style.density=e.target.value;render()});
+$('dividerToggle').addEventListener('change',e=>{data.style.divider=e.target.checked;render()});
+$('photoInput').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{data.photo=r.result;render();toast('Photo added')};r.readAsDataURL(f)});
+loadResume();bindBasics();
+$('website').value=data.website;
+$('accent').value=data.accent;$('fontScale').value=data.fontScale;
+$('fontPair').value=data.style.font;$('bulletStyle').value=data.style.bulletStyle;$('headingStyle').value=data.style.headingStyle;$('density').value=data.style.density;$('dividerToggle').checked=data.style.divider;
+renderEditor();renderTemplates();renderSections();render();
 </script>
 </body>
 </html>

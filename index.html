@@ -1,6 +1,50 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — AI Resume Builder</title><meta name="description" content="Build a polished, ATS-friendly resume with Belongix AI."><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body>
-<header class="topbar"><a class="logo" href="index.html">Belong<b>ix</b></a><nav class="nav"><a href="#features">Features</a><a href="resume-builder.html">Resume Builder</a><a href="dashboard.html">Workspace</a></nav><div class="actions"><button class="btn" onclick="openAuth('login')">Sign in</button><button class="btn primary" onclick="openAuth('signup')">Create resume</button></div></header>
-<main><section class="hero"><span class="eyebrow">AI resume builder</span><h1>Your resume,<br><span style="color:var(--accent)">professionally built.</span></h1><p>Build a polished, ATS-friendly resume from your experience. Belongix helps you write stronger content, keep your facts accurate, and export a resume you are proud to send.</p><div class="heroBtns"><button class="btn primary" onclick="openAuth('signup')">Build my resume →</button><a class="btn" href="resume-builder.html">See the builder</a></div><p style="font-size:12px;margin-top:22px">✓ Evidence-first AI &nbsp; ✓ Professional templates &nbsp; ✓ ATS quality checks</p></section>
-<section id="features" class="features"><article class="feature"><span class="badge">01</span><h3>Build once</h3><p>Create a master career profile with your real experience, education, skills and achievements.</p></article><article class="feature"><span class="badge">02</span><h3>Write better</h3><p>Improve summaries and bullet points with AI without inventing facts or achievements.</p></article><article class="feature"><span class="badge">03</span><h3>Check quality</h3><p>Get an explainable resume score covering structure, content, clarity and ATS-friendly formatting.</p></article><article class="feature"><span class="badge">04</span><h3>Choose your style</h3><p>Use clean professional templates designed for readability and reliable parsing.</p></article><article class="feature"><span class="badge">05</span><h3>Keep versions</h3><p>Create and manage multiple resume versions while protecting your master content.</p></article><article class="feature"><span class="badge">06</span><h3>Export confidently</h3><p>Review a print-ready document and export when everything looks right.</p></article></section></main><footer class="footer">© 2026 Belongix · AI Resume Builder</footer>
-<div class="modal" id="auth"><div class="modalBox"><h2 id="authTitle">Create your resume</h2><p class="muted">Start your Belongix workspace.</p><div class="field"><label>Email</label><input id="email" type="email"></div><div class="field"><label>Password</label><input id="password" type="password"></div><div id="err" class="muted" style="margin-bottom:10px"></div><button class="btn primary" style="width:100%" onclick="submitAuth()">Continue</button><button class="btn ghost" style="width:100%;margin-top:8px" onclick="toggleAuth()" id="toggle">I already have an account</button></div></div>
-<script>let mode='signup';function openAuth(m){mode=m;document.getElementById('authTitle').textContent=m==='login'?'Welcome back':'Create your resume';document.getElementById('toggle').textContent=m==='login'?'Create an account':'I already have an account';document.getElementById('auth').classList.add('open')}function toggleAuth(){openAuth(mode==='login'?'signup':'login')}async function submitAuth(){if(!BX.sb){document.getElementById('err').textContent='Add your Supabase URL and anon key in config.js.';return}let e=document.getElementById('email').value.trim(),p=document.getElementById('password').value;let r=mode==='login'?await BX.sb.auth.signInWithPassword({email:e,password:p}):await BX.sb.auth.signUp({email:e,password:p});if(r.error){document.getElementById('err').textContent=r.error.message;return}if(!r.data.session){document.getElementById('err').textContent='Check your email to verify your account.';return}location.href='dashboard.html'}</script></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — Your career, well documented</title><meta name="description" content="Build a polished, ATS-friendly resume with Belongix AI."><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body>
+
+<header class="topbar">
+  <a class="logo" href="index.html">Belong<b>ix</b></a>
+  <nav class="nav"><a href="#features">Features</a><a href="resume-builder.html">Resume Builder</a><a href="dashboard.html">Workspace</a></nav>
+  <div class="actions"><button class="btn ghost" onclick="openAuth('login')">Sign in</button><button class="btn primary" onclick="openAuth('signup')">Create resume</button></div>
+</header>
+
+<main>
+<section class="hero">
+  <span class="eyebrow">AI resume builder</span>
+  <h1>Your career,<br><i>well documented.</i></h1>
+  <p class="lede">Belongix turns your real experience into a resume worth signing your name to — stronger writing, honest facts, and a layout hiring software actually reads.</p>
+  <div class="heroBtns">
+    <button class="btn primary" onclick="openAuth('signup')">Build my resume →</button>
+    <a class="btn" href="resume-builder.html">See the builder</a>
+  </div>
+  <p class="trust"><span>Evidence-first AI</span><span>Professional templates</span><span>ATS quality checks</span></p>
+</section>
+
+<section id="features" class="features">
+  <div class="featHead">
+    <span class="eyebrow">How it works</span>
+    <h2>Six steps from career history to certified resume.</h2>
+    <p>Each one keeps your facts intact and your writing sharper.</p>
+  </div>
+  <div class="featGrid">
+    <article class="feature"><div class="fnum">One</div><h3>Build once</h3><p>Create a master career profile with your real experience, education, skills and achievements.</p></article>
+    <article class="feature"><div class="fnum">Two</div><h3>Write better</h3><p>Improve summaries and bullet points with AI without inventing facts or achievements.</p></article>
+    <article class="feature"><div class="fnum">Three</div><h3>Check quality</h3><p>Get an explainable resume score covering structure, content, clarity and ATS-friendly formatting.</p></article>
+    <article class="feature"><div class="fnum">Four</div><h3>Choose your style</h3><p>Use clean professional templates designed for readability and reliable parsing.</p></article>
+    <article class="feature"><div class="fnum">Five</div><h3>Keep versions</h3><p>Create and manage multiple resume versions while protecting your master content.</p></article>
+    <article class="feature"><div class="fnum">Six</div><h3>Export confidently</h3><p>Review a print-ready document and export when everything looks right.</p></article>
+  </div>
+</section>
+</main>
+
+<footer class="footer">© 2026 Belongix · AI Resume Builder</footer>
+
+<div class="modal" id="auth"><div class="modalBox">
+  <h2 id="authTitle">Create your resume</h2><p class="muted">Start your Belongix workspace.</p>
+  <div class="field"><label>Email</label><input id="email" type="email"></div>
+  <div class="field"><label>Password</label><input id="password" type="password"></div>
+  <div id="err" class="muted" style="margin-bottom:10px"></div>
+  <button class="btn primary" style="width:100%" onclick="submitAuth()">Continue</button>
+  <button class="btn ghost" style="width:100%;margin-top:8px" onclick="toggleAuth()" id="toggle">I already have an account</button>
+</div></div>
+
+<script>let mode='signup';function openAuth(m){mode=m;document.getElementById('authTitle').textContent=m==='login'?'Welcome back':'Create your resume';document.getElementById('toggle').textContent=m==='login'?'Create an account':'I already have an account';document.getElementById('auth').classList.add('open')}function toggleAuth(){openAuth(mode==='login'?'signup':'login')}async function submitAuth(){if(!BX.sb){document.getElementById('err').textContent='Add your Supabase URL and anon key in config.js.';return}let e=document.getElementById('email').value.trim(),p=document.getElementById('password').value;let r=mode==='login'?await BX.sb.auth.signInWithPassword({email:e,password:p}):await BX.sb.auth.signUp({email:e,password:p});if(r.error){document.getElementById('err').textContent=r.error.message;return}if(!r.data.session){document.getElementById('err').textContent='Check your email to verify your account.';return}location.href='dashboard.html'}document.getElementById('auth').addEventListener('click',e=>{if(e.target.id==='auth')e.target.classList.remove('open')})</script>
+</body></html>

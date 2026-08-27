@@ -1,4 +1,40 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — Career Profile</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body><header class="topbar"><a class="logo" href="index.html">Belong<b>ix</b></a><nav class="nav"><a href="dashboard.html">Workspace</a><a href="resume-builder.html">Resume Builder</a><a class="active" href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav></header><div class="container"><div class="pagehead"><div><h1>Career profile</h1><p>Your verified source of truth for every resume.</p></div><button class="btn primary" onclick="save()">Save profile</button></div><div class="grid two"><section class="card"><h2>Personal</h2><div class="field"><label>Full name</label><input id="name"></div><div class="row"><div class="field"><label>Email</label><input id="email" disabled></div><div class="field"><label>Phone</label><input id="phone"></div></div><div class="field"><label>Professional headline</label><input id="headline" placeholder="Senior Java Developer"></div><div class="field"><label>Professional summary</label><textarea id="summary" placeholder="Write a concise overview of your experience."></textarea></div></section><section class="card"><h2>Experience</h2><div id="experience"></div><button class="btn" onclick="addExperience()">+ Add experience</button></section><section class="card"><h2>Education</h2><div id="education"></div><button class="btn" onclick="addEducation()">+ Add education</button></section><section class="card"><h2>Skills</h2><div class="field"><label>Technical skills</label><input id="skills" placeholder="Java, Spring Boot, SQL"></div><div class="field"><label>Tools & technologies</label><input id="tools" placeholder="Git, Docker, AWS"></div><p class="muted">Keep this factual. Belongix AI can improve wording, but it will not invent skills.</p></section></div></div><script>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — Career Profile</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body>
+<header class="topbar">
+  <a class="logo" href="index.html">Belong<b>ix</b></a>
+  <nav class="nav"><a href="dashboard.html">Workspace</a><a href="resume-builder.html">Resume Builder</a><a class="active" href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav>
+</header>
+<div class="container">
+  <div class="pagehead">
+    <div><span class="eyebrow">Source of truth</span><h1>Career profile</h1><p>Your verified source of truth for every resume.</p></div>
+    <button class="btn primary" onclick="save()">Save profile</button>
+  </div>
+  <div class="grid two gap">
+    <section class="card">
+      <h2>Personal</h2><p class="muted" style="margin:0 0 16px;font-size:13px">The basics, kept accurate.</p>
+      <div class="field"><label>Full name</label><input id="name"></div>
+      <div class="row"><div class="field"><label>Email</label><input id="email" disabled></div><div class="field"><label>Phone</label><input id="phone"></div></div>
+      <div class="field"><label>Professional headline</label><input id="headline" placeholder="Senior Java Developer"></div>
+      <div class="field"><label>Professional summary</label><textarea id="summary" placeholder="Write a concise overview of your experience."></textarea></div>
+    </section>
+    <section class="card">
+      <h2>Experience</h2><p class="muted" style="margin:0 0 16px;font-size:13px">Roles that show your trajectory.</p>
+      <div id="experience"></div>
+      <button class="btn" onclick="addExperience()">+ Add experience</button>
+    </section>
+    <section class="card">
+      <h2>Education</h2><p class="muted" style="margin:0 0 16px;font-size:13px">Degrees and programs completed.</p>
+      <div id="education"></div>
+      <button class="btn" onclick="addEducation()">+ Add education</button>
+    </section>
+    <section class="card">
+      <h2>Skills</h2><p class="muted" style="margin:0 0 16px;font-size:13px">What you can actually do.</p>
+      <div class="field"><label>Technical skills</label><input id="skills" placeholder="Java, Spring Boot, SQL"></div>
+      <div class="field"><label>Tools & technologies</label><input id="tools" placeholder="Git, Docker, AWS"></div>
+      <p class="muted">Keep this factual. Belongix AI can improve wording, but it will not invent skills.</p>
+    </section>
+  </div>
+</div>
+<script>
 let session,profile={};let exps=[],edus=[];
 function item(kind){return kind==='exp'?`<div class="card" style="margin-bottom:10px"><div class="row"><div class="field"><label>Job title</label><input class="ex-title"></div><div class="field"><label>Company</label><input class="ex-company"></div></div><div class="row"><div class="field"><label>Dates</label><input class="ex-dates"></div><div class="field"><label>Location</label><input class="ex-location"></div></div><div class="field"><label>Achievements</label><textarea class="ex-bullets" placeholder="One achievement per line"></textarea></div></div>`:`<div class="card" style="margin-bottom:10px"><div class="row"><div class="field"><label>Degree</label><input class="ed-degree"></div><div class="field"><label>Institution</label><input class="ed-school"></div></div><div class="field"><label>Dates</label><input class="ed-dates"></div></div>`}
 function addExperience(){document.getElementById('experience').insertAdjacentHTML('beforeend',item('exp'))}function addEducation(){document.getElementById('education').insertAdjacentHTML('beforeend',item('edu'))}
