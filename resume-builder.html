@@ -107,6 +107,48 @@ textarea{min-height:100px;resize:vertical}
 .tpl-sidebar-light .r-side{background:var(--paper-deep);order:2}.tpl-sidebar-light .r-main{order:1}
 .tpl-sidebar-light .r-avatar{border-color:rgba(36,31,22,.2)}
 
+.tpl-ats-strict .paper-inner{font-family:Georgia,'Times New Roman',serif}
+.tpl-ats-strict .r-name{font-size:21px;font-weight:700;color:#000}
+.tpl-ats-strict .r-title{color:#111;font-weight:600;font-size:12px}
+.tpl-ats-strict .r-section h4{color:#000;border-bottom:1px solid #000;font-weight:700}
+.tpl-ats-strict .r-skills{gap:0}.tpl-ats-strict .r-skill{background:none;border:0;border-radius:0;padding:0 10px 0 0;font-size:10px}
+
+.tpl-serif-editorial .paper-inner{padding:66px 72px}
+.tpl-serif-editorial .r-name{font-size:33px;font-weight:500;font-style:italic}
+.tpl-serif-editorial .r-title{color:#555;font-weight:500}
+.tpl-serif-editorial .r-section h4{border:0;text-transform:uppercase;font-size:9px;letter-spacing:2.2px;color:#777;font-weight:600}
+.tpl-serif-editorial .r-section{margin-top:28px}
+
+.tpl-grid .r-skills{display:grid;grid-template-columns:repeat(3,1fr);gap:3px 10px}
+.tpl-grid .r-skill{background:none;border:0;border-bottom:1px solid #e5e5e5;border-radius:0;padding:4px 0;font-size:9.5px}
+
+.tpl-bold-block .r-name{font-size:42px;font-weight:900;letter-spacing:-.02em;text-transform:uppercase;line-height:1}
+.tpl-bold-block .r-header{border-bottom:4px solid var(--accent);padding-bottom:16px;margin-bottom:4px}
+.tpl-bold-block .r-title{text-transform:uppercase;letter-spacing:1px;font-size:11px}
+
+.tpl-sidebar-narrow .sidebar-inner{grid-template-columns:.27fr .73fr}
+.tpl-sidebar-narrow .r-side{background:var(--paper-deep)}
+.tpl-sidebar-narrow .r-side .r-skill{background:rgba(36,31,22,.08)}
+
+#resumePaper[data-density="compact"] .paper-inner{padding:42px 48px}
+#resumePaper[data-density="compact"] .r-section{margin-top:15px}
+#resumePaper[data-density="compact"] .r-item{margin-bottom:7px}
+#resumePaper[data-density="compact"] .r-summary,#resumePaper[data-density="compact"] .r-body,#resumePaper[data-density="compact"] .r-item{font-size:9.3px}
+
+.scoreRing{position:relative;width:92px;height:92px;border-radius:50%;background:conic-gradient(var(--ink) calc(var(--pct)*1%),var(--line) 0);flex:none}
+.scoreRing .hole{position:absolute;inset:9px;background:var(--paper);border-radius:50%;display:grid;place-items:center;font-family:var(--serif);font-weight:600;font-size:22px}
+.checkrow{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.checkrow:last-child{border-bottom:0}
+.checkrow .mark{width:16px;flex:none;font-weight:700}
+.checkrow.fail .mark{color:var(--ink-faint)}
+
+.verwrap{position:relative}
+.versionsPanel{display:none;position:absolute;top:calc(100% + 8px);left:0;background:var(--paper-raised);border:1px solid var(--line);min-width:270px;padding:12px;z-index:80}
+.versionsPanel.open{display:block}
+.verrow{display:flex;align-items:center;gap:4px;padding:8px 4px;border-bottom:1px solid var(--line);font-size:13px}
+.verrow:last-child{border-bottom:0}
+.verrow.active b{text-decoration:underline;text-underline-offset:3px}
+
 #resumePaper[data-bullet="dash"] .r-bullets,#resumePaper[data-bullet="arrow"] .r-bullets{list-style:none;padding-left:0}
 #resumePaper[data-bullet="dash"] .r-bullets li,#resumePaper[data-bullet="arrow"] .r-bullets li{position:relative;padding-left:13px}
 #resumePaper[data-bullet="dash"] .r-bullets li::before{content:'–';position:absolute;left:0;color:var(--accent)}
@@ -128,20 +170,33 @@ textarea{min-height:100px;resize:vertical}
 <header class="topbar">
 <a class="logo" href="index.html">Belong<span style="font-style:italic;font-weight:500">ix</span></a>
 <nav class="nav"><a href="dashboard.html">Workspace</a><a class="active" href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav>
-<div class="actions"><button class="btn" onclick="saveResume()">Save</button><button class="btn primary" onclick="window.print()">Export / Print</button></div>
+<div class="actions">
+<div class="verwrap">
+<button class="btn ghost" onclick="toggleVersions()"><span id="resumeName">Untitled Resume</span> ▾</button>
+<div class="versionsPanel" id="versionsPanel">
+<div id="versionsList"></div>
+<button class="btn small" style="margin-top:8px;width:100%" onclick="createResume()">+ New resume</button>
+</div>
+</div>
+<button class="btn" onclick="saveResume()">Save</button>
+<span class="muted" id="saveState" style="font-size:12px">Not saved</span>
+<button class="btn primary" onclick="window.print()">Export / Print</button>
+</div>
 </header>
 
 <main class="layout">
 <section class="editor">
 <div class="toolbar" id="modebar">
 <button class="active" onclick="showPanel('content',this)">Content</button>
+<button onclick="showPanel('score',this)">Score</button>
+<button onclick="showPanel('keywords',this)">Keywords</button>
 <button onclick="showPanel('sections',this)">Sections</button>
 <button onclick="showPanel('templates',this)">Templates</button>
 <button onclick="showPanel('style',this)">Style</button>
 </div>
 
 <div id="panel-content">
-<div class="card"><div class="card-head"><h2>Basics</h2><span class="muted" id="saveState">Not saved</span></div><div class="card-body">
+<div class="card"><div class="card-head"><h2>Basics</h2><span class="muted">Auto-saved to this resume version</span></div><div class="card-body">
 <div class="grid2">
 <div class="field"><label>Name</label><input id="name" placeholder="Your full name"></div>
 <div class="field"><label>Professional title</label><input id="title" placeholder="Software Engineer"></div>
@@ -161,6 +216,24 @@ textarea{min-height:100px;resize:vertical}
 </div></div>
 <div class="card"><div class="card-head"><h2>Projects</h2><button class="btn small" onclick="addProject()">+ Add project</button></div><div class="card-body" id="projects"></div></div>
 <div class="card"><div class="card-head"><h2>Certifications</h2><button class="btn small" onclick="addCertification()">+ Add certification</button></div><div class="card-body" id="certifications"></div></div>
+</div>
+
+<div id="panel-score" style="display:none">
+<div class="card"><div class="card-head"><h2>Resume Score</h2><span class="muted">Updates as you edit</span></div><div class="card-body">
+<div style="display:flex;gap:22px;align-items:center;margin-bottom:18px">
+<div class="scoreRing" id="scoreRing" style="--pct:0"><div class="hole">0</div></div>
+<p class="muted" style="margin:0;max-width:320px">A transparent check across the things that most affect whether a resume reads well and clears ATS screening.</p>
+</div>
+<div id="scoreChecklist"></div>
+</div></div>
+</div>
+
+<div id="panel-keywords" style="display:none">
+<div class="card"><div class="card-head"><h2>Keyword Targeting</h2><span class="muted">Paste a job description</span></div><div class="card-body">
+<div class="field"><label>Job description</label><textarea id="jdInput" placeholder="Paste the job posting text here." style="min-height:140px"></textarea></div>
+<button class="btn" onclick="analyzeKeywords()">Analyze</button>
+<div id="keywordResults" style="margin-top:18px"></div>
+</div></div>
 </div>
 
 <div id="panel-sections" style="display:none">
@@ -212,7 +285,12 @@ const TEMPLATES=[
 {id:'compact',name:'Compact',desc:'Dense layout, one-page optimized',family:'standard'},
 {id:'banner',name:'Banner',desc:'Bold color header band',family:'standard'},
 {id:'sidebar-dark',name:'Sidebar Dark',desc:'Two-column with an ink sidebar',family:'sidebar'},
-{id:'sidebar-light',name:'Sidebar Light',desc:'Two-column with a warm sidebar',family:'sidebar'}
+{id:'sidebar-light',name:'Sidebar Light',desc:'Two-column with a warm sidebar',family:'sidebar'},
+{id:'ats-strict',name:'ATS Strict',desc:'Maximum-compatibility, zero styling risk',family:'standard'},
+{id:'serif-editorial',name:'Serif Editorial',desc:'Wide margins, magazine-quiet confidence',family:'standard'},
+{id:'grid',name:'Grid',desc:'Skills laid out as a scannable grid',family:'standard'},
+{id:'bold-block',name:'Bold Block',desc:'Large blocked name, strong first impression',family:'standard'},
+{id:'sidebar-narrow',name:'Sidebar Narrow',desc:'Slim two-column sidebar, more room for content',family:'sidebar'}
 ];
 const FONT_PAIRS=[
 {id:'serif',label:'Classic Serif',css:"'Source Serif 4',Georgia,serif"},
@@ -309,6 +387,9 @@ if(id==='sidebar-light')return `<div class="mini two light"><div class="main"><d
 if(id==='creative')return `<div class="mini stripe"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`;
 if(id==='tech')return `<div class="mini tech"><div class="mhead">YOUR_NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`;
 if(id==='banner')return `<div class="mini banner"><div class="bhead">YOUR NAME</div><div class="bbody"><div class="mline"></div><div class="mline"></div><div class="mline"></div></div></div>`;
+if(id==='sidebar-narrow')return `<div class="mini two" style="grid-template-columns:22% 78%"><div class="side"></div><div class="main"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div></div></div>`;
+if(id==='ats-strict')return `<div class="mini" style="border:1px solid #000;margin:2px"><div class="mhead" style="border-bottom:1px solid #000">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`;
+if(id==='bold-block')return `<div class="mini"><div class="mhead" style="font-size:13px;font-weight:900;border:0;border-bottom:3px solid var(--accent);padding-bottom:5px">YOUR NAME</div><div class="mline"></div><div class="mline"></div></div>`;
 return `<div class="mini ${id}"><div class="mhead">YOUR NAME</div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div><div class="mline"></div></div>`;
 }
 function selectTemplate(id){data.template=id;renderTemplates();render();toast('Template changed')}
@@ -334,6 +415,7 @@ let paper=$('resumePaper');
 paper.className=cls;
 paper.dataset.bullet=data.style.bulletStyle;
 paper.dataset.heading=data.style.headingStyle;
+paper.dataset.density=data.style.density;
 paper.dataset.divider=data.style.divider?'on':'off';
 paper.style.setProperty('--accent',data.accent);
 paper.style.setProperty('--resume-font',(FONT_PAIRS.find(f=>f.id===data.style.font)||FONT_PAIRS[0]).css);
@@ -363,12 +445,118 @@ paper.innerHTML=`<div class="paper-inner">
 ${blocks(data.sections)}
 </div>`;
 }
+renderScore();
 }
-function showPanel(name,btn){document.querySelectorAll('#modebar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');['content','sections','templates','style'].forEach(x=>$('panel-'+x).style.display=x===name?'block':'none');if(name==='templates')renderTemplates();if(name==='sections')renderSections()}
-function saveResume(){
-try{localStorage.setItem('belongix_resume_builder',JSON.stringify(data));$('saveState').textContent='Saved just now';toast('Resume saved');}catch(e){toast('Could not save')}
+
+/* ---- score ---- */
+function computeScore(){
+let checks=[];
+let add=(pass,label,tip,weight)=>checks.push({pass,label,tip,weight});
+add(!!(data.name||'').trim(),'Full name added','Add your name in Basics.',8);
+add(!!(data.title||'').trim(),'Professional title added','Add a target job title in Basics.',6);
+add(/\S+@\S+\.\S+/.test(data.contact||''),'Contact includes an email','Add a valid email to your contact line.',10);
+add((data.summary||'').trim().length>=40,'Summary is substantial','Write at least a couple of sentences.',12);
+add(data.experience.length>0,'At least one role added','Add your work experience.',12);
+let bulletCount=data.experience.reduce((n,x)=>n+(x.bullets||[]).length,0);
+add(bulletCount>0,'Achievements listed as bullets','Break your experience into bullet points.',10);
+let quantified=data.experience.some(x=>(x.bullets||[]).some(b=>/\d/.test(b)));
+add(quantified,'At least one bullet has a number','Quantify an achievement — %, $, time saved, team size.',12);
+add(data.education.length>0,'Education added','Add at least one degree or program.',8);
+add(data.skills.length>=5,'Five or more skills listed','List more relevant skills and tools.',12);
+let tpl=TEMPLATES.find(t=>t.id===data.template)||TEMPLATES[0];
+add(tpl.family==='standard','Single-column, ATS-safe template','Two-column templates can parse inconsistently in some ATS systems.',10);
+let total=checks.reduce((s,c)=>s+c.weight,0);
+let earned=checks.reduce((s,c)=>s+(c.pass?c.weight:0),0);
+return {score:Math.round(earned/total*100),checks};
 }
-function loadResume(){try{let x=JSON.parse(localStorage.getItem('belongix_resume_builder'));if(x){data=Object.assign(data,x);if(!x.sections||!x.sections.length)data.sections=defaultSections();data.style=Object.assign({font:'serif',bulletStyle:'disc',headingStyle:'underline',density:'normal',divider:true},x.style||{});}}catch(e){}}
+function renderScore(){
+if(!$('scoreRing'))return;
+let {score,checks}=computeScore();
+$('scoreRing').style.setProperty('--pct',score);
+$('scoreRing').querySelector('.hole').textContent=score;
+$('scoreChecklist').innerHTML=checks.map(c=>`<div class="checkrow ${c.pass?'pass':'fail'}"><span class="mark">${c.pass?'✓':'—'}</span><div><b>${esc(c.label)}</b>${!c.pass?`<div class="muted">${esc(c.tip)}</div>`:''}</div></div>`).join('');
+}
+
+/* ---- keyword targeting ---- */
+const STOPWORDS=new Set(['the','and','for','with','you','your','are','will','have','has','that','this','from','our','and/or','of','to','in','on','as','is','be','or','we','at','by','it','its','their','they','who','role','team','job','jobs','work','experience','years','year','skills','skill','ability','strong','including','etc','into','across','using','use','such','all','any','more','than','other','can','also','not','you\'ll','we\'re']);
+function extractKeywords(text){
+let words=(text.toLowerCase().match(/[a-z][a-z+\-.#]{2,}/g))||[];
+let freq={};
+words.forEach(w=>{if(!STOPWORDS.has(w))freq[w]=(freq[w]||0)+1});
+return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,30).map(x=>x[0]);
+}
+function resumeText(){
+let parts=[data.summary,data.title,(data.skills||[]).join(' ')];
+data.experience.forEach(x=>parts.push(x.job,x.company,x.description,(x.bullets||[]).join(' ')));
+data.projects.forEach(x=>parts.push(x.name,x.description));
+return parts.join(' ').toLowerCase();
+}
+function analyzeKeywords(){
+let jd=$('jdInput').value;
+if(!jd.trim()){toast('Paste a job description first');return}
+let kws=extractKeywords(jd);
+let rtext=resumeText();
+let matched=kws.filter(k=>rtext.includes(k));
+let missing=kws.filter(k=>!rtext.includes(k));
+$('keywordResults').innerHTML=`
+<p class="muted">${matched.length} of ${kws.length} top keywords found in your resume.</p>
+<p style="font-size:12px;font-weight:700;color:var(--ink-soft);margin:14px 0 6px">MATCHED</p>
+<div class="chips">${matched.length?matched.map(k=>`<span class="chip" style="border-color:var(--ink)">${esc(k)}</span>`).join(''):'<span class="muted">None yet</span>'}</div>
+<p style="font-size:12px;font-weight:700;color:var(--ink-soft);margin:16px 0 6px">MISSING — click to draft into Skills</p>
+<div class="chips">${missing.length?missing.map(k=>`<span class="chip" style="cursor:pointer" onclick="draftSkill('${k.replace(/'/g,'')}')">${esc(k)} +</span>`).join(''):'<span class="muted">Great coverage</span>'}</div>
+<p class="muted" style="margin-top:14px">Only add a skill if it's actually true — Belongix keeps AI suggestions evidence-first.</p>`;
+}
+function draftSkill(k){showPanel('content',document.querySelectorAll('#modebar button')[0]);$('skillInput').value=k;$('skillInput').focus();toast('Drafted — review, then click Add skills')}
+
+function showPanel(name,btn){document.querySelectorAll('#modebar button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');['content','score','keywords','sections','templates','style'].forEach(x=>$('panel-'+x).style.display=x===name?'block':'none');if(name==='templates')renderTemplates();if(name==='sections')renderSections();if(name==='score')renderScore()}
+
+/* ---- resume versions ---- */
+let store=null;
+function newId(){return 'r_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)}
+function loadStore(){try{return JSON.parse(localStorage.getItem('belongix_resumes_v1'))}catch(e){return null}}
+function saveStore(){try{localStorage.setItem('belongix_resumes_v1',JSON.stringify(store))}catch(e){}}
+function blankData(){return JSON.parse(JSON.stringify({name:'',title:'',contact:'',website:'',summary:'',photo:'',experience:[],education:[],skills:[],projects:[],certifications:[],sections:defaultSections(),template:'classic',accent:'#3B5D4E',fontScale:'1',style:{font:'serif',bulletStyle:'disc',headingStyle:'underline',density:'normal',divider:true}}))}
+function normalize(d){if(!d.sections||!d.sections.length)d.sections=defaultSections();d.style=Object.assign({font:'serif',bulletStyle:'disc',headingStyle:'underline',density:'normal',divider:true},d.style||{});return d}
+function initStore(){
+store=loadStore();
+if(!store||!store.resumes||!store.resumes.length){
+let legacy=null;try{legacy=JSON.parse(localStorage.getItem('belongix_resume_builder'))}catch(e){}
+let id=newId();
+let d=legacy?normalize(Object.assign(blankData(),legacy)):blankData();
+store={resumes:[{id,name:legacy&&legacy.name?legacy.name:'My Resume',updatedAt:Date.now(),data:d}],activeId:id};
+saveStore();
+}
+let active=store.resumes.find(r=>r.id===store.activeId)||store.resumes[0];
+store.activeId=active.id;
+data=normalize(Object.assign(data,JSON.parse(JSON.stringify(active.data))));
+}
+function currentEntry(){return store.resumes.find(r=>r.id===store.activeId)}
+function persistActive(){let e=currentEntry();if(e){e.data=JSON.parse(JSON.stringify(data));e.updatedAt=Date.now();saveStore()}}
+function bindBasicsValues(){['name','title','contact','website','summary'].forEach(k=>$(k).value=data[k]||'')}
+function refreshAllUI(){
+$('resumeName').textContent=currentEntry().name;
+bindBasicsValues();
+$('accent').value=data.accent;$('fontScale').value=data.fontScale;
+$('fontPair').value=data.style.font;$('bulletStyle').value=data.style.bulletStyle;$('headingStyle').value=data.style.headingStyle;$('density').value=data.style.density;$('dividerToggle').checked=data.style.divider;
+renderEditor();renderTemplates();renderSections();renderVersions();render();
+}
+function saveResume(){persistActive();$('saveState').textContent='Saved just now';toast('Resume saved')}
+function switchResume(id){if(id===store.activeId)return;persistActive();store.activeId=id;data=normalize(Object.assign(data,JSON.parse(JSON.stringify(currentEntry().data))));saveStore();refreshAllUI();toggleVersions(true);toast('Switched to '+currentEntry().name)}
+function createResume(){persistActive();let id=newId();let d=blankData();store.resumes.push({id,name:'Untitled Resume',updatedAt:Date.now(),data:d});store.activeId=id;saveStore();data=normalize(Object.assign(data,d));refreshAllUI();toggleVersions(true);toast('New resume created')}
+function duplicateResume(id){persistActive();let src=store.resumes.find(r=>r.id===id);if(!src)return;let id2=newId();store.resumes.push({id:id2,name:src.name+' copy',updatedAt:Date.now(),data:JSON.parse(JSON.stringify(src.data))});store.activeId=id2;saveStore();data=normalize(Object.assign(data,JSON.parse(JSON.stringify(src.data))));refreshAllUI();toast('Duplicated')}
+function promptRename(id){let e=store.resumes.find(r=>r.id===id);let n=prompt('Rename resume',e.name);if(n===null)return;e.name=n.trim()||'Untitled Resume';saveStore();if(id===store.activeId)$('resumeName').textContent=e.name;renderVersions()}
+function deleteResume(id){if(store.resumes.length<=1){toast('You need at least one resume');return}if(!confirm('Delete this resume version? This cannot be undone.'))return;store.resumes=store.resumes.filter(r=>r.id!==id);if(store.activeId===id){store.activeId=store.resumes[0].id;data=normalize(Object.assign(data,JSON.parse(JSON.stringify(currentEntry().data))))}saveStore();refreshAllUI();toast('Deleted')}
+function renderVersions(){
+$('versionsList').innerHTML=store.resumes.map(r=>`<div class="verrow ${r.id===store.activeId?'active':''}">
+<div onclick="switchResume('${r.id}')" style="cursor:pointer;flex:1"><b>${esc(r.name)}</b><div class="muted" style="font-size:11px">${new Date(r.updatedAt).toLocaleDateString()}</div></div>
+<button class="icon-btn" title="Rename" onclick="promptRename('${r.id}')">✎</button>
+<button class="icon-btn" title="Duplicate" onclick="duplicateResume('${r.id}')">⧉</button>
+<button class="icon-btn danger" title="Delete" onclick="deleteResume('${r.id}')">×</button>
+</div>`).join('');
+}
+function toggleVersions(forceClose){$('versionsPanel').classList.toggle('open',forceClose?false:undefined)}
+document.addEventListener('click',e=>{let w=document.querySelector('.verwrap');if(w&&!w.contains(e.target))$('versionsPanel').classList.remove('open')});
+
 $('accent').addEventListener('input',e=>{data.accent=e.target.value;render()});
 $('fontScale').addEventListener('change',e=>{data.fontScale=e.target.value;render()});
 $('fontPair').innerHTML=FONT_PAIRS.map(f=>`<option value="${f.id}">${f.label}</option>`).join('');
@@ -378,11 +566,8 @@ $('headingStyle').addEventListener('change',e=>{data.style.headingStyle=e.target
 $('density').addEventListener('change',e=>{data.style.density=e.target.value;render()});
 $('dividerToggle').addEventListener('change',e=>{data.style.divider=e.target.checked;render()});
 $('photoInput').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{data.photo=r.result;render();toast('Photo added')};r.readAsDataURL(f)});
-loadResume();bindBasics();
-$('website').value=data.website;
-$('accent').value=data.accent;$('fontScale').value=data.fontScale;
-$('fontPair').value=data.style.font;$('bulletStyle').value=data.style.bulletStyle;$('headingStyle').value=data.style.headingStyle;$('density').value=data.style.density;$('dividerToggle').checked=data.style.divider;
-renderEditor();renderTemplates();renderSections();render();
+initStore();bindBasics();
+refreshAllUI();
 </script>
 </body>
 </html>
