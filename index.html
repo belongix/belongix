@@ -1,50 +1,189 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — Your career, well documented</title><meta name="description" content="Build a polished, ATS-friendly resume with Belongix AI."><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — AI Resume Builder</title><meta name="description" content="Build a polished, ATS-friendly resume with Belongix AI."><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body>
 
 <header class="topbar">
   <a class="logo" href="index.html">Belong<b>ix</b></a>
-  <nav class="nav"><a href="#features">Features</a><a href="resume-builder.html">Resume Builder</a><a href="dashboard.html">Workspace</a></nav>
-  <div class="actions"><button class="btn ghost" onclick="openAuth('login')">Sign in</button><button class="btn primary" onclick="openAuth('signup')">Create resume</button></div>
+  <nav class="nav"><a href="#templates">Templates</a><a href="#score">ATS Score</a><a href="#faq">FAQ</a><a href="dashboard.html">Workspace</a></nav>
+  <div class="actions">
+    <button class="btn ghost" onclick="openAuth('login')">Sign in</button>
+    <button class="btn primary" onclick="openAuth('signup')">Create resume</button>
+    <button class="menuBtn" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
 </header>
+
+<div class="drawer"><div class="drawerBackdrop"></div><div class="drawerPanel">
+  <button class="drawerClose" aria-label="Close menu">×</button>
+  <a href="index.html#templates">Templates</a>
+  <a href="index.html#score">ATS Score</a>
+  <a href="index.html#faq">FAQ</a>
+  <a href="dashboard.html">Workspace</a>
+</div></div>
 
 <main>
 <section class="hero">
-  <span class="eyebrow">AI resume builder</span>
-  <h1>Your career,<br><i>well documented.</i></h1>
-  <p class="lede">Belongix turns your real experience into a resume worth signing your name to — stronger writing, honest facts, and a layout hiring software actually reads.</p>
-  <div class="heroBtns">
-    <button class="btn primary" onclick="openAuth('signup')">Build my resume →</button>
-    <a class="btn" href="resume-builder.html">See the builder</a>
+  <div>
+    <span class="eyebrow">AI resume builder</span>
+    <h1>Build a resume<br>that gets <i>noticed.</i></h1>
+    <p class="lede">Create a polished, ATS-friendly resume with intelligent writing assistance, professional templates and real-time quality feedback.</p>
+    <div class="heroBtns">
+      <button class="btn primary" onclick="openAuth('signup')">Build my resume →</button>
+      <a class="btn" href="#templates">Explore templates</a>
+    </div>
+    <div class="trust"><span>Evidence-first AI</span><span>19 professional templates</span><span>Real-time ATS scoring</span></div>
   </div>
-  <p class="trust"><span>Evidence-first AI</span><span>Professional templates</span><span>ATS quality checks</span></p>
+  <div class="docStage">
+    <div class="docStack">
+      <div class="docLayer l1"></div>
+      <div class="docLayer l2"></div>
+      <div class="docLayer l3">
+        <div style="font-weight:800;font-size:19px;letter-spacing:-.01em">Amara Osei</div>
+        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-top:4px">SENIOR PRODUCT DESIGNER</div>
+        <div style="border-top:1px solid var(--border);margin-top:14px"></div>
+        <div class="docLine"></div><div class="docLine"></div><div class="docLine s"></div>
+        <div style="height:12px"></div>
+        <div class="docLine" style="width:40%"></div>
+        <div class="docLine"></div><div class="docLine"></div><div class="docLine s"></div>
+      </div>
+      <div class="docChip"><span class="dot"></span>ATS Score 92</div>
+    </div>
+  </div>
 </section>
 
-<section id="features" class="features">
+<section class="features" style="padding-bottom:20px">
   <div class="featHead">
     <span class="eyebrow">How it works</span>
-    <h2>Six steps from career history to certified resume.</h2>
-    <p>Each one keeps your facts intact and your writing sharper.</p>
+    <h2>From career history to certified resume.</h2>
+    <p>Five steps. Your facts stay intact, your writing gets sharper.</p>
   </div>
   <div class="featGrid">
-    <article class="feature"><div class="fnum">One</div><h3>Build once</h3><p>Create a master career profile with your real experience, education, skills and achievements.</p></article>
-    <article class="feature"><div class="fnum">Two</div><h3>Write better</h3><p>Improve summaries and bullet points with AI without inventing facts or achievements.</p></article>
-    <article class="feature"><div class="fnum">Three</div><h3>Check quality</h3><p>Get an explainable resume score covering structure, content, clarity and ATS-friendly formatting.</p></article>
-    <article class="feature"><div class="fnum">Four</div><h3>Choose your style</h3><p>Use clean professional templates designed for readability and reliable parsing.</p></article>
-    <article class="feature"><div class="fnum">Five</div><h3>Keep versions</h3><p>Create and manage multiple resume versions while protecting your master content.</p></article>
-    <article class="feature"><div class="fnum">Six</div><h3>Export confidently</h3><p>Review a print-ready document and export when everything looks right.</p></article>
+    <article class="feature"><div class="fnum">01</div><h3>Build once</h3><p>Create a master career profile with your real experience, education, skills and achievements.</p></article>
+    <article class="feature"><div class="fnum">02</div><h3>Write better</h3><p>Improve summaries and bullet points with AI without inventing facts or achievements.</p></article>
+    <article class="feature"><div class="fnum">03</div><h3>Check quality</h3><p>Get an explainable resume score covering structure, content, clarity and ATS-friendly formatting.</p></article>
+    <article class="feature"><div class="fnum">04</div><h3>Choose your design</h3><p>19 professional templates, from strict single-column ATS layouts to expressive two-column designs.</p></article>
+    <article class="feature"><div class="fnum">05</div><h3>Export confidently</h3><p>Review a print-ready, true-to-page document and export when everything looks right.</p></article>
+  </div>
+</section>
+
+<section id="templates" class="features">
+  <div class="featHead">
+    <span class="eyebrow">Template library</span>
+    <h2>Browse templates by style.</h2>
+    <p>Every template is a real, working layout in the builder — not a static mockup.</p>
+  </div>
+  <div class="catGrid">
+    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">A</div><h3>ATS-First</h3><span>5 templates</span></a>
+    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">E</div><h3>Executive &amp; Senior</h3><span>3 templates</span></a>
+    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">2</div><h3>Two-Column</h3><span>3 templates</span></a>
+    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">M</div><h3>Modern &amp; Creative</h3><span>4 templates</span></a>
+    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">S</div><h3>Editorial &amp; Elegant</h3><span>3 templates</span></a>
+    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">G</div><h3>Student &amp; Graduate</h3><span>1 template</span></a>
+  </div>
+
+  <div class="galleryGrid" style="margin-top:32px">
+    <div class="galleryItem"><div class="miniPrev"><div class="mh">YOUR NAME</div><div class="ml"></div><div class="ml"></div><div class="ml" style="width:55%"></div></div><p>ATS Professional</p></div>
+    <div class="galleryItem"><div class="miniPrev accent"><div class="mh">YOUR NAME</div><div class="ml"></div><div class="ml"></div><div class="ml" style="width:55%"></div></div><p>Modern</p></div>
+    <div class="galleryItem"><div class="miniPrev dark"><div class="mh">YOUR NAME</div><div class="ml"></div><div class="ml"></div><div class="ml" style="width:55%"></div></div><p>Sidebar Dark</p></div>
+    <div class="galleryItem"><div class="miniPrev" style="text-align:center"><div class="mh" style="border:0;font-style:italic">YOUR NAME</div><div class="ml" style="margin:4px auto"></div><div class="ml" style="margin:4px auto;width:55%"></div></div><p>Elegant</p></div>
+    <div class="galleryItem"><div class="miniPrev"><div class="mh" style="font-family:monospace;color:#159a67">your_name</div><div class="ml"></div><div class="ml"></div><div class="ml" style="width:55%"></div></div><p>Tech</p></div>
+    <div class="galleryItem"><div class="miniPrev" style="padding:0"><div style="background:var(--accent);color:#fff;padding:9px;font-weight:800;font-size:8px">YOUR NAME</div><div style="padding:9px"><div class="ml"></div><div class="ml"></div></div></div><p>Banner</p></div>
+  </div>
+</section>
+
+<section id="score" class="features">
+  <div class="featHead">
+    <span class="eyebrow">Resume Score</span>
+    <h2>A score you can actually see the reasoning for.</h2>
+    <p>No black box. Every point is tied to a specific, fixable check.</p>
+  </div>
+  <div class="scoreExplain">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
+      <div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--accent) 78%,var(--border) 0);display:grid;place-items:center">
+        <div style="width:96px;height:96px;background:var(--surface);border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:26px">78</div>
+      </div>
+      <p class="muted" style="text-align:center;font-size:12.5px;max-width:220px">A live example — your own score updates as you edit in the builder.</p>
+    </div>
+    <div>
+      <div class="listitem"><span>✓ Contact includes an email</span></div>
+      <div class="listitem"><span>✓ Summary is substantial</span></div>
+      <div class="listitem"><span>✓ Five or more skills listed</span></div>
+      <div class="listitem"><span style="color:var(--text-muted)">— At least one bullet has a number</span></div>
+      <div class="listitem"><span style="color:var(--text-muted)">— Single-column, ATS-safe template</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="features">
+  <div class="featHead">
+    <span class="eyebrow">Questions</span>
+    <h2>Before you start.</h2>
+  </div>
+  <div>
+    <details class="faqItem" open><summary>Does the AI make things up?</summary><p>No. Belongix AI improves the wording of what you've already written — summaries, bullet points — it doesn't invent employers, dates, metrics, or skills you haven't entered.</p></details>
+    <details class="faqItem"><summary>Will two-column templates hurt my ATS score?</summary><p>Sometimes, depending on the applicant tracking system. That's why the Resume Score panel flags it directly when you pick a two-column layout, so it's a visible tradeoff, not a hidden one.</p></details>
+    <details class="faqItem"><summary>Can I keep multiple versions of my resume?</summary><p>Yes — create, rename, duplicate, and switch between resume versions from the builder, e.g. one tailored per role.</p></details>
+    <details class="faqItem"><summary>What does export look like?</summary><p>A print-ready, true-to-page document via your browser's print dialog — save as PDF or print directly, with the app chrome hidden automatically.</p></details>
   </div>
 </section>
 </main>
 
+<div class="ctaBand">
+  <h2>Build a resume worth signing your name to.</h2>
+  <p>Free to start. No credit card required.</p>
+  <button class="btn primary" onclick="openAuth('signup')">Build my resume →</button>
+</div>
+
 <footer class="footer">© 2026 Belongix · AI Resume Builder</footer>
 
 <div class="modal" id="auth"><div class="modalBox">
-  <h2 id="authTitle">Create your resume</h2><p class="muted">Start your Belongix workspace.</p>
-  <div class="field"><label>Email</label><input id="email" type="email"></div>
-  <div class="field"><label>Password</label><input id="password" type="password"></div>
-  <div id="err" class="muted" style="margin-bottom:10px"></div>
-  <button class="btn primary" style="width:100%" onclick="submitAuth()">Continue</button>
-  <button class="btn ghost" style="width:100%;margin-top:8px" onclick="toggleAuth()" id="toggle">I already have an account</button>
+  <h2 id="authTitle">Create your resume</h2><p class="muted" id="authSub">Start your Belongix workspace.</p>
+  <div id="authForm">
+    <div class="field" id="fEmail"><label>Email</label><input id="email" type="email" autocomplete="email"></div>
+    <div class="field" id="fPass"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div>
+    <button class="btn primary" style="width:100%;justify-content:center" id="authSubmit" onclick="submitAuth()">Continue</button>
+    <button class="btn ghost" style="width:100%;justify-content:center;margin-top:8px" onclick="toggleAuth()" id="toggle">I already have an account</button>
+    <button class="btn ghost" style="width:100%;justify-content:center;margin-top:2px;font-size:12.5px" onclick="showForgot()" id="forgotBtn">Forgot password?</button>
+  </div>
+  <div id="authDone" style="display:none;text-align:center;padding:12px 0">
+    <p style="font-size:15px">Check your email for a link, then come back here.</p>
+    <button class="btn" style="margin-top:6px" onclick="closeAuth()">Close</button>
+  </div>
 </div></div>
 
-<script>let mode='signup';function openAuth(m){mode=m;document.getElementById('authTitle').textContent=m==='login'?'Welcome back':'Create your resume';document.getElementById('toggle').textContent=m==='login'?'Create an account':'I already have an account';document.getElementById('auth').classList.add('open')}function toggleAuth(){openAuth(mode==='login'?'signup':'login')}async function submitAuth(){if(!BX.sb){document.getElementById('err').textContent='Add your Supabase URL and anon key in config.js.';return}let e=document.getElementById('email').value.trim(),p=document.getElementById('password').value;let r=mode==='login'?await BX.sb.auth.signInWithPassword({email:e,password:p}):await BX.sb.auth.signUp({email:e,password:p});if(r.error){document.getElementById('err').textContent=r.error.message;return}if(!r.data.session){document.getElementById('err').textContent='Check your email to verify your account.';return}location.href='dashboard.html'}document.getElementById('auth').addEventListener('click',e=>{if(e.target.id==='auth')e.target.classList.remove('open')})</script>
+<script>
+let mode='signup';
+function openAuth(m){mode=m;closeErr();document.getElementById('authForm').style.display='block';document.getElementById('authDone').style.display='none';document.getElementById('fPass').style.display='block';document.getElementById('forgotBtn').style.display='block';
+ document.getElementById('authTitle').textContent=m==='login'?'Welcome back':(m==='forgot'?'Reset your password':'Create your resume');
+ document.getElementById('authSub').textContent=m==='forgot'?'We\'ll email you a reset link.':'Start your Belongix workspace.';
+ document.getElementById('toggle').textContent=m==='login'?'Create an account':'I already have an account';
+ document.getElementById('toggle').style.display=m==='forgot'?'none':'block';
+ if(m==='forgot'){document.getElementById('fPass').style.display='none';document.getElementById('forgotBtn').style.display='none'}
+ document.getElementById('auth').classList.add('open');
+}
+function closeAuth(){document.getElementById('auth').classList.remove('open')}
+function toggleAuth(){openAuth(mode==='login'?'signup':'login')}
+function showForgot(){openAuth('forgot')}
+function closeErr(){let e=document.getElementById('authErr');if(e)e.remove()}
+function showErr(msg){closeErr();let d=document.createElement('div');d.id='authErr';d.className='field error';d.innerHTML=`<div class="errmsg">${BX.esc(msg)}</div>`;document.getElementById('authForm').insertBefore(d,document.getElementById('authSubmit'))}
+async function submitAuth(){
+ if(!BX.sb){showErr('Add your Supabase URL and anon key in config.js.');return}
+ let btn=document.getElementById('authSubmit');btn.classList.add('loading');btn.disabled=true;
+ let e=document.getElementById('email').value.trim();
+ try{
+  if(mode==='forgot'){
+   if(!e){showErr('Enter your email first.');return}
+   let r=await BX.sb.auth.resetPasswordForEmail(e);
+   if(r.error)throw r.error;
+   document.getElementById('authForm').style.display='none';document.getElementById('authDone').style.display='block';
+   return;
+  }
+  let p=document.getElementById('password').value;
+  let r=mode==='login'?await BX.sb.auth.signInWithPassword({email:e,password:p}):await BX.sb.auth.signUp({email:e,password:p});
+  if(r.error)throw r.error;
+  if(!r.data.session){document.getElementById('authForm').style.display='none';document.getElementById('authDone').style.display='block';return}
+  location.href='dashboard.html';
+ }catch(err){showErr(BX.friendlyError(err))}
+ finally{btn.classList.remove('loading');btn.disabled=false}
+}
+document.getElementById('auth').addEventListener('click',e=>{if(e.target.id==='auth')closeAuth()});
+if(location.hash==='#signin')openAuth('login');
+</script>
 </body></html>

@@ -8,22 +8,49 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Fraunces:ital,opsz,wght@1,9..144,500&family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
 <style>
-:root{--paper:#F7F6F1;--paper-raised:#FFFFFF;--paper-deep:#EDEAE1;--ink:#17160F;--ink-soft:#5B584C;--ink-faint:#8D897A;--line:#D9D4C6;--accent:#3B5D4E;--accent-deep:#28402F;--accent-soft:#E4E9DE;--gold:#A9813C;--danger:#17160F;--white:#fff;--shadow:none;--shadow-sm:none;--radius:3px;--serif:'Source Serif 4',Georgia,serif;--sans:'Source Serif 4',Georgia,serif;--mono:'Source Serif 4',Georgia,serif;--resume:'Source Serif 4',Georgia,serif}
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:var(--sans);color:var(--ink);background:var(--paper)}button,input,textarea,select{font:inherit}button{cursor:pointer}:focus-visible{outline:1.5px solid var(--ink);outline-offset:2px}
+:root{--paper:#FAF9F6;--paper-raised:#FFFFFF;--paper-deep:#EDEAE1;--ink:#15140F;--ink-soft:#5B594C;--ink-faint:#96927E;--line:#E6E3DA;--accent:#2E5C46;--accent-deep:#1F3F30;--accent-soft:#E4EDE7;--gold:#A9813C;--danger:#B23B2E;--white:#fff;--shadow:0 24px 60px -18px rgba(21,20,15,.22);--shadow-sm:0 1px 2px rgba(21,20,15,.06);--radius:10px;--serif:'Source Serif 4',Georgia,serif;--sans:'Inter',-apple-system,sans-serif;--mono:'DM Mono',monospace;--resume:'Source Serif 4',Georgia,serif}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:var(--sans);color:var(--ink);background:var(--paper)}button,input,textarea,select{font:inherit}button{cursor:pointer}:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 .seal{display:none}
+.menuBtn{display:none;border:1px solid var(--line);background:var(--white);border-radius:8px;width:36px;height:36px;align-items:center;justify-content:center}
+.menuBtn svg{width:17px;height:17px}
+.drawer{position:fixed;inset:0;z-index:90;display:none}
+.drawer.open{display:block}
+.drawerBackdrop{position:absolute;inset:0;background:rgba(15,14,10,.45)}
+.drawerPanel{position:absolute;top:0;right:0;bottom:0;width:min(280px,84vw);background:var(--white);box-shadow:var(--shadow);padding:20px 18px;display:flex;flex-direction:column;gap:2px}
+.drawerPanel a{padding:11px 9px;font-weight:600;color:var(--ink);border-radius:8px;font-size:15px}
+.drawerPanel a.active{background:var(--accent-soft);color:var(--accent-deep)}
+.drawerClose{align-self:flex-end;border:0;background:transparent;font-size:22px;color:var(--ink-soft);padding:4px 8px}
 
-.topbar{min-height:72px;background:var(--paper);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 26px;gap:26px;position:sticky;top:0;z-index:50}
-.logo{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-size:20px;font-weight:600;text-decoration:none;color:var(--ink)}.logo b{font-style:italic;font-weight:500}
-.nav{display:flex;gap:20px;align-items:center}.nav a{padding:4px 0;color:var(--ink-soft);text-decoration:none;font-size:14.5px;border-bottom:1px solid transparent}.nav a.active{color:var(--ink);border-bottom-color:var(--ink)}.nav a:hover:not(.active){color:var(--ink)}
-.actions{margin-left:auto;display:flex;gap:10px}
-.btn{border:1px solid var(--ink);background:transparent;border-radius:var(--radius);padding:10px 17px;color:var(--ink);font-size:13.5px}.btn:hover{background:var(--ink);color:var(--paper)}
-.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}.btn.primary:hover{background:transparent;color:var(--ink)}
-.btn.small{padding:7px 12px;font-size:12px}.btn.ghost{background:transparent;border-color:transparent}.btn.ghost:hover{background:transparent;text-decoration:underline}
+.topbar{min-height:68px;background:rgba(250,249,246,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 24px;gap:20px;position:sticky;top:0;z-index:50}
+.logo{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;letter-spacing:-.02em;text-decoration:none;color:var(--ink)}.logo b{color:var(--accent)}
+.nav{display:flex;gap:4px;align-items:center}.nav a{padding:8px 12px;color:var(--ink-soft);text-decoration:none;font-weight:600;font-size:14px;border-radius:99px}.nav a.active{background:var(--ink);color:var(--paper)}.nav a:hover:not(.active){background:var(--paper-deep);color:var(--ink)}
+.actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--white);border-radius:8px;padding:9px 15px;color:var(--ink);font-size:13.5px;font-weight:600;transition:.13s}.btn:hover{border-color:var(--ink-faint);box-shadow:var(--shadow-sm)}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}.btn.primary:hover{background:var(--accent-deep);border-color:var(--accent-deep);color:#fff}
+.btn.small{padding:6px 11px;font-size:12px}.btn.ghost{background:transparent;border-color:transparent}.btn.ghost:hover{background:var(--paper-deep);box-shadow:none}
+.btn.ai{background:var(--accent-soft);border-color:var(--accent-soft);color:var(--accent-deep);padding:6px 11px;font-size:11.5px}
+.btn.ai:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn.loading{position:relative;color:transparent!important;pointer-events:none}
+.btn.loading::after{content:'';position:absolute;width:13px;height:13px;border-radius:50%;border:2px solid var(--ink-soft);border-top-color:transparent;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:820px){.nav{display:none}.menuBtn{display:inline-flex}}
 
-.layout{display:grid;grid-template-columns:minmax(460px,54%) minmax(430px,46%);height:calc(100vh - 72px)}
+.layout{display:grid;grid-template-columns:minmax(460px,54%) minmax(430px,46%);height:calc(100vh - 68px)}
 .editor{overflow:auto;padding:24px 26px 90px}.preview-wrap{background:var(--paper-deep);border-left:1px solid var(--line);overflow:auto;padding:32px;display:flex;flex-direction:column;align-items:center;gap:16px}
+
+.zoomBar{display:flex;align-items:center;gap:2px;background:var(--white);border:1px solid var(--line);border-radius:99px;padding:4px;position:sticky;top:0;z-index:5}
+.zoomBar button{border:0;background:transparent;width:28px;height:28px;border-radius:50%;font-size:15px;color:var(--ink-soft)}.zoomBar button:hover{background:var(--paper-deep);color:var(--ink)}
+.zoomBar span{font-size:12px;color:var(--ink-soft);min-width:42px;text-align:center}
+.paperScale{transform-origin:top center;transition:transform .15s ease}
+
+.mobileToggle{display:none;gap:0;border:1px solid var(--line);border-radius:99px;padding:3px;width:fit-content;margin-bottom:14px}
+.mobileToggle button{border:0;background:transparent;padding:8px 18px;border-radius:99px;font-size:13px;font-weight:600;color:var(--ink-soft)}
+.mobileToggle button.active{background:var(--ink);color:var(--paper)}
 
 .card{background:transparent;border:1px solid var(--line);border-radius:0;margin-bottom:14px;overflow:hidden}
 .card-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.card-head h2{font-family:var(--serif);font-size:15px;font-weight:600;margin:0;letter-spacing:-.01em}
@@ -158,17 +185,24 @@ textarea{min-height:100px;resize:vertical}
 
 .previewStamp{font-style:italic;font-size:13px;color:var(--ink-soft)}
 
-.toast{position:fixed;right:22px;bottom:22px;background:var(--ink);color:var(--paper);padding:12px 18px;border-radius:99px;box-shadow:var(--shadow);display:none;z-index:100;font-weight:600;font-size:13.5px}.toast.show{display:block}
+.toast{position:fixed;right:22px;bottom:22px;background:var(--ink);color:var(--paper);padding:12px 18px;border-radius:99px;box-shadow:var(--shadow);display:none;z-index:100;font-weight:600;font-size:13.5px}.toast.show{display:block}.toast.error{background:var(--danger)}
 .empty{font-size:13px;color:var(--ink-faint);padding:10px 0}.muted{font-size:12px;color:var(--ink-soft)}
 
-@media(max-width:1050px){.layout{grid-template-columns:1fr}.preview-wrap{min-height:700px;border-left:0;border-top:1px solid var(--line)}.templates{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:700px){.topbar{padding:0 14px;gap:10px}.nav{display:none}.layout{height:auto}.editor{padding:14px}.grid2{grid-template-columns:1fr}.preview-wrap{padding:12px;overflow:auto}#resumePaper{transform-origin:top center;transform:scale(.55);margin-bottom:-480px}.templates{grid-template-columns:repeat(2,1fr)}}
-@media print{body{background:#fff}.topbar,.editor{display:none!important}.layout{display:block;height:auto}.preview-wrap{padding:0;border:0;display:block;background:#fff}.preview-wrap #resumePaper{box-shadow:none;margin:0;width:210mm;min-height:297mm}.previewStamp{display:none}.toast{display:none}}
+@media(max-width:1050px){
+.layout{grid-template-columns:1fr}
+.mobileToggle{display:flex}
+.editor.hideMobile{display:none}
+.preview-wrap.hideMobile{display:none}
+.preview-wrap{min-height:auto;border-left:0;border-top:1px solid var(--line);padding:18px 12px}
+.templates{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:700px){.topbar{padding:0 14px;gap:10px}.layout{height:auto}.editor{padding:14px}.grid2{grid-template-columns:1fr}.templates{grid-template-columns:repeat(2,1fr)}}
+@media print{body{background:#fff}.topbar,.editor,.mobileToggle,.zoomBar{display:none!important}.layout{display:block;height:auto}.preview-wrap{padding:0;border:0;display:block;background:#fff}.preview-wrap #resumePaper{box-shadow:none;margin:0;width:210mm;min-height:297mm}.paperScale{transform:none!important}.previewStamp{display:none}.toast{display:none}}
 </style>
 </head>
 <body>
 <header class="topbar">
-<a class="logo" href="index.html">Belong<span style="font-style:italic;font-weight:500">ix</span></a>
+<a class="logo" href="index.html">Belong<span style="color:var(--accent)">ix</span></a>
 <nav class="nav"><a href="dashboard.html">Workspace</a><a class="active" href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav>
 <div class="actions">
 <div class="verwrap">
@@ -181,11 +215,20 @@ textarea{min-height:100px;resize:vertical}
 <button class="btn" onclick="saveResume()">Save</button>
 <span class="muted" id="saveState" style="font-size:12px">Not saved</span>
 <button class="btn primary" onclick="window.print()">Export / Print</button>
+<button class="menuBtn" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 </div>
 </header>
+<div class="drawer"><div class="drawerBackdrop"></div><div class="drawerPanel">
+<button class="drawerClose" aria-label="Close menu">×</button>
+<a href="dashboard.html">Workspace</a><a class="active" href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a href="settings.html">Settings</a>
+</div></div>
 
 <main class="layout">
-<section class="editor">
+<section class="editor" id="editorPane">
+<div class="mobileToggle" id="mobileToggle">
+<button class="active" onclick="setMobileView('edit')">Edit</button>
+<button onclick="setMobileView('preview')">Preview</button>
+</div>
 <div class="toolbar" id="modebar">
 <button class="active" onclick="showPanel('content',this)">Content</button>
 <button onclick="showPanel('score',this)">Score</button>
@@ -205,7 +248,7 @@ textarea{min-height:100px;resize:vertical}
 <div class="field"><label>Contact line</label><input id="contact" placeholder="Bengaluru · email@example.com · +91 ..."></div>
 <div class="field"><label>Website / portfolio (optional)</label><input id="website" placeholder="linkedin.com/in/you"></div>
 </div>
-<div class="field"><label>Professional summary</label><textarea id="summary" placeholder="Write a concise, achievement-focused professional summary."></textarea></div>
+<div class="field"><label style="display:flex;justify-content:space-between;align-items:center">Professional summary<button class="btn ai" onclick="aiImproveSummary(this)">✦ Improve with AI</button></label><textarea id="summary" placeholder="Write a concise, achievement-focused professional summary."></textarea></div>
 <div class="field"><label>Profile photo <span class="muted">— used by sidebar templates only</span></label><input type="file" id="photoInput" accept="image/*"></div>
 </div></div>
 
@@ -263,9 +306,10 @@ textarea{min-height:100px;resize:vertical}
 </div>
 </section>
 
-<aside class="preview-wrap">
+<aside class="preview-wrap" id="previewPane">
+<div class="zoomBar"><button onclick="setZoom(zoom-10)" aria-label="Zoom out">−</button><span id="zoomLabel">100%</span><button onclick="setZoom(zoom+10)" aria-label="Zoom in">+</button><button onclick="setZoom(100)" title="Fit / reset" style="width:auto;padding:0 10px;font-size:11px">Fit</button></div>
 <div class="previewStamp">Live preview</div>
-<div id="resumePaper"></div>
+<div class="paperScale" id="paperScale"><div id="resumePaper"></div></div>
 </aside>
 </main>
 <div class="toast" id="toast"></div>
@@ -314,8 +358,17 @@ template:'classic',accent:'#3B5D4E',fontScale:'1',
 style:{font:'serif',bulletStyle:'disc',headingStyle:'underline',density:'normal',divider:true}
 };
 const $=id=>document.getElementById(id);
+let zoom=100;
+function setZoom(z){zoom=Math.max(40,Math.min(160,z));$('paperScale').style.transform='scale('+(zoom/100)+')';$('zoomLabel').textContent=zoom+'%'}
+function setMobileView(which){
+document.querySelectorAll('#mobileToggle button').forEach(b=>b.classList.remove('active'));
+document.querySelector(`#mobileToggle button:nth-child(${which==='edit'?1:2})`).classList.add('active');
+$('editorPane').classList.toggle('hideMobile',which!=='edit');
+$('previewPane').classList.toggle('hideMobile',which!=='preview');
+}
+setMobileView('edit');
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function toast(m){$('toast').textContent=m;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
+function toast(m,kind){let t=$('toast');t.textContent=m;t.className='toast show'+(kind==='error'?' error':'');clearTimeout(t._x);t._x=setTimeout(()=>t.classList.remove('show'),3200)}
 function syncBasics(){['name','title','contact','website','summary'].forEach(k=>data[k]=$(k).value)}
 function bindBasics(){['name','title','contact','website','summary'].forEach(k=>$(k).addEventListener('input',()=>{data[k]=$(k).value;render()}))}
 function addExperience(){data.experience.push({job:'',company:'',dates:'',description:'',bullets:[]});renderEditor()}
@@ -330,7 +383,7 @@ $('experience').innerHTML=data.experience.length?data.experience.map((x,i)=>`<di
 <div class="grid2"><div class="field"><label>Job title</label><input value="${esc(x.job)}" oninput="update('experience',${i},'job',this.value)"></div><div class="field"><label>Company</label><input value="${esc(x.company)}" oninput="update('experience',${i},'company',this.value)"></div></div>
 <div class="field"><label>Dates / location</label><input value="${esc(x.dates)}" oninput="update('experience',${i},'dates',this.value)"></div>
 <div class="field"><label>Description</label><textarea oninput="update('experience',${i},'description',this.value)">${esc(x.description)}</textarea></div>
-<div class="field"><label>Achievements — one per line</label><textarea oninput="update('experience',${i},'bullets',this.value.split('\\n').filter(Boolean))">${esc((x.bullets||[]).join('\\n'))}</textarea></div>
+<div class="field"><label style="display:flex;justify-content:space-between;align-items:center">Achievements — one per line<button class="btn ai" onclick="aiImproveBullets(this,${i})">✦ Make stronger</button></label><textarea oninput="update('experience',${i},'bullets',this.value.split('\\n').filter(Boolean))">${esc((x.bullets||[]).join('\\n'))}</textarea></div>
 </div>`).join(''):'<div class="empty">Add your work experience. Use measurable achievements where possible.</div>';
 $('education').innerHTML=data.education.length?data.education.map((x,i)=>`<div class="section-row">
 <div class="row-head"><strong>Education ${i+1}</strong><button class="icon-btn danger" onclick="removeItem('education',${i})">×</button></div>
@@ -351,6 +404,27 @@ $('certifications').innerHTML=data.certifications.length?data.certifications.map
 $('skills').innerHTML=data.skills.map((s,i)=>`<span class="chip">${esc(s)} <button onclick="data.skills.splice(${i},1);renderEditor();render()">×</button></span>`).join('');
 }
 function addSkills(){let v=$('skillInput').value.split(',').map(x=>x.trim()).filter(Boolean);v.forEach(s=>{if(!data.skills.includes(s))data.skills.push(s)});$('skillInput').value='';renderEditor();render()}
+
+/* ---- contextual AI writing (never fabricates — only rewrites what's already there) ---- */
+async function aiImproveSummary(btn){
+if(!(data.summary||'').trim()){toast('Write a draft summary first — AI improves your words, it doesn\'t invent them');return}
+btn.classList.add('loading');btn.disabled=true;
+try{
+let r=await BX.ai('improve_summary',{summary:data.summary,title:data.title,skills:data.skills});
+if(r&&r.text){data.summary=r.text;$('summary').value=r.text;render();toast('Summary improved')}
+}catch(e){toast(BX.friendlyError?BX.friendlyError(e):e.message,'error')}
+finally{btn.classList.remove('loading');btn.disabled=false}
+}
+async function aiImproveBullets(btn,i){
+let x=data.experience[i];
+if(!(x.bullets||[]).length){toast('Add at least one achievement line first');return}
+btn.classList.add('loading');btn.disabled=true;
+try{
+let r=await BX.ai('improve_bullets',{bullets:x.bullets,job:x.job,company:x.company});
+if(r&&r.bullets){data.experience[i].bullets=r.bullets;renderEditor();render();toast('Bullets strengthened')}
+}catch(e){toast(BX.friendlyError?BX.friendlyError(e):e.message,'error')}
+finally{btn.classList.remove('loading');btn.disabled=false}
+}
 
 /* ---- sections tab ---- */
 function moveSection(i,dir){let j=i+dir;if(j<0||j>=data.sections.length)return;[data.sections[i],data.sections[j]]=[data.sections[j],data.sections[i]];renderSections();render()}
@@ -531,7 +605,7 @@ store.activeId=active.id;
 data=normalize(Object.assign(data,JSON.parse(JSON.stringify(active.data))));
 }
 function currentEntry(){return store.resumes.find(r=>r.id===store.activeId)}
-function persistActive(){let e=currentEntry();if(e){e.data=JSON.parse(JSON.stringify(data));e.updatedAt=Date.now();saveStore()}}
+function persistActive(){let e=currentEntry();if(e){e.data=JSON.parse(JSON.stringify(data));e.updatedAt=Date.now();e.score=computeScore().score;saveStore()}}
 function bindBasicsValues(){['name','title','contact','website','summary'].forEach(k=>$(k).value=data[k]||'')}
 function refreshAllUI(){
 $('resumeName').textContent=currentEntry().name;
@@ -566,8 +640,20 @@ $('headingStyle').addEventListener('change',e=>{data.style.headingStyle=e.target
 $('density').addEventListener('change',e=>{data.style.density=e.target.value;render()});
 $('dividerToggle').addEventListener('change',e=>{data.style.divider=e.target.checked;render()});
 $('photoInput').addEventListener('change',e=>{let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{data.photo=r.result;render();toast('Photo added')};r.readAsDataURL(f)});
-initStore();bindBasics();
-refreshAllUI();
+(async function boot(){
+if(BX.sb){let s=await BX.requireAuth();if(!s)return}
+initStore();
+let params=new URLSearchParams(location.search);
+if(params.get('new')==='1'){bindBasics();refreshAllUI();createResume();}
+else{
+ let rid=params.get('r');
+ if(rid&&store.resumes.find(x=>x.id===rid))store.activeId=rid;
+ data=normalize(Object.assign(data,JSON.parse(JSON.stringify(currentEntry().data))));
+ saveStore();
+ bindBasics();
+ refreshAllUI();
+}
+})();
 </script>
 </body>
 </html>

@@ -2,19 +2,30 @@
 <header class="topbar">
   <a class="logo" href="index.html">Belong<b>ix</b></a>
   <nav class="nav"><a href="dashboard.html">Workspace</a><a href="resume-builder.html">Resume Builder</a><a class="active" href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav>
+  <div class="actions"><button class="menuBtn" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button></div>
 </header>
+<div class="drawer"><div class="drawerBackdrop"></div><div class="drawerPanel">
+  <button class="drawerClose" aria-label="Close menu">×</button>
+  <a href="dashboard.html">Workspace</a><a href="resume-builder.html">Resume Builder</a><a class="active" href="career-profile.html">Profile</a><a href="settings.html">Settings</a>
+</div></div>
 <div class="container">
   <div class="pagehead">
     <div><span class="eyebrow">Source of truth</span><h1>Career profile</h1><p>Your verified source of truth for every resume.</p></div>
-    <button class="btn primary" onclick="save()">Save profile</button>
+    <button class="btn primary" id="saveBtn" onclick="save()">Save profile</button>
   </div>
-  <div class="grid two gap">
+  <div class="grid two">
     <section class="card">
       <h2>Personal</h2><p class="muted" style="margin:0 0 16px;font-size:13px">The basics, kept accurate.</p>
       <div class="field"><label>Full name</label><input id="name"></div>
       <div class="row"><div class="field"><label>Email</label><input id="email" disabled></div><div class="field"><label>Phone</label><input id="phone"></div></div>
       <div class="field"><label>Professional headline</label><input id="headline" placeholder="Senior Java Developer"></div>
       <div class="field"><label>Professional summary</label><textarea id="summary" placeholder="Write a concise overview of your experience."></textarea></div>
+    </section>
+    <section class="card">
+      <h2>Social links</h2><p class="muted" style="margin:0 0 16px;font-size:13px">Optional — shown on resumes that include a website line.</p>
+      <div class="field"><label>LinkedIn</label><input id="linkedin" placeholder="linkedin.com/in/you"></div>
+      <div class="field"><label>Portfolio / website</label><input id="portfolio" placeholder="yourname.dev"></div>
+      <div class="field"><label>GitHub</label><input id="github" placeholder="github.com/you"></div>
     </section>
     <section class="card">
       <h2>Experience</h2><p class="muted" style="margin:0 0 16px;font-size:13px">Roles that show your trajectory.</p>
@@ -32,12 +43,56 @@
       <div class="field"><label>Tools & technologies</label><input id="tools" placeholder="Git, Docker, AWS"></div>
       <p class="muted">Keep this factual. Belongix AI can improve wording, but it will not invent skills.</p>
     </section>
+    <section class="card">
+      <h2>Preferences</h2><p class="muted" style="margin:0 0 16px;font-size:13px">Defaults used when you start a new resume.</p>
+      <div class="field"><label>Default template</label><select id="defaultTemplate"><option value="classic">ATS Professional</option><option value="modern">Modern</option><option value="minimal">Minimal</option><option value="sidebar-dark">Sidebar Dark</option></select></div>
+      <div class="field"><label>Date format</label><select id="dateFormat"><option value="mon-yyyy">Jan 2024</option><option value="mm-yyyy">01/2024</option><option value="yyyy">2024</option></select></div>
+    </section>
   </div>
 </div>
 <script>
-let session,profile={};let exps=[],edus=[];
+let session,profile={};
 function item(kind){return kind==='exp'?`<div class="card" style="margin-bottom:10px"><div class="row"><div class="field"><label>Job title</label><input class="ex-title"></div><div class="field"><label>Company</label><input class="ex-company"></div></div><div class="row"><div class="field"><label>Dates</label><input class="ex-dates"></div><div class="field"><label>Location</label><input class="ex-location"></div></div><div class="field"><label>Achievements</label><textarea class="ex-bullets" placeholder="One achievement per line"></textarea></div></div>`:`<div class="card" style="margin-bottom:10px"><div class="row"><div class="field"><label>Degree</label><input class="ed-degree"></div><div class="field"><label>Institution</label><input class="ed-school"></div></div><div class="field"><label>Dates</label><input class="ed-dates"></div></div>`}
-function addExperience(){document.getElementById('experience').insertAdjacentHTML('beforeend',item('exp'))}function addEducation(){document.getElementById('education').insertAdjacentHTML('beforeend',item('edu'))}
-async function load(){session=await BX.requireAuth();if(!session)return;document.getElementById('email').value=session.user.email||'';if(!BX.sb)return;let r=await BX.sb.from('career_profiles').select('*').eq('user_id',session.user.id).maybeSingle();profile=r.data||{};document.getElementById('name').value=profile.full_name||'';document.getElementById('phone').value=profile.phone||'';document.getElementById('headline').value=profile.headline||'';document.getElementById('summary').value=profile.summary||'';document.getElementById('skills').value=(profile.skills||[]).join(', ');document.getElementById('tools').value=(profile.tools||[]).join(', ');if(profile.experience?.length)profile.experience.forEach(()=>addExperience());if(profile.education?.length)profile.education.forEach(()=>addEducation());let xs=[...document.querySelectorAll('.card .ex-title')];(profile.experience||[]).forEach((x,i)=>{xs[i].value=x.title||'';document.querySelectorAll('.ex-company')[i].value=x.company||'';document.querySelectorAll('.ex-dates')[i].value=x.dates||'';document.querySelectorAll('.ex-location')[i].value=x.location||'';document.querySelectorAll('.ex-bullets')[i].value=(x.bullets||[]).join('\\n')})}
-async function save(){if(!session)return;let experience=[...document.querySelectorAll('.ex-title')].map((_,i)=>({title:document.querySelectorAll('.ex-title')[i].value,company:document.querySelectorAll('.ex-company')[i].value,dates:document.querySelectorAll('.ex-dates')[i].value,location:document.querySelectorAll('.ex-location')[i].value,bullets:document.querySelectorAll('.ex-bullets')[i].value.split('\\n').map(x=>x.trim()).filter(Boolean)}));let education=[...document.querySelectorAll('.ed-degree')].map((_,i)=>({degree:document.querySelectorAll('.ed-degree')[i].value,school:document.querySelectorAll('.ed-school')[i].value,dates:document.querySelectorAll('.ed-dates')[i].value}));let row={user_id:session.user.id,full_name:document.getElementById('name').value.trim(),phone:document.getElementById('phone').value.trim(),headline:document.getElementById('headline').value.trim(),summary:document.getElementById('summary').value.trim(),skills:document.getElementById('skills').value.split(',').map(x=>x.trim()).filter(Boolean),tools:document.getElementById('tools').value.split(',').map(x=>x.trim()).filter(Boolean),experience,education};let r=await BX.sb.from('career_profiles').upsert(row,{onConflict:'user_id'});BX.toast(r.error?r.error.message:'Profile saved');}load();
+function addExperience(){document.getElementById('experience').insertAdjacentHTML('beforeend',item('exp'))}
+function addEducation(){document.getElementById('education').insertAdjacentHTML('beforeend',item('edu'))}
+function cacheSnapshot(p){try{localStorage.setItem('belongix_profile_cache',JSON.stringify({full_name:p.full_name,headline:p.headline,summary:p.summary,skills:p.skills,experience:p.experience}))}catch(e){}}
+async function load(){
+ session=await BX.requireAuth();if(!session)return;
+ document.getElementById('email').value=session.user.email||'';
+ if(!BX.sb)return;
+ let r=await BX.sb.from('career_profiles').select('*').eq('user_id',session.user.id).maybeSingle();
+ if(r.error){BX.toast(BX.friendlyError(r.error),'error');return}
+ profile=r.data||{};
+ document.getElementById('name').value=profile.full_name||'';
+ document.getElementById('phone').value=profile.phone||'';
+ document.getElementById('headline').value=profile.headline||'';
+ document.getElementById('summary').value=profile.summary||'';
+ document.getElementById('linkedin').value=profile.linkedin||'';
+ document.getElementById('portfolio').value=profile.portfolio||'';
+ document.getElementById('github').value=profile.github||'';
+ document.getElementById('skills').value=(profile.skills||[]).join(', ');
+ document.getElementById('tools').value=(profile.tools||[]).join(', ');
+ document.getElementById('defaultTemplate').value=profile.default_template||'classic';
+ document.getElementById('dateFormat').value=profile.date_format||'mon-yyyy';
+ if(profile.experience?.length)profile.experience.forEach(()=>addExperience());
+ if(profile.education?.length)profile.education.forEach(()=>addEducation());
+ let xs=[...document.querySelectorAll('.card .ex-title')];
+ (profile.experience||[]).forEach((x,i)=>{xs[i].value=x.title||'';document.querySelectorAll('.ex-company')[i].value=x.company||'';document.querySelectorAll('.ex-dates')[i].value=x.dates||'';document.querySelectorAll('.ex-location')[i].value=x.location||'';document.querySelectorAll('.ex-bullets')[i].value=(x.bullets||[]).join('\n')});
+ let es=[...document.querySelectorAll('.ed-degree')];
+ (profile.education||[]).forEach((x,i)=>{es[i].value=x.degree||'';document.querySelectorAll('.ed-school')[i].value=x.school||'';document.querySelectorAll('.ed-dates')[i].value=x.dates||''});
+ cacheSnapshot(profile);
+}
+async function save(){
+ if(!session)return;
+ let btn=document.getElementById('saveBtn');btn.classList.add('loading');btn.disabled=true;
+ let experience=[...document.querySelectorAll('.ex-title')].map((_,i)=>({title:document.querySelectorAll('.ex-title')[i].value,company:document.querySelectorAll('.ex-company')[i].value,dates:document.querySelectorAll('.ex-dates')[i].value,location:document.querySelectorAll('.ex-location')[i].value,bullets:document.querySelectorAll('.ex-bullets')[i].value.split('\n').map(x=>x.trim()).filter(Boolean)}));
+ let education=[...document.querySelectorAll('.ed-degree')].map((_,i)=>({degree:document.querySelectorAll('.ed-degree')[i].value,school:document.querySelectorAll('.ed-school')[i].value,dates:document.querySelectorAll('.ed-dates')[i].value}));
+ let row={user_id:session.user.id,full_name:document.getElementById('name').value.trim(),phone:document.getElementById('phone').value.trim(),headline:document.getElementById('headline').value.trim(),summary:document.getElementById('summary').value.trim(),linkedin:document.getElementById('linkedin').value.trim(),portfolio:document.getElementById('portfolio').value.trim(),github:document.getElementById('github').value.trim(),skills:document.getElementById('skills').value.split(',').map(x=>x.trim()).filter(Boolean),tools:document.getElementById('tools').value.split(',').map(x=>x.trim()).filter(Boolean),default_template:document.getElementById('defaultTemplate').value,date_format:document.getElementById('dateFormat').value,experience,education};
+ let r=await BX.sb.from('career_profiles').upsert(row,{onConflict:'user_id'});
+ btn.classList.remove('loading');btn.disabled=false;
+ if(r.error){BX.toast(BX.friendlyError(r.error),'error');return}
+ cacheSnapshot(row);
+ BX.toast('Profile saved');
+}
+load();
 </script></body></html>
