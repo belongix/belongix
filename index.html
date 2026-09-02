@@ -1,197 +1,37 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — AI Resume Builder</title><meta name="description" content="Build a polished, ATS-friendly resume with Belongix AI."><link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta property="og:title" content="Belongix — AI Resume Builder"><meta property="og:description" content="Build a polished, ATS-friendly resume with intelligent writing assistance, professional templates and real-time quality feedback."><meta property="og:type" content="website"><meta property="og:image" content="https://www.belongix.in/og-image.png">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body>
-<a href="#main" class="skip-link">Skip to content</a>
-
-<header class="topbar">
-  <a class="logo" href="index.html">Belong<b>ix</b></a>
-  <nav class="nav"><a href="resume-builder.html">Resume Builder</a><a href="#templates">Templates</a><a href="#score">ATS Score</a><a href="#faq">FAQ</a><a href="dashboard.html">Workspace</a></nav>
-  <div class="actions">
-    <button class="btn ghost" onclick="openAuth('login')">Sign in</button>
-    <button class="btn primary" onclick="openAuth('signup')">Create resume</button>
-    <button class="menuBtn" aria-label="Open menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-  </div>
-</header>
-
-<div class="drawer"><div class="drawerBackdrop"></div><div class="drawerPanel">
-  <button class="drawerClose" aria-label="Close menu">×</button>
-  <a href="resume-builder.html">Resume Builder</a>
-  <a href="index.html#templates">Templates</a>
-  <a href="index.html#score">ATS Score</a>
-  <a href="index.html#faq">FAQ</a>
-  <a href="dashboard.html">Workspace</a>
-</div></div>
-
-<main id="main">
-<section class="hero">
-  <div>
-    <span class="eyebrow">AI resume builder</span>
-    <h1>Build a resume<br>that gets <i>noticed.</i></h1>
-    <p class="lede">Create a polished, ATS-friendly resume with intelligent writing assistance, professional templates and real-time quality feedback.</p>
-    <div class="heroBtns">
-      <button class="btn primary" onclick="openAuth('signup')">Build my resume →</button>
-      <a class="btn" href="#templates">Explore templates</a>
-    </div>
-    <div class="trust"><span>Evidence-first AI</span><span>19 professional templates</span><span>Real-time ATS scoring</span></div>
-  </div>
-  <div class="docStage">
-    <div class="docStack">
-      <div class="docLayer l1"></div>
-      <div class="docLayer l2"></div>
-      <div class="docLayer l3">
-        <div style="font-weight:800;font-size:19px;letter-spacing:-.01em">Amara Osei</div>
-        <div style="font-size:11px;color:var(--accent);font-weight:700;margin-top:4px">SENIOR PRODUCT DESIGNER</div>
-        <div style="border-top:1px solid var(--border);margin-top:14px"></div>
-        <div class="docLine"></div><div class="docLine"></div><div class="docLine s"></div>
-        <div style="height:12px"></div>
-        <div class="docLine" style="width:40%"></div>
-        <div class="docLine"></div><div class="docLine"></div><div class="docLine s"></div>
-      </div>
-      <div class="docChip"><span class="dot"></span>ATS Score 92</div>
-    </div>
-  </div>
-</section>
-
-<section class="features" style="padding-bottom:20px">
-  <div class="featHead">
-    <span class="eyebrow">How it works</span>
-    <h2>From career history to certified resume.</h2>
-    <p>Five steps. Your facts stay intact, your writing gets sharper.</p>
-  </div>
-  <div class="featGrid">
-    <article class="feature"><div class="fnum">01</div><h3>Build once</h3><p>Create a master career profile with your real experience, education, skills and achievements.</p></article>
-    <article class="feature"><div class="fnum">02</div><h3>Write better</h3><p>Improve summaries and bullet points with AI without inventing facts or achievements.</p></article>
-    <article class="feature"><div class="fnum">03</div><h3>Check quality</h3><p>Get an explainable resume score covering structure, content, clarity and ATS-friendly formatting.</p></article>
-    <article class="feature"><div class="fnum">04</div><h3>Choose your design</h3><p>19 professional templates, from strict single-column ATS layouts to expressive two-column designs.</p></article>
-    <article class="feature"><div class="fnum">05</div><h3>Export confidently</h3><p>Review a print-ready, true-to-page document and export when everything looks right.</p></article>
-  </div>
-</section>
-
-<section id="templates" class="features">
-  <div class="featHead">
-    <span class="eyebrow">Template library</span>
-    <h2>Browse templates by style.</h2>
-    <p>Every template is a real, working layout in the builder — not a static mockup.</p>
-  </div>
-  <div class="catGrid">
-    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">A</div><h3>ATS-First</h3><span>5 templates</span></a>
-    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">E</div><h3>Executive &amp; Senior</h3><span>3 templates</span></a>
-    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">2</div><h3>Two-Column</h3><span>3 templates</span></a>
-    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">M</div><h3>Modern &amp; Creative</h3><span>4 templates</span></a>
-    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">S</div><h3>Editorial &amp; Elegant</h3><span>3 templates</span></a>
-    <a class="catCard" href="resume-builder.html#templates"><div class="catIcon">G</div><h3>Student &amp; Graduate</h3><span>1 template</span></a>
-  </div>
-
-  <div class="galleryGrid" style="margin-top:32px">
-    <div class="galleryItem"><div class="miniPrev"><div class="mh">YOUR NAME</div><div class="ml"></div><div class="ml"></div><div class="ml" style="width:55%"></div></div><p>ATS Professional</p></div>
-    <div class="galleryItem"><div class="miniPrev accent"><div class="mh">YOUR NAME</div><div class="ml"></div><div class="ml"></div><div class="ml" style="width:55%"></div></div><p>Modern</p></div>
-    <div class="galleryItem"><div class="miniPrev dark"><div class="mh">YOUR NAME</div><div class="ml"></div><div class="ml"></div><div class="ml" style="width:55%"></div></div><p>Sidebar Dark</p></div>
-    <div class="galleryItem"><div class="miniPrev" style="text-align:center"><div class="mh" style="border:0;font-style:italic">YOUR NAME</div><div class="ml" style="margin:4px auto"></div><div class="ml" style="margin:4px auto;width:55%"></div></div><p>Elegant</p></div>
-    <div class="galleryItem"><div class="miniPrev"><div class="mh" style="font-family:monospace;color:#159a67">your_name</div><div class="ml"></div><div class="ml"></div><div class="ml" style="width:55%"></div></div><p>Tech</p></div>
-    <div class="galleryItem"><div class="miniPrev" style="padding:0"><div style="background:var(--accent);color:#fff;padding:9px;font-weight:800;font-size:8px">YOUR NAME</div><div style="padding:9px"><div class="ml"></div><div class="ml"></div></div></div><p>Banner</p></div>
-  </div>
-</section>
-
-<section id="score" class="features">
-  <div class="featHead">
-    <span class="eyebrow">Resume Score</span>
-    <h2>A score you can actually see the reasoning for.</h2>
-    <p>No black box. Every point is tied to a specific, fixable check.</p>
-  </div>
-  <div class="scoreExplain">
-    <div style="display:flex;flex-direction:column;align-items:center;gap:14px">
-      <div style="width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--accent) 78%,var(--border) 0);display:grid;place-items:center">
-        <div style="width:96px;height:96px;background:var(--surface);border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:26px">78</div>
-      </div>
-      <p class="muted" style="text-align:center;font-size:12.5px;max-width:220px">A live example — your own score updates as you edit in the builder.</p>
-    </div>
-    <div>
-      <div class="listitem"><span>✓ Contact includes an email</span></div>
-      <div class="listitem"><span>✓ Summary is substantial</span></div>
-      <div class="listitem"><span>✓ Five or more skills listed</span></div>
-      <div class="listitem"><span style="color:var(--text-muted)">— At least one bullet has a number</span></div>
-      <div class="listitem"><span style="color:var(--text-muted)">— Single-column, ATS-safe template</span></div>
-    </div>
-  </div>
-</section>
-
-<section id="faq" class="features">
-  <div class="featHead">
-    <span class="eyebrow">Questions</span>
-    <h2>Before you start.</h2>
-  </div>
-  <div>
-    <details class="faqItem" open><summary>Does the AI make things up?</summary><p>No. Belongix AI improves the wording of what you've already written — summaries, bullet points — it doesn't invent employers, dates, metrics, or skills you haven't entered.</p></details>
-    <details class="faqItem"><summary>Will two-column templates hurt my ATS score?</summary><p>Sometimes, depending on the applicant tracking system. That's why the Resume Score panel flags it directly when you pick a two-column layout, so it's a visible tradeoff, not a hidden one.</p></details>
-    <details class="faqItem"><summary>Can I keep multiple versions of my resume?</summary><p>Yes — create, rename, duplicate, and switch between resume versions from the builder, e.g. one tailored per role.</p></details>
-    <details class="faqItem"><summary>What does export look like?</summary><p>A print-ready, true-to-page document via your browser's print dialog — save as PDF or print directly, with the app chrome hidden automatically.</p></details>
-  </div>
-</section>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Belongix — AI Resume Builder</title>
+<meta name="description" content="Build a polished, ATS-friendly resume with Belongix. Create, improve, score and export your resume in minutes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="belongix-auth.js"></script>
+<style>
+:root{--ink:#17160f;--muted:#69675d;--paper:#f7f6f1;--card:#fff;--line:#ddd8ca;--accent:#3b5d4e;--accent-soft:#e4e9de;--serif:'Fraunces',Georgia,serif;--sans:'Inter',Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.55}a{text-decoration:none;color:inherit}button,input{font:inherit}.topbar{height:72px;border-bottom:1px solid var(--line);background:rgba(247,246,241,.96);backdrop-filter:blur(10px);display:flex;align-items:center;padding:0 28px;gap:34px;position:sticky;top:0;z-index:20}.logo{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:-.5px}.nav{display:flex;gap:24px}.nav a{font-size:14px;color:var(--muted)}.nav a:hover{color:var(--ink)}.right{margin-left:auto;display:flex;gap:10px;align-items:center}.btn{border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:4px;padding:10px 16px;cursor:pointer}.btn.primary{background:var(--ink);color:var(--paper)}.user{display:none;align-items:center;gap:10px}.avatar{width:34px;height:34px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-size:12px;font-weight:800}.hero{max-width:1120px;margin:0 auto;padding:100px 28px 88px;display:grid;grid-template-columns:1.1fr .9fr;gap:70px;align-items:center}.eyebrow{text-transform:uppercase;letter-spacing:2px;font-size:11px;font-weight:800;color:var(--accent);margin-bottom:18px}.hero h1{font-family:var(--serif);font-size:clamp(52px,7vw,88px);line-height:.98;letter-spacing:-3px;margin:0 0 26px;font-weight:700}.hero h1 em{color:var(--accent);font-style:normal}.hero p{font-size:18px;color:var(--muted);max-width:620px;margin:0 0 30px}.actions{display:flex;gap:12px;flex-wrap:wrap}.actions .btn{padding:13px 20px}.proof{margin-top:20px;font-size:12px;color:var(--muted)}.visual{background:#fff;border:1px solid var(--line);padding:16px;box-shadow:0 22px 60px rgba(23,22,15,.08);transform:rotate(1deg)}.paper{background:#fff;border:1px solid #ece8dd;min-height:500px;padding:42px 44px}.paper h2{font-family:var(--serif);font-size:28px;margin:0}.paper .role{color:var(--accent);font-weight:700;margin:4px 0 18px}.rule{height:1px;background:#e6e2d8;margin:14px 0 22px}.sec{margin-top:20px}.sec b{font-size:10px;letter-spacing:1.6px}.line{height:7px;background:#e8e5dc;margin-top:8px;width:90%}.line.short{width:65%}.section{border-top:1px solid var(--line);padding:74px 28px}.section-inner{max-width:1120px;margin:auto}.section h2{font-family:var(--serif);font-size:42px;letter-spacing:-1.5px;margin:0 0 14px}.section p{color:var(--muted);max-width:680px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}.card{background:#fff;border:1px solid var(--line);padding:24px}.card h3{font-family:var(--serif);font-size:20px;margin:0 0 8px}.card p{font-size:14px;margin:0}.footer{border-top:1px solid var(--line);padding:28px;display:flex;justify-content:space-between;color:var(--muted);font-size:12px}.modal{display:none;position:fixed;inset:0;background:rgba(23,22,15,.5);z-index:100;align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}.modal-card{width:min(430px,100%);background:#fff;padding:30px;border:1px solid var(--line);box-shadow:0 24px 70px rgba(0,0,0,.18)}.modal-card h2{font-family:var(--serif);font-size:32px;margin:0 0 6px}.modal-card p{color:var(--muted);margin:0 0 22px}.field{margin-bottom:14px}.field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px}.field input{width:100%;padding:12px;border:1px solid var(--line);border-radius:4px}.error{display:none;background:#fff0ee;color:#a33b2c;padding:10px;font-size:12px;margin-bottom:12px}.tabs{display:flex;gap:20px;margin-bottom:20px;border-bottom:1px solid var(--line)}.tab{border:0;background:none;padding:10px 0;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent}.tab.active{color:var(--ink);border-bottom-color:var(--ink)}@media(max-width:800px){.topbar{padding:0 16px}.nav{display:none}.hero{grid-template-columns:1fr;padding-top:65px;gap:40px}.grid{grid-template-columns:1fr}.hero h1{letter-spacing:-2px}.footer{flex-direction:column;gap:8px}}
+</style>
+</head>
+<body>
+<header class="topbar"><a class="logo" href="index.html" aria-label="Belongix">Belongix</a><nav class="nav"><a href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav><div class="right"><div id="guest"><button class="btn" onclick="openAuth('signin')">Sign in</button><button class="btn primary" onclick="openAuth('signup')">Create account</button></div><div id="user" class="user"><a class="btn" href="resume-builder.html">Workspace</a><div class="avatar" id="avatar">?</div><button class="btn" onclick="signOut()">Sign out</button></div></div></header>
+<main>
+<section class="hero"><div><div class="eyebrow">AI resume builder</div><h1>Your resume, <em>professionally</em> built.</h1><p>Build a polished, ATS-friendly resume from one source of truth. Improve your writing, check quality, choose a template and export when you're ready.</p><div class="actions"><button class="btn primary" id="heroBtn" onclick="startBuilder()">Build my resume →</button><a class="btn" href="resume-builder.html">See the builder</a></div><div class="proof">✓ Evidence-first AI &nbsp; ✓ Professional templates &nbsp; ✓ Explainable ATS checks</div></div><div class="visual"><div class="paper"><h2>Your Name</h2><div class="role">Software Engineer</div><div class="muted">email@example.com · Phone · Location</div><div class="rule"></div><div class="sec"><b>PROFESSIONAL SUMMARY</b><div class="line"></div><div class="line short"></div></div><div class="sec"><b>EXPERIENCE</b><div class="line"></div><div class="line"></div><div class="line short"></div></div><div class="sec"><b>EDUCATION</b><div class="line"></div><div class="line short"></div></div><div class="sec"><b>SKILLS</b><div class="line"></div><div class="line short"></div></div></div></div></div></section>
+<section class="section"><div class="section-inner"><div class="eyebrow">Everything in one place</div><h2>Build once. Improve confidently.</h2><p>Belongix keeps your resume content structured so you can focus on making the story stronger, not fighting the editor.</p><div class="grid"><div class="card"><h3>Live resume editor</h3><p>Edit your content while the document updates instantly. Keep your master resume organized and ready to export.</p></div><div class="card"><h3>ATS quality checks</h3><p>See deterministic checks for structure, contact details, sections, skills and content quality — with clear reasons behind the score.</p></div><div class="card"><h3>Professional templates</h3><p>Switch between ATS-safe layouts without rebuilding your content. Your information stays intact while the presentation changes.</p></div></div></div></section>
 </main>
-
-<div class="ctaBand">
-  <h2>Build a resume worth signing your name to.</h2>
-  <p>Free to start. No credit card required.</p>
-  <button class="btn primary" onclick="openAuth('signup')">Build my resume →</button>
-</div>
-
-<footer class="footer">© 2026 Belongix · AI Resume Builder · <a href="terms.html" style="text-decoration:underline">Terms</a> · <a href="privacy.html" style="text-decoration:underline">Privacy</a></footer>
-
-<div class="modal" id="auth"><div class="modalBox">
-  <h2 id="authTitle">Create your resume</h2><p class="muted" id="authSub">Start your Belongix workspace.</p>
-  <div id="authForm">
-    <div class="field" id="fEmail"><label>Email</label><input id="email" type="email" autocomplete="email"></div>
-    <div class="field" id="fPass"><label>Password</label><input id="password" type="password" autocomplete="current-password"></div>
-    <label class="checkline" id="consentRow" style="display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--text-secondary);margin-bottom:14px"><input type="checkbox" id="consent" style="margin-top:2px"> I agree to the <a href="terms.html" target="_blank" style="text-decoration:underline">Terms</a> and <a href="privacy.html" target="_blank" style="text-decoration:underline">Privacy Policy</a>.</label>
-    <button class="btn primary" style="width:100%;justify-content:center" id="authSubmit" onclick="submitAuth()">Continue</button>
-    <button class="btn ghost" style="width:100%;justify-content:center;margin-top:8px" onclick="toggleAuth()" id="toggle">I already have an account</button>
-    <button class="btn ghost" style="width:100%;justify-content:center;margin-top:2px;font-size:12.5px" onclick="showForgot()" id="forgotBtn">Forgot password?</button>
-  </div>
-  <div id="authDone" style="display:none;text-align:center;padding:12px 0">
-    <p style="font-size:15px">Check your email for a link, then come back here.</p>
-    <button class="btn" style="margin-top:6px" onclick="closeAuth()">Close</button>
-  </div>
-</div></div>
-
+<footer class="footer"><span>© 2026 Belongix</span><span>AI Resume Builder · Built for professionals</span></footer>
+<div class="modal" id="authModal" onclick="if(event.target===this)closeAuth()"><div class="modal-card"><h2 id="modalTitle">Welcome back</h2><p id="modalSub">Sign in to your Belongix workspace.</p><div class="tabs"><button class="tab active" id="signinTab" onclick="setMode('signin')">Sign in</button><button class="tab" id="signupTab" onclick="setMode('signup')">Create account</button></div><div class="error" id="authError"></div><div class="field" id="nameField" style="display:none"><label>Full name</label><input id="authName" autocomplete="name"></div><div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="email"></div><div class="field"><label>Password</label><input id="authPassword" type="password" autocomplete="current-password"></div><button class="btn primary" style="width:100%" id="authSubmit" onclick="submitAuth()">Sign in</button></div></div>
 <script>
-let mode='signup';
-function openAuth(m){mode=m;closeErr();document.getElementById('authForm').style.display='block';document.getElementById('authDone').style.display='none';document.getElementById('fPass').style.display='block';document.getElementById('forgotBtn').style.display='block';
- document.getElementById('authTitle').textContent=m==='login'?'Welcome back':(m==='forgot'?'Reset your password':'Create your resume');
- document.getElementById('authSub').textContent=m==='forgot'?'We\'ll email you a reset link.':'Start your Belongix workspace.';
- document.getElementById('toggle').textContent=m==='login'?'Create an account':'I already have an account';
- document.getElementById('toggle').style.display=m==='forgot'?'none':'block';
- document.getElementById('consentRow').style.display=m==='signup'?'flex':'none';
- if(m==='forgot'){document.getElementById('fPass').style.display='none';document.getElementById('forgotBtn').style.display='none'}
- document.getElementById('auth').classList.add('open');
-}
-function closeAuth(){document.getElementById('auth').classList.remove('open')}
-function toggleAuth(){openAuth(mode==='login'?'signup':'login')}
-function showForgot(){openAuth('forgot')}
-function closeErr(){let e=document.getElementById('authErr');if(e)e.remove()}
-function showErr(msg){closeErr();let d=document.createElement('div');d.id='authErr';d.className='field error';d.innerHTML=`<div class="errmsg">${BX.esc(msg)}</div>`;document.getElementById('authForm').insertBefore(d,document.getElementById('authSubmit'))}
-async function submitAuth(){
- if(!BX.sb){showErr('Add your Supabase URL and anon key in config.js.');return}
- let e=document.getElementById('email').value.trim();
- if(mode==='signup'&&!document.getElementById('consent').checked){showErr('Please agree to the Terms and Privacy Policy to continue.');return}
- let btn=document.getElementById('authSubmit');btn.classList.add('loading');btn.disabled=true;
- try{
-  if(mode==='forgot'){
-   if(!e){showErr('Enter your email first.');return}
-   let r=await BX.sb.auth.resetPasswordForEmail(e);
-   if(r.error)throw r.error;
-   document.getElementById('authForm').style.display='none';document.getElementById('authDone').style.display='block';
-   return;
-  }
-  let p=document.getElementById('password').value;
-  let r=mode==='login'?await BX.sb.auth.signInWithPassword({email:e,password:p}):await BX.sb.auth.signUp({email:e,password:p});
-  if(r.error)throw r.error;
-  if(!r.data.session){document.getElementById('authForm').style.display='none';document.getElementById('authDone').style.display='block';return}
-  location.href='dashboard.html';
- }catch(err){showErr(BX.friendlyError(err))}
- finally{btn.classList.remove('loading');btn.disabled=false}
-}
-document.getElementById('auth').addEventListener('click',e=>{if(e.target.id==='auth')closeAuth()});
-if(location.hash==='#signin')openAuth('login');
+var mode='signin';
+function setMode(m){mode=m;document.getElementById('signinTab').classList.toggle('active',m==='signin');document.getElementById('signupTab').classList.toggle('active',m==='signup');document.getElementById('nameField').style.display=m==='signup'?'block':'none';document.getElementById('modalTitle').textContent=m==='signup'?'Create your account':'Welcome back';document.getElementById('modalSub').textContent=m==='signup'?'Start your Belongix resume workspace.':'Sign in to your Belongix workspace.';document.getElementById('authSubmit').textContent=m==='signup'?'Create account':'Sign in';document.getElementById('authError').style.display='none';}
+function openAuth(m){setMode(m||'signin');document.getElementById('authModal').classList.add('open');setTimeout(function(){document.getElementById('authEmail').focus()},50)}
+function closeAuth(){document.getElementById('authModal').classList.remove('open')}
+async function submitAuth(){var email=document.getElementById('authEmail').value.trim(),pass=document.getElementById('authPassword').value,name=document.getElementById('authName').value.trim(),err=document.getElementById('authError'),btn=document.getElementById('authSubmit');err.style.display='none';if(!email||!pass){err.textContent='Enter your email and password.';err.style.display='block';return}btn.disabled=true;btn.textContent='Please wait…';try{var r=mode==='signup'?await BelongixAuth.sb.auth.signUp({email:email,password:pass,options:{data:{full_name:name||email.split('@')[0]}}}):await BelongixAuth.sb.auth.signInWithPassword({email:email,password:pass});if(r.error)throw r.error;closeAuth();window.location.href='resume-builder.html';}catch(e){err.textContent=e.message||'Authentication failed.';err.style.display='block'}finally{btn.disabled=false;btn.textContent=mode==='signup'?'Create account':'Sign in'}}
+async function startBuilder(){var u=await BelongixAuth.getSession();if(u)window.location.href='resume-builder.html';else openAuth('signin')}
+async function signOut(){await BelongixAuth.signOut();location.reload()}
+function renderAuth(u){var guest=document.getElementById('guest'),user=document.getElementById('user');if(u){guest.style.display='none';user.style.display='flex';var n=(u.user_metadata&&u.user_metadata.full_name)||u.email||'U';document.getElementById('avatar').textContent=n.charAt(0).toUpperCase();document.getElementById('heroBtn').textContent='Open my workspace →';}else{guest.style.display='flex';user.style.display='none';document.getElementById('heroBtn').textContent='Build my resume →';}}
+window.addEventListener('load',async function(){renderAuth(await BelongixAuth.getSession());});window.addEventListener('belongix-auth-change',function(e){renderAuth(e.detail&&e.detail.user||null)});
 </script>
 </body></html>
