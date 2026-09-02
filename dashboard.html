@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — Workspace</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — Workspace</title><meta name="robots" content="noindex,nofollow"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body>
 <header class="topbar">
   <a class="logo" href="index.html">Belong<b>ix</b></a>
   <nav class="nav"><a class="active" href="dashboard.html">Workspace</a><a href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav>
@@ -43,6 +43,22 @@ function profileCompletion(){
  return Math.round(filled/fields.length*100);
  }catch(e){return 0}
 }
+async function loadCloudResumes(){
+ if(!BX.sb)return;
+ try{
+  let s=await BX.session();if(!s)return;
+  let r=await BX.sb.from('resumes').select('*').eq('user_id',s.user.id).order('updated_at',{ascending:false});
+  if(r.error)throw r.error;
+  let local=loadStore()||{resumes:[],activeId:null};
+  let map=new Map((local.resumes||[]).map(x=>[x.id,x]));
+  for(const x of (r.data||[])){
+   const cloud={id:x.id,name:x.name||'Untitled Resume',updatedAt:new Date(x.updated_at).getTime(),score:x.score,data:x.data||{}};
+   const existing=map.get(cloud.id);
+   if(!existing||cloud.updatedAt>=existing.updatedAt)map.set(cloud.id,cloud);
+  }
+  local.resumes=[...map.values()].sort((a,b)=>b.updatedAt-a.updatedAt);saveStore(local);
+ }catch(e){console.error('dashboard cloud load failed',e)}
+}
 function render(){
  let store=loadStore();
  let resumes=store&&store.resumes?store.resumes:[];
@@ -81,6 +97,7 @@ function createFromDashboard(){location.href='resume-builder.html?new=1'}
   <div class="card"><div class="stat" id="avgScore">—</div><small>Average ATS score</small></div>
   <div class="card"><div class="stat" id="profileScore">0%</div><small>Profile complete</small></div>
   <div class="card"><div class="stat">AI</div><small>Writing assistant</small></div>`;
+ await loadCloudResumes();
  render();
 })();
 </script>

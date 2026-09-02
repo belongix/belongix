@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Resume Builder — Belongix</title>
 <meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Fraunces:ital,opsz,wght@1,9..144,500&family=Inter:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -230,11 +231,11 @@ textarea{min-height:100px;resize:vertical}
 <button onclick="setMobileView('preview')">Preview</button>
 </div>
 <div class="toolbar" id="modebar">
-<button class="active" onclick="showPanel('content',this)">Content</button>
+<button class="active" id="tabContent" onclick="showPanel('content',this)">Content</button>
 <button onclick="showPanel('score',this)">Score</button>
 <button onclick="showPanel('keywords',this)">Keywords</button>
 <button onclick="showPanel('sections',this)">Sections</button>
-<button onclick="showPanel('templates',this)">Templates</button>
+<button id="tabTemplates" onclick="showPanel('templates',this)">Templates</button>
 <button onclick="showPanel('style',this)">Style</button>
 </div>
 
@@ -312,7 +313,7 @@ textarea{min-height:100px;resize:vertical}
 <div class="paperScale" id="paperScale"><div id="resumePaper"></div></div>
 </aside>
 </main>
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
 const TEMPLATES=[
@@ -605,7 +606,48 @@ store.activeId=active.id;
 data=normalize(Object.assign(data,JSON.parse(JSON.stringify(active.data))));
 }
 function currentEntry(){return store.resumes.find(r=>r.id===store.activeId)}
-function persistActive(){let e=currentEntry();if(e){e.data=JSON.parse(JSON.stringify(data));e.updatedAt=Date.now();e.score=computeScore().score;saveStore()}}
+function persistActive(){let e=currentEntry();if(e){e.data=JSON.parse(JSON.stringify(data));e.updatedAt=Date.now();e.score=computeScore().score;saveStore();syncUpsert(e)}}
+
+/* ---- Supabase sync (best-effort; localStorage stays the source of truth if offline/unconfigured) ---- */
+async function syncPull(){
+if(!BX.sb)return null;
+let s=await BX.session();if(!s)return null;
+let r=await BX.sb.from('resumes').select('*').eq('user_id',s.user.id).order('updated_at',{ascending:false});
+if(r.error){console.error('resume sync pull failed',r.error);toast('Cloud sync failed — your local copy is safe','error');return null}
+return r.data||[];
+}
+function mergeRemoteResumes(remote){
+ const local=store.resumes||[];
+ const byId=new Map(local.map(x=>[x.id,x]));
+ for(const r of remote){
+   const cloud={id:r.id,name:r.name||'Untitled Resume',updatedAt:new Date(r.updated_at).getTime()||Date.now(),score:r.score,data:normalize(r.data||blankData())};
+   const here=byId.get(cloud.id);
+   if(!here || cloud.updatedAt>=here.updatedAt) byId.set(cloud.id,cloud);
+ }
+ store.resumes=[...byId.values()].sort((a,b)=>b.updatedAt-a.updatedAt);
+ if(!store.resumes.length){
+   const id=newId();store.resumes=[{id,name:'My Resume',updatedAt:Date.now(),data:blankData()}];
+ }
+ if(!store.resumes.find(x=>x.id===store.activeId)) store.activeId=store.resumes[0].id;
+ saveStore();
+}
+
+async function syncUpsert(entry){
+if(!BX.sb)return;
+try{
+let s=await BX.session();if(!s)return;
+let r=await BX.sb.from('resumes').upsert({id:entry.id,user_id:s.user.id,name:entry.name,data:entry.data,score:entry.score??null,updated_at:new Date(entry.updatedAt).toISOString()});
+if(r.error)throw r.error;
+}catch(e){console.error('resume sync save failed',e);toast('Saved locally — cloud sync failed','error')}
+}
+async function syncDelete(id){
+if(!BX.sb)return;
+try{
+let s=await BX.session();if(!s)return;
+let r=await BX.sb.from('resumes').delete().eq('id',id).eq('user_id',s.user.id);
+if(r.error)throw r.error;
+}catch(e){console.error('resume sync delete failed',e)}
+}
 function bindBasicsValues(){['name','title','contact','website','summary'].forEach(k=>$(k).value=data[k]||'')}
 function refreshAllUI(){
 $('resumeName').textContent=currentEntry().name;
@@ -616,10 +658,10 @@ renderEditor();renderTemplates();renderSections();renderVersions();render();
 }
 function saveResume(){persistActive();$('saveState').textContent='Saved just now';toast('Resume saved')}
 function switchResume(id){if(id===store.activeId)return;persistActive();store.activeId=id;data=normalize(Object.assign(data,JSON.parse(JSON.stringify(currentEntry().data))));saveStore();refreshAllUI();toggleVersions(true);toast('Switched to '+currentEntry().name)}
-function createResume(){persistActive();let id=newId();let d=blankData();store.resumes.push({id,name:'Untitled Resume',updatedAt:Date.now(),data:d});store.activeId=id;saveStore();data=normalize(Object.assign(data,d));refreshAllUI();toggleVersions(true);toast('New resume created')}
-function duplicateResume(id){persistActive();let src=store.resumes.find(r=>r.id===id);if(!src)return;let id2=newId();store.resumes.push({id:id2,name:src.name+' copy',updatedAt:Date.now(),data:JSON.parse(JSON.stringify(src.data))});store.activeId=id2;saveStore();data=normalize(Object.assign(data,JSON.parse(JSON.stringify(src.data))));refreshAllUI();toast('Duplicated')}
-function promptRename(id){let e=store.resumes.find(r=>r.id===id);let n=prompt('Rename resume',e.name);if(n===null)return;e.name=n.trim()||'Untitled Resume';saveStore();if(id===store.activeId)$('resumeName').textContent=e.name;renderVersions()}
-function deleteResume(id){if(store.resumes.length<=1){toast('You need at least one resume');return}if(!confirm('Delete this resume version? This cannot be undone.'))return;store.resumes=store.resumes.filter(r=>r.id!==id);if(store.activeId===id){store.activeId=store.resumes[0].id;data=normalize(Object.assign(data,JSON.parse(JSON.stringify(currentEntry().data))))}saveStore();refreshAllUI();toast('Deleted')}
+function createResume(){persistActive();let id=newId();let d=blankData();let entry={id,name:'Untitled Resume',updatedAt:Date.now(),data:d};store.resumes.push(entry);store.activeId=id;saveStore();syncUpsert(entry);data=normalize(Object.assign(data,d));refreshAllUI();toggleVersions(true);toast('New resume created')}
+function duplicateResume(id){persistActive();let src=store.resumes.find(r=>r.id===id);if(!src)return;let id2=newId();let entry={id:id2,name:src.name+' copy',updatedAt:Date.now(),score:src.score,data:JSON.parse(JSON.stringify(src.data))};store.resumes.push(entry);store.activeId=id2;saveStore();syncUpsert(entry);data=normalize(Object.assign(data,JSON.parse(JSON.stringify(src.data))));refreshAllUI();toast('Duplicated')}
+function promptRename(id){let e=store.resumes.find(r=>r.id===id);let n=prompt('Rename resume',e.name);if(n===null)return;e.name=n.trim()||'Untitled Resume';saveStore();syncUpsert(e);if(id===store.activeId)$('resumeName').textContent=e.name;renderVersions()}
+function deleteResume(id){if(store.resumes.length<=1){toast('You need at least one resume');return}if(!confirm('Delete this resume version? This cannot be undone.'))return;store.resumes=store.resumes.filter(r=>r.id!==id);if(store.activeId===id){store.activeId=store.resumes[0].id;data=normalize(Object.assign(data,JSON.parse(JSON.stringify(currentEntry().data))))}saveStore();syncDelete(id);refreshAllUI();toast('Deleted')}
 function renderVersions(){
 $('versionsList').innerHTML=store.resumes.map(r=>`<div class="verrow ${r.id===store.activeId?'active':''}">
 <div onclick="switchResume('${r.id}')" style="cursor:pointer;flex:1"><b>${esc(r.name)}</b><div class="muted" style="font-size:11px">${new Date(r.updatedAt).toLocaleDateString()}</div></div>
@@ -643,6 +685,22 @@ $('photoInput').addEventListener('change',e=>{let f=e.target.files[0];if(!f)retu
 (async function boot(){
 if(BX.sb){let s=await BX.requireAuth();if(!s)return}
 initStore();
+if(BX.sb){
+ let remote=await syncPull();
+ if(remote&&remote.length){
+  const localBefore=JSON.parse(JSON.stringify(store.resumes));
+  mergeRemoteResumes(remote);
+  // Push local-only or newer local resumes without destroying newer cloud data.
+  for(const e of localBefore){
+    const cloud=remote.find(x=>x.id===e.id);
+    const cloudTs=cloud?new Date(cloud.updated_at).getTime():0;
+    if(!cloud || e.updatedAt>cloudTs) await syncUpsert(e);
+  }
+  data=normalize(Object.assign(data,JSON.parse(JSON.stringify(currentEntry().data))));
+ }else if(remote&&remote.length===0&&store.resumes.length){
+  for(const e of store.resumes)await syncUpsert(e);
+ }
+}
 let params=new URLSearchParams(location.search);
 if(params.get('new')==='1'){bindBasics();refreshAllUI();createResume();}
 else{
@@ -653,6 +711,7 @@ else{
  bindBasics();
  refreshAllUI();
 }
+if(location.hash==='#templates'){showPanel('templates',$('tabTemplates'));$('editorPane') && $('editorPane').scrollIntoView({block:'start'})}
 })();
 </script>
 </body>

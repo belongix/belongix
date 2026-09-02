@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /index.html
+Allow: /terms.html
+Allow: /privacy.html
+Disallow: /dashboard.html
+Disallow: /resume-builder.html
+Disallow: /career-profile.html
+Disallow: /settings.html
+
+Sitemap: https://www.belongix.in/sitemap.xml

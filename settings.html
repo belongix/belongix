@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — Settings</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Belongix — Settings</title><meta name="robots" content="noindex,nofollow"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script src="app.js"></script></head><body>
 <header class="topbar">
   <a class="logo" href="index.html">Belong<b>ix</b></a>
   <nav class="nav"><a href="dashboard.html">Workspace</a><a href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a class="active" href="settings.html">Settings</a></nav>
@@ -27,7 +27,7 @@
     </div>
     <div class="card">
       <h2>Data</h2>
-      <p class="muted" style="margin:0 0 14px">Download everything stored on this device — your saved resumes and their content.</p>
+      <p class="muted" style="margin:0 0 14px">Export your saved resumes and career profile. Belongix includes cloud data when your Supabase connection is available.</p>
       <button class="btn" onclick="exportData()">Export my data</button>
     </div>
     <div class="card" style="grid-column:1/-1">
@@ -44,20 +44,28 @@ function renderThemeRow(){
  document.getElementById('themeRow').innerHTML=THEMES.map(t=>`<button class="btn ${t.id===current?'primary':''}" onclick="setTheme('${t.id}')">${t.label}</button>`).join('');
 }
 function setTheme(t){BX.setTheme(t);renderThemeRow();BX.toast('Theme set to '+t)}
-function exportData(){
+async function exportData(){
  try{
-  let resumes=JSON.parse(localStorage.getItem('belongix_resumes_v1')||'{"resumes":[]}');
-  let blob=new Blob([JSON.stringify(resumes,null,2)],{type:'application/json'});
-  let url=URL.createObjectURL(blob);
-  let a=document.createElement('a');a.href=url;a.download='belongix-export.json';a.click();
-  URL.revokeObjectURL(url);
+  let payload={version:1,exported_at:new Date().toISOString(),resumes:JSON.parse(localStorage.getItem('belongix_resumes_v1')||'{"resumes":[]}').resumes||[],career_profile:null};
+  if(BX.sb){
+   let s=await BX.session();
+   if(s){let r=await BX.sb.from('career_profiles').select('*').eq('user_id',s.user.id).maybeSingle();if(!r.error)payload.career_profile=r.data||null;
+    let rr=await BX.sb.from('resumes').select('*').eq('user_id',s.user.id);if(!rr.error&&rr.data?.length)payload.resumes=rr.data;
+   }
+  }
+  let blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='belongix-export.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
   BX.toast('Export downloaded');
  }catch(e){BX.toast('Nothing to export yet','error')}
 }
-function deleteAccount(){
+async function deleteAccount(){
  if(!confirm('This permanently deletes your account and all associated data. This cannot be undone. Continue?'))return;
- if(!confirm('Are you absolutely sure? Type OK to confirm one last time.'))return;
- BX.toast('Account deletion should be handled through the secure server workflow (Edge Function with the service-role key) — not implemented in this static frontend.','error');
+ if(!confirm('Are you absolutely sure? This is your last chance to cancel.'))return;
+ try{
+  await BX.deleteAccount();
+  BX.toast('Account deleted');
+  setTimeout(()=>location.href='index.html',1200);
+ }catch(e){BX.toast(BX.friendlyError(e),'error')}
 }
 renderThemeRow();
 (async()=>{let s=await BX.requireAuth();if(s)document.getElementById('email').value=s.user.email||''})();
