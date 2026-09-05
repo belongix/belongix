@@ -1,5 +1,5 @@
 (function(){
-  const nav=`<a class="brand" href="index.html">Belongix</a><nav><a href="index.html#features">Features</a><a href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav><div class="nav-actions"><a class="btn ghost" href="resume-builder.html">Build Resume</a><button class="btn dark" id="auth-btn">Sign in</button></div>`;
+  const nav=`<a class="brand" href="index.html">Belongix</a><nav><a href="dashboard.html">Workspace</a><a href="resume-builder.html">Resume Builder</a><a href="career-profile.html">Profile</a><a href="settings.html">Settings</a></nav><div class="nav-actions"><a class="btn ghost" href="resume-builder.html">Build Resume</a><button class="btn dark" id="auth-btn">Sign in</button></div>`;
   document.querySelectorAll('[data-app-nav]').forEach(x=>{x.innerHTML=nav});
   async function refresh(){
     const btn=document.getElementById('auth-btn'); if(!btn||!window.belongixAuth)return;

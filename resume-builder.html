@@ -15,7 +15,7 @@
 <meta name="twitter:title" content="ATS Resume Builder — Belongix"/>
 <meta name="twitter:description" content="Build an ATS-ready resume with AI. Free on Belongix."/>
 <link rel="icon" href="icons/icon-32.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <style>
@@ -28,7 +28,7 @@
   --purple:#7C3AED;--purple-lt:#F5F3FF;
   --ink:#0D0D1A;--muted:#5A5A7A;--subtle:#94A3B8;
   --border:#E4E4F0;--bg:#F7F7FC;--card:#fff;
-  --ff:'Sora',sans-serif;--fb:'DM Sans',sans-serif;
+  --ff:'Inter',sans-serif;--fb:'Inter',sans-serif;
   --radius:14px;
   --shadow:0 1px 4px rgba(13,13,26,.06),0 4px 16px rgba(13,13,26,.06);
   --shadow-lg:0 8px 32px rgba(45,27,105,.12);
@@ -137,7 +137,7 @@ a{text-decoration:none;color:inherit}
 .sp-bar-val{font-size:12px;font-weight:700;color:rgba(255,255,255,.7);width:34px;text-align:right}
 
 /* ── APP LAYOUT ── */
-#app-view{display:none}
+#app-view{display:flex}
 .app-layout{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 60px);overflow:hidden}
 
 /* Sidebar */
@@ -488,14 +488,14 @@ a{text-decoration:none;color:inherit}
 <nav class="nav">
   <a href="index.html" class="nav-logo">Belongix</a>
   <div class="nav-center">
-    <a href="index.html#features" class="nav-link">Features</a>
+    <a href="index.html" class="nav-link">Workspace</a>
     <a href="resume-builder.html" class="nav-link active">Resume Builder</a>
-    <a href="about.html" class="nav-link">About</a>
-    <a href="contact.html" class="nav-link">Contact</a>
+    <a href="career-profile.html" class="nav-link">Profile</a>
+    <a href="settings.html" class="nav-link">Settings</a>
   </div>
   <div class="nav-r">
-    <a href="dashboard.html" class="btn-ghost-sm" style="text-decoration:none">Dashboard</a>
-    <button class="btn-cta-sm" onclick="startOnboarding()">Build My Resume →</button>
+    <a href="index.html" class="btn-ghost-sm" style="text-decoration:none">Workspace</a>
+    <button class="btn-cta-sm" onclick="showExport()">Export Resume →</button>
     <button class="hamburger" onclick="toggleMobileMenu()">
       <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
     </button>
@@ -508,17 +508,17 @@ a{text-decoration:none;color:inherit}
     <span class="nav-logo">Belongix</span>
     <button class="mobile-close" onclick="toggleMobileMenu()">✕</button>
   </div>
-  <a href="index.html#features" class="mobile-link">Features</a>
+  <a href="index.html" class="mobile-link">Workspace</a>
   <a href="resume-builder.html" class="mobile-link">📄 Resume Builder</a>
-  <a href="dashboard.html" class="mobile-link">Dashboard</a>
-  <a href="about.html" class="mobile-link">About</a>
+  <a href="career-profile.html" class="mobile-link">Profile</a>
+  <a href="settings.html" class="mobile-link">Settings</a>
   <div class="mobile-btns">
-    <button class="btn-cta-sm" style="width:100%;padding:13px;font-size:15px" onclick="startOnboarding();toggleMobileMenu()">Build My Resume →</button>
+    <button class="btn-cta-sm" style="width:100%;padding:13px;font-size:15px" onclick="showExport();toggleMobileMenu()">Export Resume →</button>
   </div>
 </div>
 
 <!-- ══════════════════ LANDING ══════════════════ -->
-<div id="landing-view">
+<div id="landing-view" style="display:none">
   <div class="hero" id="main-content" tabindex="-1">
     <div class="hero-inner">
       <div class="hero-pill"><div class="pill-dot"></div>AI-Powered · Free to Use</div>
@@ -595,7 +595,7 @@ a{text-decoration:none;color:inherit}
   <footer style="background:#0D0D1A;padding:40px 24px;color:rgba(255,255,255,.45);text-align:center">
     <div style="font-family:var(--ff);font-size:17px;font-weight:800;color:#fff;margin-bottom:8px">Belongix Resume Builder</div>
     <div style="font-size:13px;margin-bottom:16px">AI-powered resume workspace · <a href="index.html" style="color:rgba(255,255,255,.6)">Home</a> · <a href="career-profile.html" style="color:rgba(255,255,255,.6)">Profile</a> · <a href="settings.html" style="color:rgba(255,255,255,.6)">Settings</a></div>
-    <div style="font-size:12px"><a href="privacy.html" style="color:rgba(255,255,255,.4)">Privacy</a> · <a href="terms.html" style="color:rgba(255,255,255,.4)">Terms</a> · <a href="about.html" style="color:rgba(255,255,255,.4)">About</a></div>
+    <div style="font-size:12px"><a href="privacy.html" style="color:rgba(255,255,255,.4)">Privacy</a> · <a href="terms.html" style="color:rgba(255,255,255,.4)">Terms</a></div>
     <div style="font-size:11px;margin-top:20px;color:rgba(255,255,255,.2)">ATS Readiness is an optimization estimate and does not guarantee employer outcomes.</div>
   </footer>
 </div><!-- /landing-view -->
@@ -664,7 +664,7 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <!-- ══════════════════ APP ══════════════════ -->
-<div id="app-view" style="height:calc(100vh - 60px);display:none;flex-direction:column;overflow:hidden">
+<div id="app-view" style="height:calc(100vh - 60px);display:flex;flex-direction:column;overflow:hidden">
 
   <!-- App topbar -->
   <div class="app-topbar">
@@ -1018,7 +1018,7 @@ a{text-decoration:none;color:inherit}
 // ── SUPABASE ──
 var SB_URL=(window.BELONGIX_CONFIG||{}).SUPABASE_URL;
 var SB_KEY=(window.BELONGIX_CONFIG||{}).SUPABASE_ANON_KEY;
-var sb=supabase.createClient(SB_URL,SB_KEY);
+var sb=window.belongixSupabase || supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 
 // ── STATE ──
 var state={
@@ -1040,6 +1040,7 @@ window.addEventListener('load',async function(){
   initTemplates();
   initDashboard();
   addExp(true);addEdu(true);
+  openApp('editor');
   document.addEventListener('click',function(e){
     if(!e.target.closest('.nav-r')&&!e.target.closest('#mobile-menu')){}
   });
@@ -1075,8 +1076,7 @@ function openApp(tab){
   if(tab)switchTab(tab);
 }
 function exitApp(){
-  document.getElementById('app-view').style.display='none';
-  document.getElementById('landing-view').style.display='block';
+  window.location.href='index.html';
 }
 
 // ── ONBOARDING ──
@@ -1598,10 +1598,10 @@ async function callClaude(prompt,cb,feature){
     var session=await sb.auth.getSession();
     var token=session.data&&session.data.session?session.data.session.access_token:null;
     if(!token){cb('[Session expired — please sign in again.]');return;}
-    var r=await fetch(SB_URL+'/functions/v1/ai-resume-assist',{
+    var r=await fetch((window.BELONGIX_CONFIG||{}).RESUME_AI_FUNCTION_URL||SB_URL+'/functions/v1/resume-ai',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({feature:feature||'general',prompt:prompt,resume_id:state.currentResumeId})
+      body:JSON.stringify({input:prompt,instruction:feature||'Improve this resume content',resume_id:state.currentResumeId})
     });
     var d=await r.json();
     if(!r.ok){cb('['+(d.error||'AI temporarily unavailable. Please try again.')+']');return;}
