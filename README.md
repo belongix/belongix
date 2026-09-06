@@ -1,33 +1,71 @@
-# Belongix — Resume Platform
+# Belongix — Resume Platform + Razorpay Billing
 
-Resume-only Belongix release package.
+This package contains the resume-only Belongix application with Razorpay monthly subscriptions and server-side resume quota enforcement.
 
-## Included
-- `index.html` — resume-focused landing page
-- `resume-builder.html` — editor, templates, ATS scoring, AI workflow, Supabase persistence
-- `career-profile.html` — professional profile
-- `settings.html` — account, plan display, deletion flow
-- `config.js` — Supabase client configuration
-- `belongix-auth.js` / `app.js` / `styles.css` — shared application layer
-- `privacy.html`, `terms.html`, `404.html`, `robots.txt`, `sitemap.xml`
-- `supabase/schema.sql` — database, RLS and atomic AI usage limit
-- `supabase/functions/resume-ai` — server-side AI proxy
-- `supabase/functions/delete-account` — authenticated account deletion
+## Product
 
-## Before accepting real users
-1. Run `supabase/schema.sql` in the production Supabase project.
-2. Deploy both Edge Functions.
-3. Configure `OPENAI_API_KEY`, `AI_MODEL`, `ALLOWED_ORIGIN`, and `DAILY_AI_LIMIT` as server-side secrets.
-4. Configure the real payment provider and webhook. The UI intentionally does not fake payments.
-5. Test sign-up/login, save/load, RLS, AI, export, deletion, mobile layouts and subscription entitlements on the live domain.
-6. Replace the draft Privacy Policy and Terms with legally reviewed documents and real business/support details.
-7. Deploy this directory as the site root and verify `https://www.belongix.in` serves this version.
+- Free: 1 resume
+- Plus: ₹199/month — 10 new resumes per billing period
+- Pro: ₹499/month — 30 new resumes per billing period
+- ATS readiness score
+- Job-description keyword analysis
+- AI resume writing/rewrite through the Supabase Edge Function
+- 15 ATS-safe templates with live preview
+- Cloud save/load in Supabase
+- Profile and settings pages
 
-## Supabase
-Project URL: `https://vtiaszkqpsuuvfaizqrl.supabase.co`
+## Payment architecture
 
-The publishable/anon key is intentionally client-side. Never put a service-role key or AI provider key in frontend files.
+Razorpay secrets remain server-side in Supabase Edge Function secrets. The browser receives only the Razorpay key ID and subscription ID needed for Checkout.
 
+The payment lifecycle is:
 
-## 2026-09-05 UI refresh
-The public landing page was redesigned as a resume-first product experience: product preview, Build→Score→Fix loop, explainable scoring, role targeting, grounded AI demo, templates, examples, pricing, FAQ and CTA. No courses, jobs marketplace, certificates or unrelated modules are included.
+`Belongix → Edge Function → Razorpay Subscription → Checkout → server-side signature verification → Razorpay webhook → Supabase entitlement`
+
+The resume creation limit is also server-side. The builder creates the first resume through `create_resume_with_quota()`, which locks the billing row, checks entitlement, inserts the resume and increments usage in one database transaction.
+
+## SQL
+
+Run:
+
+1. `billing-schema.sql`
+2. `resume-schema.sql` (if your existing `resumes` table is not already equivalent)
+3. `profile-migration.sql`
+4. `ai-usage-schema.sql`
+
+## Edge Functions
+
+Deploy:
+
+- `supabase/functions/razorpay-create-subscription`
+- `supabase/functions/razorpay-verify`
+- `supabase/functions/razorpay-webhook`
+- `supabase/functions/razorpay-cancel-subscription`
+- `supabase/functions/resume-ai`
+
+## Server secrets
+
+Set these in Supabase, never in frontend files:
+
+```text
+RAZORPAY_KEY_ID=rzp_test_...
+RAZORPAY_KEY_SECRET=...
+RAZORPAY_PLUS_PLAN_ID=plan_...
+RAZORPAY_PRO_PLAN_ID=plan_...
+RAZORPAY_WEBHOOK_SECRET=...
+ALLOWED_ORIGIN=https://www.belongix.in
+OPENAI_API_KEY=...
+AI_MODEL=...
+AI_API_URL=https://api.openai.com/v1/responses
+DAILY_AI_LIMIT=50
+```
+
+## Test first
+
+Create the Plus and Pro plans in Razorpay Test Mode, configure the webhook, and test the full flow before switching to Live Mode.
+
+See `RAZORPAY_SETUP.md` and `DEPLOY_CHECKLIST.md` for the exact deployment steps.
+
+## Important
+
+The package does not claim that Razorpay is live until the Test Mode flow has been completed and the Live Mode keys/Plan IDs have been configured. Legal pages, tax/GST configuration, refund/cancellation wording and Razorpay account/KYC requirements should be reviewed before launch.
