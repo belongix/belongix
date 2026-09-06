@@ -1,1 +1,38 @@
-<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Privacy — Belongix</title><link rel="stylesheet" href="styles.css"></head><body><main class="page"><div class="shell panel"><a class="brand" href="index.html">Belongix</a><h1>Privacy Policy</h1><p>This page is a launch draft. Before production launch, replace it with the final policy reviewed for your business, jurisdiction, payment provider, analytics and AI data handling.</p><h2>Data we process</h2><p>Account information, resume content, profile information and usage data necessary to provide the service.</p><h2>AI processing</h2><p>AI features may process the resume content you submit to generate suggestions. Do not submit information you are not authorized to use.</p><h2>Security</h2><p>Client applications use a publishable Supabase key. Privileged secrets must remain server-side.</p><h2>Contact</h2><p>Add your legal business name and support contact before launch.</p></div></main></body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Privacy — Belongix</title><meta name="robots" content="noindex,nofollow" data-note="remove noindex once the policy is finalized and you want it indexed"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>
+:root{--ink:#101322;--muted:#697083;--bg:#f7f8fc;--card:#fff;--line:#e5e8f0;--brand:#5b4bdb}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.65 Inter,system-ui,sans-serif}a{color:var(--brand)}.nav{height:68px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 30px;gap:30px}.logo{font-size:21px;font-weight:800;letter-spacing:-.6px;text-decoration:none;color:var(--ink)}.wrap{max-width:760px;margin:0 auto;padding:48px 24px 80px}.notice{background:#fff3e0;border:1px solid #ffd8a8;color:#8a5a10;padding:14px 16px;border-radius:12px;font-size:13px;margin-bottom:30px}h1{font-size:32px;letter-spacing:-1px;margin:0 0 6px}.meta{color:var(--muted);font-size:12.5px;margin-bottom:30px}h2{font-size:18px;margin-top:32px}code{background:#f0efff;color:#5046a9;padding:1px 6px;border-radius:5px;font-size:12.5px}
+</style></head><body>
+<nav class="nav"><a class="logo" href="index.html">Belongix</a></nav>
+<main class="wrap">
+<div class="notice"><b>Launch draft — not legal advice.</b> This describes, as accurately as possible, what this codebase actually does with data. It is not a substitute for review by counsel for your jurisdiction, your Razorpay merchant obligations, or GDPR/CCPA if applicable. Replace every <code>[bracketed]</code> placeholder before launch.</div>
+<h1>Privacy Policy</h1>
+<p class="meta">Effective date: [Effective Date] · Last updated: [Last Updated Date]</p>
+
+<h2>What we collect</h2>
+<p>Account email and password (handled by Supabase Auth — we never see your raw password). Profile details you enter in Career Profile (name, target role, contact info, summary, skills). Resume content you create in the builder. Billing status (plan, subscription state, renewal date) when you subscribe to a paid plan.</p>
+
+<h2>How we use it</h2>
+<ul>
+<li>To provide the service — storing and displaying your resumes and profile back to you.</li>
+<li>To generate AI writing suggestions — relevant resume text is sent to our AI provider, [OpenAI], solely to produce a rewritten version. We do not send your full profile or billing information.</li>
+<li>To process payments — when you subscribe, Razorpay handles your card/UPI details directly; Belongix never receives or stores your payment credentials. We receive only subscription status and payment confirmations from Razorpay.</li>
+</ul>
+
+<h2>Where it's stored</h2>
+<p>Account data, profiles, resumes, and billing status are stored in a Supabase (PostgreSQL) database at [region]. Row-level security restricts every table so you can only ever read your own data. Razorpay processes and stores payment method details under its own security and compliance program (PCI DSS) — Belongix does not have access to your card number, UPI ID, or bank details.</p>
+
+<h2>What we don't do</h2>
+<p>We do not sell your data. We do not show ads. We do not share your resume content with employers, job boards, or any third party other than the AI provider described above, for that specific purpose only.</p>
+
+<h2>Your rights</h2>
+<p>You can request deletion of your account and all associated data (profile, resumes, billing history) from Settings. If you're on an active paid plan, cancel it first — see the Terms for what happens to your subscription on deletion. [Add jurisdiction-specific rights — access, correction, portability, erasure request process — if you have EU/UK/California users.]</p>
+
+<h2>Cookies &amp; local storage</h2>
+<p>Belongix uses browser storage to keep you signed in between visits. Razorpay Checkout may set its own cookies during the payment flow, governed by Razorpay's own privacy policy. [Update this section if you add analytics or marketing cookies.]</p>
+
+<h2>Changes to this policy</h2>
+<p>We may update this policy from time to time; material changes will be reflected by an updated "Last updated" date above.</p>
+
+<h2>Contact</h2>
+<p>Questions about this policy or your data: [privacy@yourcompany.com]</p>
+</main>
+</body></html>

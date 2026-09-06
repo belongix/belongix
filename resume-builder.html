@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>ATS Resume Builder — Belongix</title>
 <meta name="description" content="Build an ATS-ready resume with AI. Real-time ATS Readiness Score, keyword matching, AI bullet rewriter. Free on Belongix."/>
-<link rel="icon" href="icons/icon-32.png"/>
+<link rel="icon" href="favicon.svg" type="image/svg+xml"/>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
@@ -1286,9 +1286,22 @@ function removeSkill(type,s){
 }
 function renderSkillTags(type){
   var c=document.getElementById('tags-'+type);if(!c)return;
+  // Skill/keyword text can contain apostrophes (e.g. "Bachelor's", "O'Reilly") which broke
+  // the old inline onclick="removeSkill('type','skill')" pattern — esc() only HTML-escapes
+  // &<>", not quotes, and HTML entities get decoded before the browser compiles inline event
+  // handler JS, so escaping quotes wouldn't have fixed it either. Using data-* attributes +
+  // one delegated listener avoids ever building executable JS out of user text.
   c.innerHTML=state.skills[type].map(function(s){
-    return '<span class="skill-tag added">'+esc(s)+' <span class="skill-tag-remove" onclick="removeSkill(\''+type+'\',\''+esc(s)+'\')">✕</span></span>';
+    return '<span class="skill-tag added">'+esc(s)+' <span class="skill-tag-remove" data-skill="'+esc(s)+'">✕</span></span>';
   }).join('');
+  if(!c.dataset.wired){
+    c.dataset.wired='1';
+    c.addEventListener('click',function(e){
+      var t=e.target.closest('.skill-tag-remove');
+      if(!t)return;
+      removeSkill(type,t.getAttribute('data-skill'));
+    });
+  }
 }
 
 // ── AUTOSAVE ──
@@ -1534,7 +1547,16 @@ function updateKeywords(){
   document.getElementById('kw-missing').textContent=missing.length;
   document.getElementById('kw-rate').textContent=Math.round((matched.length/state.jdKeywords.length)*100)+'%';
   document.getElementById('kw-matched-tags').innerHTML=matched.map(function(k){return '<span class="skill-tag matched">✓ '+esc(k)+'</span>';}).join('');
-  document.getElementById('kw-missing-tags').innerHTML=missing.map(function(k){return '<span class="skill-tag missing" onclick="addKwAsSkill(\''+esc(k)+'\')" style="cursor:pointer">+ '+esc(k)+'</span>';}).join('');
+  var kwMissingEl=document.getElementById('kw-missing-tags');
+  kwMissingEl.innerHTML=missing.map(function(k){return '<span class="skill-tag missing" data-kw="'+esc(k)+'" style="cursor:pointer">+ '+esc(k)+'</span>';}).join('');
+  if(!kwMissingEl.dataset.wired){
+    kwMissingEl.dataset.wired='1';
+    kwMissingEl.addEventListener('click',function(e){
+      var t=e.target.closest('.skill-tag.missing');
+      if(!t)return;
+      addKwAsSkill(t.getAttribute('data-kw'));
+    });
+  }
 }
 function addKwAsSkill(kw){
   if(!state.skills.technical.includes(kw)){state.skills.technical.push(kw);renderSkillTags('technical');autosave();showToast('"'+kw+'" added — only keep if truthful!','success');updateKeywords();}

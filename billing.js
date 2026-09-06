@@ -5,7 +5,22 @@
     if(!window.getBelongixSession) throw new Error('Belongix authentication is not ready');
     return await window.getBelongixSession();
   }
+  function billingToast(msg,isError){
+    let t=document.getElementById('billing-toast');
+    if(!t){
+      t=document.createElement('div');
+      t.id='billing-toast';
+      t.style.cssText='position:fixed;right:22px;bottom:22px;max-width:340px;background:#101322;color:#fff;padding:13px 16px;border-radius:11px;font:600 13px Inter,system-ui,sans-serif;box-shadow:0 12px 30px rgba(0,0,0,.22);z-index:9999;opacity:0;transform:translateY(10px);transition:.2s;pointer-events:none';
+      document.body.appendChild(t);
+    }
+    t.style.background=isError?'#c83c52':'#101322';
+    t.textContent=msg;
+    t.style.opacity='1';t.style.transform='none';
+    clearTimeout(t._hideTimer);
+    t._hideTimer=setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(10px)'},isError?4200:3200);
+  }
   window.BelongixBilling={
+    toast:billingToast,
     async checkout(plan){
       const s=await session();
       if(!s){ window.location.href='index.html?checkout='+encodeURIComponent(plan); return; }
@@ -24,13 +39,13 @@
         handler:async function(resp){
           const verify=await fetch(FN+'razorpay-verify',{method:'POST',headers:{Authorization:'Bearer '+s.access_token,'Content-Type':'application/json'},body:JSON.stringify(resp)});
           const result=await verify.json();
-          if(!verify.ok) { alert(result.error||'Payment verification failed.'); return; }
-          alert('Payment successful. Your '+(plan==='pro'?'Pro':'Plus')+' plan is being activated.');
-          window.location.href='dashboard.html?billing=success';
+          if(!verify.ok) { billingToast(result.error||'Payment verification failed.',true); return; }
+          billingToast('Payment successful — your '+(plan==='pro'?'Pro':'Plus')+' plan is being activated.',false);
+          setTimeout(()=>{window.location.href='dashboard.html?billing=success';},1400);
         },
         modal:{ondismiss:function(){}}
       });
-      rzp.on('payment.failed',function(resp){ alert(resp?.error?.description||'Payment failed. Please try again.'); });
+      rzp.on('payment.failed',function(resp){ billingToast(resp?.error?.description||'Payment failed. Please try again.',true); });
       rzp.open();
     },
     async status(){
