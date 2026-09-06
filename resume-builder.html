@@ -5,19 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>ATS Resume Builder — Belongix</title>
 <meta name="description" content="Build an ATS-ready resume with AI. Real-time ATS Readiness Score, keyword matching, AI bullet rewriter. Free on Belongix."/>
-<link rel="canonical" href="https://www.belongix.in/resume-builder.html"/>
-<meta property="og:type" content="website"/>
-<meta property="og:title" content="ATS Resume Builder — Belongix"/>
-<meta property="og:description" content="Build an ATS-ready resume with AI. Real-time ATS Readiness Score, keyword matching, AI bullet rewriter."/>
-<meta property="og:url" content="https://www.belongix.in/resume-builder.html"/>
-<meta property="og:image" content="https://www.belongix.in/icons/og-image.png"/>
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:title" content="ATS Resume Builder — Belongix"/>
-<meta name="twitter:description" content="Build an ATS-ready resume with AI. Free on Belongix."/>
 <link rel="icon" href="icons/icon-32.png"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
+<script src="belongix-auth.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="billing.js"></script>
 <style>
 :root{
   --brand:#2D1B69;--brand2:#4C2FAA;--brand-lt:#EDE9FF;
@@ -28,14 +22,14 @@
   --purple:#7C3AED;--purple-lt:#F5F3FF;
   --ink:#0D0D1A;--muted:#5A5A7A;--subtle:#94A3B8;
   --border:#E4E4F0;--bg:#F7F7FC;--card:#fff;
-  --ff:'Inter',sans-serif;--fb:'Inter',sans-serif;
+  --ff:'Sora',sans-serif;--fb:'DM Sans',sans-serif;
   --radius:14px;
   --shadow:0 1px 4px rgba(13,13,26,.06),0 4px 16px rgba(13,13,26,.06);
   --shadow-lg:0 8px 32px rgba(45,27,105,.12);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:var(--fb);color:var(--ink);background:var(--bg);line-height:1.55;font-size:14px}
+body{font-family:var(--fb);color:var(--ink);background:var(--bg);line-height:1.55;font-size:14px}.builder-only{display:block}.landing-disabled{display:none!important}
 a{text-decoration:none;color:inherit}
 
 /* ── NAV ── */
@@ -137,7 +131,7 @@ a{text-decoration:none;color:inherit}
 .sp-bar-val{font-size:12px;font-weight:700;color:rgba(255,255,255,.7);width:34px;text-align:right}
 
 /* ── APP LAYOUT ── */
-#app-view{display:flex}
+#app-view{display:none}
 .app-layout{display:grid;grid-template-columns:260px 1fr;height:calc(100vh - 60px);overflow:hidden}
 
 /* Sidebar */
@@ -362,6 +356,43 @@ a{text-decoration:none;color:inherit}
 .tmpl-desc{font-size:11.5px;color:var(--muted);margin-top:2px}
 .tmpl-safe{position:absolute;top:7px;right:7px;background:var(--green);color:#fff;font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px}
 
+
+/* Belongix live resume preview */
+.live-preview-pane{width:430px;flex:0 0 430px;background:#eef0f5;border-left:1px solid var(--border);overflow:auto;padding:20px 18px;position:relative}
+.live-preview-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;position:sticky;top:0;z-index:4;background:#eef0f5;padding-bottom:10px}
+.live-preview-title{font-family:var(--ff);font-size:13px;font-weight:800}
+.live-preview-meta{font-size:11px;color:var(--muted)}
+.resume-sheet{width:100%;min-height:610px;background:#fff;box-shadow:0 4px 24px rgba(13,13,26,.12);padding:30px 32px;color:#171717;font-family:Arial,sans-serif;font-size:8.8px;line-height:1.42;transition:.2s}
+.resume-sheet .rp-name{font-size:22px;line-height:1.1;font-weight:800;letter-spacing:-.4px}
+.resume-sheet .rp-title{font-size:9.5px;margin-top:4px;color:#555}
+.resume-sheet .rp-contact{font-size:7.6px;color:#555;margin-top:7px;display:flex;flex-wrap:wrap;gap:3px 9px}
+.resume-sheet .rp-section{margin-top:15px}
+.resume-sheet .rp-section-title{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.9px;margin-bottom:6px}
+.resume-sheet .rp-rule{height:1px;background:#222;margin-top:-3px;margin-bottom:6px}
+.resume-sheet .rp-summary{font-size:8.2px;color:#333}
+.resume-sheet .rp-job{margin-bottom:9px}
+.resume-sheet .rp-job-head{display:flex;justify-content:space-between;gap:8px;font-size:8.5px;font-weight:800}
+.resume-sheet .rp-company{font-size:7.9px;color:#555;margin-top:1px}
+.resume-sheet .rp-dates{font-size:7.5px;color:#555;white-space:nowrap}
+.resume-sheet ul{padding-left:13px;margin:4px 0 0}
+.resume-sheet li{margin:2px 0}
+.resume-sheet .rp-skills{display:flex;flex-wrap:wrap;gap:3px 7px}
+.resume-sheet .rp-skill{font-size:7.8px}
+.resume-sheet .rp-project{margin-bottom:7px}
+.resume-sheet.rp-modern .rp-name{color:#4c2faa}.resume-sheet.rp-modern .rp-section-title{color:#4c2faa}.resume-sheet.rp-modern .rp-rule{background:#d9d1ff}
+.resume-sheet.rp-executive{font-family:Georgia,serif}.resume-sheet.rp-executive .rp-name{font-family:Georgia,serif;font-size:23px}.resume-sheet.rp-executive .rp-section-title{letter-spacing:1.5px;border-bottom:1px solid #777;padding-bottom:3px}
+.resume-sheet.rp-compact{padding:24px 25px;font-size:8px}.resume-sheet.rp-compact .rp-section{margin-top:10px}.resume-sheet.rp-compact .rp-name{font-size:19px}.resume-sheet.rp-compact .rp-job{margin-bottom:5px}
+.resume-sheet.rp-tech .rp-name{color:#0b6bcb}.resume-sheet.rp-tech .rp-section-title{color:#0b6bcb;border-bottom:1px solid #cfe2f7;padding-bottom:3px}
+.resume-sheet.rp-minimal{padding:34px 38px}.resume-sheet.rp-minimal .rp-section-title{font-size:8.4px;color:#666;letter-spacing:1.4px}.resume-sheet.rp-minimal .rp-rule{display:none}
+.resume-sheet.rp-gradient .rp-name{color:#5b21b6}.resume-sheet.rp-gradient .rp-section-title{color:#5b21b6}
+.resume-sheet.rp-green .rp-name{color:#176b57}.resume-sheet.rp-green .rp-section-title{color:#176b57}
+.resume-sheet.rp-navy .rp-name{color:#183153}.resume-sheet.rp-navy .rp-section-title{color:#183153}
+.resume-sheet.rp-amber .rp-name{color:#8a4b08}.resume-sheet.rp-amber .rp-section-title{color:#8a4b08}
+.template-filter{display:flex;gap:7px;flex-wrap:wrap;margin:0 0 16px}.template-filter button{border:1px solid var(--border);background:#fff;color:var(--muted);border-radius:999px;padding:6px 10px;font:600 11.5px var(--fb);cursor:pointer}.template-filter button.active{background:var(--brand);border-color:var(--brand);color:#fff}
+.tmpl-card{background:#fff}.tmpl-preview{height:185px;background:#eef0f5;padding:13px;display:flex;align-items:center;justify-content:center}.tmpl-preview .mini-sheet{width:105px;height:153px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:10px 9px;font-family:Arial,sans-serif;position:relative;overflow:hidden}.mini-sheet .m-name{font-size:9px;font-weight:800;margin-bottom:3px}.mini-sheet .m-title{font-size:5.5px;color:#666;margin-bottom:5px}.mini-sheet .m-line{height:2px;background:#ddd;margin:3px 0}.mini-sheet .m-head{font-size:5.2px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-top:6px}.mini-sheet .m-text{height:2px;background:#e6e6e6;margin-top:3px}.mini-sheet.modern .m-name{color:#4c2faa}.mini-sheet.tech .m-name{color:#0b6bcb}.mini-sheet.green .m-name{color:#176b57}.mini-sheet.navy .m-name{color:#183153}.mini-sheet.amber .m-name{color:#8a4b08}.mini-sheet.executive{font-family:Georgia,serif}.mini-sheet.minimal{padding:13px 12px}.mini-sheet.compact{padding:7px}.mini-sheet.compact .m-head{margin-top:3px}.tmpl-info{min-height:74px}.tmpl-desc{line-height:1.35}.tmpl-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:7px}.tmpl-tag{font-size:9px;padding:2px 5px;border-radius:4px;background:#f0eeff;color:var(--brand);font-weight:700}
+@media(max-width:1200px){.live-preview-pane{width:370px;flex-basis:370px}.ai-panel{width:270px}.resume-sheet{padding:25px 26px}}
+@media(max-width:980px){.live-preview-pane{display:none}.ai-panel{width:320px}}
+
 /* Modal */
 .modal-overlay{
   display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);
@@ -478,24 +509,23 @@ a{text-decoration:none;color:inherit}
   .ob-opts{grid-template-columns:1fr 1fr}
   .kw-stats{grid-template-columns:1fr 1fr}
 }
-.skip-link{position:absolute;left:-9999px;top:0;background:#2D1B69;color:#fff;padding:10px 16px;border-radius:0 0 8px 0;z-index:9999;font-family:sans-serif;font-size:14px;text-decoration:none}.skip-link:focus{left:0}
 </style>
 </head>
 <body>
-<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <!-- NAV -->
 <nav class="nav">
-  <a href="index.html" class="nav-logo">Belongix</a>
+  <a href="dashboard.html" class="nav-logo">Belongix</a>
   <div class="nav-center">
-    <a href="index.html" class="nav-link">Workspace</a>
+    <a href="dashboard.html" class="nav-link">Workspace</a>
     <a href="resume-builder.html" class="nav-link active">Resume Builder</a>
     <a href="career-profile.html" class="nav-link">Profile</a>
     <a href="settings.html" class="nav-link">Settings</a>
   </div>
   <div class="nav-r">
-    <a href="index.html" class="btn-ghost-sm" style="text-decoration:none">Workspace</a>
-    <button class="btn-cta-sm" onclick="showExport()">Export Resume →</button>
+    <a href="dashboard.html" class="btn-ghost-sm" style="text-decoration:none">Workspace</a>
+     <a href="career-profile.html" class="btn-ghost-sm" style="text-decoration:none">Profile</a>
+    <button class="btn-cta-sm" onclick="startOnboarding()">Build My Resume →</button>
     <button class="hamburger" onclick="toggleMobileMenu()">
       <svg fill="none" viewBox="0 0 24 24" stroke-width="1.8"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
     </button>
@@ -508,18 +538,18 @@ a{text-decoration:none;color:inherit}
     <span class="nav-logo">Belongix</span>
     <button class="mobile-close" onclick="toggleMobileMenu()">✕</button>
   </div>
-  <a href="index.html" class="mobile-link">Workspace</a>
+  <a href="dashboard.html" class="mobile-link">Workspace</a>
   <a href="resume-builder.html" class="mobile-link">📄 Resume Builder</a>
   <a href="career-profile.html" class="mobile-link">Profile</a>
   <a href="settings.html" class="mobile-link">Settings</a>
   <div class="mobile-btns">
-    <button class="btn-cta-sm" style="width:100%;padding:13px;font-size:15px" onclick="showExport();toggleMobileMenu()">Export Resume →</button>
+    <button class="btn-cta-sm" style="width:100%;padding:13px;font-size:15px" onclick="startOnboarding();toggleMobileMenu()">Build My Resume →</button>
   </div>
 </div>
 
 <!-- ══════════════════ LANDING ══════════════════ -->
-<div id="landing-view" style="display:none">
-  <div class="hero" id="main-content" tabindex="-1">
+<div id="landing-view" class="landing-disabled">
+  <div class="hero">
     <div class="hero-inner">
       <div class="hero-pill"><div class="pill-dot"></div>AI-Powered · Free to Use</div>
       <h1>Build an ATS-Ready Resume<br/>That Gets <span class="h1-purple">Noticed</span></h1>
@@ -594,8 +624,8 @@ a{text-decoration:none;color:inherit}
   <!-- Footer -->
   <footer style="background:#0D0D1A;padding:40px 24px;color:rgba(255,255,255,.45);text-align:center">
     <div style="font-family:var(--ff);font-size:17px;font-weight:800;color:#fff;margin-bottom:8px">Belongix Resume Builder</div>
-    <div style="font-size:13px;margin-bottom:16px">AI-powered resume workspace · <a href="index.html" style="color:rgba(255,255,255,.6)">Home</a> · <a href="career-profile.html" style="color:rgba(255,255,255,.6)">Profile</a> · <a href="settings.html" style="color:rgba(255,255,255,.6)">Settings</a></div>
-    <div style="font-size:12px"><a href="privacy.html" style="color:rgba(255,255,255,.4)">Privacy</a> · <a href="terms.html" style="color:rgba(255,255,255,.4)">Terms</a></div>
+    <div style="font-size:13px;margin-bottom:16px">AI-powered resume building, ATS analysis and professional templates.</div>
+    <div style="font-size:12px"><a href="privacy.html" style="color:rgba(255,255,255,.4)">Privacy</a> · <a href="terms.html" style="color:rgba(255,255,255,.4)">Terms</a> · <a href="career-profile.html" style="color:rgba(255,255,255,.4)">Profile</a></div>
     <div style="font-size:11px;margin-top:20px;color:rgba(255,255,255,.2)">ATS Readiness is an optimization estimate and does not guarantee employer outcomes.</div>
   </footer>
 </div><!-- /landing-view -->
@@ -673,6 +703,7 @@ a{text-decoration:none;color:inherit}
       <div style="font-size:12px;color:var(--green)" id="autosave-status">✓ Saved</div>
     </div>
     <div class="app-topbar-btns">
+      <div id="quota-pill" style="font-size:11.5px;color:var(--muted);padding:7px 10px;border:1px solid var(--border);border-radius:999px;background:#fff;cursor:pointer" onclick="openBilling()">Quota…</div>
       <div class="score-pill" onclick="switchTab('score')">
         <div class="score-pill-num high" id="topbar-score">—</div>
         <div class="score-pill-label">/100 ATS</div>
@@ -944,6 +975,11 @@ a{text-decoration:none;color:inherit}
             <button class="ai-send" onclick="sendAI()">↑</button>
           </div>
         </div>
+        <aside class="live-preview-pane" id="live-preview-pane">
+          <div class="live-preview-head"><div><div class="live-preview-title">Live resume preview</div><div class="live-preview-meta" id="preview-template-name">ATS Classic · ATS-safe</div></div><button class="btn btn-secondary btn-sm" onclick="switchTab('templates')">Change</button></div>
+          <div id="resume-preview-sheet" class="resume-sheet rp-classic"></div>
+          <div style="margin-top:10px;font-size:10.5px;color:var(--muted);text-align:center">Content and formatting update as you type.</div>
+        </aside>
       </div><!-- /app-content -->
     </div>
   </div>
@@ -1012,54 +1048,40 @@ a{text-decoration:none;color:inherit}
   </div>
 </div>
 
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 // ── SUPABASE ──
-var SB_URL=(window.BELONGIX_CONFIG||{}).SUPABASE_URL;
-var SB_KEY=(window.BELONGIX_CONFIG||{}).SUPABASE_ANON_KEY;
-var sb=window.belongixSupabase || supabase.createClient(SB_URL,SB_KEY,{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+var SB_URL='https://vtiaszkqpsuuvfaizqrl.supabase.co';
+var SB_KEY='sb_publishable_o2OsxbEzbVd8JXdVU_z7Zw_kpmzt-nm';
+var sb=supabase.createClient(SB_URL,SB_KEY);
 
 // ── STATE ──
 var state={
   careerLevel:'',targetJob:'',jdText:'',jdKeywords:[],
   skills:{technical:[],soft:[],domain:[]},
   experience:[],education:[],projects:[],certs:[],
-  score:null,currentTemplate:'ats-classic',
-  currentBulletCb:null,autosaveTimer:null,obStep:1,
-  currentResumeId:null,  // null until a resume is created/loaded from Supabase
+  score:null,currentTemplate:'classic',
+  currentBulletCb:null,autosaveTimer:null,saveInFlight:false,saveQueued:false,currentResumeId:null,session:null,obStep:1,
 };
-var _user=null; // set once we know the real Supabase session; null = logged out
 
 // ── INIT ──
 window.addEventListener('load',async function(){
-  try{
-    var s=await sb.auth.getSession();
-    if(s.data&&s.data.session&&s.data.session.user)_user=s.data.session.user;
-  }catch(e){}
   initTemplates();
   initDashboard();
   addExp(true);addEdu(true);
   openApp('editor');
+  renderLivePreview();
+  try{
+    state.session=await getBelongixSession();
+    if(!state.session){showToast('Please sign in to save resumes.','error');return;}
+    await loadResumeFromUrl();
+    await refreshQuota();
+  }catch(e){console.error(e);showToast('Could not initialize your workspace.','error');}
   document.addEventListener('click',function(e){
     if(!e.target.closest('.nav-r')&&!e.target.closest('#mobile-menu')){}
   });
 });
-
-// Every save/load/AI action needs a real session. Rather than gating the
-// whole page (the landing/preview experience stays open to everyone),
-// we check at the point of action and prompt sign-in only when it
-// actually matters — matching how index.html's auth modal already works.
-async function requireAuth(){
-  if(_user)return _user;
-  try{
-    var s=await sb.auth.getSession();
-    if(s.data&&s.data.session&&s.data.session.user){_user=s.data.session.user;return _user;}
-  }catch(e){}
-  showToast('Please sign in to save your resume');
-  setTimeout(function(){window.location.href='index.html';},1200);
-  return null;
-}
 
 // ── MOBILE MENU ──
 function toggleMobileMenu(){
@@ -1075,9 +1097,7 @@ function openApp(tab){
   av.style.display='flex';
   if(tab)switchTab(tab);
 }
-function exitApp(){
-  window.location.href='index.html';
-}
+function exitApp(){ window.location.href='dashboard.html'; }
 
 // ── ONBOARDING ──
 function startOnboarding(){
@@ -1272,94 +1292,122 @@ function renderSkillTags(type){
 }
 
 // ── AUTOSAVE ──
-function buildResumeContent(){
+function collectResumeContent(){
   return {
-    careerLevel:state.careerLevel,targetJob:state.targetJob,
-    jdText:state.jdText,jdKeywords:state.jdKeywords,
-    skills:state.skills,experience:state.experience,
-    education:state.education,projects:state.projects,certs:state.certs,
-    template:state.currentTemplate,
-    fields:{
-      name:gvId('f-name'),title:gvId('f-title'),email:gvId('f-email'),
-      phone:gvId('f-phone'),summary:gvId('f-summary')
-    }
+    contact:{
+      name:(document.getElementById('f-name')||{}).value||'',
+      title:(document.getElementById('f-title')||{}).value||'',
+      email:(document.getElementById('f-email')||{}).value||'',
+      phone:(document.getElementById('f-phone')||{}).value||'',
+      city:(document.getElementById('f-city')||{}).value||'',
+      linkedin:(document.getElementById('f-linkedin')||{}).value||''
+    },
+    summary:(document.getElementById('f-summary')||{}).value||'',
+    experience:state.experience,
+    education:state.education,
+    skills:state.skills,
+    projects:state.projects,
+    certs:state.certs,
+    targetJob:state.targetJob||'',
+    careerLevel:state.careerLevel||'',
+    jdText:state.jdText||'',
+    jdKeywords:state.jdKeywords||[],
+    template:state.currentTemplate||'classic',
+    score:state.score
   };
 }
-function gvId(id){var el=document.getElementById(id);return el?el.value:'';}
-
-// Real, debounced save to Supabase. States shown: Saving… / Saved ✓ / an
-// actual error — never a fake "Saved" if the write didn't happen.
+function hydrateResume(content){
+  content=content||{};
+  var c=content.contact||{};
+  [['f-name',c.name],['f-title',c.title],['f-email',c.email],['f-phone',c.phone],['f-city',c.city],['f-linkedin',c.linkedin],['f-summary',content.summary]].forEach(function(pair){var el=document.getElementById(pair[0]);if(el)el.value=pair[1]||'';});
+  state.experience=Array.isArray(content.experience)?content.experience:[];
+  state.education=Array.isArray(content.education)?content.education:[];
+  state.skills=content.skills||{technical:[],soft:[],domain:[]};
+  state.skills.technical=Array.isArray(state.skills.technical)?state.skills.technical:[];
+  state.skills.soft=Array.isArray(state.skills.soft)?state.skills.soft:[];
+  state.skills.domain=Array.isArray(state.skills.domain)?state.skills.domain:[];
+  state.projects=Array.isArray(content.projects)?content.projects:[];
+  state.certs=Array.isArray(content.certs)?content.certs:[];
+  state.targetJob=content.targetJob||'';
+  state.careerLevel=content.careerLevel||'';
+  state.jdText=content.jdText||'';
+  state.jdKeywords=Array.isArray(content.jdKeywords)?content.jdKeywords:[];
+  state.currentTemplate=content.template||'classic';
+  state.score=content.score||null;
+  if(!state.experience.length)addExp(true);
+  if(!state.education.length)addEdu(true);
+  renderExp();renderEdu();renderProj();renderCerts();
+  ['technical','soft','domain'].forEach(renderSkillTags);
+  initTemplates();renderLivePreview();updateKeywords();
+  var chars=document.getElementById('summary-chars');var summary=(document.getElementById('f-summary')||{}).value||'';if(chars)chars.textContent=summary.length+' chars';
+}
+async function loadResumeFromUrl(){
+  var id=new URLSearchParams(location.search).get('resume');
+  if(!id)return;
+  var q=await belongix.from('resumes').select('*').eq('id',id).maybeSingle();
+  if(q.error)throw q.error;
+  if(!q.data){showToast('Resume not found. Starting a new resume.','error');return;}
+  state.currentResumeId=q.data.id;
+  state.targetJob=q.data.target_job||'';
+  state.careerLevel=q.data.career_level||'';
+  state.currentTemplate=q.data.template||'classic';
+  hydrateResume(q.data.content||{});
+  var title=document.getElementById('app-resume-title');if(title)title.textContent=q.data.title||'My Resume';
+  var ind=document.getElementById('autosave-status');if(ind)ind.textContent='✓ Saved';
+}
+async function refreshQuota(){
+  try{
+    var q=await BelongixBilling.status();
+    var el=document.getElementById('quota-pill');
+    if(!q){if(el)el.textContent='Quota unavailable';return null;}
+    var label=(q.plan_code==='pro'?'Pro':q.plan_code==='plus'?'Plus':'Free');
+    if(el)el.textContent=label+' · '+q.resumes_remaining+'/'+q.resumes_limit+' left';
+    return q;
+  }catch(e){console.warn('quota',e);return null;}
+}
+function openBilling(){location.href='settings.html#billing';}
+async function persistResume(){
+  if(!state.session)return;
+  if(state.saveInFlight){state.saveQueued=true;return;}
+  state.saveInFlight=true;state.saveQueued=false;
+  var ind=document.getElementById('autosave-status');if(ind)ind.innerHTML='<span class="spinner" style="width:12px;height:12px;border-width:1.5px"></span> Saving…';
+  try{
+    var content=collectResumeContent();
+    var title=((content.contact.name||'My Resume')+' — '+(content.contact.title||state.targetJob||'Resume')).trim();
+    if(!state.currentResumeId){
+      var created=await belongix.rpc('create_resume_with_quota',{p_title:title,p_content:content,p_target_job:state.targetJob||null,p_career_level:state.careerLevel||null,p_template:state.currentTemplate||'classic'});
+      if(created.error)throw created.error;
+      state.currentResumeId=created.data.id;
+      var u=new URL(location.href);u.searchParams.set('resume',state.currentResumeId);history.replaceState({},'',u.toString());
+      var q=document.getElementById('app-resume-title');if(q)q.textContent=created.data.title||title;
+      await refreshQuota();
+    }else{
+      var updated=await belongix.from('resumes').update({title:title,content:content,target_job:state.targetJob||null,career_level:state.careerLevel||null,template:state.currentTemplate||'classic'}).eq('id',state.currentResumeId).eq('user_id',state.session.user.id);
+      if(updated.error)throw updated.error;
+      var q=document.getElementById('app-resume-title');if(q)q.textContent=title;
+    }
+    if(ind)ind.textContent='✓ Saved';
+  }catch(e){
+    console.error('resume save',e);
+    var msg=String(e.message||e.details||e);
+    if(/RESUME_LIMIT_REACHED/i.test(msg)){
+      if(ind)ind.textContent='Limit reached';
+      showToast('You reached your resume limit. Upgrade your plan to create another.','error');
+    }else if(/SUBSCRIPTION_INACTIVE|SUBSCRIPTION_PERIOD_EXPIRED/i.test(msg)){
+      if(ind)ind.textContent='Billing inactive';
+      showToast('Your subscription is inactive. Open Settings to renew.','error');
+    }else{if(ind)ind.textContent='Save failed';showToast('Could not save your resume. Please try again.','error');}
+  }finally{
+    state.saveInFlight=false;
+    if(state.saveQueued){state.saveQueued=false;persistResume();}
+  }
+}
 function autosave(){
+  renderLivePreview();
   var ind=document.getElementById('autosave-status');
   if(ind)ind.innerHTML='<span class="spinner" style="width:12px;height:12px;border-width:1.5px"></span> Saving…';
   clearTimeout(state.autosaveTimer);
-  state.autosaveTimer=setTimeout(async function(){
-    var user=_user; // don't force a redirect mid-typing; only skip persistence if logged out
-    if(!user){try{var s=await sb.auth.getSession();if(s.data&&s.data.session)user=_user=s.data.session.user;}catch(e){}}
-    if(!user){if(ind)ind.textContent='Sign in to save';return;}
-    try{
-      var content=buildResumeContent();
-      var title=gvId('f-name')||state.targetJob||'Untitled Resume';
-      if(state.currentResumeId){
-        var r=await sb.from('resumes').update({title:title,content:content,target_job:state.targetJob,career_level:state.careerLevel,template:state.currentTemplate}).eq('id',state.currentResumeId);
-        if(r.error)throw r.error;
-      }else{
-        var ins=await sb.from('resumes').insert({user_id:user.id,title:title,content:content,target_job:state.targetJob,career_level:state.careerLevel,template:state.currentTemplate}).select('id').single();
-        if(ins.error)throw ins.error;
-        state.currentResumeId=ins.data.id;
-      }
-      if(ind)ind.textContent='✓ Saved';
-    }catch(e){
-      console.error('Resume save failed:',e);
-      if(ind)ind.textContent='⚠️ Save failed — check connection';
-    }
-  },800);
-}
-
-async function loadResumeFromDB(id){
-  var user=await requireAuth();if(!user)return;
-  try{
-    var r=await sb.from('resumes').select('*').eq('id',id).eq('user_id',user.id).single();
-    if(r.error)throw r.error;
-    var c=r.data.content||{};
-    state.currentResumeId=r.data.id;
-    state.careerLevel=c.careerLevel||'';state.targetJob=c.targetJob||'';
-    state.jdText=c.jdText||'';state.jdKeywords=c.jdKeywords||[];
-    state.skills=c.skills||{technical:[],soft:[],domain:[]};
-    state.experience=c.experience||[];state.education=c.education||[];
-    state.projects=c.projects||[];state.certs=c.certs||[];
-    if(c.template){state.currentTemplate=c.template;}
-    if(c.fields){
-      ['name','title','email','phone','summary'].forEach(function(k){
-        var el=document.getElementById('f-'+k);if(el&&c.fields[k]!==undefined)el.value=c.fields[k];
-      });
-    }
-    switchTab('editor');
-    showToast('Resume loaded');
-  }catch(e){
-    console.error('Resume load failed:',e);
-    showToast('⚠️ Could not load that resume');
-  }
-}
-
-async function deleteResumeFromDB(id){
-  var user=await requireAuth();if(!user)return;
-  if(!confirm('Delete this resume? This cannot be undone.'))return;
-  try{
-    var r=await sb.from('resumes').update({is_deleted:true}).eq('id',id).eq('user_id',user.id);
-    if(r.error)throw r.error;
-    if(state.currentResumeId===id)state.currentResumeId=null;
-    showToast('Resume deleted');
-    initDashboard();
-  }catch(e){
-    console.error('Resume delete failed:',e);
-    showToast('⚠️ Could not delete resume');
-  }
-}
-
-function startNewResume(){
-  state.currentResumeId=null;
-  switchTab('editor');
+  state.autosaveTimer=setTimeout(persistResume,700);
 }
 
 // ── ATS SCORE ENGINE (rule-based) ──
@@ -1529,84 +1577,92 @@ function analyzeJD(){
 
 // ── TEMPLATES ──
 var templates=[
-  {id:'ats-classic',name:'ATS Classic',desc:'One-column professional',icon:'📄',safe:true},
-  {id:'modern-pro',name:'Modern Pro',desc:'Clean modern design',icon:'✨',safe:true},
-  {id:'executive',name:'Executive',desc:'Premium executive layout',icon:'🏆',safe:true},
-  {id:'tech',name:'Tech',desc:'Developer-focused',icon:'💻',safe:true},
-  {id:'graduate',name:'Graduate',desc:'Student & fresher',icon:'🎓',safe:true},
-  {id:'finance',name:'Finance',desc:'Finance & business',icon:'💼',safe:true},
-  {id:'marketing',name:'Marketing',desc:'Marketing focused',icon:'📈',safe:true},
-  {id:'minimal',name:'Minimal',desc:'Ultra-clean layout',icon:'◻',safe:true},
-  {id:'academic',name:'Academic',desc:'Research & academia',icon:'🔬',safe:true},
-  {id:'international',name:'International',desc:'Global format',icon:'🌍',safe:false},
+ {id:'classic',name:'Classic',desc:'Timeless single-column format for any role',cat:'Professional',safe:true,mini:'classic',tags:['ATS-safe','All roles']},
+ {id:'modern',name:'Modern',desc:'Contemporary hierarchy with subtle color',cat:'Professional',safe:true,mini:'modern',tags:['ATS-safe','Tech']},
+ {id:'compact',name:'Compact',desc:'High-density layout for experienced candidates',cat:'Compact',safe:true,mini:'compact',tags:['ATS-safe','2+ pages']},
+ {id:'executive',name:'Executive',desc:'Elegant serif-led format for leadership roles',cat:'Executive',safe:true,mini:'executive',tags:['ATS-safe','Leadership']},
+ {id:'tech',name:'Tech',desc:'Engineering-first layout with crisp section hierarchy',cat:'Industry',safe:true,mini:'tech',tags:['ATS-safe','Engineering']},
+ {id:'minimal',name:'Minimal',desc:'Quiet typography with maximum readability',cat:'Professional',safe:true,mini:'minimal',tags:['ATS-safe','Clean']},
+ {id:'graduate',name:'Graduate',desc:'Balanced structure for students and early careers',cat:'Career stage',safe:true,mini:'classic',tags:['ATS-safe','Graduate']},
+ {id:'finance',name:'Finance',desc:'Conservative structure for finance and consulting',cat:'Industry',safe:true,mini:'navy',tags:['ATS-safe','Finance']},
+ {id:'green',name:'Impact',desc:'Subtle green accent for mission-driven careers',cat:'Professional',safe:true,mini:'green',tags:['ATS-safe','Modern']},
+ {id:'navy',name:'Navy',desc:'Crisp blue accent for corporate applications',cat:'Professional',safe:true,mini:'navy',tags:['ATS-safe','Corporate']},
+ {id:'amber',name:'Signal',desc:'Warm accent while preserving ATS-safe structure',cat:'Creative',safe:true,mini:'amber',tags:['ATS-safe','Creative']},
+ {id:'violet',name:'Violet',desc:'Premium purple accent for product and design roles',cat:'Creative',safe:true,mini:'modern',tags:['ATS-safe','Product']}
+ ,{id:'swiss',name:'Swiss',desc:'Precise editorial grid with strong hierarchy',cat:'Professional',safe:true,mini:'minimal',tags:['ATS-safe','Editorial']},
+ {id:'product',name:'Product',desc:'Balanced format for product and strategy roles',cat:'Industry',safe:true,mini:'violet',tags:['ATS-safe','Product']},
+ {id:'data',name:'Data',desc:'Dense but readable layout for analytics careers',cat:'Industry',safe:true,mini:'compact',tags:['ATS-safe','Analytics']}
 ];
+var templateFilter='All';
+function miniResume(kind){return '<div class="mini-sheet '+kind+'"><div class="m-name">Alex Morgan</div><div class="m-title">Product / Software Professional</div><div class="m-line"></div><div class="m-head">Experience</div><div class="m-text" style="width:88%"></div><div class="m-text" style="width:72%"></div><div class="m-text" style="width:82%"></div><div class="m-head">Skills</div><div class="m-text" style="width:90%"></div><div class="m-text" style="width:65%"></div><div class="m-head">Education</div><div class="m-text" style="width:78%"></div><div class="m-text" style="width:58%"></div></div>';}
 function initTemplates(){
-  var g=document.getElementById('tmpl-grid');if(!g)return;
-  g.innerHTML=templates.map(function(t){
-    return '<div class="tmpl-card'+(t.id===state.currentTemplate?' active':'')+'" onclick="selectTemplate(\''+t.id+'\')">'
-      +(t.safe?'<div class="tmpl-safe">✅ ATS Safe</div>':'<div class="tmpl-safe" style="background:var(--amber)">⚠️ Stylized</div>')
-      +'<div class="tmpl-preview">'+t.icon+'</div>'
-      +'<div class="tmpl-info"><div class="tmpl-name">'+t.name+'</div><div class="tmpl-desc">'+t.desc+'</div></div></div>';
-  }).join('');
+ var g=document.getElementById('tmpl-grid');if(!g)return;
+ var filters=['All','Professional','Industry','Career stage','Executive','Compact','Creative'];
+ var html='<div class="template-filter">'+filters.map(function(f){return '<button class="'+(templateFilter===f?'active':'')+'" onclick="setTemplateFilter(\''+f+'\')">'+f+'</button>';}).join('')+'</div>';
+ var list=templates.filter(function(t){return templateFilter==='All'||t.cat===templateFilter;});
+ html+='<div class="tmpl-grid-inner" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px">';
+ list.forEach(function(t){html+='<div class="tmpl-card '+(t.id===state.currentTemplate?'active':'')+'" onclick="selectTemplate(\''+t.id+'\')">'+(t.safe?'<div class="tmpl-safe">ATS SAFE</div>':'')+'<div class="tmpl-preview">'+miniResume(t.mini)+'</div><div class="tmpl-info"><div class="tmpl-name">'+t.name+(t.id===state.currentTemplate?' ✓':'')+'</div><div class="tmpl-desc">'+t.desc+'</div><div class="tmpl-tags">'+t.tags.map(function(x){return '<span class="tmpl-tag">'+x+'</span>';}).join('')+'</div></div></div>';});
+ html+='</div>';g.innerHTML=html;
 }
-function selectTemplate(id){
-  state.currentTemplate=id;initTemplates();
-  var t=templates.find(function(x){return x.id===id;});
-  showToast('Template: '+(t?t.name:''),'success');
+function setTemplateFilter(f){templateFilter=f;initTemplates();}
+function selectTemplate(id){state.currentTemplate=id;initTemplates();renderLivePreview();var t=templates.find(function(x){return x.id===id;});var el=document.getElementById('preview-template-name');if(el&&t)el.textContent=t.name+' · ATS-safe';showToast('Applied '+(t?t.name:'template'),'success');autosave();}
+function renderLivePreview(){
+ var el=document.getElementById('resume-preview-sheet');if(!el)return;
+ var name=(document.getElementById('f-name')||{}).value||'Your Name';
+ var title=(document.getElementById('f-title')||{}).value||'Professional Title';
+ var email=(document.getElementById('f-email')||{}).value||'email@example.com';
+ var phone=(document.getElementById('f-phone')||{}).value||'+91 00000 00000';
+ var city=(document.getElementById('f-city')||{}).value||'';
+ var li=(document.getElementById('f-linkedin')||{}).value||'';
+ var summary=(document.getElementById('f-summary')||{}).value||'Add a concise, achievement-focused summary. Your live preview will update as you build.';
+ var t=templates.find(function(x){return x.id===state.currentTemplate;})||templates[0];
+ var cls='rp-'+(t.id==='modern'?'modern':t.id==='executive'?'executive':t.id==='compact'?'compact':t.id==='tech'?'tech':t.id==='minimal'?'minimal':t.id==='green'?'green':t.id==='navy'?'navy':t.id==='amber'?'amber':(t.id==='violet'||t.id==='product')?'gradient':(t.id==='swiss'?'minimal':(t.id==='data'?'compact':'classic')));
+ el.className='resume-sheet '+cls;
+ var contact=[email,phone,city,li].filter(Boolean).map(esc).join('<span>•</span>');
+ var html='<div class="rp-name">'+esc(name)+'</div><div class="rp-title">'+esc(title)+'</div><div class="rp-contact">'+contact+'</div>';
+ if(summary.trim())html+='<section class="rp-section"><div class="rp-section-title">Professional Summary</div><div class="rp-rule"></div><div class="rp-summary">'+esc(summary)+'</div></section>';
+ if(state.experience.length){html+='<section class="rp-section"><div class="rp-section-title">Experience</div><div class="rp-rule"></div>';state.experience.forEach(function(e){if(!(e.title||e.company||e.bullets.some(Boolean)))return;html+='<div class="rp-job"><div class="rp-job-head"><span>'+esc(e.title||'Role')+'</span><span class="rp-dates">'+esc((e.startDate||'')+' — '+(e.current?'Present':(e.endDate||'')))+'</span></div><div class="rp-company">'+esc(e.company||'')+(e.location?' · '+esc(e.location):'')+'</div>';var bs=e.bullets.filter(function(b){return b.trim();});if(bs.length)html+='<ul>'+bs.map(function(b){return '<li>'+esc(b)+'</li>';}).join('')+'</ul>';html+='</div>';});html+='</section>';}
+ var skills=[].concat(state.skills.technical||[],state.skills.soft||[],state.skills.domain||[]).filter(Boolean);
+ if(skills.length){html+='<section class="rp-section"><div class="rp-section-title">Skills</div><div class="rp-rule"></div><div class="rp-skills">'+skills.map(function(x){return '<span class="rp-skill">'+esc(x)+'</span>';}).join(' · ')+'</div></section>';}
+ if(state.education.length){html+='<section class="rp-section"><div class="rp-section-title">Education</div><div class="rp-rule"></div>';state.education.forEach(function(e){if(!(e.degree||e.institution))return;html+='<div class="rp-job"><div class="rp-job-head"><span>'+esc(e.degree||'Degree')+'</span><span class="rp-dates">'+esc(e.year||'')+'</span></div><div class="rp-company">'+esc(e.institution||'')+(e.field?' · '+esc(e.field):'')+'</div></div>';});html+='</section>';}
+ if(state.projects.length){html+='<section class="rp-section"><div class="rp-section-title">Projects</div><div class="rp-rule"></div>';state.projects.forEach(function(e){if(!(e.name||e.description))return;html+='<div class="rp-project"><strong>'+esc(e.name||'Project')+'</strong> '+esc(e.description||'')+'</div>';});html+='</section>';}
+ if(state.certs.length){html+='<section class="rp-section"><div class="rp-section-title">Certifications</div><div class="rp-rule"></div>';state.certs.forEach(function(e){if(!(e.name||e.issuer))return;html+='<div class="rp-project"><strong>'+esc(e.name||'Certification')+'</strong> · '+esc(e.issuer||'')+'</div>';});html+='</section>';}
+ el.innerHTML=html;
+ var meta=document.getElementById('preview-template-name');if(meta)meta.textContent=t.name+' · ATS-safe';
 }
 
 // ── DASHBOARD ──
-async function initDashboard(){
+function initDashboard(){
   var g=document.getElementById('dash-grid');if(!g)return;
-  var newCard='<div class="resume-card" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;gap:8px" onclick="startNewResume()">'
-    +'<div style="font-size:28px">+</div><div style="font-family:var(--ff);font-size:13.5px;font-weight:700">New Resume</div>'
-    +'<div style="font-size:12.5px;color:var(--muted)">Start from scratch</div></div>';
-
-  if(!_user){
-    // Not signed in yet — nothing fake to show. Real state, not a demo.
-    g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:13.5px">Sign in to see and save your resumes.</div>'+newCard;
-    return;
-  }
-  try{
-    var r=await sb.from('resumes').select('id,title,target_job,updated_at').eq('user_id',_user.id).eq('is_deleted',false).order('updated_at',{ascending:false});
-    if(r.error)throw r.error;
-    var items=r.data||[];
-    if(!items.length){
-      g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:13.5px">No resumes yet — create your first one.</div>'+newCard;
-      return;
-    }
-    g.innerHTML=items.map(function(row){
-      var edited=new Date(row.updated_at).toLocaleDateString();
-      return '<div class="resume-card" onclick="loadResumeFromDB(\''+row.id+'\')">'
-        +'<div class="resume-card-title">'+esc(row.title||'Untitled Resume')+'</div>'
-        +'<div class="resume-card-sub">'+esc(row.target_job||'')+'</div>'
-        +'<div class="resume-card-meta">Edited '+edited+'</div>'
-        +'<div class="resume-card-btns"><button class="btn btn-primary btn-sm" onclick="event.stopPropagation();loadResumeFromDB(\''+row.id+'\')">Edit</button><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();deleteResumeFromDB(\''+row.id+'\')">Delete</button></div>'
-        +'</div>';
-    }).join('')+newCard;
-  }catch(e){
-    console.error('Dashboard load failed:',e);
-    g.innerHTML='<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--muted);font-size:13.5px">⚠️ Could not load your resumes. Please refresh.</div>'+newCard;
-  }
+  var items=[
+    {name:'Software Engineer Resume',job:'Software Engineer @ Google-style',score:94,match:'91%',edited:'2 hours ago',scoreColor:'var(--green)'},
+    {name:'Full Stack Developer',job:'Full Stack @ Startup',score:78,match:'72%',edited:'Yesterday',scoreColor:'var(--amber)'},
+  ];
+  g.innerHTML=items.map(function(r){
+    return '<div class="resume-card" onclick="switchTab(\'editor\')">'
+      +'<div class="resume-card-score" style="color:'+r.scoreColor+'">'+r.score+'/100</div>'
+      +'<div class="resume-card-title">'+esc(r.name)+'</div>'
+      +'<div class="resume-card-sub">'+esc(r.job)+'</div>'
+      +'<div class="resume-card-meta">Match: '+r.match+' · Edited '+r.edited+'</div>'
+      +'<div class="resume-card-btns"><button class="btn btn-primary btn-sm" onclick="event.stopPropagation();switchTab(\'editor\')">Edit</button><button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();runScan()">Analyze</button></div>'
+      +'</div>';
+  }).join('')
+  +'<div class="resume-card" style="border-style:dashed;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;gap:8px" onclick="switchTab(\'editor\')">'
+  +'<div style="font-size:28px">+</div><div style="font-family:var(--ff);font-size:13.5px;font-weight:700">New Resume</div>'
+  +'<div style="font-size:12.5px;color:var(--muted)">Start from scratch or upload</div></div>';
 }
 
 // ── AI FUNCTIONS ──
-async function callClaude(prompt,cb,feature){
-  var user=await requireAuth();
-  if(!user){cb('[Please sign in to use AI features.]');return;}
+async function callClaude(prompt,cb){
   try{
-    var session=await sb.auth.getSession();
-    var token=session.data&&session.data.session?session.data.session.access_token:null;
-    if(!token){cb('[Session expired — please sign in again.]');return;}
-    var r=await fetch((window.BELONGIX_CONFIG||{}).RESUME_AI_FUNCTION_URL||SB_URL+'/functions/v1/resume-ai',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-      body:JSON.stringify({input:prompt,instruction:feature||'Improve this resume content',resume_id:state.currentResumeId})
-    });
+    var s=state.session||await getBelongixSession();
+    if(!s){cb('[Please sign in to use AI.]');return;}
+    var url=(window.BELONGIX_CONFIG.SUPABASE_URL||'')+'/functions/v1/resume-ai';
+    var r=await fetch(url,{method:'POST',headers:{Authorization:'Bearer '+s.access_token,'Content-Type':'application/json'},body:JSON.stringify({input:prompt,instruction:'resume_builder_ai',resume_id:state.currentResumeId||null})});
     var d=await r.json();
-    if(!r.ok){cb('['+(d.error||'AI temporarily unavailable. Please try again.')+']');return;}
-    cb(d.text||'');
-  }catch(e){console.error('AI call failed:',e);cb('[AI temporarily unavailable. Please try again.]');}
+    if(!r.ok)throw new Error(d.error||'AI request failed');
+    cb(d.output||d.text||'');
+  }catch(e){console.error('AI',e);cb('[AI temporarily unavailable. Please try again.]');}
 }
 function aiGenSummary(){
   var job=state.targetJob||(document.getElementById('f-title')||{}).value||'professional';
