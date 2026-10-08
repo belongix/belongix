@@ -270,14 +270,35 @@ authForm.addEventListener("submit",async e=>{
 });
 
 async function bootUser(user){
+  if(!user) throw new Error("No authenticated user was returned.");
   currentUser=user;
   try{
-    await ensureProfile();
-    await loadResume();
-    authOverlay.classList.add("hidden");
+    // Ensure the auth session is fully available before making RLS-protected Data API calls.
+    const {data:sessionData,error:sessionError}=await sb.auth.getSession();
+    if(sessionError) throw sessionError;
+    if(!sessionData.session?.user) throw new Error("Your sign-in session is not available yet. Please try again.");
+    currentUser=sessionData.session.user;
+
+    // Mobile browsers can briefly race auth persistence and the first database request.
+    // Retry the workspace bootstrap once before surfacing an error.
+    let lastError=null;
+    for(let attempt=0; attempt<2; attempt++){
+      try{
+        await ensureProfile();
+        await loadResume();
+        authOverlay.classList.add("hidden");
+        authError.textContent="";
+        return;
+      }catch(err){
+        lastError=err;
+        if(attempt===0) await new Promise(resolve=>setTimeout(resolve,700));
+      }
+    }
+    throw lastError || new Error("Unable to initialize the career workspace.");
   }catch(err){
-    console.error(err);
-    authError.textContent="Your account is signed in, but the career database is still initializing. Please retry shortly.";
+    console.error("Belongix workspace bootstrap failed:",err);
+    const detail=err?.message ? ` (${err.message})` : "";
+    authError.textContent=`You are signed in, but Belongix couldn't load your career workspace. Please try Sign in again.${detail}`;
     authOverlay.classList.remove("hidden");
   }
 }
