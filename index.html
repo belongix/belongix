@@ -88,6 +88,25 @@
 
 <div class="bexi-drawer" id="bexi"><div class="bexi-head"><div><span class="spark">✦</span><strong>Bexi</strong><small>Your AI career copilot</small></div><button id="closeBexi">×</button></div><div class="bexi-body"><div class="bexi-msg"><small>BEXI</small><p>I found three areas that could make this resume stronger. Want me to start with your experience bullets?</p><div class="chips"><button>Improve bullets</button><button>Explain my score</button><button>Target a job</button></div></div></div><div class="bexi-input"><input placeholder="Ask Bexi anything about your resume…"><button>↑</button></div></div>
 <div class="toast" id="toast">Saved</div>
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-card">
+    <div class="auth-brand"><span class="brand-mark">B</span><strong>BELONGIX</strong></div>
+    <p class="eyebrow">AI CAREER OS</p>
+    <h2 id="authTitle">Welcome back</h2>
+    <p class="auth-copy" id="authCopy">Sign in to save your resume, use Bexi, and continue your career workspace anywhere.</p>
+    <form id="authForm">
+      <label class="auth-label" id="nameField">Full name<input id="authName" autocomplete="name" placeholder="Your name"></label>
+      <label class="auth-label">Email<input id="authEmail" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+      <label class="auth-label">Password<input id="authPassword" type="password" autocomplete="current-password" placeholder="Minimum 6 characters" required minlength="6"></label>
+      <button class="primary full" type="submit" id="authSubmit">Sign in →</button>
+      <p class="auth-error" id="authError"></p>
+    </form>
+    <button class="auth-switch" id="authSwitch">New to Belongix? Create an account</button>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="/config.js"></script>
 <script src="/app.js"></script>
 </body>
 </html>
