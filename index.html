@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Belongix — AI Career OS</title>
+<meta name="description" content="Belongix is your AI Career OS. Build, optimize and manage a career that gets noticed.">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark">B</span><span>BELONGIX</span></div>
+    <nav>
+      <button class="nav active" data-view="dashboard"><span>⌂</span> Dashboard</button>
+      <button class="nav" data-view="resume"><span>▤</span> My Resume</button>
+      <button class="nav" data-view="templates"><span>◫</span> Templates</button>
+      <button class="nav" data-view="analytics"><span>◒</span> Analytics</button>
+    </nav>
+    <div class="side-bottom">
+      <button class="nav" data-view="settings"><span>⚙</span> Settings</button>
+      <div class="upgrade"><div class="spark">✦</div><strong>Unlock Career Pro</strong><p>Unlimited AI optimization and advanced career intelligence.</p><button>Explore Pro</button></div>
+      <div class="user-mini"><div class="avatar">K</div><div><strong>Keerthi</strong><small>Career profile</small></div><span>•••</span></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="mobile-brand"><span class="brand-mark">B</span> BELONGIX</div>
+      <div class="crumb">Career workspace <span>/</span> <strong id="viewTitle">Dashboard</strong></div>
+      <div class="top-actions"><button class="icon-btn">⌕</button><button class="icon-btn">♢</button><button class="avatar">K</button></div>
+    </header>
+
+    <section id="dashboard" class="view active-view">
+      <div class="hero-row">
+        <div><p class="eyebrow">THURSDAY, OCTOBER 8</p><h1>Good morning, Keerthi<span>.</span></h1><p class="muted">Let's make your next career move your strongest one yet.</p></div>
+        <button class="primary" data-view="resume">Open Resume Workspace <span>→</span></button>
+      </div>
+
+      <div class="score-grid">
+        <div class="score-card">
+          <div class="card-head"><span>Career Readiness</span><button>•••</button></div>
+          <div class="score-main"><div class="ring"><div><strong>78</strong><small>/100</small></div></div><div><div class="trend">↗ +6 this month</div><p>You're building momentum.</p></div></div>
+          <div class="meter"><i style="width:78%"></i></div>
+          <div class="score-foot"><span>Resume <b>87</b></span><span>Skills <b>72</b></span><span>Profile <b>75</b></span></div>
+        </div>
+        <div class="insight-card">
+          <div class="card-head"><span>✦ Bexi insight</span><span class="live">AI</span></div>
+          <h3>Your resume is strong. Your impact is the gap.</h3>
+          <p>3 experience bullets describe responsibilities without measurable outcomes. Fixing them could improve your Resume Score by an estimated <b>5–8 points.</b></p>
+          <button class="ghost" id="openBexi">Ask Bexi <span>→</span></button>
+        </div>
+        <div class="mini-card"><span class="mini-icon">✓</span><strong>87</strong><small>Resume Score</small><button data-view="resume">Improve →</button></div>
+        <div class="mini-card"><span class="mini-icon purple">⌁</span><strong>12</strong><small>AI improvements</small><button data-view="resume">Review →</button></div>
+      </div>
+
+      <div class="section-head"><div><h2>Continue where you left off</h2><p>One focused improvement at a time.</p></div></div>
+      <div class="resume-strip">
+        <div class="resume-thumb"><div class="thumb-line long"></div><div class="thumb-line"></div><div class="thumb-line short"></div><div class="thumb-block"></div></div>
+        <div class="resume-info"><span class="pill">MASTER RESUME</span><h3>Java Developer — Master Resume</h3><p>Updated 18 minutes ago · 2 pages · ATS-ready</p><div class="progress-label"><span>Optimization progress</span><b>87%</b></div><div class="meter"><i style="width:87%"></i></div></div>
+        <button class="secondary" data-view="resume">Continue editing →</button>
+      </div>
+
+      <div class="section-head"><div><h2>Recommended next steps</h2><p>Small actions with the highest career impact.</p></div><button class="text-btn">View all →</button></div>
+      <div class="action-grid">
+        <div class="action"><span>01</span><div><h3>Strengthen 3 experience bullets</h3><p>Turn responsibilities into evidence of impact.</p></div><button id="actionBexi">Improve with Bexi →</button></div>
+        <div class="action"><span>02</span><div><h3>Add your strongest project</h3><p>Projects can increase technical credibility.</p></div><button data-view="resume">Add project →</button></div>
+        <div class="action"><span>03</span><div><h3>Check your target role</h3><p>See what skills your market is asking for.</p></div><button>Coming soon →</button></div>
+      </div>
+    </section>
+
+    <section id="resume" class="view">
+      <div class="workspace-head"><div><p class="eyebrow">RESUME WORKSPACE</p><h1>Java Developer — Master Resume</h1><p class="muted">Your content, intelligence and design in one place.</p></div><div class="workspace-actions"><button class="secondary">Preview</button><button class="primary">Export PDF <span>↓</span></button></div></div>
+      <div class="editor">
+        <aside class="sections"><div class="editor-title">SECTIONS <button>＋</button></div><button class="section active">⌘ <span>Summary</span><b>✓</b></button><button class="section">▣ <span>Experience</span><b>✓</b></button><button class="section">◇ <span>Skills</span><b>✓</b></button><button class="section">□ <span>Education</span><b>✓</b></button><button class="section">◆ <span>Projects</span><em>+</em></button><button class="section">✦ <span>Certifications</span><em>+</em></button><button class="section">☷ <span>Custom section</span><em>+</em></button><div class="version"><small>VERSION</small><strong>Master Resume</strong><button>Duplicate version</button></div></aside>
+        <div class="paper-wrap"><div class="paper"><div class="paper-top"><h2>KEERTHI REDDY</h2><p>Java Developer · Bengaluru, India · +91 9XXXXXXXXX · keerti@email.com</p><p>linkedin.com/in/keerthi · github.com/keerthi</p></div><div class="resume-section"><h4>PROFESSIONAL SUMMARY</h4><p>Java developer with 2.5+ years of experience building and maintaining enterprise applications using Java, Spring, JSP and Servlets. Experienced in Agile environments with a focus on reliable, maintainable software delivery.</p><button class="ai-suggest">✦ Improve with Bexi</button></div><div class="resume-section"><h4>EXPERIENCE</h4><h5>Java Developer <span>2022 — Present</span></h5><p class="company">Technology Company · Bengaluru</p><ul><li>Developed and maintained Java-based enterprise applications using Java/J2EE technologies.</li><li>Collaborated with cross-functional teams in Agile/Scrum development cycles.</li><li>Worked with Spring, JSP, Servlets, Tomcat and SQL across application development and support.</li></ul><button class="ai-suggest">✦ Strengthen bullets</button></div><div class="resume-section"><h4>SKILLS</h4><p><b>Languages:</b> Java, SQL &nbsp; <b>Frameworks:</b> Spring &nbsp; <b>Web:</b> JSP, Servlets &nbsp; <b>Tools:</b> Eclipse, SoapUI, Tomcat &nbsp; <b>Methodology:</b> Agile/Scrum</p></div><div class="resume-section"><h4>EDUCATION</h4><h5>Bachelor's Degree <span>2022</span></h5><p class="company">University · India</p></div></div></div>
+        <aside class="intel"><div class="intel-head"><div><span class="eyebrow">BELONGIX INTELLIGENCE</span><h3>Resume Score</h3></div><div class="score-small">87</div></div><div class="intel-meter"><i style="width:87%"></i></div><div class="metric"><span>ATS compatibility</span><b>92</b></div><div class="metric"><span>Content quality</span><b>84</b></div><div class="metric"><span>Keyword relevance</span><b>89</b></div><div class="metric"><span>Impact</span><b>78</b></div><div class="intel-divider"></div><p class="eyebrow">3 PRIORITY IMPROVEMENTS</p><div class="finding"><span>01</span><div><b>Show measurable impact</b><p>Your bullets list tasks but not outcomes.</p></div></div><div class="finding"><span>02</span><div><b>Add project evidence</b><p>Your technical stack needs stronger proof.</p></div></div><div class="finding"><span>03</span><div><b>Target your next role</b><p>Paste a job description to unlock keyword analysis.</p></div></div><button class="primary full" id="targetJob">Target this resume →</button></aside>
+      </div>
+    </section>
+
+    <section id="templates" class="view"><div class="workspace-head"><div><p class="eyebrow">DESIGN SYSTEM</p><h1>Resume templates</h1><p class="muted">ATS-safe layouts designed to make strong content easier to scan.</p></div></div><div class="templates-grid"><div class="template-card"><div class="template-preview t0"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Executive</h3><p>Clean hierarchy for experienced professionals.</p><button class="secondary">Use template</button></div></div><div class="template-card"><div class="template-preview t1"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Modern</h3><p>ATS-friendly, recruiter-readable structure.</p><button class="secondary">Use template</button></div></div><div class="template-card"><div class="template-preview t2"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Minimal</h3><p>ATS-friendly, recruiter-readable structure.</p><button class="secondary">Use template</button></div></div><div class="template-card"><div class="template-preview t3"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Technical</h3><p>ATS-friendly, recruiter-readable structure.</p><button class="secondary">Use template</button></div></div><div class="template-card"><div class="template-preview t4"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Classic</h3><p>ATS-friendly, recruiter-readable structure.</p><button class="secondary">Use template</button></div></div><div class="template-card"><div class="template-preview t5"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Impact</h3><p>ATS-friendly, recruiter-readable structure.</p><button class="secondary">Use template</button></div></div></div></section>
+
+    <section id="analytics" class="view"><div class="workspace-head"><div><p class="eyebrow">CAREER INTELLIGENCE</p><h1>Your progress</h1><p class="muted">See how your resume is improving over time.</p></div></div><div class="analytics-grid"><div class="chart-card"><div class="card-head"><span>Resume Score</span><b>+15 pts</b></div><div class="chart"><div class="gridline g1"></div><div class="gridline g2"></div><svg viewBox="0 0 700 260" preserveAspectRatio="none"><polyline points="0,205 100,190 200,175 300,155 400,145 500,105 600,80 700,45"/></svg><div class="xlabels"><span>Sep 1</span><span>Sep 15</span><span>Oct 1</span><span>Today</span></div></div></div><div class="breakdown"><div class="card-head"><span>Score breakdown</span></div><div class="barrow"><span>ATS</span><div><i style="width:92%"></i></div><b>92</b></div><div class="barrow"><span>Content</span><div><i style="width:84%"></i></div><b>84</b></div><div class="barrow"><span>Keywords</span><div><i style="width:89%"></i></div><b>89</b></div><div class="barrow"><span>Impact</span><div><i style="width:78%"></i></div><b>78</b></div></div></div></section>
+
+    <section id="settings" class="view"><div class="workspace-head"><div><p class="eyebrow">ACCOUNT</p><h1>Settings</h1><p class="muted">Manage your Belongix workspace.</p></div></div><div class="settings-card"><h3>Profile</h3><label>Display name<input value="Keerthi Reddy"></label><label>Target role<input value="Java Developer"></label><label>Location<input value="Bengaluru, India"></label><button class="primary">Save changes</button></div></section>
+  </main>
+</div>
+
+<div class="bexi-drawer" id="bexi"><div class="bexi-head"><div><span class="spark">✦</span><strong>Bexi</strong><small>Your AI career copilot</small></div><button id="closeBexi">×</button></div><div class="bexi-body"><div class="bexi-msg"><small>BEXI</small><p>I found three areas that could make this resume stronger. Want me to start with your experience bullets?</p><div class="chips"><button>Improve bullets</button><button>Explain my score</button><button>Target a job</button></div></div></div><div class="bexi-input"><input placeholder="Ask Bexi anything about your resume…"><button>↑</button></div></div>
+<div class="toast" id="toast">Saved</div>
+<script src="/app.js"></script>
+</body>
+</html>
