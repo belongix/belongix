@@ -16,3 +16,5 @@ where version_name is null
    or target_job_description is null
    or score is null
    or updated_at is null;
+
+alter table public.resume_versions alter column version_no set default 1;
