@@ -158,7 +158,7 @@ async function loadResume() {
     const {data:r,error:re}=await sb.from("resumes").insert({user_id:currentUser.id,title:"Master Resume",template_key:"executive"}).select().single();
     if(re) throw re;
     currentResume=r;
-    const {data:v,error:ve}=await sb.from("resume_versions").insert({resume_id:r.id,user_id:currentUser.id,version_name:"Master Resume",content:defaultContent,score:87}).select().single();
+    const {data:v,error:ve}=await sb.from("resume_versions").insert({resume_id:r.id,user_id:currentUser.id,version_no:1,version_name:"Master Resume",content:defaultContent,score:87}).select().single();
     if(ve) throw ve;
     currentVersion=v;
     await sb.from("resumes").update({active_version_id:v.id}).eq("id",r.id).eq("user_id",currentUser.id);
@@ -168,8 +168,22 @@ async function loadResume() {
     const {data:v,error:ve}=await sb.from("resume_versions").select("*").eq("resume_id",currentResume.id).eq("user_id",currentUser.id).order("updated_at",{ascending:false}).limit(1).maybeSingle();
     if(ve) throw ve;
     currentVersion=v;
-    applyContent(v?.content || defaultContent);
-    renderScores(scoreResume(v?.content || defaultContent,v?.target_job_description||""));
+    if(!currentVersion){
+      const {data:createdVersion,error:createError}=await sb.from("resume_versions").insert({
+        resume_id:currentResume.id,
+        user_id:currentUser.id,
+        version_no:1,
+        version_name:"Master Resume",
+        content:defaultContent,
+        score:87
+      }).select().single();
+      if(createError) throw createError;
+      currentVersion=createdVersion;
+      const {error:updateError}=await sb.from("resumes").update({active_version_id:createdVersion.id}).eq("id",currentResume.id).eq("user_id",currentUser.id);
+      if(updateError) console.error("Could not set active resume version:",updateError);
+    }
+    applyContent(currentVersion?.content || defaultContent);
+    renderScores(scoreResume(currentVersion?.content || defaultContent,currentVersion?.target_job_description||""));
   }
 }
 
