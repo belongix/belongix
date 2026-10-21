@@ -265,6 +265,8 @@ function setAuthMode(signup){
   authError.textContent="";
 }
 document.getElementById("authSwitch").onclick=()=>setAuthMode(!signUpMode);
+document.getElementById("resendConfirm").onclick=async()=>{const email=document.getElementById("authEmail").value.trim();if(!email){authError.textContent="Enter your email address first.";return;}authError.textContent="Requesting confirmation email…";const {error}=await sb.auth.resend({type:"signup",email,options:{emailRedirectTo:window.location.origin}});authError.textContent=error?(error.message||"Could not resend confirmation email."):"If this address has a pending confirmation, a new email has been requested. Check Inbox, Spam and Promotions.";};
+document.getElementById("forgotPassword").onclick=async()=>{const email=document.getElementById("authEmail").value.trim();if(!email){authError.textContent="Enter your email address first.";return;}authError.textContent="Requesting password reset…";const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});authError.textContent=error?(error.message||"Could not request password reset."):"If an account exists for this address, a password-reset email has been requested. Check Inbox and Spam.";};
 authForm.addEventListener("submit",async e=>{
   e.preventDefault(); authError.textContent="";
   const email=document.getElementById("authEmail").value.trim();
@@ -272,7 +274,7 @@ authForm.addEventListener("submit",async e=>{
   const name=document.getElementById("authName").value.trim();
   try{
     let result;
-    if(signUpMode) result=await sb.auth.signUp({email,password,options:{data:{full_name:name}}});
+    if(signUpMode) result=await sb.auth.signUp({email,password,options:{data:{full_name:name},emailRedirectTo:window.location.origin}});
     else result=await sb.auth.signInWithPassword({email,password});
     if(result.error) throw result.error;
     if(signUpMode && !result.data.session){
