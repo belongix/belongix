@@ -233,6 +233,9 @@ async function loadResume() {
     applyContent(currentVersion?.content || defaultContent);
     renderScores(scoreResume(currentVersion?.content || defaultContent,currentVersion?.target_job_description||""));
   }
+  const profileName=document.querySelector(".settings-card input")?.value.trim();
+  const resumeName=document.querySelector(".paper-top h2");
+  if(resumeName && !currentVersion?.content?.name && profileName) resumeName.textContent=profileName.toUpperCase();
   applySavedTemplate();
   makeEditable();
   await loadBexiHistory();
