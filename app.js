@@ -117,6 +117,7 @@ const defaultContent = {
 };
 
 function applyContent(content) {
+  document.querySelectorAll(".paper .resume-section[data-custom='true']").forEach(el=>el.remove());
   const sec=[...document.querySelectorAll(".paper .resume-section")];
   const summary=sec.find(x=>x.querySelector("h4")?.textContent.includes("SUMMARY"));
   const exp=sec.find(x=>x.querySelector("h4")?.textContent.includes("EXPERIENCE"));
@@ -128,6 +129,12 @@ function applyContent(content) {
   }
   if(skills && content.skills) skills.querySelector("p").textContent=content.skills;
   if(edu && content.education) edu.querySelector("h5").textContent=content.education;
+  (content.customSections||[]).forEach(item=>{
+    const section=document.createElement("div");section.className="resume-section";section.dataset.custom="true";
+    const heading=document.createElement("h4");heading.textContent=item.heading||"ADDITIONAL";
+    const paragraph=document.createElement("p");paragraph.textContent=item.text||"";section.append(heading,paragraph);
+    document.querySelector(".paper").append(section);
+  });
   makeEditable();
 }
 
@@ -144,11 +151,14 @@ function contentFromPaper() {
   const exp=sec.find(x=>x.querySelector("h4")?.textContent.includes("EXPERIENCE"));
   const skills=sec.find(x=>x.querySelector("h4")?.textContent.includes("SKILLS"));
   const edu=sec.find(x=>x.querySelector("h4")?.textContent.includes("EDUCATION"));
+  const known=new Set([summary,exp,skills,edu].filter(Boolean));
+  const customSections=sec.filter(s=>!known.has(s)).map(s=>({heading:s.querySelector("h4")?.textContent.trim()||"ADDITIONAL",text:[...s.querySelectorAll("p,li,h5")].map(x=>x.textContent.trim()).join("\n")}));
   return {
     summary:summary?.querySelector("p")?.textContent.trim() || "",
     experience:[...(exp?.querySelectorAll("li")||[])].map(x=>x.textContent.trim()),
     skills:skills?.querySelector("p")?.textContent.trim() || "",
-    education:edu?.querySelector("h5")?.textContent.trim() || ""
+    education:edu?.querySelector("h5")?.textContent.trim() || "",
+    customSections
   };
 }
 
