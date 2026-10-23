@@ -421,7 +421,7 @@ async function performLogout(button){
     }
     const {error}=await sb.auth.signOut({scope:"local"});
     if(error) throw error;
-    currentUser=null;currentResume=null;currentVersion=null;clearTimeout(saveTimer);
+    currentUser=null;currentResume=null;currentVersion=null;bexiConversationId=null;bexiHistory=[];clearTimeout(saveTimer);
     authForm.reset();setAuthMode(false);authOverlay.classList.remove("hidden");show("dashboard");
     showToast("Signed out");
   }catch(err){authError.textContent=err.message||"Could not sign out. Please try again.";}
@@ -530,7 +530,7 @@ sb.auth.onAuthStateChange((event,session)=>{
     return;
   }
   if(event==="SIGNED_OUT"){
-    currentUser=null; currentResume=null; currentVersion=null; clearTimeout(saveTimer);
+    currentUser=null; currentResume=null; currentVersion=null; bexiConversationId=null; bexiHistory=[]; clearTimeout(saveTimer);
     authOverlay.classList.remove("hidden");
     return;
   }
