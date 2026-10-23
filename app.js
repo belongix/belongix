@@ -316,10 +316,12 @@ async function sendBexi(){
     const data=await r.json();
     if(!r.ok) throw new Error(data.error||"Request failed");
     const msg={role:"assistant",content:data.text}; bexiHistory.push({role:"user",content:message},msg);
-    await persistBexiMessage("user",message);
-    await persistBexiMessage("assistant",data.text);
     const ai=document.createElement("div"); ai.className="bexi-msg"; ai.innerHTML="<small>BEXI</small><p></p>"; ai.querySelector("p").textContent=data.text;
     body.appendChild(ai); body.scrollTop=body.scrollHeight;
+    try{
+      await persistBexiMessage("user",message);
+      await persistBexiMessage("assistant",data.text);
+    }catch(saveError){console.warn("Bexi response could not be saved:",saveError);showToast("Bexi replied, but conversation history could not be saved.");}
   }catch(e){
     console.error("Bexi request failed:",e);
     const ai=document.createElement("div"); ai.className="bexi-msg"; ai.innerHTML="<small>BEXI</small><p></p>";
