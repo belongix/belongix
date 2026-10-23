@@ -278,6 +278,30 @@ async function performLogout(button){
   finally{logoutButtons.forEach(b=>{b.disabled=false;b.textContent="Sign out";});}
 }
 logoutButtons.forEach(button=>button.addEventListener("click",()=>performLogout(button)));
+const resendButton=document.getElementById("resendConfirm");
+if(resendButton) resendButton.addEventListener("click",async()=>{
+  const email=document.getElementById("authEmail").value.trim();
+  if(!email){authError.textContent="Enter your email address first.";return;}
+  resendButton.disabled=true;
+  authError.textContent="Requesting a confirmation email…";
+  try{
+    const {error}=await sb.auth.resend({type:"signup",email,options:{emailRedirectTo:window.location.origin}});
+    authError.textContent=error ? error.message : "If this account needs confirmation, a new email has been requested. Check Inbox, Spam and Promotions.";
+  }catch(err){authError.textContent=err.message||"Could not request a confirmation email.";}
+  finally{resendButton.disabled=false;}
+});
+const forgotButton=document.getElementById("forgotPassword");
+if(forgotButton) forgotButton.addEventListener("click",async()=>{
+  const email=document.getElementById("authEmail").value.trim();
+  if(!email){authError.textContent="Enter your email address first.";return;}
+  forgotButton.disabled=true;
+  authError.textContent="Requesting a password-reset email…";
+  try{
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
+    authError.textContent=error ? error.message : "If an account exists for this email, a reset link has been requested. Check Inbox and Spam.";
+  }catch(err){authError.textContent=err.message||"Could not request a password reset.";}
+  finally{forgotButton.disabled=false;}
+});
 authForm.addEventListener("submit",async e=>{
   e.preventDefault(); authError.textContent="";
   const email=document.getElementById("authEmail").value.trim();
