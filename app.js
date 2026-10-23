@@ -265,20 +265,19 @@ function setAuthMode(signup){
   authError.textContent="";
 }
 document.getElementById("authSwitch").onclick=()=>setAuthMode(!signUpMode);
-const logoutButton=document.getElementById("logoutButton");
-if(logoutButton) logoutButton.addEventListener("click",async()=>{
-  logoutButton.disabled=true; logoutButton.textContent="Signing out…";
+const logoutButtons=[document.getElementById("logoutButton"),document.getElementById("logoutButtonMobile")].filter(Boolean);
+async function performLogout(button){
+  logoutButtons.forEach(b=>{b.disabled=true;b.textContent="Signing out…";});
   try{
     const {error}=await sb.auth.signOut({scope:"local"});
     if(error) throw error;
-    currentUser=null; currentResume=null; currentVersion=null; clearTimeout(saveTimer);
-    authForm.reset(); setAuthMode(false); authOverlay.classList.remove("hidden"); show("dashboard");
+    currentUser=null;currentResume=null;currentVersion=null;clearTimeout(saveTimer);
+    authForm.reset();setAuthMode(false);authOverlay.classList.remove("hidden");show("dashboard");
     showToast("Signed out");
-  }catch(err){ authError.textContent=err.message||"Could not sign out. Please try again."; }
-  finally{ logoutButton.disabled=false; logoutButton.textContent="Sign out"; }
-});
-document.getElementById("resendConfirm").onclick=async()=>{const email=document.getElementById("authEmail").value.trim();if(!email){authError.textContent="Enter your email address first.";return;}authError.textContent="Requesting confirmation email…";const {error}=await sb.auth.resend({type:"signup",email,options:{emailRedirectTo:window.location.origin}});authError.textContent=error?(error.message||"Could not resend confirmation email."):"If this address has a pending confirmation, a new email has been requested. Check Inbox, Spam and Promotions.";};
-document.getElementById("forgotPassword").onclick=async()=>{const email=document.getElementById("authEmail").value.trim();if(!email){authError.textContent="Enter your email address first.";return;}authError.textContent="Requesting password reset…";const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});authError.textContent=error?(error.message||"Could not request password reset."):"If an account exists for this address, a password-reset email has been requested. Check Inbox and Spam.";};
+  }catch(err){authError.textContent=err.message||"Could not sign out. Please try again.";}
+  finally{logoutButtons.forEach(b=>{b.disabled=false;b.textContent="Sign out";});}
+}
+logoutButtons.forEach(button=>button.addEventListener("click",()=>performLogout(button)));
 authForm.addEventListener("submit",async e=>{
   e.preventDefault(); authError.textContent="";
   const email=document.getElementById("authEmail").value.trim();
