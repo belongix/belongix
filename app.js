@@ -507,7 +507,14 @@ authForm.addEventListener("submit",async e=>{
       return;
     } else if(signUpMode) result=await sb.auth.signUp({email,password,options:{data:{full_name:name},emailRedirectTo:getAuthRedirectUrl()}});
     else result=await sb.auth.signInWithPassword({email,password});
-    if(result.error) throw result.error;
+    if(result.error){
+      const authMessage=String(result.error.message||"");
+      if(!signUpMode && /invalid login credentials/i.test(authMessage)){
+        authError.textContent="We couldn't sign you in. If you just registered, request a fresh confirmation email first. If your email is confirmed, use Forgot password? to set a new password.";
+        return;
+      }
+      throw result.error;
+    }
     if(signUpMode && !result.data.session){
       authError.textContent="Account created. Check your email to confirm, then sign in.";
       return;
