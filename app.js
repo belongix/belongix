@@ -186,8 +186,18 @@ async function loadResume() {
     applyContent(currentVersion?.content || defaultContent);
     renderScores(scoreResume(currentVersion?.content || defaultContent,currentVersion?.target_job_description||""));
   }
+  applySavedTemplate();
 }
 
+function applySavedTemplate(){
+  const key=(currentResume?.template_key||"executive").toLowerCase();
+  const paper=document.querySelector(".paper");
+  if(!paper) return;
+  paper.dataset.template=key;
+  paper.classList.remove("template-executive","template-modern","template-minimal","template-technical","template-classic","template-impact");
+  paper.classList.add("template-"+key);
+  document.querySelectorAll(".template-card").forEach(card=>card.classList.toggle("selected-template",card.querySelector("h3")?.textContent.trim().toLowerCase()===key));
+}
 function queueSave(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveResume,900); }
 async function saveResume(){
   if(!currentUser || !currentResume){showToast("Sign in before saving");return false;}
@@ -214,7 +224,8 @@ async function saveResume(){
 }
 
 document.querySelector(".workspace-actions .primary").onclick=async()=>{
-  await saveResume();
+  const saved=await saveResume();
+  if(!saved) return;
   const paper=document.querySelector(".paper");
   if(window.html2pdf){
     await window.html2pdf().set({margin:0.35,filename:"Belongix-Resume.pdf",image:{type:"jpeg",quality:.96},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:"in",format:"a4",orientation:"portrait"}}).from(paper).save();
