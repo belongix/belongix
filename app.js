@@ -356,6 +356,10 @@ const logoutButtons=[document.getElementById("logoutButton"),document.getElement
 async function performLogout(button){
   logoutButtons.forEach(b=>{b.disabled=true;b.textContent="Signing out…";});
   try{
+    if(currentUser && currentResume){
+      const saved=await saveResume();
+      if(!saved && !confirm("Your latest changes may not be saved. Sign out anyway?")) return;
+    }
     const {error}=await sb.auth.signOut({scope:"local"});
     if(error) throw error;
     currentUser=null;currentResume=null;currentVersion=null;clearTimeout(saveTimer);
