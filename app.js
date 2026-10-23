@@ -231,6 +231,12 @@ async function loadResume() {
   if(resumeTitle) resumeTitle.textContent=currentResume?.title || "My Resume";
   const versionTitle=document.querySelector(".version strong");
   if(versionTitle) versionTitle.textContent=currentVersion?.version_name || "Master Resume";
+  const today=document.getElementById("todayLabel");
+  if(today) today.textContent=new Date().toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"}).toUpperCase();
+  try{
+    const {count,error:countError}=await sb.from("resume_versions").select("id",{count:"exact",head:true}).eq("resume_id",currentResume.id).eq("user_id",currentUser.id);
+    if(!countError){const countEl=document.getElementById("savedVersionCount");if(countEl)countEl.textContent=String(count||0);}
+  }catch(err){console.warn("Could not count versions:",err);}
 }
 
 function applySavedTemplate(){
@@ -385,6 +391,8 @@ if(duplicateButton) duplicateButton.addEventListener("click",async()=>{
   }catch(err){console.error(err);showToast("Could not duplicate: "+(err.message||"try again"));}
   finally{duplicateButton.disabled=false;}
 });
+const openVersionHistoryButton=document.getElementById("openVersionHistory");
+if(openVersionHistoryButton) openVersionHistoryButton.addEventListener("click",()=>document.getElementById("restoreVersion")?.click());
 const restoreVersionButton=document.getElementById("restoreVersion");
 if(restoreVersionButton) restoreVersionButton.addEventListener("click",async()=>{if(!currentUser||!currentResume){showToast("Sign in to view versions");return;}restoreVersionButton.disabled=true;try{const {data:versions,error}=await sb.from("resume_versions").select("*").eq("resume_id",currentResume.id).eq("user_id",currentUser.id).order("version_no",{ascending:false}).limit(30);if(error)throw error;if(!versions?.length){showToast("No saved versions yet");return;}const menu=versions.map(v=>v.version_no+"="+(v.version_name||"Resume version")).join(", ");const selected=prompt("Available versions: "+menu+". Enter version number to restore:");if(selected===null||!selected.trim())return;const version=versions.find(v=>String(v.version_no)===selected.trim());if(!version){showToast("Version number not found");return;}if(!confirm("Restore version "+version.version_no+"? Your current draft will be replaced."))return;currentVersion=version;applyContent(version.content||{});applySavedTemplate();makeEditable();const {error:resumeError}=await sb.from("resumes").update({active_version_id:version.id,content:version.content||{},updated_at:new Date().toISOString()}).eq("id",currentResume.id).eq("user_id",currentUser.id);if(resumeError)throw resumeError;const versionTitle=document.querySelector(".version strong");if(versionTitle)versionTitle.textContent=version.version_name||("Version "+version.version_no);renderScores(scoreResume(version.content||{},version.target_job_description||""));showToast("Restored version "+version.version_no);}catch(err){console.error("Restore version failed:",err);showToast("Could not restore version: "+(err.message||"try again"));}finally{restoreVersionButton.disabled=false;}});
 document.querySelectorAll(".upgrade button").forEach(b=>b.addEventListener("click",()=>showToast("Belongix Pro subscriptions are not available yet.")));
