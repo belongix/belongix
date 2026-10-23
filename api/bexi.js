@@ -44,7 +44,7 @@ export default async function handler(req, res) {
     const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent", {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-      body: JSON.stringify({ contents, generationConfig: { temperature: 0.35, maxOutputTokens: 1400 } })
+      body: JSON.stringify({ contents, generationConfig: { maxOutputTokens: 1400 } })
     });
     const data = await response.json();
     if (!response.ok) {
