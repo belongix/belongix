@@ -265,6 +265,18 @@ function setAuthMode(signup){
   authError.textContent="";
 }
 document.getElementById("authSwitch").onclick=()=>setAuthMode(!signUpMode);
+const logoutButton=document.getElementById("logoutButton");
+if(logoutButton) logoutButton.addEventListener("click",async()=>{
+  logoutButton.disabled=true; logoutButton.textContent="Signing out…";
+  try{
+    const {error}=await sb.auth.signOut({scope:"local"});
+    if(error) throw error;
+    currentUser=null; currentResume=null; currentVersion=null; clearTimeout(saveTimer);
+    authForm.reset(); setAuthMode(false); authOverlay.classList.remove("hidden"); show("dashboard");
+    showToast("Signed out");
+  }catch(err){ authError.textContent=err.message||"Could not sign out. Please try again."; }
+  finally{ logoutButton.disabled=false; logoutButton.textContent="Sign out"; }
+});
 document.getElementById("resendConfirm").onclick=async()=>{const email=document.getElementById("authEmail").value.trim();if(!email){authError.textContent="Enter your email address first.";return;}authError.textContent="Requesting confirmation email…";const {error}=await sb.auth.resend({type:"signup",email,options:{emailRedirectTo:window.location.origin}});authError.textContent=error?(error.message||"Could not resend confirmation email."):"If this address has a pending confirmation, a new email has been requested. Check Inbox, Spam and Promotions.";};
 document.getElementById("forgotPassword").onclick=async()=>{const email=document.getElementById("authEmail").value.trim();if(!email){authError.textContent="Enter your email address first.";return;}authError.textContent="Requesting password reset…";const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});authError.textContent=error?(error.message||"Could not request password reset."):"If an account exists for this address, a password-reset email has been requested. Check Inbox and Spam.";};
 authForm.addEventListener("submit",async e=>{
@@ -319,15 +331,30 @@ async function bootUser(user){
   }
 }
 
-sb.auth.onAuthStateChange(async(_event,session)=>{
-  if(session?.user && !currentUser) await bootUser(session.user);
-  if(!session) authOverlay.classList.remove("hidden");
+sb.auth.onAuthStateChange((event,session)=>{
+  // Keep network/database work outside the Supabase auth callback to avoid auth-lock deadlocks.
+  if(event==="SIGNED_OUT"){
+    currentUser=null; currentResume=null; currentVersion=null; clearTimeout(saveTimer);
+    authOverlay.classList.remove("hidden");
+    return;
+  }
+  if(session?.user && !currentUser){
+    const user=session.user;
+    queueMicrotask(()=>bootUser(user));
+  }
 });
 
 (async()=>{
   setAuthMode(false);
-  const {data}=await sb.auth.getSession();
-  if(data.session) await bootUser(data.session.user);
-  else authOverlay.classList.remove("hidden");
-  makeEditable();
+  try{
+    const {data,error}=await sb.auth.getSession();
+    if(error) throw error;
+    if(data.session?.user) await bootUser(data.session.user);
+    else authOverlay.classList.remove("hidden");
+    makeEditable();
+  }catch(err){
+    console.error("Belongix session initialization failed:",err);
+    authError.textContent="We couldn't restore your session. Please sign in again.";
+    authOverlay.classList.remove("hidden");
+  }
 })();
