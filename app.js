@@ -13,6 +13,7 @@ const authError = document.getElementById("authError");
 let signUpMode = false;
 let recoveryMode = false;
 let currentUser = null;
+let bootPromise=null;
 let currentResume = null;
 let currentVersion = null;
 let saveTimer = null;
@@ -415,9 +416,15 @@ authForm.addEventListener("submit",async e=>{
       authError.textContent="Account created. Check your email to confirm, then sign in.";
       return;
     }
-    await bootUser(result.data.session?.user || result.data.user);
+    await safeBootUser(result.data.session?.user || result.data.user);
   }catch(err){authError.textContent=err.message||"Authentication failed.";}
 });
+
+function safeBootUser(user){
+  if(bootPromise) return bootPromise;
+  bootPromise=bootUser(user).finally(()=>{bootPromise=null;});
+  return bootPromise;
+}
 
 async function bootUser(user){
   if(!user) throw new Error("No authenticated user was returned.");
@@ -471,7 +478,7 @@ sb.auth.onAuthStateChange((event,session)=>{
   }
   if(session?.user && !currentUser){
     const user=session.user;
-    queueMicrotask(()=>bootUser(user));
+    queueMicrotask(()=>safeBootUser(user));
   }
 });
 
@@ -480,7 +487,7 @@ sb.auth.onAuthStateChange((event,session)=>{
   try{
     const {data,error}=await sb.auth.getSession();
     if(error) throw error;
-    if(data.session?.user) await bootUser(data.session.user);
+    if(data.session?.user) await safeBootUser(data.session.user);
     else authOverlay.classList.remove("hidden");
     makeEditable();
   }catch(err){
