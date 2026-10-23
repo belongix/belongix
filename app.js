@@ -11,6 +11,7 @@ const authOverlay = document.getElementById("authOverlay");
 const authForm = document.getElementById("authForm");
 const authError = document.getElementById("authError");
 let signUpMode = false;
+let recoveryMode = false;
 let currentUser = null;
 let currentResume = null;
 let currentVersion = null;
