@@ -291,7 +291,11 @@ async function sendBexi(){
   body.appendChild(userBubble);
   body.scrollTop=body.scrollHeight;
   try{
-    const r=await fetch("/api/bexi",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    const {data:sessionData,error:sessionError}=await sb.auth.getSession();
+    if(sessionError) throw sessionError;
+    const accessToken=sessionData.session?.access_token;
+    if(!accessToken) throw new Error("Please sign in again to use Bexi.");
+    const r=await fetch("/api/bexi",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+accessToken},body:JSON.stringify({
       message,resume:collectResume(),jobDescription:currentVersion?.target_job_description||"",history:bexiHistory
     })});
     const data=await r.json();
