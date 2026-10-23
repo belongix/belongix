@@ -20,6 +20,11 @@ let saveTimer = null;
 let bexiHistory = [];
 let bexiConversationId = null;
 
+function getAuthRedirectUrl() {
+  const localHost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+  return localHost ? window.location.origin : "https://www.belongix.in";
+}
+
 function showToast(message="Saved") {
   toast.textContent = message;
   toast.classList.add("show");
@@ -468,7 +473,7 @@ if(resendButton) resendButton.addEventListener("click",async()=>{
   resendButton.disabled=true;
   authError.textContent="Requesting a confirmation email…";
   try{
-    const {error}=await sb.auth.resend({type:"signup",email,options:{emailRedirectTo:window.location.origin}});
+    const {error}=await sb.auth.resend({type:"signup",email,options:{emailRedirectTo:getAuthRedirectUrl()}});
     authError.textContent=error ? error.message : "If this account needs confirmation, a new email has been requested. Check Inbox, Spam and Promotions.";
   }catch(err){authError.textContent=err.message||"Could not request a confirmation email.";}
   finally{resendButton.disabled=false;}
@@ -480,7 +485,7 @@ if(forgotButton) forgotButton.addEventListener("click",async()=>{
   forgotButton.disabled=true;
   authError.textContent="Requesting a password-reset email…";
   try{
-    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
+    const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:getAuthRedirectUrl()});
     authError.textContent=error ? error.message : "If an account exists for this email, a reset link has been requested. Check Inbox and Spam.";
   }catch(err){authError.textContent=err.message||"Could not request a password reset.";}
   finally{forgotButton.disabled=false;}
@@ -500,7 +505,7 @@ authForm.addEventListener("submit",async e=>{
       await sb.auth.signOut({scope:"local"});
       setAuthMode(false);
       return;
-    } else if(signUpMode) result=await sb.auth.signUp({email,password,options:{data:{full_name:name},emailRedirectTo:window.location.origin}});
+    } else if(signUpMode) result=await sb.auth.signUp({email,password,options:{data:{full_name:name},emailRedirectTo:getAuthRedirectUrl()}});
     else result=await sb.auth.signInWithPassword({email,password});
     if(result.error) throw result.error;
     if(signUpMode && !result.data.session){
