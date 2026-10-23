@@ -231,6 +231,7 @@ async function loadResume() {
   if(resumeTitle) resumeTitle.textContent=currentResume?.title || "My Resume";
   const versionTitle=document.querySelector(".version strong");
   if(versionTitle) versionTitle.textContent=currentVersion?.version_name || "Master Resume";
+}
 
 function applySavedTemplate(){
   const key=(currentResume?.template_key||"executive").toLowerCase();
