@@ -18,6 +18,7 @@ let currentResume = null;
 let currentVersion = null;
 let saveTimer = null;
 let bexiHistory = [];
+let bexiConversationId = null;
 
 function showToast(message="Saved") {
   toast.textContent = message;
@@ -44,8 +45,14 @@ document.getElementById("openBexi").onclick = ()=>openBexi();
 document.getElementById("actionBexi").onclick = ()=>openBexi("Help me strengthen my experience bullets without inventing metrics.");
 document.getElementById("closeBexi").onclick = closeBexi;
 document.querySelectorAll(".ai-suggest").forEach(b=>b.onclick=()=>openBexi("Improve this resume section while preserving every factual claim."));
-document.getElementById("targetJob").onclick=()=>{
-  openBexi("I want to target this resume to a job description. Tell me what to paste and then analyze the keyword and evidence gaps.");
+document.getElementById("targetJob").onclick=async()=>{
+  if(!currentUser || !currentVersion){showToast("Sign in to target a role");return;}
+  const jd=prompt("Paste the target job description. It will be saved with this resume version.");
+  if(!jd?.trim()) return;
+  const {data,error}=await sb.from("resume_versions").update({target_job_description:jd.trim(),updated_at:new Date().toISOString()}).eq("id",currentVersion.id).eq("user_id",currentUser.id).select().single();
+  if(error){showToast("Could not save job description: "+error.message);return;}
+  currentVersion=data;
+  openBexi("Analyze my resume against the job description I just saved. Identify matching keywords, missing evidence, and truthful improvements.");
 };
 document.querySelectorAll(".chips button").forEach(b=>b.onclick=()=>{
   document.querySelector(".bexi-input input").value = b.textContent;
@@ -92,22 +99,24 @@ function renderScores(s) {
 }
 
 async function ensureProfile() {
+  const fallbackName=currentUser.user_metadata?.full_name || currentUser.email?.split("@")[0] || "";
   const {data,error}=await sb.from("profiles").select("*").eq("id",currentUser.id).maybeSingle();
   if(error) throw error;
-  if(!data) {
-    const {error:e}=await sb.from("profiles").insert({
-      id:currentUser.id,
-      full_name:currentUser.user_metadata?.full_name || currentUser.email?.split("@")[0] || "",
-      onboarding_completed:false
-    });
-    if(e) throw e;
-  } else {
-    const name=document.querySelector("#authName");
-    document.querySelector(".user-mini strong").textContent=data.full_name || currentUser.email?.split("@")[0] || "Career profile";
-    if(data.target_role) document.querySelector('.settings-card input:nth-of-type(2)').value=data.target_role;
-    if(data.location) document.querySelector('.settings-card input:nth-of-type(3)').value=data.location;
-    if(data.full_name) document.querySelector('.settings-card input:nth-of-type(1)').value=data.full_name;
+  let profile=data;
+  if(!profile) {
+    const {data:created,error:createError}=await sb.from("profiles").insert({id:currentUser.id,full_name:fallbackName,onboarding_completed:false}).select("*").single();
+    if(createError) throw createError;
+    profile=created;
   }
+  document.querySelector(".user-mini strong").textContent=profile.full_name || fallbackName || "Career profile";
+  const inputs=document.querySelectorAll(".settings-card input");
+  if(inputs[0]) inputs[0].value=profile.full_name || fallbackName;
+  if(inputs[1]) inputs[1].value=profile.target_role || "";
+  if(inputs[2]) inputs[2].value=profile.location || "";
+  const greeting=document.querySelector("#dashboard h1");
+  if(greeting) greeting.textContent="Good morning, "+(profile.full_name || fallbackName || "there")+".";
+  const avatar=document.querySelector(".user-mini .avatar");
+  if(avatar) avatar.textContent=(profile.full_name || fallbackName || "B").trim().charAt(0).toUpperCase();
 }
 
 const defaultContent = {
@@ -119,6 +128,13 @@ const defaultContent = {
 
 function applyContent(content) {
   document.querySelectorAll(".paper .resume-section[data-custom='true']").forEach(el=>el.remove());
+  const paperTop=document.querySelector(".paper-top");
+  if(paperTop){
+    const name=paperTop.querySelector("h2");
+    if(name && content.name) name.textContent=content.name;
+    const contact=[...paperTop.querySelectorAll("p")];
+    if(Array.isArray(content.contactLines)) contact.forEach((el,i)=>{if(content.contactLines[i]!==undefined)el.textContent=content.contactLines[i];});
+  }
   const sec=[...document.querySelectorAll(".paper .resume-section")];
   const summary=sec.find(x=>x.querySelector("h4")?.textContent.includes("SUMMARY"));
   const exp=sec.find(x=>x.querySelector("h4")?.textContent.includes("EXPERIENCE"));
@@ -126,7 +142,12 @@ function applyContent(content) {
   const edu=sec.find(x=>x.querySelector("h4")?.textContent.includes("EDUCATION"));
   if(summary && content.summary) summary.querySelector("p").textContent=content.summary;
   if(exp && Array.isArray(content.experience)) {
-    const lis=exp.querySelectorAll("li"); content.experience.slice(0,lis.length).forEach((v,i)=>lis[i].textContent=v);
+    const list=exp.querySelector("ul");
+    if(list){list.replaceChildren();content.experience.forEach(v=>{const li=document.createElement("li");li.textContent=typeof v==="string"?v:(v.text||"");list.appendChild(li);});}
+    const role=exp.querySelector("h5");
+    if(role && content.experienceTitle) role.firstChild.textContent=content.experienceTitle+" ";
+    const company=exp.querySelector(".company");
+    if(company && content.experienceMeta) company.textContent=content.experienceMeta;
   }
   if(skills && content.skills) skills.querySelector("p").textContent=content.skills;
   if(edu && content.education) edu.querySelector("h5").textContent=content.education;
@@ -140,14 +161,14 @@ function applyContent(content) {
 }
 
 function makeEditable() {
-  document.querySelectorAll(".paper .resume-section p,.paper .resume-section li").forEach(el=>{
-    el.contentEditable="true";
-    el.spellcheck=true;
-    el.oninput=()=>queueSave();
+  document.querySelectorAll(".paper-top h2,.paper-top p,.paper .resume-section h5,.paper .resume-section .company,.paper .resume-section p,.paper .resume-section li").forEach(el=>{
+    el.contentEditable="true";el.spellcheck=true;el.oninput=()=>queueSave();
   });
 }
 function contentFromPaper() {
   const sec=[...document.querySelectorAll(".paper .resume-section")];
+  const paperTop=document.querySelector(".paper-top");
+  const experienceSection=sec.find(x=>x.querySelector("h4")?.textContent.includes("EXPERIENCE"));
   const summary=sec.find(x=>x.querySelector("h4")?.textContent.includes("SUMMARY"));
   const exp=sec.find(x=>x.querySelector("h4")?.textContent.includes("EXPERIENCE"));
   const skills=sec.find(x=>x.querySelector("h4")?.textContent.includes("SKILLS"));
@@ -155,8 +176,12 @@ function contentFromPaper() {
   const known=new Set([summary,exp,skills,edu].filter(Boolean));
   const customSections=sec.filter(s=>!known.has(s)).map(s=>({heading:s.querySelector("h4")?.textContent.trim()||"ADDITIONAL",text:[...s.querySelectorAll("p,li,h5")].map(x=>x.textContent.trim()).join("\n")}));
   return {
+    name:paperTop?.querySelector("h2")?.textContent.trim() || "",
+    contactLines:[...(paperTop?.querySelectorAll("p")||[])].map(x=>x.textContent.trim()),
     summary:summary?.querySelector("p")?.textContent.trim() || "",
     experience:[...(exp?.querySelectorAll("li")||[])].map(x=>x.textContent.trim()),
+    experienceTitle:experienceSection?.querySelector("h5")?.childNodes?.[0]?.textContent.trim() || "",
+    experienceMeta:experienceSection?.querySelector(".company")?.textContent.trim() || "",
     skills:skills?.querySelector("p")?.textContent.trim() || "",
     education:edu?.querySelector("h5")?.textContent.trim() || "",
     customSections
@@ -198,7 +223,11 @@ async function loadResume() {
     renderScores(scoreResume(currentVersion?.content || defaultContent,currentVersion?.target_job_description||""));
   }
   applySavedTemplate();
-}
+  makeEditable();
+  const resumeTitle=document.querySelector("#resume .workspace-head h1");
+  if(resumeTitle) resumeTitle.textContent=currentResume?.title || "My Resume";
+  const versionTitle=document.querySelector(".version strong");
+  if(versionTitle) versionTitle.textContent=currentVersion?.version_name || "Master Resume";
 
 function applySavedTemplate(){
   const key=(currentResume?.template_key||"executive").toLowerCase();
@@ -224,6 +253,10 @@ async function saveResume(){
       if(error) throw error;
       currentVersion=data;
     }
+    const {error:resumeError}=await sb.from("resumes").update({content,active_version_id:currentVersion.id,updated_at:new Date().toISOString()}).eq("id",currentResume.id).eq("user_id",currentUser.id);
+    if(resumeError) throw resumeError;
+    const versionTitle=document.querySelector(".version strong");
+    if(versionTitle) versionTitle.textContent=currentVersion.version_name || "Master Resume";
     renderScores(scores);
     showToast("Resume saved");
     return true;
@@ -260,13 +293,26 @@ async function sendBexi(){
     const data=await r.json();
     if(!r.ok) throw new Error(data.error||"Request failed");
     const msg={role:"assistant",content:data.text}; bexiHistory.push({role:"user",content:message},msg);
+    await persistBexiMessage("user",message);
+    await persistBexiMessage("assistant",data.text);
     const ai=document.createElement("div"); ai.className="bexi-msg"; ai.innerHTML="<small>BEXI</small><p></p>"; ai.querySelector("p").textContent=data.text;
     body.appendChild(ai); body.scrollTop=body.scrollHeight;
   }catch(e){
+    console.error("Bexi request failed:",e);
     const ai=document.createElement("div"); ai.className="bexi-msg"; ai.innerHTML="<small>BEXI</small><p></p>";
-    ai.querySelector("p").textContent="I couldn't reach the AI service right now. Your resume is still saved locally in the workspace; please try again in a moment.";
+    ai.querySelector("p").textContent=e.message || "I couldn't reach the AI service right now. Please try again.";
     body.appendChild(ai);
   }
+}
+async function persistBexiMessage(role,content){
+  if(!currentUser) return;
+  if(!bexiConversationId){
+    const {data,error}=await sb.from("ai_conversations").insert({user_id:currentUser.id,resume_id:currentResume?.id||null,title:"Bexi career coaching"}).select("id").single();
+    if(error) throw error;
+    bexiConversationId=data.id;
+  }
+  const {error}=await sb.from("ai_messages").insert({conversation_id:bexiConversationId,user_id:currentUser.id,role,content});
+  if(error) throw error;
 }
 document.querySelector(".bexi-input button").onclick=sendBexi;
 document.querySelector(".bexi-input input").addEventListener("keydown",e=>{if(e.key==="Enter")sendBexi()});
@@ -334,12 +380,19 @@ if(duplicateButton) duplicateButton.addEventListener("click",async()=>{
 document.querySelectorAll(".upgrade button").forEach(b=>b.addEventListener("click",()=>showToast("Belongix Pro subscriptions are not available yet.")));
 document.querySelectorAll(".top-actions .icon-btn").forEach(b=>b.addEventListener("click",()=>showToast(b.getAttribute("aria-label")+" is not available yet.")));
 document.querySelector(".settings-card .primary").onclick=async()=>{
+  if(!currentUser){showToast("Sign in to save profile settings");return;}
   const inputs=document.querySelectorAll(".settings-card input");
   const payload={full_name:inputs[0].value.trim(),target_role:inputs[1].value.trim(),location:inputs[2].value.trim(),updated_at:new Date().toISOString()};
-  const {error}=await sb.from("profiles").update(payload).eq("id",currentUser.id);
-  if(error) return showToast("Could not save settings");
-  document.querySelector(".user-mini strong").textContent=payload.full_name||"Career profile";
-  showToast("Profile saved");
+  try{
+    const {error}=await sb.from("profiles").update(payload).eq("id",currentUser.id);
+    if(error) throw error;
+    document.querySelector(".user-mini strong").textContent=payload.full_name||"Career profile";
+    const greeting=document.querySelector("#dashboard h1");
+    if(greeting) greeting.textContent="Good morning, "+(payload.full_name||"there")+".";
+    const avatar=document.querySelector(".user-mini .avatar");
+    if(avatar) avatar.textContent=(payload.full_name||"B").charAt(0).toUpperCase();
+    showToast("Profile saved");
+  }catch(err){console.error("Profile save failed:",err);showToast("Profile save failed: "+(err.message||"try again"));}
 };
 
 function setAuthMode(signup){
