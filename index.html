@@ -33,14 +33,14 @@
 
     <section id="dashboard" class="view active-view">
       <div class="hero-row">
-        <div><p class="eyebrow">THURSDAY, OCTOBER 8</p><h1>Good morning, Keerthi<span>.</span></h1><p class="muted">Let's make your next career move your strongest one yet.</p></div>
+        <div><p class="eyebrow" id="todayLabel">CAREER WORKSPACE</p><h1>Good morning, Keerthi<span>.</span></h1><p class="muted">Let's make your next career move your strongest one yet.</p></div>
         <button class="primary" data-view="resume">Open Resume Workspace <span>→</span></button>
       </div>
 
       <div class="score-grid">
         <div class="score-card">
           <div class="card-head"><span>Career Readiness</span><button>•••</button></div>
-          <div class="score-main"><div class="ring"><div><strong>78</strong><small>/100</small></div></div><div><div class="trend">↗ +6 this month</div><p>You're building momentum.</p></div></div>
+          <div class="score-main"><div class="ring"><div><strong>78</strong><small>/100</small></div></div><div><div class="trend">Live resume score</div><p>Your score updates as you edit.</p></div></div>
           <div class="meter"><i style="width:78%"></i></div>
           <div class="score-foot"><span>Resume <b>87</b></span><span>Skills <b>72</b></span><span>Profile <b>75</b></span></div>
         </div>
@@ -51,7 +51,7 @@
           <button class="ghost" id="openBexi">Ask Bexi <span>→</span></button>
         </div>
         <div class="mini-card"><span class="mini-icon">✓</span><strong>87</strong><small>Resume Score</small><button data-view="resume">Improve →</button></div>
-        <div class="mini-card"><span class="mini-icon purple">⌁</span><strong>12</strong><small>AI improvements</small><button data-view="resume">Review →</button></div>
+        <div class="mini-card"><span class="mini-icon purple">⌁</span><strong id="savedVersionCount">—</strong><small>Saved versions</small><button id="openVersionHistory" type="button">Review →</button></div>
       </div>
 
       <div class="section-head"><div><h2>Continue where you left off</h2><p>One focused improvement at a time.</p></div></div>
@@ -80,7 +80,7 @@
 
     <section id="templates" class="view"><div class="workspace-head"><div><p class="eyebrow">DESIGN SYSTEM</p><h1>Resume templates</h1><p class="muted">ATS-safe layouts designed to make strong content easier to scan.</p></div></div><div class="templates-grid"><div class="template-card"><div class="template-preview t0"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Executive</h3><p>Clean hierarchy for experienced professionals.</p><button class="secondary">Use template</button></div></div><div class="template-card"><div class="template-preview t1"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Modern</h3><p>ATS-friendly, recruiter-readable structure.</p><button class="secondary">Use template</button></div></div><div class="template-card"><div class="template-preview t2"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Minimal</h3><p>ATS-friendly, recruiter-readable structure.</p><button class="secondary">Use template</button></div></div><div class="template-card"><div class="template-preview t3"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Technical</h3><p>ATS-friendly, recruiter-readable structure.</p><button class="secondary">Use template</button></div></div><div class="template-card"><div class="template-preview t4"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Classic</h3><p>ATS-friendly, recruiter-readable structure.</p><button class="secondary">Use template</button></div></div><div class="template-card"><div class="template-preview t5"><b>KEERTHI REDDY</b><small>Java Developer</small><hr><span></span><span></span><span></span><span class="tiny"></span></div><div><h3>Impact</h3><p>ATS-friendly, recruiter-readable structure.</p><button class="secondary">Use template</button></div></div></div></section>
 
-    <section id="analytics" class="view"><div class="workspace-head"><div><p class="eyebrow">CAREER INTELLIGENCE</p><h1>Your progress</h1><p class="muted">See how your resume is improving over time.</p></div></div><div class="analytics-grid"><div class="chart-card"><div class="card-head"><span>Resume Score</span><b>+15 pts</b></div><div class="chart"><div class="gridline g1"></div><div class="gridline g2"></div><svg viewBox="0 0 700 260" preserveAspectRatio="none"><polyline points="0,205 100,190 200,175 300,155 400,145 500,105 600,80 700,45"/></svg><div class="xlabels"><span>Sep 1</span><span>Sep 15</span><span>Oct 1</span><span>Today</span></div></div></div><div class="breakdown"><div class="card-head"><span>Score breakdown</span></div><div class="barrow"><span>ATS</span><div><i style="width:92%"></i></div><b>92</b></div><div class="barrow"><span>Content</span><div><i style="width:84%"></i></div><b>84</b></div><div class="barrow"><span>Keywords</span><div><i style="width:89%"></i></div><b>89</b></div><div class="barrow"><span>Impact</span><div><i style="width:78%"></i></div><b>78</b></div></div></div></section>
+    <section id="analytics" class="view"><div class="workspace-head"><div><p class="eyebrow">CAREER INTELLIGENCE</p><h1>Your progress</h1><p class="muted">See how your resume is improving over time.</p></div></div><div class="analytics-grid"><div class="chart-card"><div class="card-head"><span>Resume Score</span><b>Live score</b></div><div class="chart"><p class="muted">Score history will appear here as you save and compare resume versions.</p></div></div><div class="breakdown"><div class="card-head"><span>Score breakdown</span></div><div class="barrow"><span>ATS</span><div><i style="width:92%"></i></div><b>92</b></div><div class="barrow"><span>Content</span><div><i style="width:84%"></i></div><b>84</b></div><div class="barrow"><span>Keywords</span><div><i style="width:89%"></i></div><b>89</b></div><div class="barrow"><span>Impact</span><div><i style="width:78%"></i></div><b>78</b></div></div></div></section>
 
     <section id="settings" class="view"><div class="workspace-head"><div><p class="eyebrow">ACCOUNT</p><h1>Settings</h1><p class="muted">Manage your Belongix workspace.</p></div></div><div class="settings-card"><h3>Profile</h3><label>Display name<input value="Keerthi Reddy"></label><label>Target role<input value="Java Developer"></label><label>Location<input value="Bengaluru, India"></label><button class="primary">Save changes</button></div></section>
   </main>
