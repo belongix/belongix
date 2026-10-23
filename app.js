@@ -281,6 +281,47 @@ document.querySelectorAll(".template-card .secondary").forEach(btn=>btn.addEvent
   finally{btn.disabled=false;}
 }));
 
+const previewButton=document.querySelector(".workspace-actions .secondary");
+if(previewButton) previewButton.addEventListener("click",()=>{
+  const paper=document.querySelector(".paper");
+  const active=paper.classList.toggle("preview-mode");
+  document.querySelectorAll(".paper [contenteditable]").forEach(el=>el.contentEditable=active?"false":"true");
+  previewButton.textContent=active?"Edit resume":"Preview";
+});
+document.querySelectorAll(".section").forEach(button=>button.addEventListener("click",()=>{
+  const label=button.querySelector("span")?.textContent.trim();
+  const section=[...document.querySelectorAll(".paper .resume-section")].find(el=>el.querySelector("h4")?.textContent.toLowerCase().includes((label||"").toLowerCase()));
+  if(section){document.querySelectorAll(".section").forEach(x=>x.classList.toggle("active",x===button));section.scrollIntoView({behavior:"smooth",block:"center"});}
+  else {showToast((label||"Section")+" is not available in this version yet.");}
+}));
+const addSectionButton=document.querySelector(".editor-title button");
+if(addSectionButton) addSectionButton.addEventListener("click",()=>{
+  const name=prompt("Name this resume section");
+  if(!name?.trim()) return;
+  const section=document.createElement("div");
+  section.className="resume-section";
+  const heading=document.createElement("h4");heading.textContent=name.trim().toUpperCase();
+  const paragraph=document.createElement("p");paragraph.textContent="Add your details here.";paragraph.contentEditable="true";paragraph.oninput=()=>queueSave();
+  section.append(heading,paragraph);document.querySelector(".paper").append(section);
+  showToast("Section added — remember to save");section.scrollIntoView({behavior:"smooth",block:"center"});
+});
+const duplicateButton=document.querySelector(".version button");
+if(duplicateButton) duplicateButton.addEventListener("click",async()=>{
+  if(!currentUser||!currentResume||!currentVersion){showToast("Load a resume before duplicating");return;}
+  duplicateButton.disabled=true;
+  try{
+    const {data:versions,error}=await sb.from("resume_versions").select("version_no").eq("resume_id",currentResume.id).eq("user_id",currentUser.id).order("version_no",{ascending:false}).limit(1);
+    if(error) throw error;
+    const nextNo=(versions?.[0]?.version_no||0)+1;
+    const {data,error:insertError}=await sb.from("resume_versions").insert({resume_id:currentResume.id,user_id:currentUser.id,version_no:nextNo,version_name:"Resume copy "+nextNo,content:contentFromPaper(),score:scoreResume(contentFromPaper()).overall}).select().single();
+    if(insertError) throw insertError;
+    currentVersion=data;
+    showToast("Created version "+nextNo);
+  }catch(err){console.error(err);showToast("Could not duplicate: "+(err.message||"try again"));}
+  finally{duplicateButton.disabled=false;}
+});
+document.querySelectorAll(".upgrade button").forEach(b=>b.addEventListener("click",()=>showToast("Belongix Pro subscriptions are not available yet.")));
+document.querySelectorAll(".top-actions .icon-btn").forEach(b=>b.addEventListener("click",()=>showToast(b.getAttribute("aria-label")+" is not available yet.")));
 document.querySelector(".settings-card .primary").onclick=async()=>{
   const inputs=document.querySelectorAll(".settings-card input");
   const payload={full_name:inputs[0].value.trim(),target_role:inputs[1].value.trim(),location:inputs[2].value.trim(),updated_at:new Date().toISOString()};
