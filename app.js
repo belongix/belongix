@@ -190,18 +190,27 @@ async function loadResume() {
 
 function queueSave(){ clearTimeout(saveTimer); saveTimer=setTimeout(saveResume,900); }
 async function saveResume(){
-  if(!currentUser || !currentResume) return;
+  if(!currentUser || !currentResume){showToast("Sign in before saving");return false;}
   const content=contentFromPaper();
   const scores=scoreResume(content,currentVersion?.target_job_description||"");
-  if(currentVersion){
-    const {error}=await sb.from("resume_versions").update({content,score:scores.overall}).eq("id",currentVersion.id).eq("user_id",currentUser.id);
-    if(error){console.error(error);return;}
-  } else {
-    const {data,error}=await sb.from("resume_versions").insert({resume_id:currentResume.id,user_id:currentUser.id,content,score:scores.overall}).select().single();
-    if(error){console.error(error);return;} currentVersion=data;
+  try{
+    if(currentVersion){
+      const {data,error}=await sb.from("resume_versions").update({content,score:scores.overall,updated_at:new Date().toISOString()}).eq("id",currentVersion.id).eq("user_id",currentUser.id).select().single();
+      if(error) throw error;
+      currentVersion=data;
+    } else {
+      const {data,error}=await sb.from("resume_versions").insert({resume_id:currentResume.id,user_id:currentUser.id,version_no:1,version_name:"Master Resume",content,score:scores.overall}).select().single();
+      if(error) throw error;
+      currentVersion=data;
+    }
+    renderScores(scores);
+    showToast("Resume saved");
+    return true;
+  }catch(err){
+    console.error("Resume save failed:",err);
+    showToast("Save failed: "+(err.message||"check connection"));
+    return false;
   }
-  renderScores(scores);
-  showToast("Resume saved");
 }
 
 document.querySelector(".workspace-actions .primary").onclick=async()=>{
@@ -242,9 +251,23 @@ document.querySelector(".bexi-input input").addEventListener("keydown",e=>{if(e.
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeBexi()});
 
 document.querySelectorAll(".template-card .secondary").forEach(btn=>btn.addEventListener("click",async()=>{
-  const card=btn.closest(".template-card"); const template=card.querySelector("h3").textContent.toLowerCase();
-  if(currentResume) await sb.from("resumes").update({template_key:template}).eq("id",currentResume.id).eq("user_id",currentUser.id);
-  showToast(template+" template selected");
+  if(!currentUser || !currentResume){showToast("Sign in to choose a template");return;}
+  const card=btn.closest(".template-card");
+  const template=card.querySelector("h3").textContent.trim().toLowerCase();
+  btn.disabled=true;
+  try{
+    const {error}=await sb.from("resumes").update({template_key:template}).eq("id",currentResume.id).eq("user_id",currentUser.id);
+    if(error) throw error;
+    currentResume.template_key=template;
+    const paper=document.querySelector(".paper");
+    paper.dataset.template=template;
+    paper.classList.remove("template-executive","template-modern","template-minimal","template-technical","template-classic","template-impact");
+    paper.classList.add("template-"+template);
+    document.querySelectorAll(".template-card").forEach(x=>x.classList.toggle("selected-template",x===card));
+    showToast(template[0].toUpperCase()+template.slice(1)+" template applied");
+    show("resume");
+  }catch(err){console.error(err);showToast("Template could not be saved: "+(err.message||"try again"));}
+  finally{btn.disabled=false;}
 }));
 
 document.querySelector(".settings-card .primary").onclick=async()=>{
