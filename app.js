@@ -258,6 +258,7 @@ document.querySelector(".settings-card .primary").onclick=async()=>{
 
 function setAuthMode(signup){
   signUpMode=signup;
+  recoveryMode=false;
   document.getElementById("authTitle").textContent=signup?"Create your Belongix account":"Welcome back";
   document.getElementById("authCopy").textContent=signup?"Build, optimize and manage your career in one workspace.":"Sign in to save your resume, use Bexi, and continue your career workspace anywhere.";
   document.getElementById("nameField").style.display=signup?"grid":"none";
@@ -310,7 +311,15 @@ authForm.addEventListener("submit",async e=>{
   const name=document.getElementById("authName").value.trim();
   try{
     let result;
-    if(signUpMode) result=await sb.auth.signUp({email,password,options:{data:{full_name:name},emailRedirectTo:window.location.origin}});
+    if(recoveryMode){
+      result=await sb.auth.updateUser({password});
+      if(result.error) throw result.error;
+      recoveryMode=false;
+      authError.textContent="Password updated. Please sign in with your new password.";
+      await sb.auth.signOut({scope:"local"});
+      setAuthMode(false);
+      return;
+    } else if(signUpMode) result=await sb.auth.signUp({email,password,options:{data:{full_name:name},emailRedirectTo:window.location.origin}});
     else result=await sb.auth.signInWithPassword({email,password});
     if(result.error) throw result.error;
     if(signUpMode && !result.data.session){
