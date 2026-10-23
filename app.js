@@ -366,6 +366,15 @@ async function bootUser(user){
 
 sb.auth.onAuthStateChange((event,session)=>{
   // Keep network/database work outside the Supabase auth callback to avoid auth-lock deadlocks.
+  if(event==="PASSWORD_RECOVERY"){
+    recoveryMode=true;
+    document.getElementById("authTitle").textContent="Set a new password";
+    document.getElementById("authCopy").textContent="Choose a new password for your Belongix account.";
+    document.getElementById("authSubmit").textContent="Update password →";
+    document.getElementById("authPassword").autocomplete="new-password";
+    authOverlay.classList.remove("hidden");
+    return;
+  }
   if(event==="SIGNED_OUT"){
     currentUser=null; currentResume=null; currentVersion=null; clearTimeout(saveTimer);
     authOverlay.classList.remove("hidden");
