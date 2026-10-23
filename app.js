@@ -204,8 +204,17 @@ async function loadResume() {
     applyContent(defaultContent);
   } else {
     currentResume=resumes[0];
-    const {data:v,error:ve}=await sb.from("resume_versions").select("*").eq("resume_id",currentResume.id).eq("user_id",currentUser.id).order("updated_at",{ascending:false}).limit(1).maybeSingle();
-    if(ve) throw ve;
+    let v=null;
+    if(currentResume.active_version_id){
+      const {data:activeVersion,error:activeError}=await sb.from("resume_versions").select("*").eq("id",currentResume.active_version_id).eq("resume_id",currentResume.id).eq("user_id",currentUser.id).maybeSingle();
+      if(activeError) throw activeError;
+      v=activeVersion;
+    }
+    if(!v){
+      const {data:latestVersion,error:latestError}=await sb.from("resume_versions").select("*").eq("resume_id",currentResume.id).eq("user_id",currentUser.id).order("updated_at",{ascending:false}).limit(1).maybeSingle();
+      if(latestError) throw latestError;
+      v=latestVersion;
+    }
     currentVersion=v;
     if(!currentVersion){
       const {data:createdVersion,error:createError}=await sb.from("resume_versions").insert({
@@ -387,6 +396,12 @@ if(duplicateButton) duplicateButton.addEventListener("click",async()=>{
     const {data,error:insertError}=await sb.from("resume_versions").insert({resume_id:currentResume.id,user_id:currentUser.id,version_no:nextNo,version_name:"Resume copy "+nextNo,content:contentFromPaper(),score:scoreResume(contentFromPaper()).overall}).select().single();
     if(insertError) throw insertError;
     currentVersion=data;
+    const {error:activateError}=await sb.from("resumes").update({active_version_id:data.id,content:data.content,updated_at:new Date().toISOString()}).eq("id",currentResume.id).eq("user_id",currentUser.id);
+    if(activateError) throw activateError;
+    const versionTitle=document.querySelector(".version strong");
+    if(versionTitle) versionTitle.textContent=data.version_name;
+    const countEl=document.getElementById("savedVersionCount");
+    if(countEl) countEl.textContent=String(nextNo);
     showToast("Created version "+nextNo);
   }catch(err){console.error(err);showToast("Could not duplicate: "+(err.message||"try again"));}
   finally{duplicateButton.disabled=false;}
