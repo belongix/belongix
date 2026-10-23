@@ -188,6 +188,8 @@ function contentFromPaper() {
   };
 }
 
+async function loadBexiHistory(){if(!currentUser||!currentResume)return;try{const {data:rows,error}=await sb.from("ai_conversations").select("id").eq("user_id",currentUser.id).eq("resume_id",currentResume.id).order("updated_at",{ascending:false}).limit(1);if(error)throw error;if(!rows||!rows.length)return;bexiConversationId=rows[0].id;const {data:messages,error:messageError}=await sb.from("ai_messages").select("role,content").eq("user_id",currentUser.id).eq("conversation_id",bexiConversationId).order("created_at",{ascending:true}).limit(40);if(messageError)throw messageError;const body=document.querySelector(".bexi-body");body.querySelectorAll(".bexi-msg:not(:first-child)").forEach(el=>el.remove());bexiHistory=[];(messages||[]).forEach(m=>{if(m.role==="user"||m.role==="assistant")bexiHistory.push({role:m.role,content:m.content});const bubble=document.createElement("div");bubble.className="bexi-msg";const label=document.createElement("small");label.textContent=m.role==="user"?"YOU":"BEXI";const p=document.createElement("p");p.textContent=m.content||"";bubble.append(label,p);body.appendChild(bubble);});body.scrollTop=body.scrollHeight;}catch(err){console.warn("Could not load Bexi history:",err);}}
+
 async function loadResume() {
   const {data:resumes,error}=await sb.from("resumes").select("*").eq("user_id",currentUser.id).order("created_at",{ascending:true}).limit(1);
   if(error) throw error;
@@ -224,6 +226,7 @@ async function loadResume() {
   }
   applySavedTemplate();
   makeEditable();
+  await loadBexiHistory();
   const resumeTitle=document.querySelector("#resume .workspace-head h1");
   if(resumeTitle) resumeTitle.textContent=currentResume?.title || "My Resume";
   const versionTitle=document.querySelector(".version strong");
